@@ -41,6 +41,7 @@ import tempfile
 from pathlib import Path
 
 from neurotic_docx_bench import content_cache, kernels, pipeline
+from neurotic_docx_bench.page_scores import per_page_scores
 from neurotic_docx_bench.word_outputs import find_output
 
 HERE = Path(__file__).parent
@@ -52,6 +53,19 @@ def _sha(path: Path) -> str:
 
 def _scalars(row: dict) -> dict:
     return {k: v for k, v in row.items() if isinstance(v, (int, float, str, bool)) or v is None}
+
+
+def _with_pages(row: dict) -> dict:
+    """The row's numbers with the scores of the pages it matched (issue #144).
+
+    ``_scalars`` keeps the numbers of a scored row and drops the rest, and the
+    per-page scores are a list.  The release case shards read them from the
+    row (one score per shown page), so the list is carried next to the
+    numbers, in document order.
+    """
+    pages = per_page_scores(row)
+    scalars = _scalars(row)
+    return scalars | {'per_page': pages} if pages else scalars
 
 
 def _stats(rows: list[dict], expected: int) -> dict:
@@ -220,6 +234,14 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
     if rows or stale:
         print(f'{tool}: resuming: {len(rows)} already scored, {len(stale)} dropped because their oracle, '
               f'candidate PDF or scorer changed or was never recorded, {len(todo)} to go', flush=True)
+    # A row measured before the per-page scores existed carries none (#144).  It
+    # still stands for its measurement (its oracle, candidate and scorer are the
+    # same), so it is kept -- but the lane has no per-page scores until it is
+    # measured again from scratch, and the file says so.
+    without_pages = sorted(k for k, v in rows.items() if not v.get('per_page'))
+    if without_pages:
+        print(f'{tool}: {len(without_pages)} resumed row(s) have no per-page scores (measured before '
+              f'#144): delete {out.name} to measure them again', flush=True)
     for i in range(0, len(todo), chunk):
         part = todo[i:i + chunk]
         with tempfile.TemporaryDirectory(prefix=f'measure-{tool}.') as tmp:
@@ -230,7 +252,7 @@ def measure(tool: str, fresh: Path | None, regen: set[str], jobs: int, sample: i
                 (orc / f'{r["key"]}.pdf').symlink_to(oracle[r['key']][0])
                 (cand / f'{r["key"]}_{tool}.pdf').symlink_to(cands[r['key']].resolve())
             got = pipeline.score_folders_full(orc, cand, work, candidate_tool=tool, jobs=jobs)
-        rows |= {k: _scalars(v) | {'oracle': oracle[k][1], 'oracle_sha256': _sha(oracle[k][0]),
+        rows |= {k: _with_pages(v) | {'oracle': oracle[k][1], 'oracle_sha256': _sha(oracle[k][0]),
                                    'candidate_sha256': _sha(cands[k]), 'scorer': scorer} for k, v in got.items()}
         partial.write_text(json.dumps({'fresh_dir': str(fresh) if fresh else None, 'rows': rows}, sort_keys=True))
         print(f'{tool}: {len(rows)} scored, {len(todo) - i - len(part)} to go -> {partial.name}', flush=True)

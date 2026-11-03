@@ -559,8 +559,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 69054000,
-   "score_ns": 4832160500,
+   "per_page": [
+    67.90685540229732
+   ],
+   "raster_ns": 57547500,
+   "score_ns": 4281483667,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -590,8 +593,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 57956417,
-   "score_ns": 5160357041,
+   "per_page": [
+    57.31418004758617
+   ],
+   "raster_ns": 57799417,
+   "score_ns": 3039548083,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -621,8 +627,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 106586792,
-   "score_ns": 5353350083,
+   "per_page": [
+    64.02204035064301
+   ],
+   "raster_ns": 68720375,
+   "score_ns": 5804494542,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -652,8 +661,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 67970833,
-   "score_ns": 5936299875,
+   "per_page": [
+    59.65788468806126
+   ],
+   "raster_ns": 65347042,
+   "score_ns": 4956561166,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -683,8 +695,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 78845459,
-   "score_ns": 6066052125,
+   "per_page": [
+    61.4538508732851
+   ],
+   "raster_ns": 64659500,
+   "score_ns": 4938778042,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -714,8 +729,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 65266333,
-   "score_ns": 6058683500,
+   "per_page": [
+    56.09201567236269
+   ],
+   "raster_ns": 54171375,
+   "score_ns": 5813459000,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -745,8 +763,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 81633875,
-   "score_ns": 6068720125,
+   "per_page": [
+    64.48428906823676
+   ],
+   "raster_ns": 58262750,
+   "score_ns": 5159391209,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -776,8 +797,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 82658917,
-   "score_ns": 5664317417,
+   "per_page": [
+    65.6719719706548
+   ],
+   "raster_ns": 55868667,
+   "score_ns": 5791787666,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -807,8 +831,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 86506625,
-   "score_ns": 6025386834,
+   "per_page": [
+    63.864272651992295
+   ],
+   "raster_ns": 58267709,
+   "score_ns": 3976644666,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -838,8 +865,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 65111875,
-   "score_ns": 6091684291,
+   "per_page": [
+    71.86931552796392
+   ],
+   "raster_ns": 66397542,
+   "score_ns": 5707277208,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -869,8 +899,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 63461000,
-   "score_ns": 6125023375,
+   "per_page": [
+    63.72179715558666
+   ],
+   "raster_ns": 81361291,
+   "score_ns": 5736168292,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -900,8 +933,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 72587458,
-   "score_ns": 5693214708,
+   "per_page": [
+    63.20427128546008
+   ],
+   "raster_ns": 61178916,
+   "score_ns": 5757851375,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -931,8 +967,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 89510542,
-   "score_ns": 3892409875,
+   "per_page": [
+    44.24252482596848
+   ],
+   "raster_ns": 65222125,
+   "score_ns": 3292472125,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -962,8 +1001,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 142937708,
-   "score_ns": 5118619875,
+   "per_page": [
+    60.588748144510696
+   ],
+   "raster_ns": 79626125,
+   "score_ns": 2786805042,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -993,8 +1035,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 137051500,
-   "score_ns": 4663864666,
+   "per_page": [
+    74.67399866743835
+   ],
+   "raster_ns": 132454208,
+   "score_ns": 3273413000,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1024,8 +1069,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 175774250,
-   "score_ns": 3353825625,
+   "per_page": [
+    65.65077665886758
+   ],
+   "raster_ns": 110671917,
+   "score_ns": 2959103666,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1055,8 +1103,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 172350292,
-   "score_ns": 3076033875,
+   "per_page": [
+    64.45868277852274
+   ],
+   "raster_ns": 101043708,
+   "score_ns": 3204410750,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1086,8 +1137,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 147801792,
-   "score_ns": 4254771583,
+   "per_page": [
+    58.397170923317574
+   ],
+   "raster_ns": 134121167,
+   "score_ns": 4116776208,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1117,8 +1171,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 156179459,
-   "score_ns": 4910450875,
+   "per_page": [
+    52.760533044750005
+   ],
+   "raster_ns": 121496666,
+   "score_ns": 3475867209,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1148,8 +1205,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 147346083,
-   "score_ns": 3331365000,
+   "per_page": [
+    66.34073532331982
+   ],
+   "raster_ns": 78011333,
+   "score_ns": 4081310292,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1179,8 +1239,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 81984625,
-   "score_ns": 4296038959,
+   "per_page": [
+    61.623942887418316
+   ],
+   "raster_ns": 97759333,
+   "score_ns": 3615998250,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1210,8 +1273,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 85973750,
-   "score_ns": 4206999375,
+   "per_page": [
+    67.39496498964117
+   ],
+   "raster_ns": 106351792,
+   "score_ns": 3415534541,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1241,8 +1307,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 114101000,
-   "score_ns": 4158213208,
+   "per_page": [
+    65.60607377223275
+   ],
+   "raster_ns": 114775000,
+   "score_ns": 4059354167,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1272,8 +1341,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 145568042,
-   "score_ns": 4908954917,
+   "per_page": [
+    47.651174704346744
+   ],
+   "raster_ns": 106564000,
+   "score_ns": 3400578291,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1303,8 +1375,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 115858333,
-   "score_ns": 2960895583,
+   "per_page": [
+    65.68563187799471
+   ],
+   "raster_ns": 119055666,
+   "score_ns": 2617037792,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1334,8 +1409,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 69086125,
-   "score_ns": 4449290542,
+   "per_page": [
+    47.00009831117216
+   ],
+   "raster_ns": 85682584,
+   "score_ns": 3003103250,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1365,8 +1443,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 49897709,
-   "score_ns": 4899017833,
+   "per_page": [
+    61.885777518451754
+   ],
+   "raster_ns": 106133375,
+   "score_ns": 2886275542,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1396,8 +1477,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 145154541,
-   "score_ns": 3084956125,
+   "per_page": [
+    67.19448163860753
+   ],
+   "raster_ns": 62972375,
+   "score_ns": 2503328042,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1427,8 +1511,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 150633417,
-   "score_ns": 4382219541,
+   "per_page": [
+    61.91829131542642
+   ],
+   "raster_ns": 113999542,
+   "score_ns": 3815300333,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1458,8 +1545,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 151353042,
-   "score_ns": 4003706458,
+   "per_page": [
+    55.125827518476264
+   ],
+   "raster_ns": 88868167,
+   "score_ns": 2909658416,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1489,8 +1579,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 125559125,
-   "score_ns": 4664348875,
+   "per_page": [
+    63.69509771182111
+   ],
+   "raster_ns": 117786750,
+   "score_ns": 3298256458,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1520,8 +1613,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 97145208,
-   "score_ns": 3847660000,
+   "per_page": [
+    53.67651553875356
+   ],
+   "raster_ns": 123837084,
+   "score_ns": 4073337833,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1551,8 +1647,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 103278750,
-   "score_ns": 4663799833,
+   "per_page": [
+    55.5668673857268
+   ],
+   "raster_ns": 101576833,
+   "score_ns": 3349410250,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1582,8 +1681,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 116315208,
-   "score_ns": 3947707875,
+   "per_page": [
+    57.61279626774846
+   ],
+   "raster_ns": 101018167,
+   "score_ns": 4019344625,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1613,8 +1715,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 116114375,
-   "score_ns": 4780801125,
+   "per_page": [
+    65.88653539667206
+   ],
+   "raster_ns": 127286583,
+   "score_ns": 3896715125,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1644,8 +1749,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 156005959,
-   "score_ns": 4591117875,
+   "per_page": [
+    61.689791062120115
+   ],
+   "raster_ns": 104700000,
+   "score_ns": 2924462292,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1675,8 +1783,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 128957708,
-   "score_ns": 3527919334,
+   "per_page": [
+    60.15332095463195
+   ],
+   "raster_ns": 111292917,
+   "score_ns": 3488388750,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1706,8 +1817,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 133029125,
-   "score_ns": 3962926000,
+   "per_page": [
+    61.16130270150448
+   ],
+   "raster_ns": 102024417,
+   "score_ns": 3375164208,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1737,8 +1851,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 102629417,
-   "score_ns": 4281307041,
+   "per_page": [
+    63.46800067443973
+   ],
+   "raster_ns": 119952542,
+   "score_ns": 3307322875,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1768,8 +1885,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 153513958,
-   "score_ns": 3724099625,
+   "per_page": [
+    61.97104128271561
+   ],
+   "raster_ns": 97913084,
+   "score_ns": 3313834333,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1799,8 +1919,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 137992375,
-   "score_ns": 4355173583,
+   "per_page": [
+    70.6237160430222
+   ],
+   "raster_ns": 102040750,
+   "score_ns": 2884989583,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1830,8 +1953,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 136654917,
-   "score_ns": 4151803291,
+   "per_page": [
+    65.93442120486593
+   ],
+   "raster_ns": 69821333,
+   "score_ns": 3151849542,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1861,8 +1987,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 136343541,
-   "score_ns": 3789657834,
+   "per_page": [
+    60.789849495180604
+   ],
+   "raster_ns": 127352000,
+   "score_ns": 2573120208,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1892,8 +2021,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 104321000,
-   "score_ns": 3875222708,
+   "per_page": [
+    65.31420072941232
+   ],
+   "raster_ns": 74400916,
+   "score_ns": 3064654959,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1923,8 +2055,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 127628250,
-   "score_ns": 4586718875,
+   "per_page": [
+    63.46243382012025
+   ],
+   "raster_ns": 107841958,
+   "score_ns": 2739114875,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1954,8 +2089,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 84734666,
-   "score_ns": 4595852750,
+   "per_page": [
+    63.454429752137955
+   ],
+   "raster_ns": 128820541,
+   "score_ns": 3057590375,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -1985,8 +2123,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 120057792,
-   "score_ns": 4434695458,
+   "per_page": [
+    53.51637056155757
+   ],
+   "raster_ns": 90627667,
+   "score_ns": 3711107000,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2016,8 +2157,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 113869208,
-   "score_ns": 3808944375,
+   "per_page": [
+    55.44871340659299
+   ],
+   "raster_ns": 99243000,
+   "score_ns": 3328609958,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2047,8 +2191,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 207633291,
-   "score_ns": 5072243250,
+   "per_page": [
+    67.90493855141789
+   ],
+   "raster_ns": 90826958,
+   "score_ns": 3696886792,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2078,8 +2225,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 68118459,
-   "score_ns": 3684895583,
+   "per_page": [
+    71.43915706364382
+   ],
+   "raster_ns": 73725709,
+   "score_ns": 3014310375,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2109,8 +2259,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 143024791,
-   "score_ns": 4425380875,
+   "per_page": [
+    57.87308434247126
+   ],
+   "raster_ns": 114876417,
+   "score_ns": 2525302916,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2140,8 +2293,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 178730083,
-   "score_ns": 4086677458,
+   "per_page": [
+    57.05276407984743
+   ],
+   "raster_ns": 94157375,
+   "score_ns": 2902374500,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2171,8 +2327,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 139543958,
-   "score_ns": 3884657042,
+   "per_page": [
+    53.3996801289594
+   ],
+   "raster_ns": 127598417,
+   "score_ns": 2573781458,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2202,8 +2361,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 145050667,
-   "score_ns": 4238774000,
+   "per_page": [
+    74.4991521906258
+   ],
+   "raster_ns": 82771667,
+   "score_ns": 3033942208,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2233,8 +2395,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 124803084,
-   "score_ns": 5125926166,
+   "per_page": [
+    58.26664052424648
+   ],
+   "raster_ns": 108671500,
+   "score_ns": 3256908333,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2264,8 +2429,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 174015083,
-   "score_ns": 5197426125,
+   "per_page": [
+    60.900083015774406
+   ],
+   "raster_ns": 144222708,
+   "score_ns": 2667416584,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2295,8 +2463,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 136186958,
-   "score_ns": 4320894625,
+   "per_page": [
+    65.89533696098275
+   ],
+   "raster_ns": 122004917,
+   "score_ns": 2507606667,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2326,8 +2497,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 92670709,
-   "score_ns": 4342801583,
+   "per_page": [
+    67.03747822472015
+   ],
+   "raster_ns": 179449959,
+   "score_ns": 2643178083,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2357,8 +2531,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 108762791,
-   "score_ns": 3633493334,
+   "per_page": [
+    58.23123642099688
+   ],
+   "raster_ns": 179017417,
+   "score_ns": 2701325833,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2388,8 +2565,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 148156708,
-   "score_ns": 4382445125,
+   "per_page": [
+    60.635229839443696
+   ],
+   "raster_ns": 174210375,
+   "score_ns": 2439818333,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2419,8 +2599,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 120887000,
-   "score_ns": 3331249042,
+   "per_page": [
+    51.67351105792406
+   ],
+   "raster_ns": 146514250,
+   "score_ns": 2419015250,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2450,8 +2633,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 196477083,
-   "score_ns": 3431635125,
+   "per_page": [
+    100.00000000000003
+   ],
+   "raster_ns": 128077708,
+   "score_ns": 2533724459,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2481,8 +2667,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 139758000,
-   "score_ns": 2312391000,
+   "per_page": [
+    56.049009870515086
+   ],
+   "raster_ns": 109678333,
+   "score_ns": 2629186500,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2512,8 +2701,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 129854333,
-   "score_ns": 2581128583,
+   "per_page": [
+    61.80026726627933
+   ],
+   "raster_ns": 101749417,
+   "score_ns": 2667814292,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2543,8 +2735,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 150327584,
-   "score_ns": 2801387666,
+   "per_page": [
+    52.013578408359095
+   ],
+   "raster_ns": 121815500,
+   "score_ns": 2194144875,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2574,8 +2769,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 83047834,
-   "score_ns": 1902860375,
+   "per_page": [
+    60.449158511685376
+   ],
+   "raster_ns": 127050292,
+   "score_ns": 1723775833,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
@@ -2605,8 +2803,11 @@
    "page_count_candidate": 1,
    "page_count_mismatch": false,
    "page_count_oracle": 1,
-   "raster_ns": 127114167,
-   "score_ns": 1697642375,
+   "per_page": [
+    66.54941906830095
+   ],
+   "raster_ns": 137027666,
+   "score_ns": 1796407125,
    "score_v2": null,
    "scorer": "torch-mps:5e481477e2196f6b",
    "skill_score": null,
