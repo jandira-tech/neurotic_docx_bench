@@ -3823,6 +3823,72 @@ def sets_build_cmd(
             console.print(Text(f"    {entry['key']} ({entry['origin']}): {entry['reason']}"), soft_wrap=True)
 
 
+# --- bench pages: the shown-page renderer (plan 7.4, #131) --------------------
+
+pages_app = typer.Typer(
+    name="pages",
+    help="Render the shown pages of a lane of PDFs: the first 12 pages at 180 DPI, "
+         "16-colour lossless WebP, plus the same pages as a pages.pdf.",
+    no_args_is_help=True,
+)
+app.add_typer(pages_app)
+
+
+@pages_app.command(name="render")
+def pages_render_cmd(
+    set_csv: Path = typer.Option(
+        ...,
+        "--set",
+        help="the lane's CSV (e.g. results/sets/convert_860.csv); every row's PDF is rendered",
+    ),
+    column: str = typer.Option("word_pdf", "--column", help="the column holding the PDF path"),
+    root: Path = typer.Option(
+        Path("."),
+        "--root",
+        help="the bench root the column's relative paths hang off (the corpus lives there)",
+    ),
+    out: Path = typer.Option(..., "--out", help="where the per-case page directories go"),
+    jobs: int = typer.Option(4, "--jobs", help="how many PDFs to render at once (a process pool)"),
+    dpi: int = typer.Option(180, "--dpi", help="the stored resolution"),
+    max_pages: int = typer.Option(12, "--max-pages", help="the page cap"),
+    force: bool = typer.Option(False, "--force", help="re-render even when the input hash matches"),
+) -> None:
+    """Render a lane's shown pages (#131): 12 pages at 180 DPI, 16-colour lossless WebP.
+
+    The run is resumable: a case whose render directory already holds the pages
+    for this input's sha256 is skipped.
+    """
+    from neurotic_docx_bench.pages import render as pages_render
+
+    try:
+        report = pages_render.render_lane(
+            set_csv,
+            column,
+            out,
+            jobs,
+            root=root,
+            max_pages=max_pages,
+            dpi=dpi,
+            force=force,
+        )
+    except pages_render.RenderError as exc:
+        console.print(Text.assemble(("error: ", "red"), str(exc)), soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    per_page = report.image_bytes / report.pages / 1024 if report.pages else 0.0
+    console.print(
+        f"{set_csv}: {report.rendered} rendered, {report.reused} reused, {report.failed} failed "
+        f"({report.rows} rows, {report.pages} pages)"
+    )
+    console.print(
+        f"  page images: {report.image_bytes / 1024 / 1024:.1f} MB ({per_page:.1f} KB/page); "
+        f"pages.pdf: {report.pdf_bytes / 1024 / 1024:.1f} MB"
+    )
+    for case, message in report.errors:
+        console.print(Text(f"  {case}: {message}", style="red"), soft_wrap=True)
+    if report.failed:
+        raise typer.Exit(code=1)
+
+
 # --- bench try: one fixture, any tool, against jubarte -----------------------
 
 try_app = typer.Typer(

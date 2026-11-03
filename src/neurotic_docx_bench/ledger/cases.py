@@ -52,6 +52,7 @@ from bench_ops.models import (
 )
 from neurotic_docx_bench.ledger import legacy as legacy_paths
 from neurotic_docx_bench.ledger.scores import RESULTS_REPO_URL
+from neurotic_docx_bench.pages import render as pages_render
 
 # Re-export the dependency-free path helpers from this module's historical API.
 legacy_candidates = legacy_paths.legacy_candidates
@@ -94,12 +95,12 @@ def labels() -> dict[str, str]:
 
 
 def _webp_pages(directory: Path) -> list[int]:
-    """The page numbers of ``page_NNN.webp`` files in one engine's asset dir."""
-    numbers = []
-    for p in directory.glob("page_*.webp"):
-        if (m := re.fullmatch(r"page_(\d{3,})\.webp", p.name)) is not None:
-            numbers.append(int(m.group(1)))
-    return sorted(numbers)
+    """The page numbers of the ``page_NNN.webp`` files in one engine's asset dir.
+
+    Both spellings count: the published trees use ``page_001.webp`` and the
+    renderer of #131 writes ``page-001.webp``.
+    """
+    return pages_render.page_numbers(directory)
 
 
 def _lane_assets(prefix: str, directory: Path, shown: list[int]) -> tuple[list[str | None], int]:
