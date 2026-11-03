@@ -40,6 +40,11 @@ export interface CasesIndex {
     assets_base: string;
     engines: Engine[];
     groups: ShardRef[];
+    /**
+     * The public base the case's `files` paths resolve against (the record on
+     * Hugging Face). Absent when the release publishes no files.
+     */
+    files_base?: string;
 }
 /** The per-lane page diagnostics the release carries. */
 export interface MetricDiagnostics {
@@ -73,6 +78,17 @@ export interface Case {
     pair?: string | null;
     not_applicable?: string[];
     unavailable?: string[];
+    /**
+     * One score per shown page, per lane (null = that page could not be
+     * scored). Never longer than the lane's shown pages; absent when the
+     * release publishes no per-page scores.
+     */
+    page_scores?: Record<string, (number | null)[]>;
+    /**
+     * The case's files, per lane, relative to the index's `files_base` (the
+     * `~/` sentinel, as in the published data).
+     */
+    files?: Record<string, string>;
 }
 /** One group's shard: `cases/<kind>/<group>.json`. */
 export interface CaseShard {
@@ -148,6 +164,20 @@ export declare function resolveAssetUrl(assetsBase: string, path: string | null 
 /** The URL of an asset, or the empty string when it is not safe to use. */
 export declare function safeAssetUrl(assetsBase: string, path: string | null | undefined): string;
 /**
+ * The URL of a case file: the files base + the path without its `~/`
+ * prefix. A path that is not relative to the base is refused — a file link
+ * stays inside the record it names.
+ */
+export declare function resolveFileUrl(filesBase: string, path: string | null | undefined): string;
+/** The URL of a case file, or the empty string when it is not safe to use. */
+export declare function safeFileUrl(filesBase: string, path: string | null | undefined): string;
+/**
+ * The case's own folder on the files base: the longest folder its lanes'
+ * files share (the case's folder, the lanes' files hang under it). The
+ * empty string when the case publishes no files or the base is unknown.
+ */
+export declare function caseFilesUrl(filesBase: string | undefined, c: Case): string;
+/**
  * The URL of a shard, resolved against the release the index came from. The
  * shard path is relative to the release root (`cases/<kind>/<group>.json`);
  * the index sits in `cases/`, so the root is its directory's parent.
@@ -179,6 +209,11 @@ export declare const LANE_COLORS: string[];
 export declare function laneColor(engines: Engine[], key: string): string;
 /** A score as the page shows it: one decimal and a percent sign. */
 export declare function formatScore(value: number | null | undefined): string;
+/**
+ * A page score as the page shows it: one decimal, or a dash when the page
+ * could not be scored.
+ */
+export declare function formatPageScore(value: number | null | undefined): string;
 /** A duration as the page shows it: seconds with two decimals. */
 export declare function formatTime(value: number | null | undefined): string;
 /** One lane's column of pages. */
@@ -211,6 +246,8 @@ export interface CaseHeadOptions {
     engines?: Engine[];
     /** The compact header the mobile layout wears. */
     compact?: boolean;
+    /** The public base the case's files resolve against (Hugging Face). */
+    filesBase?: string;
 }
 /** One lane's header. */
 export declare function renderCaseHead(opts: CaseHeadOptions): string;
@@ -231,6 +268,8 @@ export interface CaseGridOptions {
     compact?: boolean;
     /** The mobile layout: crop the page to its top half. */
     half?: boolean;
+    /** The public base the case's files resolve against (Hugging Face). */
+    filesBase?: string;
 }
 /** The whole grid. */
 export declare function renderCaseGrid(opts: CaseGridOptions): string;
@@ -346,9 +385,30 @@ export interface MountCasesOptions {
     modeUrl?: string;
     /** The document the page lives in. */
     root?: Document;
+    /**
+     * The source of the random draw (the random case on open, the random
+     * button). `Math.random` by default; a seeded generator makes the page
+     * deterministic under test.
+     */
+    random?: () => number;
 }
-/** How many pages the grid shows before "more pages". */
-export declare const PAGE_STEP = 10;
+/**
+ * How many pages the grid shows before "more pages". The release shows up
+ * to 12 pages of a case (the producer's own cap), so the page opens on all
+ * of them.
+ */
+export declare const PAGE_STEP = 12;
+/**
+ * The index a random draw lands on, for a list of `length` items. -1 when
+ * the list is empty; a draw outside [0, 1) lands on the first item.
+ */
+export declare function randomIndex(length: number, random?: () => number): number;
+/**
+ * A random item of the list, or undefined when the list is empty. The
+ * random source is a parameter, so a seeded generator makes the choice
+ * reproducible (the old viewer's `pickRandom`).
+ */
+export declare function pickRandomCase<T>(cases: T[], random?: () => number): T | undefined;
 /**
  * Wire the page: fetch the index, open one group, and keep the page in step
  * with the state. The render layer does the markup; this does the fetching,

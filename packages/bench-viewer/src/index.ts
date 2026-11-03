@@ -21,9 +21,11 @@ export type {
   ShardRef,
 } from "./cases.ts";
 export {
+  caseFilesUrl,
   caseHash,
   defaultComparisonLane,
   defaultOverlayLane,
+  formatPageScore,
   LANE_COLORS,
   LANE_LABEL,
   laneColor,
@@ -41,6 +43,8 @@ export {
   parseCaseHash,
   parseCaseShard,
   parseCasesIndex,
+  pickRandomCase,
+  randomIndex,
   renderCaseGrid,
   renderCaseHead,
   renderCaseList,
@@ -52,7 +56,9 @@ export {
   renderOverlay,
   renderScoresTable,
   resolveAssetUrl,
+  resolveFileUrl,
   safeAssetUrl,
+  safeFileUrl,
   shardUrl,
 } from "./cases.ts";
 export { esc } from "./esc.ts";

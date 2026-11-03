@@ -76,6 +76,16 @@ export function parseCasesIndex(value) {
             label: asString(engine.label, `cases index.engines[${i}].label`),
         };
     });
+    let filesBase;
+    if (raw.files_base !== undefined && raw.files_base !== null) {
+        filesBase = asString(raw.files_base, "cases index.files_base");
+        // The same shape as the asset base: an absolute https URL ending in "/".
+        if (!(filesBase.startsWith("https://") &&
+            filesBase.endsWith("/") &&
+            filesBase.slice("https://".length, -1).length > 0)) {
+            fail("cases index.files_base", "must be an absolute https:// URL ending in /");
+        }
+    }
     const groups = asArray(raw.groups, "cases index.groups").map((item, i) => {
         const group = asRecord(item, `cases index.groups[${i}]`);
         const count = asNumber(group.count, `cases index.groups[${i}].count`);
@@ -96,6 +106,7 @@ export function parseCasesIndex(value) {
         assets_base: assetsBase,
         engines,
         groups,
+        ...(filesBase === undefined ? {} : { files_base: filesBase }),
     };
 }
 /** One shard: the group's cases, in the order the release wrote them. */
@@ -150,6 +161,19 @@ export function parseCase(value, path, kind, group) {
     const versions = asRecordOfStrings(raw.versions ?? {}, `${path}.versions`);
     const pdfs = raw.pdfs === undefined ? undefined : asRecordOfStrings(raw.pdfs, `${path}.pdfs`);
     const errors = raw.errors === undefined ? undefined : asRecordOfStrings(raw.errors, `${path}.errors`);
+    const pageScores = {};
+    if (raw.page_scores !== undefined && raw.page_scores !== null) {
+        for (const [key, item] of Object.entries(asRecord(raw.page_scores, `${path}.page_scores`))) {
+            pageScores[key] = asArray(item, `${path}.page_scores.${key}`).map((score, i) => {
+                if (score === null)
+                    return null;
+                return asNumber(score, `${path}.page_scores.${key}[${i}]`);
+            });
+        }
+    }
+    const files = raw.files === undefined || raw.files === null
+        ? undefined
+        : asRecordOfStrings(raw.files, `${path}.files`);
     const diagnostics = {};
     if (raw.metric_diagnostics !== undefined) {
         for (const [key, item] of Object.entries(asRecord(raw.metric_diagnostics, `${path}.metric_diagnostics`))) {
@@ -187,6 +211,11 @@ export function parseCase(value, path, kind, group) {
         case_.pdfs = pdfs;
     if (errors !== undefined)
         case_.errors = errors;
+    if (raw.page_scores !== undefined && raw.page_scores !== null) {
+        case_.page_scores = pageScores;
+    }
+    if (files !== undefined)
+        case_.files = files;
     if (Object.keys(diagnostics).length > 0)
         case_.metric_diagnostics = diagnostics;
     if (shown !== undefined)
@@ -379,6 +408,50 @@ export function safeAssetUrl(assetsBase, path) {
     return url;
 }
 /**
+ * The URL of a case file: the files base + the path without its `~/`
+ * prefix. A path that is not relative to the base is refused — a file link
+ * stays inside the record it names.
+ */
+export function resolveFileUrl(filesBase, path) {
+    if (!path)
+        return "";
+    if (!path.startsWith("~/"))
+        return "";
+    return `${filesBase}${path.slice(2)}`;
+}
+/** The URL of a case file, or the empty string when it is not safe to use. */
+export function safeFileUrl(filesBase, path) {
+    const url = resolveFileUrl(filesBase, path);
+    if (!url)
+        return "";
+    if (!/^https:\/\//i.test(url))
+        return "";
+    return url;
+}
+/**
+ * The case's own folder on the files base: the longest folder its lanes'
+ * files share (the case's folder, the lanes' files hang under it). The
+ * empty string when the case publishes no files or the base is unknown.
+ */
+export function caseFilesUrl(filesBase, c) {
+    if (!filesBase)
+        return "";
+    const paths = Object.values(c.files ?? {}).filter((path) => typeof path === "string" && path.startsWith("~/"));
+    if (!paths.length)
+        return "";
+    const dirs = paths.map((path) => path.slice(2).split("/").slice(0, -1).filter(Boolean));
+    let common = dirs[0];
+    for (const dir of dirs.slice(1)) {
+        let i = 0;
+        while (i < common.length && i < dir.length && common[i] === dir[i])
+            i++;
+        common = common.slice(0, i);
+    }
+    const folder = common.join("/");
+    const url = `${filesBase}${folder ? `${folder}/` : ""}`;
+    return url.startsWith("https://") ? url : "";
+}
+/**
  * The URL of a shard, resolved against the release the index came from. The
  * shard path is relative to the release root (`cases/<kind>/<group>.json`);
  * the index sits in `cases/`, so the root is its directory's parent.
@@ -478,6 +551,25 @@ export function formatScore(value) {
         return "–";
     return `${value.toFixed(1)}%`;
 }
+/**
+ * A page score as the page shows it: one decimal, or a dash when the page
+ * could not be scored.
+ */
+export function formatPageScore(value) {
+    if (value === null || value === undefined)
+        return "—";
+    return value.toFixed(1);
+}
+/**
+ * The score of one shown page, under the page it belongs to. A lane
+ * without per-page scores draws none at all.
+ */
+function renderPageScore(value, pageNo) {
+    if (value === null || value === undefined) {
+        return `<div class="page-score" title="Page ${esc(pageNo)} was not scored">—</div>`;
+    }
+    return `<div class="page-score" title="Page ${esc(pageNo)} score (0–100)">${esc(formatPageScore(value))}</div>`;
+}
 /** A duration as the page shows it: seconds with two decimals. */
 export function formatTime(value) {
     if (value === null || value === undefined)
@@ -503,6 +595,7 @@ export function renderCaseStrip(opts) {
 </div>`;
     }
     const slots = pages.slice(0, limit);
+    const pageScores = c.page_scores?.[key];
     const items = slots
         .map((path, i) => {
         const pageNo = shown?.[i] ?? i + 1;
@@ -511,7 +604,8 @@ export function renderCaseStrip(opts) {
         if (!src) {
             return `<div class="${className}"><div class="missing">no page ${esc(pageNo)}</div></div>`;
         }
-        return `<div class="${className}"><img src="${esc(src)}" width="1020" height="1320" loading="lazy" decoding="async" alt="${esc(label)}, page ${esc(pageNo)}"></div>`;
+        const score = pageScores && i < pageScores.length ? renderPageScore(pageScores[i], pageNo) : "";
+        return `<div class="${className}"><img src="${esc(src)}" width="1020" height="1320" loading="lazy" decoding="async" alt="${esc(label)}, page ${esc(pageNo)}"></div>${score}`;
     })
         .join("");
     const error = c.errors?.[key];
@@ -549,14 +643,18 @@ export function renderCaseHead(opts) {
             ? ` (first ${shown} shown)`
             : "";
     const state = laneState(c, key);
+    const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
+    const filesLink = fileUrl
+        ? ` <a class="files" href="${esc(fileUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files ↗</a>`
+        : "";
     if (opts.compact) {
         const first = METRICS.find((metric) => scores[metric] != null);
         const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-        return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b> · ${esc(pages)} p${esc(score)}</h3>`;
+        return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}</h3>`;
     }
     return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
         ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
-        : ""}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
+        : ""}${filesLink}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
         ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
         : ""}</h3>`;
 }
@@ -569,6 +667,7 @@ export function renderCaseGrid(opts) {
         assetsBase: opts.assetsBase,
         ...(opts.engines ? { engines: opts.engines } : {}),
         ...(opts.compact ? { compact: true } : {}),
+        ...(opts.filesBase ? { filesBase: opts.filesBase } : {}),
     }))
         .join("");
     const cols = opts.lanes
@@ -581,7 +680,13 @@ export function renderCaseGrid(opts) {
         ...(opts.half ? { half: true } : {}),
     }))
         .join("");
-    return `${heads}${cols}`;
+    // The case's own files, on the record: one link for the whole case, above
+    // the lanes' columns.
+    const filesUrl = opts.filesBase ? caseFilesUrl(opts.filesBase, opts.case) : "";
+    const filesLink = filesUrl
+        ? `<div class="case-files" style="grid-column:1 / -1"><a href="${esc(filesUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files on Hugging Face ↗</a></div>`
+        : "";
+    return `${filesLink}${heads}${cols}`;
 }
 /** The overlay. */
 export function renderOverlay(opts) {
@@ -593,15 +698,17 @@ export function renderOverlay(opts) {
     const alpha = opts.alpha ?? 50;
     const under = c.pages?.[opts.under.key] ?? [];
     const over = c.pages?.[opts.over.key] ?? [];
+    const pageScores = c.page_scores?.[opts.over.key];
     const items = Array.from({ length: Math.min(limit, pages) }, (_, i) => {
         const a = safeAssetUrl(opts.assetsBase, under[i]);
         const b = safeAssetUrl(opts.assetsBase, over[i]);
         const pageNo = shown?.[i] ?? i + 1;
+        const score = pageScores && i < pageScores.length ? renderPageScore(pageScores[i], pageNo) : "";
         return `<div class="ovl-page" style="position:relative;margin-bottom:8px">${a
             ? `<img src="${esc(a)}" width="1020" height="1320" alt="${esc(opts.under.label)}, page ${esc(pageNo)}">`
             : '<div class="missing">no page</div>'}${b
             ? `<img class="top" src="${esc(b)}" width="1020" height="1320" alt="${esc(opts.over.label)}, page ${esc(pageNo)}" style="opacity:${alpha / 100};mix-blend-mode:${esc(blend)}">`
-            : ""}</div>`;
+            : ""}${score}</div>`;
     }).join("");
     return items;
 }
@@ -850,8 +957,31 @@ mountCasesPage({ kind: ${JSON.stringify(opts.kind)}, indexUrl: "${esc(opts.index
 </html>
 `;
 }
-/** How many pages the grid shows before "more pages". */
-export const PAGE_STEP = 10;
+/**
+ * How many pages the grid shows before "more pages". The release shows up
+ * to 12 pages of a case (the producer's own cap), so the page opens on all
+ * of them.
+ */
+export const PAGE_STEP = 12;
+/**
+ * The index a random draw lands on, for a list of `length` items. -1 when
+ * the list is empty; a draw outside [0, 1) lands on the first item.
+ */
+export function randomIndex(length, random = Math.random) {
+    if (length <= 0)
+        return -1;
+    const index = Math.floor(random() * length);
+    return index >= 0 && index < length ? index : 0;
+}
+/**
+ * A random item of the list, or undefined when the list is empty. The
+ * random source is a parameter, so a seeded generator makes the choice
+ * reproducible (the old viewer's `pickRandom`).
+ */
+export function pickRandomCase(cases, random = Math.random) {
+    const index = randomIndex(cases.length, random);
+    return index < 0 ? undefined : cases[index];
+}
 function loadState(kind) {
     const base = {
         on: {},
@@ -1139,6 +1269,7 @@ export async function mountCasesPage(opts) {
                 limit: state.shown,
                 compact: mobile,
                 half: mobile && state.mobile.layout === "half",
+                ...(index.files_base ? { filesBase: index.files_base } : {}),
             });
         }
         if (mobile)
@@ -1249,10 +1380,9 @@ export async function mountCasesPage(opts) {
         render();
     };
     const pickRandom = () => {
-        const shown = visibleCases();
-        if (!shown.length)
+        const chosen = pickRandomCase(visibleCases(), opts.random);
+        if (!chosen)
             return;
-        const chosen = shown[Math.floor(Math.random() * shown.length)];
         sel = cases().findIndex((c) => c.case === chosen.case);
         state.view = "viewer";
         state.shown = PAGE_STEP;
