@@ -290,14 +290,15 @@ def plan(
             ),
             log=Path(f'results/docxide_metrics_jubarte_{v}.log'),
         ),
-        Step('redlines', 'word answers', action=word, preflight=True),
+        # Local checks first: a missing node or input stops the lane before Word is asked.
+        Step('redlines', 'node on PATH', action=node, preflight=True),
         Step(
             'redlines',
             'compare_regen inputs',
             action=lambda: check_compare_regen(rel.root / COMPARE_REGEN),
             preflight=True,
         ),
-        Step('redlines', 'node on PATH', action=node, preflight=True),
+        Step('redlines', 'word answers', action=word, preflight=True),
         Step(
             'redlines',
             'generate',

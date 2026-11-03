@@ -106,7 +106,7 @@ def test_missing_compare_regen_inputs_stop_the_lane_before_any_word_step(tmp_pat
     steps = jbr.select(jbr.plan(_rel(tmp_path), run=_word_ok, hub=False), only=['redlines'])
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
-    assert [o.step.name for o in done] == ['word answers', 'compare_regen inputs']
+    assert [o.step.name for o in done] == ['node on PATH', 'compare_regen inputs']
     assert not done[-1].ok
     assert said in done[-1].detail
     assert 'uv run python scripts/fetch_corpus.py' in done[-1].detail
@@ -164,10 +164,10 @@ def test_word_exports_run_under_the_watchdog_and_may_fail(tmp_path: Path) -> Non
     assert '--fresh' in measure and '--regen-list' in measure
 
 
-def test_only_and_skip_keep_the_order_and_run_the_word_check_first(tmp_path: Path) -> None:
+def test_only_and_skip_keep_the_order_and_run_the_local_checks_before_word(tmp_path: Path) -> None:
     steps = jbr.plan(_rel(tmp_path))
     names = [s.name for s in jbr.select(steps, only=['convert', 'redlines'])]
-    assert names[:3] == ['word answers', 'compare_regen inputs', 'node on PATH']
+    assert names[:3] == ['node on PATH', 'compare_regen inputs', 'word answers']
     assert names[3] == 'docx-to-pdf'
     assert 'release binary' not in names and 'report' not in names
     skipped = jbr.select(steps, skip=['redlines'])
@@ -189,11 +189,13 @@ def test_word_check_fails_without_word(tmp_path: Path) -> None:
         calls.append(cmd)
         return Proc(1, '', 'execution error')
 
-    steps = jbr.select(jbr.plan(_rel(tmp_path), run=no_word), only=['redlines'])
+    _regen(tmp_path, ['0000ae5089'])
+    steps = jbr.select(jbr.plan(_rel(tmp_path), run=no_word, which=_node), only=['redlines'])
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
-    assert len(done) == 1 and not done[0].ok
-    assert 'Microsoft Word does not answer' in done[0].detail
+    assert [o.step.name for o in done] == ['node on PATH', 'compare_regen inputs', 'word answers']
+    assert not done[-1].ok
+    assert 'Microsoft Word does not answer' in done[-1].detail
     assert rec.ran == []
     assert calls and calls[0][0] == 'osascript'
 
@@ -243,6 +245,7 @@ def test_a_missing_node_stops_the_lane_before_any_word_step(tmp_path: Path) -> N
     rec = Recorder()
     done = jbr.execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
     assert rec.ran == []
+    assert [o.step.name for o in done] == ['node on PATH']  # Word is never asked (CodeRabbit, #102)
     assert done[-1].step.name == 'node on PATH' and not done[-1].ok
     assert 'node' in done[-1].detail and 'PATH' in done[-1].detail
 
