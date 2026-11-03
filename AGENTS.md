@@ -41,7 +41,7 @@ pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils
 uv run bench run              # all tools sequentially → results/bench.jsonl
 uv run bench run --only jubarte-final-lossless --limit 5   # one tool, quick
 uv run pytest -q              # Python tests
-uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py  # release-contract ledger tests
+uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@6478817465f67726c1450dbeaf090a9fa7ca44b2' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py  # release-contract ledger tests
 pnpm exec vitest run          # 7 TS-driver tests (scoped by vitest.config.ts)
 ```
 

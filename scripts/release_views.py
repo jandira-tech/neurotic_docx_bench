@@ -4,7 +4,7 @@
 # dependencies = [
 #     # The release contract (Cases/Speed models, dumps_compact), pinned to the
 #     # same reviewed commit ndb's pyproject carried before #134 moved it here.
-#     "bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d",
+#     "bench-ops @ git+https://github.com/arthrod/bench-ops@6478817465f67726c1450dbeaf090a9fa7ca44b2",
 #     # Everything third-party reachable from neurotic_docx_bench.ledger.build,
 #     # checked import by import (#134): the package __init__ pulls the scoring
 #     # core (numpy, pillow, pymupdf, scipy, scikit-image — capped like pyproject,
@@ -22,6 +22,9 @@
 #     "pyyaml>=6.0",
 #     "scikit-image>=0.24,<0.28",
 #     "scipy>=1.13",
+#     # The versioned release emitter reads the fixed-set lane helpers from
+#     # jubarte_release_info, whose CLI imports typer.
+#     "typer>=0.12",
 # ]
 # ///
 """Build, check or write the published views that need bench-ops (#134).
@@ -81,9 +84,27 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="emit the release even when no case source exists (no legacy_cases snapshot, no pointer)",
     )
+    parser.add_argument(
+        "--release-version",
+        help=(
+            "emit the versioned conversion and redline fixed-set release shards "
+            "instead of the historical store/legacy bundle"
+        ),
+    )
+    parser.add_argument(
+        "--files-base",
+        help=(
+            "the Hugging Face resolve base for the release shards' file links "
+            "(default: the results dataset's main branch)"
+        ),
+    )
     args = parser.parse_args(argv)
     return ledger_build.run_release_views(
-        args.root, check=args.check, allow_no_cases=args.allow_no_cases
+        args.root,
+        check=args.check,
+        allow_no_cases=args.allow_no_cases,
+        release_version=args.release_version,
+        files_base=args.files_base,
     )
 
 

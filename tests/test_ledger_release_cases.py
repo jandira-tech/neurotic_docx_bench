@@ -1,0 +1,562 @@
+"""Release-set case shards and shown-page staging (plan 7, issue #131).
+
+The fixture is wholly synthetic: two fixed-set rows, tiny PyMuPDF PDFs and
+JSON score artifacts shaped like the set-scoped stores.  Nothing here reads
+the corpus, the network, Word, or R2.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import importlib
+import importlib.util
+import json
+import sys
+from pathlib import Path
+
+import pytest
+
+pytest.importorskip(
+    "bench_ops",
+    reason=(
+        "bench-ops is a PEP 723 dependency; run these tests with the pinned "
+        "bench-ops overlay from scripts/release_views.py"
+    ),
+)
+
+from neurotic_docx_bench import cli
+from neurotic_docx_bench.ledger import build as ledger_build
+from neurotic_docx_bench.ledger import cases as cases_emit
+
+from bench_ops.models import (
+    CaseShard,
+    CasesIndex,
+    dumps_compact,
+    shard_path,
+    validate_bundle,
+)
+
+FILES_BASE = (
+    "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/"
+    "0123456789abcdef0123456789abcdef01234567/"
+)
+CONVERT_A = "clean__alpha"
+CONVERT_B = "clean__beta"
+REDLINE_A = "alpha__vs__beta_redline_aaaaaaaa"
+REDLINE_B = "alpha__vs__gamma_redline_bbbbbbbb"
+
+
+def _pdf(path: Path, pages: int = 3) -> Path:
+    import pymupdf
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    doc = pymupdf.open()
+    for number in range(pages):
+        page = doc.new_page(width=612, height=792)
+        page.insert_text((72, 72), f"page {number + 1}")
+    doc.save(path)
+    doc.close()
+    return path
+
+
+def _json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _conversion_report(
+    stems: list[str], scores: dict[str, float], *, per_page: dict | None = None
+) -> dict:
+    tool = {
+        "tool": "docxodus",
+        "version": "docxodus 15.0.0",
+        "n_scored": len(scores),
+        "per_doc": scores,
+        "convert_seconds": {stem: 1.25 for stem in scores},
+        "generate_failures": [],
+        "failures": 0,
+    }
+    if per_page is not None:
+        tool["per_page"] = per_page
+    return {
+        "generated_at": "2026-11-03T00:00:00+00:00",
+        "n": len(stems),
+        "oracle": "microsoft_word",
+        "scorer_backend": "numpy",
+        "stems": stems,
+        "tools": {"docxodus": tool},
+        "track": "corpus/word:list",
+        "warnings": [],
+    }
+
+
+def _redline_scores(rows: dict[str, dict]) -> dict:
+    return {
+        "summary": {"scorer_backend": "numpy"},
+        "missing": [],
+        "fresh_missing": [],
+        "rows": rows,
+    }
+
+
+@pytest.fixture
+def release_root(tmp_path: Path) -> Path:
+    """A synthetic bench root holding both fixed sets and their release lanes."""
+    root = tmp_path / "repo"
+    sets = root / "results" / "sets"
+    sets.mkdir(parents=True)
+
+    convert_rows = [
+        {
+            "state": "clean",
+            "stem": CONVERT_A,
+            "docx": f"corpus/word/clean/docx/{CONVERT_A}.docx",
+            "word_pdf": f"corpus/word/clean/pdf/{CONVERT_A}.pdf",
+            "docx_sha256": "0" * 64,
+            "word_pdf_sha256": "1" * 64,
+            "source": "local",
+            "pages": "3",
+            "jubarte_score": "80",
+        },
+        {
+            "state": "clean",
+            "stem": CONVERT_B,
+            "docx": f"corpus/word/clean/docx/{CONVERT_B}.docx",
+            "word_pdf": f"corpus/word/clean/pdf/{CONVERT_B}.pdf",
+            "docx_sha256": "2" * 64,
+            "word_pdf_sha256": "3" * 64,
+            "source": "local",
+            "pages": "2",
+            "jubarte_score": "70",
+        },
+    ]
+    with (sets / "convert_860.csv").open("w", newline="", encoding="utf-8") as handle:
+        handle.write(
+            "state,stem,docx,word_pdf,docx_sha256,word_pdf_sha256,source,pages,jubarte_score\n"
+        )
+        for row in convert_rows:
+            handle.write(",".join(str(row[key]) for key in row) + "\n")
+
+    redline_rows = [
+        {
+            "key": REDLINE_A,
+            "base": "corpus/word/clean/docx/alpha.docx",
+            "base_sha256": "4" * 64,
+            "next": "corpus/word/clean/docx/beta.docx",
+            "next_sha256": "5" * 64,
+            "docx": "corpus/word/tracking_without_comments/docx/alpha__vs__beta_redline_aaaaaaaa.docx",
+            "docx_sha256": "6" * 64,
+            "pdf": "corpus/word/tracking_without_comments/pdf/alpha__vs__beta_redline_aaaaaaaa.pdf",
+            "pdf_sha256": "7" * 64,
+            "state": "tracking_without_comments",
+            "id": "aaaaaaaa",
+            "sets": "synthetic",
+            "oracle": "corpus",
+            "oracle_pdf": "corpus/word/tracking_without_comments/pdf/alpha__vs__beta_redline_aaaaaaaa.pdf",
+            "oracle_pdf_sha256": "7" * 64,
+        },
+        {
+            "key": REDLINE_B,
+            "base": "corpus/word/clean/docx/alpha.docx",
+            "base_sha256": "4" * 64,
+            "next": "corpus/word/clean/docx/gamma.docx",
+            "next_sha256": "8" * 64,
+            "docx": "corpus/word/tracking_without_comments/docx/alpha__vs__gamma_redline_bbbbbbbb.docx",
+            "docx_sha256": "9" * 64,
+            "pdf": "corpus/word/tracking_without_comments/pdf/alpha__vs__gamma_redline_bbbbbbbb.pdf",
+            "pdf_sha256": "a" * 64,
+            "state": "tracking_without_comments",
+            "id": "bbbbbbbb",
+            "sets": "synthetic",
+            "oracle": "corpus",
+            "oracle_pdf": "corpus/word/tracking_without_comments/pdf/alpha__vs__gamma_redline_bbbbbbbb.pdf",
+            "oracle_pdf_sha256": "a" * 64,
+        },
+    ]
+    columns = list(redline_rows[0])
+    with (sets / "redline_600.csv").open("w", newline="", encoding="utf-8") as handle:
+        handle.write(",".join(columns) + "\n")
+        for row in redline_rows:
+            handle.write(",".join(str(row[key]) for key in columns) + "\n")
+
+    # The release's own two lanes.
+    _json(
+        root / "results" / "release_1.2.3_evidence" / "docx_to_pdf_jubarte_1.2.3_sample.json",
+        {
+            "generated_at": "2026-11-03T00:00:00+00:00",
+            "n": 2,
+            "oracle": "microsoft_word",
+            "scorer_backend": "numpy",
+            "stems": [CONVERT_A, CONVERT_B],
+            "tools": {
+                "jubarte": {
+                    "tool": "jubarte",
+                    "version": "jubarte 1.2.3",
+                    "n_scored": 2,
+                    "per_doc": {CONVERT_A: 80.0, CONVERT_B: 70.0},
+                    "convert_seconds": {CONVERT_A: 0.5, CONVERT_B: 0.6},
+                    "generate_failures": [],
+                    "failures": 0,
+                }
+            },
+            "track": "corpus/word:list",
+            "warnings": [],
+        },
+    )
+    _json(
+        root / "results" / "redlines_0929_full" / "scores_jubarte-1.2.3_sample_redline_1.2.3.json",
+        _redline_scores(
+            {
+                REDLINE_A: {
+                    "average_score": 90.0,
+                    "overall_score": 90.0,
+                    "ink_jaccard": 0.9,
+                    "text_boundary": 0.8,
+                    "ssim": 0.7,
+                    "page_count": 3,
+                    "page_count_oracle": 3,
+                    "page_count_candidate": 3,
+                    "max_break_drift": 2,
+                    "pages": [
+                        {"page": 1, "score": 88.0},
+                        {"page": 3, "score": 91.0},
+                        {"page": 4, "score": 99.0},
+                    ],
+                },
+                REDLINE_B: {
+                    "average_score": 80.0,
+                    "overall_score": 80.0,
+                    "ink_jaccard": 0.75,
+                    "text_boundary": 1.0,
+                    "page_count": 2,
+                    "page_count_oracle": 2,
+                    "page_count_candidate": 2,
+                    "max_break_drift": 0,
+                },
+            }
+        ),
+    )
+
+    # The newest vendor lanes.  The second fixed-set row was never run by
+    # either vendor: that lane must be absent for that case, never score zero.
+    _json(
+        root / "results" / "docx_to_pdf_docxodus_15.0.0_set-convert_860.json",
+        _conversion_report(
+            [CONVERT_A, CONVERT_B],
+            {CONVERT_A: 60.0},
+            per_page={CONVERT_A: [55.0, None, 57.0]},
+        ),
+    )
+    _json(
+        root / "results" / "docx_to_pdf_docxide_0.18.4_set-convert_860.json",
+        {
+            **_conversion_report([CONVERT_A, CONVERT_B], {CONVERT_A: 65.0}),
+            "tools": {
+                "docxide-pdf": {
+                    "tool": "docxide-pdf",
+                    "version": "docxide-pdf v0.18.4",
+                    "n_scored": 1,
+                    "per_doc": {CONVERT_A: 65.0},
+                    "convert_seconds": {CONVERT_A: 0.2},
+                    "generate_failures": [],
+                    "failures": 0,
+                }
+            },
+        },
+    )
+    _json(
+        root / "results" / "redlines_0929_full" / "scores_docxodus-15.0.0_set-redline_600.json",
+        _redline_scores(
+            {
+                REDLINE_A: {
+                    "average_score": 70.0,
+                    "overall_score": 70.0,
+                    "ink_jaccard": 0.7,
+                    "text_boundary": 0.6,
+                    "page_count": 3,
+                    "page_count_oracle": 3,
+                    "page_count_candidate": 3,
+                    "max_break_drift": -1,
+                }
+            }
+        ),
+    )
+
+    # The local PDFs the page renderer consumes.
+    _pdf(root / "corpus" / "word" / "clean" / "pdf" / f"{CONVERT_A}.pdf", pages=3)
+    _pdf(root / "corpus" / "word" / "clean" / "pdf" / f"{CONVERT_B}.pdf", pages=2)
+    _pdf(
+        root / "corpus" / "word" / "tracking_without_comments" / "pdf" / f"{REDLINE_A}.pdf",
+        pages=3,
+    )
+    _pdf(
+        root / "corpus" / "word" / "tracking_without_comments" / "pdf" / f"{REDLINE_B}.pdf",
+        pages=2,
+    )
+    _pdf(
+        root
+        / "results"
+        / "release_1.2.3_evidence"
+        / "convert_work"
+        / "jubarte"
+        / "candidate"
+        / f"{CONVERT_A}.pdf",
+        pages=3,
+    )
+    _pdf(
+        root
+        / "results"
+        / "release_1.2.3_evidence"
+        / "convert_work"
+        / "jubarte"
+        / "candidate"
+        / f"{CONVERT_B}.pdf",
+        pages=2,
+    )
+    _pdf(
+        root / "results" / "docxodus_15.0.0_work" / "docxodus" / "candidate" / f"{CONVERT_A}.pdf",
+        pages=4,
+    )
+    _pdf(
+        root / "results" / "docxide_0.18.4_work" / "docxide-pdf" / "candidate" / f"{CONVERT_A}.pdf",
+        pages=3,
+    )
+    _pdf(
+        root
+        / "results"
+        / "redlines_0929_full"
+        / "jubarte-1.2.3"
+        / "pdf_by_word"
+        / f"{REDLINE_A}_jubarte-1.2.3_byword.pdf",
+        pages=3,
+    )
+    _pdf(
+        root
+        / "results"
+        / "redlines_0929_full"
+        / "docxodus-15.0.0"
+        / "pdf_by_word"
+        / f"{REDLINE_A}_docxodus_byword.pdf",
+        pages=3,
+    )
+    return root
+
+
+def test_release_shards_validate_against_the_bumped_contract(release_root: Path) -> None:
+    assert hasattr(cases_emit, "emit_release"), "release-set emitter is missing"
+    index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+
+    assert index.files_base == FILES_BASE
+    assert len(shards) == 2
+    assert [(shard.kind, shard.group) for shard in shards] == [
+        ("conversion", "cases/release-1.2.3"),
+        ("redline", "redlines/release-1.2.3"),
+    ]
+    assert [group.path for group in index.groups] == [
+        shard_path("conversion", "cases/release-1.2.3"),
+        shard_path("redline", "redlines/release-1.2.3"),
+    ]
+    validate_bundle(index, shards)
+    for shard in shards:
+        index.validate_shard(shard)
+        assert dumps_compact(CaseShard.model_validate_json(dumps_compact(shard))) == dumps_compact(
+            shard
+        )
+
+
+def test_a_lane_that_did_not_run_is_absent_not_zero(release_root: Path) -> None:
+    _index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    by_key = {(shard.kind, case.case): case for shard in shards for case in shard.cases}
+
+    conversion_b = by_key[("conversion", CONVERT_B)]
+    assert "docxodus" not in conversion_b.scores
+    assert "docxodus" not in conversion_b.pages
+    assert "docxodus" not in conversion_b.versions
+    assert "docxodus" not in conversion_b.files
+
+    redline_b = by_key[("redline", REDLINE_B)]
+    assert "docxodus" not in redline_b.scores
+    assert "docxodus" not in redline_b.pages
+    assert "docxodus" not in redline_b.versions
+
+
+def test_page_scores_are_real_values_null_for_unscored_and_bounded(release_root: Path) -> None:
+    _index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    by_key = {(shard.kind, case.case): case for shard in shards for case in shard.cases}
+
+    conversion_a = by_key[("conversion", CONVERT_A)]
+    assert conversion_a.page_scores["docxodus"] == [55.0, None, 57.0]
+    assert "jubarte-1.2.3" not in conversion_a.page_scores
+
+    redline_a = by_key[("redline", REDLINE_A)]
+    assert redline_a.page_scores["jubarte-1.2.3"] == [88.0, None, 91.0]
+    assert all(
+        len(values) <= len(case.shown or [])
+        for case in (conversion_a, redline_a)
+        for values in case.page_scores.values()
+    )
+
+
+def test_files_use_the_real_hub_layout_and_the_pinned_files_base(release_root: Path) -> None:
+    index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    conversion = next(shard for shard in shards if shard.kind == "conversion").cases[0]
+
+    assert conversion.files["docxodus"] == (
+        f"~/outputs/convert_860/docxodus_15.0.0/pdf/{CONVERT_A}.pdf"
+    )
+    assert conversion.files["jubarte-1.2.3"] == (
+        f"~/outputs/convert_860/jubarte_1.2.3/pdf/{CONVERT_A}.pdf"
+    )
+    assert conversion.files["docxide-pdf"] == (
+        f"~/outputs/convert_860/docxide-pdf_0.18.4/pdf/{CONVERT_A}.pdf"
+    )
+    assert conversion.page_counts["docxodus"] == 4
+    assert len(conversion.pages["docxodus"]) == len(conversion.shown or []) == 3
+    assert index.files_base == FILES_BASE
+
+
+def test_release_texts_leave_empty_plan7_fields_out(
+    release_root: Path,
+) -> None:
+    index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    generic = index.model_copy(update={"files_base": None})
+    texts = cases_emit.release_texts(generic, shards)
+    assert '"files_base"' not in texts["cases/index.json"]
+    for text in texts.values():
+        assert '"page_scores":{}' not in text
+        assert '"files":{}' not in text
+
+
+def test_release_views_can_emit_and_validate_the_versioned_shards(
+    release_root: Path,
+) -> None:
+    empty = ledger_build.Bundle(
+        results_md="",
+        detailed_md="",
+        readme_vendor_table="",
+        scores_json="",
+    )
+    bundle = ledger_build.add_release_views(
+        release_root,
+        empty,
+        release_version="1.2.3",
+        files_base=FILES_BASE,
+    )
+    assert "cases/index.json" in bundle.release_cases
+    index = CasesIndex.model_validate_json(bundle.release_cases["cases/index.json"])
+    assert index.files_base == FILES_BASE
+    for group in index.groups:
+        shard = CaseShard.model_validate_json(bundle.release_cases[group.path])
+        index.validate_shard(shard)
+
+
+def test_release_pages_stages_every_lane_and_plans_exactly_the_shard_assets(
+    release_root: Path, tmp_path: Path
+) -> None:
+    spec = importlib.util.find_spec("neurotic_docx_bench.release_pages")
+    assert spec is not None, "release page staging module is missing"
+    release_pages = importlib.import_module("neurotic_docx_bench.release_pages")
+
+    out = tmp_path / "out" / "release-pages" / "1.2.3"
+    report = release_pages.stage_release_pages(
+        release_root,
+        "1.2.3",
+        out=out,
+        kinds=("convert",),
+        limit=2,
+        jobs=1,
+    )
+
+    index, shards = cases_emit.emit_release(
+        release_root, "1.2.3", files_base=FILES_BASE, kinds=("convert",), limit=2
+    )
+    expected = {
+        path
+        for shard in shards
+        for case in shard.cases
+        for pages in case.pages.values()
+        for path in pages
+        if path is not None
+    }
+    assert set(report.plan) == expected
+    assert expected
+    for entry in report.plan.values():
+        local = Path(entry["path"])
+        assert local.is_file()
+        assert local.name.startswith("page_") and local.name.endswith(".webp")
+        assert entry["bytes"] == local.stat().st_size
+        assert entry["sha256"] == hashlib.sha256(local.read_bytes()).hexdigest()
+        assert local.is_relative_to(out)
+        assert local.parent.name in {
+            "docxodus",
+            "docxide-pdf",
+            "jubarte-1.2.3",
+            "reference",
+        }
+    assert (out / "r2-plan.json").is_file()
+    assert json.loads((out / "r2-plan.json").read_text()) == report.plan
+    assert index.groups  # the emitter and the renderer use the same release shape
+
+
+def test_plain_cli_launches_the_reviewed_contract_overlay(
+    release_root: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from types import SimpleNamespace
+
+    from typer.testing import CliRunner
+
+    captured: dict[str, object] = {}
+
+    def fake_run(command: list[str], **kwargs: object) -> SimpleNamespace:
+        captured["command"] = command
+        captured["kwargs"] = kwargs
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setitem(sys.modules, "bench_ops", None)
+    monkeypatch.setattr(cli.subprocess, "run", fake_run)
+    result = CliRunner().invoke(
+        cli.app,
+        [
+            "release-pages",
+            "1.2.3",
+            "--root",
+            str(release_root),
+            "--out",
+            str(tmp_path / "plain-cli"),
+            "--kind",
+            "convert",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    command = captured["command"]
+    assert isinstance(command, list)
+    assert "6478817465f67726c1450dbeaf090a9fa7ca44b2" in " ".join(command)
+    assert "neurotic_docx_bench.release_pages_cli" in command
+
+
+def test_release_pages_cli_stages_the_same_assets(release_root: Path, tmp_path: Path) -> None:
+    from typer.testing import CliRunner
+
+    out = tmp_path / "cli-pages"
+    result = CliRunner().invoke(
+        cli.app,
+        [
+            "release-pages",
+            "1.2.3",
+            "--root",
+            str(release_root),
+            "--out",
+            str(out),
+            "--kind",
+            "convert",
+            "--limit",
+            "2",
+            "--jobs",
+            "1",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert (out / "r2-plan.json").is_file()
+    assert "per-page scores" in result.output

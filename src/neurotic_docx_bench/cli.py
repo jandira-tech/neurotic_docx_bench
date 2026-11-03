@@ -3889,6 +3889,118 @@ def pages_render_cmd(
         raise typer.Exit(code=1)
 
 
+@app.command(name="release-pages")
+def release_pages_cmd(
+    version: str = typer.Argument(..., help="the jubarte release version, x.y.z"),
+    root: Path = typer.Option(Path("."), "--root", help="the bench repository root"),
+    out: Path = typer.Option(
+        None,
+        "--out",
+        help="the staging root (default: <root>/out/release-pages/<version>)",
+    ),
+    kind: str = typer.Option(
+        "both",
+        "--kind",
+        help="which fixed set to stage: convert | redline | both",
+    ),
+    limit: int = typer.Option(
+        None,
+        "--limit",
+        help="stage only the first N rows of each set (the full sets by default)",
+    ),
+    jobs: int = typer.Option(4, "--jobs", help="how many PDFs to render at once"),
+    vendor_root: Path = typer.Option(
+        None,
+        "--vendor-root",
+        help="the root holding the vendor-refresh work directories (default: --root)",
+    ),
+    hf_revision: str = typer.Option(
+        "main",
+        "--hf-revision",
+        help="the results-dataset revision the release file links resolve against",
+    ),
+) -> None:
+    """Stage a release's shown pages and write its R2 upload plan (no upload)."""
+    from neurotic_docx_bench import bench_ops_pin
+
+    kinds: tuple[str, ...]
+    if kind == "both":
+        kinds = ("convert", "redline")
+    elif kind in ("convert", "redline"):
+        kinds = (kind,)
+    else:
+        raise typer.BadParameter("--kind must be convert, redline or both")
+    root = root.resolve()
+    out_dir = out if out is not None else root / "out" / "release-pages" / version
+    if not out_dir.is_absolute():
+        out_dir = root / out_dir
+    vendor_dir = vendor_root
+    if vendor_dir is not None and not vendor_dir.is_absolute():
+        vendor_dir = root / vendor_dir
+    files_base = (
+        "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/"
+        f"{hf_revision}/"
+    )
+
+    try:
+        from bench_ops import models as _contract  # noqa: F401
+    except ModuleNotFoundError:
+        # bench-ops is deliberately not an ndb venv dependency (#134).  The
+        # command still works from the plain `uv run bench` environment: it
+        # launches the same worker in the reviewed contract overlay.
+        worker = [
+            "uv",
+            "run",
+            "--with",
+            bench_ops_pin.BENCH_OPS_REQUIREMENT,
+            "python",
+            "-m",
+            "neurotic_docx_bench.release_pages_cli",
+            version,
+            "--root",
+            str(root),
+            "--out",
+            str(out_dir),
+            "--kind",
+            kind,
+            "--jobs",
+            str(jobs),
+            "--files-base",
+            files_base,
+        ]
+        if limit is not None:
+            worker.extend(["--limit", str(limit)])
+        if vendor_dir is not None:
+            worker.extend(["--vendor-root", str(vendor_dir)])
+        finished = subprocess.run(worker, cwd=root, check=False)
+        if finished.returncode:
+            raise typer.Exit(code=finished.returncode)
+        return
+
+    from neurotic_docx_bench import release_pages
+
+    try:
+        report = release_pages.stage_release_pages(
+            root,
+            version,
+            out=out_dir,
+            files_base=files_base,
+            vendor_root=vendor_dir,
+            kinds=kinds,  # type: ignore[arg-type]
+            limit=limit,
+            jobs=jobs,
+        )
+    except (release_pages.ReleasePageError, RuntimeError, ValueError) as exc:
+        console.print(Text.assemble(("error: ", "red"), str(exc)), soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    console.print(
+        f"release {version}: {report.rendered} lane(s), {report.pages} shown page(s), "
+        f"{report.bytes / 1024 / 1024:.1f} MB"
+    )
+    console.print(f"  R2 plan: {report.plan_path} ({len(report.plan)} files; nothing uploaded)")
+    console.print(f"  per-page scores: {report.page_scores.get('message', 'not recorded')}")
+
+
 # --- bench try: one fixture, any tool, against jubarte -----------------------
 
 try_app = typer.Typer(
