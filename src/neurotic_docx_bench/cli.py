@@ -3805,6 +3805,66 @@ def cases_snapshot_upload_cmd(
     console.print(f"pointer: results/legacy_cases.ref.json (source: {ref.source})")
 
 
+# --- bench sets: the fixed evaluation sets ----------------------------------
+
+sets_app = typer.Typer(
+    name="sets",
+    help="The fixed evaluation sets convert_860 and redline_600: built once, committed, never redrawn.",
+    no_args_is_help=True,
+)
+app.add_typer(sets_app)
+
+
+@sets_app.command(name="build")
+def sets_build_cmd(
+    bench_root: Path = typer.Option(
+        Path("."),
+        "--bench-root",
+        help="where corpus/ and results/redlines_0929_full/oracle_pdf are read for hashing "
+        "(this worktree holds neither; the canonical checkout holds both); files missing "
+        "there are looked up on the hub",
+    ),
+    out: Path = typer.Option(Path("results/sets"), "--out", help="where the three files land"),
+    sample_csv: Path | None = typer.Option(
+        None,
+        "--sample-csv",
+        help="the release sample CSV the drawn pairs come from "
+        "(default: newest results/release_*_evidence/release_info/sample_redline_*.csv)",
+        show_default=False,
+    ),
+    cases: Path | None = typer.Option(
+        None,
+        "--cases",
+        help="jubarte.pro's cases-redline.json (default: the jubarte-app checkout)",
+        show_default=False,
+    ),
+) -> None:
+    """Build results/sets/{convert_860,redline_600}.csv and sets.json (#128, plan 7.1)."""
+    from neurotic_docx_bench import fixed_sets
+
+    try:
+        report = fixed_sets.build(
+            bench_root=bench_root,
+            out=out,
+            sample_csv=sample_csv,
+            cases_json=cases or fixed_sets.CASES_PATH,
+        )
+    except RuntimeError as exc:
+        console.print(Text.assemble(("refused ", "red"), str(exc)), soft_wrap=True)
+        raise typer.Exit(code=1) from exc
+    console.print(f"{report['out']}: convert_860 {report['convert_rows']} rows, "
+                  f"redline_600 {report['redline_rows']} rows, seed {fixed_sets.SEED}")
+    for name, counts in report["counts"].items():
+        console.print(f"  {name}: " + ", ".join(f"{state} {n}" for state, n in sorted(counts.items())))
+    console.print("  origins: " + ", ".join(f"{origin} {n}" for origin, n in sorted(report["origins"].items())))
+    console.print("  hf rows: " + ", ".join(f"{name} {n}" for name, n in sorted(report["hf_rows"].items())))
+    if report["excluded"]:
+        console.print(Text(f"  excluded {len(report['excluded'])} pairs (no oracle anywhere):",
+                           style="yellow"))
+        for entry in report["excluded"]:
+            console.print(Text(f"    {entry['key']} ({entry['origin']}): {entry['reason']}"), soft_wrap=True)
+
+
 # --- bench try: one fixture, any tool, against jubarte -----------------------
 
 try_app = typer.Typer(

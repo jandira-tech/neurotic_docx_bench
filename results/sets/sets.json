@@ -1,0 +1,49 @@
+{
+  "set_version": "2026-11-03.1",
+  "seed": 20261103,
+  "sources": [
+    {
+      "path": "results/site_fixtures_860.csv",
+      "sha256": "023d19c51282a6c3ce5e720696a5b13fd746ce139c254c21c88793ddedcf218b"
+    },
+    {
+      "path": "results/release_0.17.0_evidence/release_info/sample_redline_0.17.0_11-01-26_01-06.csv",
+      "sha256": "82ca112e2f85f35e28ae438803e3760a552b6d9c032dfc165506a49703be0044"
+    },
+    {
+      "path": "results/redlines_0929_full/gen_pairs.csv",
+      "sha256": "92bfcc58125ea2ddab3d05c1278173c0619d97756fbe6648b033191cd33da43d"
+    },
+    {
+      "path": "results/redlines_0929_full/pool_pairs.csv",
+      "sha256": "2c1a41e03914dec270e83da1b70006a821820f62de4cf7b59681867f86f57a54"
+    },
+    {
+      "path": "/Users/arthrod/temp/T/1_jubarte-redlines/jubarte-app/jubarte-site/public/data/cases-redline.json",
+      "sha256": "42485b5cf7c966147ec01c1a8ba1a091c64378be2ecc971a48e2d0784c69cbfb"
+    }
+  ],
+  "counts": {
+    "convert_860": {
+      "clean": 380,
+      "tracking_without_comments": 375,
+      "with_comments_clean": 22,
+      "with_comments_tracking": 83
+    },
+    "redline_600": {
+      "tracking_without_comments": 422,
+      "with_comments_tracking": 173,
+      "with_comments_clean": 3,
+      "clean": 2
+    }
+  },
+  "totals": {
+    "convert_860": 860,
+    "redline_600": 600
+  },
+  "origins": {
+    "jubarte_pro": 234,
+    "sample_0.17.0": 366
+  },
+  "excluded": []
+}
