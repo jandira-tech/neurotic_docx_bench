@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import importlib
 import json
+import sys
+import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -16,6 +19,72 @@ from neurotic_docx_bench.ledger import build as bd
 README = (
     "# repo\n\nintro\n\n<!-- VENDORS-START -->\nold\n<!-- VENDORS-END -->\n\ntail\n"
 )
+BENCH_OPS_PIN = (
+    "bench-ops @ git+https://github.com/arthrod/bench-ops@"
+    "35ab2cbeb8bc44d5059878d14176dc90c5b46f5d"
+)
+
+
+def test_cases_ref_import_does_not_need_bench_ops(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """`bench cases snapshot-upload` stays a plain ndb command: recording the
+    pointer needs none of the release-contract models (#134)."""
+    monkeypatch.delitem(sys.modules, "bench_ops", raising=False)
+    monkeypatch.delitem(sys.modules, "neurotic_docx_bench.ledger.cases", raising=False)
+    monkeypatch.delitem(
+        sys.modules, "neurotic_docx_bench.ledger.cases_ref", raising=False
+    )
+    monkeypatch.setitem(sys.modules, "bench_ops", None)
+
+    cases_ref = importlib.import_module("neurotic_docx_bench.ledger.cases_ref")
+
+    assert cases_ref.local_snapshot(tmp_path) is None
+
+
+def test_release_views_pep723_block_is_pinned_and_minimal() -> None:
+    """bench-ops is absent from the project environment and lives only in the
+    release script's isolated PEP 723 environment. The explicit distributions
+    are exactly the third-party imports reached by ledger.build on that path;
+    the optional torch scorer is not reached (#134)."""
+    repo = Path(__file__).resolve().parents[1]
+    project = tomllib.loads((repo / "pyproject.toml").read_text(encoding="utf-8"))
+    assert not any(
+        dep.startswith("bench-ops ") for dep in project["project"]["dependencies"]
+    )
+    lock = tomllib.loads((repo / "uv.lock").read_text(encoding="utf-8"))
+    assert not any(pkg["name"] == "bench-ops" for pkg in lock["package"])
+
+    lines = (repo / "scripts" / "release_views.py").read_text(encoding="utf-8").splitlines()
+    start = lines.index("# /// script") + 1
+    end = lines.index("# ///", start)
+    payload = "\n".join(
+        line[2:] if line.startswith("# ") else line[1:] for line in lines[start:end]
+    )
+    metadata = tomllib.loads(payload)
+    assert metadata["requires-python"] == ">=3.14"
+    dependencies = metadata["dependencies"]
+    assert BENCH_OPS_PIN in dependencies
+    assert not any(dep.startswith("neurotic-docx-bench") for dep in dependencies)
+    roots = {
+        dep.split("@", 1)[0].split("[", 1)[0].split("<", 1)[0].split(">", 1)[0]
+        .split("=", 1)[0]
+        .strip()
+        .lower()
+        for dep in dependencies
+    }
+    assert roots == {
+        "aiofiles",
+        "bench-ops",
+        "huggingface-hub",
+        "numpy",
+        "pillow",
+        "pydantic",
+        "pymupdf",
+        "pyyaml",
+        "scikit-image",
+        "scipy",
+    }
 
 
 def _line(
@@ -242,19 +311,53 @@ def test_readme_without_markers_is_an_error(repo: Path) -> None:
         bd.write(repo, bd.build(repo))
 
 
+def test_build_is_the_pages_only(repo: Path) -> None:
+    """`build` must not touch bench-ops (#134): the release bundle is added by
+    `add_release_views`, behind scripts/release_views.py's PEP 723 environment."""
+    bundle = bd.build(repo, now=datetime(2026, 9, 27, tzinfo=UTC))
+    assert bundle.results_md and bundle.detailed_md and bundle.scores_json
+    assert bundle.release_cases == {}
+    assert bundle.release_speed is None
+
+
+def test_report_writes_only_the_pages(repo: Path, monkeypatch) -> None:
+    """`bench report` runs in a venv without bench-ops, so it must never reach
+    the release emitters (a speed_10k store would) nor create results/release/;
+    the release views are scripts/release_views.py's (#134)."""
+    (repo / "results" / "speed_10k" / "redlines").mkdir(parents=True)
+    monkeypatch.chdir(repo)
+    r = CliRunner().invoke(app, ["report"])
+    assert r.exit_code == 0, r.output
+    assert "RESULTS.md" in r.output
+    assert not (repo / "results" / "release").exists()
+
+
 def test_cli_report_and_check(repo: Path, monkeypatch) -> None:
     monkeypatch.chdir(repo)
-    # no case sources on this repo: --allow-no-cases (a report without cases
-    # needs the flag since the legacy_cases pointer became a recorded input)
-    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report"])
     assert r.exit_code == 0, r.output
     assert "RESULTS.md" in r.output
-    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 0, r.output
     (repo / "RESULTS.md").write_text("drift\n")
-    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 1
     assert "RESULTS.md" in r.output
+
+
+def test_report_check_ignores_the_release_views(repo: Path, monkeypatch) -> None:
+    """The release bundle belongs to scripts/release_views.py now: a stale
+    results/release/ file must not make the page-only `bench report --check`
+    fail (#134)."""
+    monkeypatch.chdir(repo)
+    assert CliRunner().invoke(app, ["report"]).exit_code == 0
+    release = repo / "results" / "release"
+    release.mkdir()
+    (release / "speed.json").write_text('{"tampered":true}\n', encoding="utf-8")
+
+    result = CliRunner().invoke(app, ["report", "--check"])
+
+    assert result.exit_code == 0, result.output
 
 
 # ---- frozen pages: RESULTS_v{bench_version}.md, written once when the version moves ----
@@ -334,19 +437,18 @@ def test_cli_report_freezes_when_the_version_moves(repo: Path, monkeypatch) -> N
 
     monkeypatch.chdir(repo)
     monkeypatch.setattr(ver, "bench_version", lambda: "0.6.0")
-    # no case sources on this repo: --allow-no-cases throughout
-    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report"])
     assert r.exit_code == 0, r.output
     assert "froze" not in r.output
     monkeypatch.setattr(ver, "bench_version", lambda: "0.7.0")
-    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 1, r.output  # the page still says 0.6.0
     assert not (repo / "RESULTS_v0.6.0.md").exists()  # --check never writes
-    r = CliRunner().invoke(app, ["report", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report"])
     assert r.exit_code == 0, r.output
     assert "froze RESULTS_v0.6.0.md" in r.output
     assert (repo / "RESULTS_v0.6.0.md").is_file()
-    r = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
+    r = CliRunner().invoke(app, ["report", "--check"])
     assert r.exit_code == 0, r.output
 
 

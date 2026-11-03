@@ -30,9 +30,14 @@ rules. Every place the harness touches another tool's code is listed in
 One row per tool in every headline table: its latest eligible run in the current comparability group (same document set, renderer and scorer). No best pin, no best-of-N. Author-affiliated tools (Jubarte) are marked and follow the same rules. Compare rows only within one table.
 
 ```bash
-uv run bench report            # regenerates RESULTS.md, RESULTS_DETAILED.md and the vendor table below
-uv run bench report --check    # exit 1 when the published views are stale (CI)
+uv run bench report            # regenerates RESULTS.md, RESULTS_DETAILED.md, scores.json and the vendor table below
+uv run bench report --check    # exit 1 when those page views are stale (CI)
+uv run scripts/release_views.py --check  # also checks the git-ignored results/release/ bundle
 ```
+
+`bench-ops` is a pinned dependency only of the release-views script's PEP 723
+environment. It is not installed in the repository's own environment, so the
+`bench` command here always belongs to `neurotic-docx-bench`.
 
 For the ranked redline benchmarks Word renders both the candidate and the oracle DOCX, so the score compares like with like. Legacy rows rendered with LibreOffice 26.2.4.2 stay in the history; for those, re-rendering the same DOCX is byte-identical on one build (`results/noise_floor.json`). The `oracle-identity` calibration row (`bench calibrate`) is Word's own DOCX through the candidate pipeline and must score 100; the `null-baseline` row is the base document unchanged, the floor a redline tool must beat.
 
@@ -341,6 +346,7 @@ results/retractions.jsonl  # runs that must never be ranked, with reasons
 results/archive/           # legacy rows and their manifest (history only)
 src/neurotic_docx_bench/
 src/neurotic_docx_bench/ledger/         # registry, rows, policy, stats, tables, build (`bench report`)
+scripts/release_views.py               # PEP 723 release-view build/check (includes results/release/)
 scripts/
 ```
 

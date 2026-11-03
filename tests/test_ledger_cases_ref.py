@@ -1,12 +1,16 @@
 """The legacy_cases snapshot as a recorded input: the committed pointer file
-``results/legacy_cases.ref.json``, the download ``bench report`` performs through
-``hub_get``'s pinned machinery when only the pointer exists, and
+``results/legacy_cases.ref.json``, the download the release-views flow performs
+through ``hub_get``'s pinned machinery when only the pointer exists, and
 ``bench cases snapshot-upload`` (the content-addressed upload that writes it).
 
 ``SnapshotHub`` follows the repo's FakeHub patterns (``tests/test_hub.py``'s
 recorded uploads, ``tests/test_hub_get.py``'s pinned reads): files over 64 bytes
 are LFS, every read must carry a resolved commit, and an ``upload_folder`` lands
 on a new commit that becomes ``main``.
+
+bench-ops is not a venv dependency (#134): it is a PEP 723 inline dependency of
+scripts/release_views.py. This module skips under a plain `uv run pytest` and
+runs under the overlay that provides it.
 """
 
 from __future__ import annotations
@@ -18,7 +22,19 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+
+pytest.importorskip(
+    "bench_ops",
+    reason=(
+        "bench-ops is a PEP 723 inline dependency of scripts/release_views.py, not a "
+        "venv dependency (#134); run: uv run --with 'bench-ops @ git+https://github.com/"
+        "arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q "
+        "tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py"
+    ),
+)
+
 from neurotic_docx_bench import hub
+from neurotic_docx_bench.ledger import build as bd
 from neurotic_docx_bench.ledger import cases_ref
 from pydantic import ValidationError
 from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
@@ -262,7 +278,7 @@ def test_ref_model_is_strict_and_content_addressed() -> None:
             cases_ref.LegacyCasesRef.model_validate(payload)
 
 
-# ---- ensure_legacy: the download `bench report` performs -------------------------------
+# ---- ensure_legacy: the download the release-views flow performs ----------------------
 
 
 def test_ensure_legacy_downloads_at_the_pinned_revision(tmp_path: Path) -> None:
@@ -352,24 +368,21 @@ def test_ensure_legacy_refuses_an_unreadable_pointer(tmp_path: Path) -> None:
         cases_ref.ensure_legacy(tmp_path, api=SnapshotHub())
 
 
-# ---- bench report: the pointer feeds the release ---------------------------------------
+# ---- the release-views flow: the pointer feeds the release -----------------------------
 
 
-def test_report_downloads_the_legacy_input_through_the_pointer(
+def test_release_views_download_the_legacy_input_through_the_pointer(
     _ledger_repo: Path, monkeypatch  # noqa: F811  fixture parameter
 ) -> None:
-    from neurotic_docx_bench.cli import app
-
     _write_cases_sources(_ledger_repo)
     path = _hub_path(SNAPSHOT)
     api = SnapshotHub()
     api.trees[PINNED] = {path: SNAPSHOT}
     _write_pointer(_ledger_repo)
     monkeypatch.setattr(hub, "default_api", lambda: api)
-    monkeypatch.chdir(_ledger_repo)
 
-    result = CliRunner().invoke(app, ["report"])
-    assert result.exit_code == 0, result.output
+    said: list[str] = []
+    assert bd.run_release_views(_ledger_repo, echo=said.append) == 0
     downloaded = _ledger_repo / "results" / "release" / "legacy_cases.jsonl"
     assert downloaded.read_bytes() == SNAPSHOT
     index = CasesIndex.model_validate_json(
@@ -378,58 +391,50 @@ def test_report_downloads_the_legacy_input_through_the_pointer(
     groups = {(g.kind, g.group) for g in index.groups}
     assert ("conversion", "samples") in groups and ("redline", "redlines/with_comments_clean") in groups
     assert {("conversion", "v1/clean"), ("redline", "ar/accept_all")} <= groups  # the stores' families
-    assert CliRunner().invoke(app, ["report", "--check"]).exit_code == 0
+    ok: list[str] = []
+    assert bd.run_release_views(_ledger_repo, check=True, echo=ok.append) == 0
 
 
-def test_report_exits_1_when_the_pointer_cannot_be_satisfied(
+def test_release_views_exit_1_when_the_pointer_cannot_be_satisfied(
     _ledger_repo: Path, monkeypatch  # noqa: F811  fixture parameter
 ) -> None:
-    from neurotic_docx_bench.cli import app
-
     api = SnapshotHub()  # the hub holds nothing at the pinned revision
     _write_pointer(_ledger_repo)
     monkeypatch.setattr(hub, "default_api", lambda: api)
-    monkeypatch.chdir(_ledger_repo)
 
-    result = CliRunner().invoke(app, ["report"])
-    assert result.exit_code == 1
-    assert "legacy_cases" in result.output
+    said: list[str] = []
+    assert bd.run_release_views(_ledger_repo, echo=said.append) == 1
+    assert "legacy_cases" in " ".join(said)
     assert not (_ledger_repo / "results" / "release" / "cases" / "index.json").exists()
 
 
-def test_report_exits_1_without_case_sources_unless_allowed(
-    _ledger_repo: Path, monkeypatch  # noqa: F811  fixture parameter
+def test_release_views_exit_1_without_case_sources_unless_allowed(
+    _ledger_repo: Path,  # noqa: F811  fixture parameter
 ) -> None:
     """Neither the snapshot nor a pointer, and the stores emit no complete
     family: the release would carry zero cases — an error unless asked for."""
-    from neurotic_docx_bench.cli import app
-
-    monkeypatch.chdir(_ledger_repo)
-    result = CliRunner().invoke(app, ["report"])
-    assert result.exit_code == 1
-    assert "--allow-no-cases" in result.output
+    said: list[str] = []
+    assert bd.run_release_views(_ledger_repo, echo=said.append) == 1
+    assert "--allow-no-cases" in " ".join(said)
     assert not (_ledger_repo / "results" / "release" / "cases" / "index.json").exists()
-    allowed = CliRunner().invoke(app, ["report", "--allow-no-cases"])
-    assert allowed.exit_code == 0, allowed.output
+    allowed: list[str] = []
+    assert bd.run_release_views(_ledger_repo, allow_no_cases=True, echo=allowed.append) == 0
     assert (_ledger_repo / "RESULTS.md").is_file()
 
 
-def test_report_without_stores_but_with_the_snapshot_still_emits_cases(
+def test_release_views_without_stores_but_with_the_snapshot_still_emit_cases(
     _ledger_repo: Path, monkeypatch  # noqa: F811  fixture parameter
 ) -> None:
     """A fresh clone: no store asset trees at all — the downloaded snapshot is
     the whole cases release, which is why the pointer must never be skipped."""
-    from neurotic_docx_bench.cli import app
-
     path = _hub_path(SNAPSHOT)
     api = SnapshotHub()
     api.trees[PINNED] = {path: SNAPSHOT}
     _write_pointer(_ledger_repo)
     monkeypatch.setattr(hub, "default_api", lambda: api)
-    monkeypatch.chdir(_ledger_repo)
 
-    result = CliRunner().invoke(app, ["report"])
-    assert result.exit_code == 0, result.output
+    said: list[str] = []
+    assert bd.run_release_views(_ledger_repo, echo=said.append) == 0
     index = CasesIndex.model_validate_json(
         (_ledger_repo / "results" / "release" / "cases" / "index.json").read_text(encoding="utf-8")
     )

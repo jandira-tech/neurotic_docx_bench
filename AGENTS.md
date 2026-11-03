@@ -40,7 +40,8 @@ uv sync                       # Python bench (Python 3.14; needs LibreOffice on 
 pnpm install --frozen-lockfile # Node 26 + pnpm workspace: root pin tree + utils/ engine fallbacks + live-bench frontend
 uv run bench run              # all tools sequentially → results/bench.jsonl
 uv run bench run --only jubarte-final-lossless --limit 5   # one tool, quick
-uv run pytest -q              # 68 tests
+uv run pytest -q              # Python tests
+uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py  # release-contract ledger tests
 pnpm exec vitest run          # 7 TS-driver tests (scoped by vitest.config.ts)
 ```
 
@@ -199,7 +200,7 @@ read back by the legacy readers; new runs emit v4 only. Delta-log change detecti
 on `scores`. Skip-already-ran keys on `(vendor, benchmark, tool_version, config_hash)`.
 Snapshots live at `results/score-snapshots/{vendor}__{benchmark}.json`.
 
-## Publishing results (`uv run bench report`)
+## Publishing results (`uv run bench report` and `uv run scripts/release_views.py`)
 
 `RESULTS.md`, `RESULTS_DETAILED.md`, the vendor table in `README.md`, the frozen
 `RESULTS_v<old>.md` and `results/scores.json` are generated from `results/bench.jsonl`,
@@ -207,8 +208,9 @@ Snapshots live at `results/score-snapshots/{vendor}__{benchmark}.json`.
 `results/release_*_evidence/release_info/website_data_*.jsonl` (the newest one) and
 `bench.registry.yaml` by `src/neurotic_docx_bench/ledger/` (`build.py` loads, `policy.py`
 decides, `tables.py` renders, `scores.py` writes the JSON release contract
-`bench_ops.models.Scores`). Never edit them by hand; `uv run bench report --check`
-says whether they are current.
+`bench_ops.models.Scores`). Never edit them by hand. `uv run bench report --check`
+says whether the page views are current; `uv run scripts/release_views.py --check`
+checks the page views and the `results/release/` bundle together.
 
 `scores.json` is a published artefact like the pages: the same rows RESULTS.md
 renders, plus the newest jubarte release's sample tables/headlines/home groups/
@@ -219,8 +221,8 @@ in it (its own `speed.json` ships later); `generated` is the newest row's date,
 not the build's; `version` is the bench version string as the bench writes it.
 
 `results/release/` (git-ignored, #119 / bench-ops plan 3b) holds the other two
-release artefacts, also written by `uv run bench report` and covered by
-`--check` (which compares them modulo their `generated` emission clock):
+release artefacts, written by `uv run scripts/release_views.py` and covered by
+that script's `--check` (which compares them modulo their `generated` emission clock):
 `cases/index.json` plus one `cases/<kind>/<group>.json` shard per group
 (`bench_ops.models.shard_path`, `/` → `--`), and `speed.json` — the 10k-input
 speed page's view (per-pair rows of `results/speed_10k` aggregated, lanes with
@@ -234,15 +236,14 @@ run once; >2 MB so it is not committed). The snapshot is a **recorded input**
 (#119): the committed pointer `results/legacy_cases.ref.json` (`ledger/cases_ref.py`)
 pins its content-addressed hub copy `inputs/legacy_cases/<sha256>.jsonl` at a
 40-hex revision, `bench cases snapshot-upload` uploads it and writes the pointer,
-and `bench report` downloads it through `hub_get`'s pinned machinery when the
-local file is absent — a pointer it cannot satisfy fails the report (never a
-release without cases), and a repo with no case source at all needs
+and `scripts/release_views.py` downloads it through `hub_get`'s pinned machinery when the
+local file is absent — a pointer it cannot satisfy fails the release-views run (never a
+release without cases), and a repo with no case source at all needs the script's
 `--allow-no-cases`. `tests/test_ledger_cases.py` pins that
 split family by family: when a family's assets return to the stores, shrink
-`ADAPTER_ONLY_FAMILIES` with them. One packaging note: bench-ops also ships a
-`bench` console script; after adding it as a dependency, existing venvs need
-`uv sync --reinstall-package neurotic-docx-bench` once so this repo's `bench`
-entry point wins again (fresh clones are fine — the root package installs last).
+`ADAPTER_ONLY_FAMILIES` with them. The release contract is not a venv dependency:
+`bench-ops` is pinned in the PEP 723 block of `scripts/release_views.py`, so the
+repository's own `bench` console script is the only one in the ndb venv.
 
 A cohort run that lives under `results/<run>/` (the 2026-10-14 Wordcraft cohort is the model)
 reaches the pages in four steps, each of which bit someone on 2026-10-14:
@@ -260,7 +261,9 @@ reaches the pages in four steps, each of which bit someone on 2026-10-14:
    replacing it. `build()` refuses the whole report on one unmapped name; the one that stopped it
    on 2026-10-14 was `candidates` in `converters.jsonl` (the LibreOffice rows
    `scripts/convert_candidates.py` writes), which maps to `soffice`.
-4. `uv run bench report`, then read the headline tables before committing. Commit the stores,
+4. `uv run bench report`, then read the headline tables before committing. When the
+   `results/release/` bundle is part of the release, run
+   `uv run scripts/release_views.py` (and `--check` for the gate). Commit the stores,
    the registry, the three pages and any `RESULTS_v<old>.md` the run froze (it freezes the page
    on disk when the bench version moved, here 0.7.0 to 0.8.0); leave other sessions' churn
    (`out/`, corpus files) out of the commit.
