@@ -170,6 +170,11 @@ PRESETS: dict[str, Preset] = {
         Preset("docx-to-pdf-v1-apryse", hub.RESULTS_REPO, "outputs/docx_to_pdf_v1_apryse",
                DOWNLOADS / "docx_to_pdf_v1_apryse",
                "Apryse SDK 12.2.1's DOCX->PDF of fixture set v1 (demo-key watermark), with its scores"),
+        Preset("convert-860", hub.RESULTS_REPO, "outputs/convert_860",
+               DOWNLOADS / "convert_860",
+               "the convert_860 set (#129): every vendor's DOCX->PDF candidates on the 860-document "
+               "set and its scores (LibreOffice 26.8.2.2, docxide-pdf 0.18.4, docxodus 15.0.0, "
+               "Apryse SDK 12.2.1 with the demo-key watermark)"),
         _cohort("wordcraft-20261014", "the 2026-10-14 Wordcraft 400+400 cohort as it is on R2"),
         _cohort("wordcraft-20261014-initial", "the cohort's first pass, before the fresh rerun"),
         _cohort("word-driver-ab", "the 2026-10-14 Word driver A/B runs"),
