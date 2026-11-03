@@ -1,0 +1,35 @@
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 12 is not yet initialized
+MONO_WASM: Jiterpreter table 13 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+MONO_WASM: Jiterpreter table 4 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 2 is not yet initialized
+MONO_WASM: Jiterpreter table 3 is not yet initialized
+MONO_WASM: Jiterpreter table 31 is not yet initialized
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+Comparison error: InvalidCastException: Arg_InvalidCastException
+[docxodus] wrote 587 redline(s) → results/redlines_0929_full/docxodus-15.0.0/docx
+[docxodus] 13 pair(s) skipped:
+  88e20c1bd0_file_68__vs__12e6e39286_file_69_redline_10c43b4911 [generate]: Comparison failed - empty result
+  84f5fb598b_super_editor__diff_before11_1b953eaf__vs__7962b06671_super_editor__bookmark_use_cases_d20f31f6_redline_29d3f492fb [generate]: Comparison failed - empty result
+  6a8a9e859c_e38f976d3258562dfa09cecb9a34e94403098d5b8a0cd338__vs__1c96e575f8_f907e44f658eab72c9fec3635a6a64fb051c7fb2142a0d03_redline_327c9f02a2 [generate]: Comparison failed - empty result
+  29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_329808a1dc [generate]: Comparison failed - empty result
+  a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_4702d4eae0 [generate]: Comparison failed - empty result
+  ae086861ee_39a887f5b1bab1cf142553ab31f2bbdcf6ff51b14218f14c__vs__a9477e435a_eb24288b5ce1911f33e7474501a08fe599484a8f13740443_redline_56c88d95bf [generate]: Comparison failed - empty result
+  3539cf2404_cli_legacy__replace_test_0a793f01__vs__8df6dfa8d7_alternate_content_redline_5b35efe2bb [generate]: Comparison failed - empty result
+  60697d46b7_strict01__vs__a04e2d2749_ooxml_style_link_redline_6b74ac1ae6 [generate]: Comparison failed - empty result
+  b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_8a4d68d7e6 [generate]: Comparison failed - empty result
+  fe11d14f44_behavior__sd_2447_toc_tab_alignment_8319c14c__vs__8441c4ae21_sd_2517_localized_heading_styles_redline_9dfaecf9a9 [generate]: Comparison failed - empty result

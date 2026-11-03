@@ -8,6 +8,13 @@ with no scored PDF counts 0 in ``itt_mean`` / ``itt_median``. ``subset`` holds t
 statistics over only the compares docxodus scored, as if the bench held only the pairs
 docxodus redlined and Word exported. The tools are the keys of ``versions.json``. Rewrites
 ``scores.jsonl``.
+
+A lane scored on a FIXED SET (#129) instead of the run's pool is a lane of its own: its
+scores file is ``scores_<tool>_set-<set>.json`` and its compares are the keys of
+``set-<set>.csv``, so its denominator is the set (600), not the pool (3502). Its line
+carries the set's name, and it has no ``subset`` (the pool's docxodus subset means
+nothing over a different denominator). Such a lane is found by its file name, not by a
+list here: every ``scores_<tool>_set-*.json`` in this folder is one.
 """
 
 from __future__ import annotations
@@ -26,6 +33,24 @@ HERE = Path(__file__).parent
 VERSIONS: dict[str, str] = json.loads((HERE / "versions.json").read_text())
 TOOLS = tuple(VERSIONS)
 SUBSET_OF = "docxodus"
+
+
+def set_lane(tool: str) -> tuple[str, Path] | None:
+    """The fixed set a lane was scored on, and that set's compare list.
+
+    ``scores_<tool>_set-<set>.json`` → the set's name and ``set-<set>.csv`` (the
+    ``--sample-csv`` of ``measure.py``). None when the lane is a pool lane.
+    """
+    found = sorted(HERE.glob(f"scores_{tool}_set-*.json"))
+    if not found:
+        return None
+    if len(found) > 1:
+        raise SystemExit(f"{tool}: {len(found)} set score files: {[p.name for p in found]}")
+    name = found[0].stem[len(f"scores_{tool}_set-"):]
+    keys = HERE / f"set-{name}.csv"
+    if not keys.is_file():
+        raise SystemExit(f"{found[0].name}: no key list {keys.name}")
+    return name, keys
 
 
 def _stats(xs: list[float]) -> dict:
@@ -58,21 +83,39 @@ def summarize(rows: dict[str, dict], keys: list[str]) -> dict:
 
 def main() -> None:
     keys = [r["key"] for r in csv.DictReader(open(HERE / "pool_pairs.csv"))]
-    rows = {t: json.loads((HERE / f"scores_{t}.json").read_text())["rows"] for t in TOOLS}
-    unknown = {t: len(set(r) - set(keys)) for t, r in rows.items() if set(r) - set(keys)}
-    if unknown:
-        raise SystemExit(f"rows not in pool_pairs.csv: {unknown}")
-    subset_keys = [k for k in keys if k in rows[SUBSET_OF]]
+    # The subset every pool lane reports: the compares docxodus scored (the run's
+    # reference tool). A set lane has no subset — its denominator is a different set.
+    subset_ref = HERE / f"scores_{SUBSET_OF}.json"
+    subset_rows = json.loads(subset_ref.read_text())["rows"] if subset_ref.is_file() else {}
+    subset_keys = [k for k in keys if k in subset_rows]
     stamp = datetime.now(UTC).isoformat(timespec="seconds")
     with (HERE / "scores.jsonl").open("w") as fh:
         for tool in TOOLS:
-            line = {"track": HERE.name, "tool": tool, "action": "redline"} | summarize(rows[tool], keys)
-            line["subset"] = {"of": SUBSET_OF} | summarize(rows[tool], subset_keys)
+            lane = set_lane(tool)
+            if lane is None:
+                rows = json.loads((HERE / f"scores_{tool}.json").read_text())["rows"]
+                unknown = len(set(rows) - set(keys))
+                if unknown:
+                    raise SystemExit(f"{tool}: {unknown} row(s) not in pool_pairs.csv")
+                line = {"track": HERE.name, "tool": tool, "action": "redline"} | summarize(rows, keys)
+                line["subset"] = {"of": SUBSET_OF} | summarize(rows, subset_keys)
+                print(f"{tool}: ITT {line['itt_mean']:.2f}/{line['itt_median']:.2f} "
+                      f"({line['subset']['itt_mean']:.2f}/{line['subset']['itt_median']:.2f}), "
+                      f"scored {line['scored']}/{line['pairs']} "
+                      f"({line['subset']['scored']}/{line['subset']['pairs']})")
+            else:
+                set_name, set_keys_file = lane
+                set_keys = [r["key"] for r in csv.DictReader(open(set_keys_file))]
+                rows = json.loads((HERE / f"scores_{tool}_set-{set_name}.json").read_text())["rows"]
+                unknown = len(set(rows) - set(set_keys))
+                if unknown:
+                    raise SystemExit(f"{tool}: {unknown} row(s) not in {set_keys_file.name}")
+                line = {"track": HERE.name, "tool": tool, "action": "redline",
+                        "set": set_name} | summarize(rows, set_keys)
+                print(f"{tool}: set {set_name} ITT {line['itt_mean']:.2f}/{line['itt_median']:.2f}, "
+                      f"scored {line['scored']}/{line['pairs']}")
             line["timestamp"] = stamp
             fh.write(json.dumps(line) + "\n")
-            print(f"{tool}: ITT {line['itt_mean']:.2f}/{line['itt_median']:.2f} "
-                  f"({line['subset']['itt_mean']:.2f}/{line['subset']['itt_median']:.2f}), "
-                  f"scored {line['scored']}/{line['pairs']} ({line['subset']['scored']}/{line['subset']['pairs']})")
 
 
 if __name__ == "__main__":

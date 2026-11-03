@@ -6,5 +6,6 @@
   "jubarte-0.10.1": "jubarte 0.10.1 (release)",
   "jubarte-0.14.0": "jubarte 0.14.0 (release)",
   "jubarte-0.17.0": "jubarte 0.17.0 (release)",
-  "apryse": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)"
+  "apryse": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)",
+  "docxodus-15.0.0": "docxodus 15.0.0 (npm/WASM, set redline_600)"
 }
