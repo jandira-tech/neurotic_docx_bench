@@ -1,0 +1,28 @@
+manifest: 2320 staged + 39270 carried from the previous manifest
+staged 2321 files, 0.52 GB: {'docxodus/pdf_by_word': 1, 'apryse/pdf_by_word': 1, 'docxodus-15.0.0/docx': 587, 'docxodus-15.0.0/pdf_by_word': 544, 'superdoc-2.25.0/docx': 67, 'superdoc-2.25.0/pdf_by_word': 68, 'apryse-12.2.1/docx': 600, 'apryse-12.2.1/pdf_by_word': 337, 'jubarte-rust/meta': 1, 'jubarte-093/meta': 1, 'docxodus/meta': 2, 'superdoc/meta': 10, 'jubarte-0.10.1/meta': 1, 'jubarte-0.14.0/meta': 1, 'apryse/meta': 3, 'docxodus-15.0.0/meta': 3, 'superdoc-2.25.0/meta': 2, 'apryse-12.2.1/meta': 6, 'run': 86}
+uploaded docxodus/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded apryse/pdf_by_word
+uploaded docxodus-15.0.0/docx
+uploaded docxodus-15.0.0/pdf_by_word
+uploaded superdoc-2.25.0/docx
+uploaded superdoc-2.25.0/pdf_by_word
+uploaded apryse-12.2.1/docx
+uploaded apryse-12.2.1/pdf_by_word
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-rust/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-093/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded docxodus/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded superdoc/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-0.10.1/meta
+No files have been modified since last commit. Skipping to prevent empty commit.
+uploaded jubarte-0.14.0/meta
+uploaded apryse/meta
+uploaded docxodus-15.0.0/meta
+uploaded superdoc-2.25.0/meta
+uploaded apryse-12.2.1/meta
+uploaded run

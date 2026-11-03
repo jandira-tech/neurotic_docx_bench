@@ -85,6 +85,11 @@ def stage(root: Path, previous=None) -> list[str]:
     for t in TOOLS:
         meta = root / t / 'meta'
         meta.mkdir(parents=True)
+        # A tool whose folder is not in this checkout (its outputs were deleted after
+        # its upload, or the lane never ran here) has nothing to stage: the hub copy
+        # stands, and the manifest carries its entries.
+        if not (HERE / t).is_dir():
+            continue
         for f in sorted((HERE / t).iterdir()):
             if f.is_file() and f.suffix in TOP_SUFFIXES:
                 os.link(f, meta / f.name)

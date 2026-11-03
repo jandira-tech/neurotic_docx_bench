@@ -1164,6 +1164,17 @@
           "tool": "jubarte-093"
         },
         {
+          "docs": 543,
+          "failed": 57,
+          "mean": 64.86,
+          "median": 75.7,
+          "note": "= 100: 46 · ≥ 90: 98 · < 50: 135 · ink 0.65 · text 0.71",
+          "ours": false,
+          "pin": "docxodus 15.0.0 (npm/WASM, set redline_600)",
+          "rank": "6",
+          "tool": "docxodus-15.0.0"
+        },
+        {
           "docs": 2612,
           "failed": 890,
           "mean": 53.94,
@@ -1171,7 +1182,7 @@
           "note": "= 100: 204 · ≥ 90: 482 · < 50: 614 · ink 0.65 · text 0.73",
           "ours": false,
           "pin": "Docxodus 12.6.5 (C#)",
-          "rank": "6",
+          "rank": "7",
           "tool": "docxodus"
         },
         {
@@ -1182,8 +1193,30 @@
           "note": "= 100: 0 · ≥ 90: 39 · < 50: 1285 · ink 0.18 · text 0.16",
           "ours": false,
           "pin": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)",
-          "rank": "7",
+          "rank": "8",
           "tool": "apryse"
+        },
+        {
+          "docs": 336,
+          "failed": 264,
+          "mean": 28.42,
+          "median": 37.87,
+          "note": "= 100: 0 · ≥ 90: 4 · < 50: 190 · ink 0.18 · text 0.14",
+          "ours": false,
+          "pin": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked; set redline_600)",
+          "rank": "9",
+          "tool": "apryse-12.2.1"
+        },
+        {
+          "docs": 67,
+          "failed": 533,
+          "mean": 6.92,
+          "median": 0.0,
+          "note": "= 100: 1 · ≥ 90: 1 · < 50: 3 · ink 0.21 · text 0.20",
+          "ours": false,
+          "pin": "superdoc-sdk 2.25.0 (set redline_600)",
+          "rank": "10",
+          "tool": "superdoc-2.25.0"
         },
         {
           "docs": 380,
@@ -1193,7 +1226,7 @@
           "note": "= 100: 4 · ≥ 90: 7 · < 50: 20 · ink 0.21 · text 0.29",
           "ours": false,
           "pin": "superdoc-sdk 2.16.0",
-          "rank": "8",
+          "rank": "11",
           "tool": "superdoc"
         }
       ],

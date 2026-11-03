@@ -102,7 +102,7 @@ generate_scripts:
 #   docxodus 9.8.0
 #   @stll/folio-core 0.15.13 (generator) · @stll/folio-react 0.13.2 (viewer)
 #   superdoc is THREE packages, pinned independently — never conflate them:
-#     superdoc-sdk (PyPI) 2.16.0       → run `superdoc`            (python_package:)
+#     superdoc-sdk (PyPI) 2.25.0       → run `superdoc`            (python_package:)
 #     @superdoc-dev/sdk (npm) 1.21.3   → run `superdoc-ts`         (package:)
 #     superdoc (npm, the editor) 2.3.0 → runs `superdoc-playwright-*` (package:)
 #   tests/test_superdoc_pins.py fails if any pin drifts from what is installed.
@@ -295,7 +295,7 @@ runs:
   # most pairs (header/footer topology, shared definitions, numbering replay):
   # 648 of 744 score zero.
   - name: superdoc
-    python_package: "superdoc-sdk==2.16.0" # installed version → tool_version
+    python_package: "superdoc-sdk==2.25.0" # installed version → tool_version
     generate: "uv run python -m neurotic_docx_bench.superdoc_gen --out=$RUN_DIR/docx --tool=superdoc"
     render: soffice
     jobs: 1

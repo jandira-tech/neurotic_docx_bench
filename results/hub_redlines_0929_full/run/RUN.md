@@ -141,6 +141,91 @@ On the 2584 compares jubarte 0.9.3, 0.10.0 and docxodus all scored: 73.23 / 82.8
 and 72.27 / 81.71; 0.9.3 is better than docxodus on 993, worse on 719. Between 0.9.3 and 0.10.0 the
 redline scores are a wash; 0.10.0's gain in the 0928 comparison was against `673aff74`.
 
+## Apryse SDK 12.2.1 (`apryse`, #100)
+
+`apryse-sdk` 12.2.1 (PDFNet 12.2.0-079a1c0268) on a **demo key**, so every redline carries
+Apryse's watermark: a translucent blue picture in each header. `python -m
+neurotic_docx_bench.apryse_gen batch` ran `DOCXCompare.Compare` on the 2611 pairs of
+`gen_pairs.csv`, one child process per pair with a 180 s timeout: **2599 redlines**, 12
+failures (10 timeouts, 2 crashes, `apryse/generate_failures.json`). The median compare took
+0.07 s, the mean 1.03 s (`apryse/generate_timings.json`).
+
+Word export (`scripts/word_pdf.py`, Word 16.115, 2026-11-01, with `--crash-limit 1`; the
+last two passes also used `--nudge-after 5 --nudge-wait 1 --empty-limit 10`, #107): **1816 of
+2599** opened and exported. Word refused 745 ("Word found unreadable content", answered No)
+and 38 crashed it. `apryse/word_refused.csv` lists all 783 with the reason. 355 of them were
+refused in the first runs and set aside; 130 of those were tried again on their own and none
+opened, so the pass was stopped. In Apryse's own XML, four shapes appear only in refused files,
+the main one a `w:hyperlink` inside a `w:r` inside a `w:del` (the hunt and the repair A/B are in
+#100; the shapes are filed for `jubarte validate` and docx-validate).
+
+Scores (`measure.py`, same oracles as the jubarte lanes, numpy): **2524/3502 compares, mean
+52.03, median 49.84, >=90 39; ITT (missing as 0) 37.50 / 43.17**. On the 2513 compares both
+scored:
+
+| | Apryse 12.2.1 | jubarte 0.17.0 |
+|---|---|---|
+| mean / median | 52.07 / 49.86 | **79.22 / 84.87** |
+| =100 / >=90 / <50 | 0 / 39 / 1276 | **335 / 621 / 277** |
+| ink Jaccard mean / median | 0.183 / 0.110 | **0.776 / 0.969** |
+| better by > 0.5 | 84 | **2372** |
+
+jubarte 0.17.0 scores 70.57 on the 941 compares Apryse has no PDF for, so Apryse's missing
+PDFs are not only on the hard pairs.
+
+Stamp-matched, a separate labelled figure, not the record (`apryse/measure_stamp.py`,
+torch-mps): Word's oracle gets the stamp images of the Apryse PDF of the same pair, under
+their own matrices with a Multiply blend, so the watermark is on both sides. On 2509 of the 2524 scored
+compares (15 Apryse PDFs carry no stamp Word rendered, mostly odd/even/first-page header
+fixtures): **mean 51.99, median 49.87**, against 52.03 / 49.84 raw. Each compare moved
++0.03 on average (−0.59 to +1.61), none by more than 5 points. The control, jubarte 0.17.0 on
+300 random compares with the same stamp on both its candidate and the oracle, moved −0.001
+(−0.96 to +0.47). So the watermark is not why Apryse scores low
+(`scores_apryse_stamp_matched.json`, `scores_jubarte-0.17.0_stamp_matched_sample300_seed0.json`).
+
+## The fixed set `redline_600` (#129)
+
+The three vendor-refresh lanes on `results/sets/redline_600.csv` (600 pairs, #128), scored
+exactly like the lanes above — each vendor's redline exported by Word, measured against the
+same oracles with `--sample-csv set-redline_600.csv` (the set's keys live in
+`set-redline_600.csv`, its pairs in `set-redline_600_pairs.csv`). A set lane's scores file is
+`scores_<tool>_set-redline_600.json` and its `scores.jsonl` line carries `set: redline_600`;
+ITT is over the 600 (a missing candidate PDF, whatever the reason, is 0).
+
+| lane | version | generated | Word PDFs | scored | ITT mean | ITT median |
+|---|---|---|---|---|---|---|
+| `docxodus-15.0.0` | docxodus 15.0.0 (npm/WASM) | 587/600 | 543/587 | 543/600 | 64.86 | 75.70 |
+| `superdoc-2.25.0` | superdoc-sdk 2.25.0 | 67/600 | 67/67 | 67/600 | 6.92 | 0.00 |
+| `apryse-12.2.1` | apryse-sdk 12.2.1 (demo key) | 600/600 | 336/600 | 336/600 | 28.42 | 37.87 |
+
+- **docxodus 15.0.0**: 13 "Comparison failed - empty result" generate failures
+  (`generate_failures.json`). Of the 587 redlines, Word exported 543; the 44 failures are
+  `docxodus-15.0.0/word_refused.csv` — 30 repair prompts declined (unreadable content), 13
+  crashed Word on open (twice each, `--crash-limit 1`), 1 open produced no document.
+  Raw scores of the 543: mean 71.67, median 80.37, >=90: 98.
+- **superdoc 2.25.0**: 533 of 600 generate failures, all the engine's own limits (230 tracked
+  header/footer slot or topology, 102 shared definition replacement, 63 numbering replay,
+  38 comment replay, 32 invalid snapshot, 17 v2-runtime open failures, 15 changed families,
+  8 settings replay, 28 other single-digit causes). The same
+  67/533 split the recorded 2.16.0 pool lane shows on these 600 keys (it holds PDFs for
+  exactly 67 of them), so this is version-consistent coverage, not an infra stall. Raw scores
+  of the 67: mean 61.98, median 61.89 (2.16.0: 61.87/61.80 on the same compares).
+- **apryse 12.2.1**: `reuse.py` copied the 334 redlines the 0929 pool lane already held with
+  Word PDFs for; the generator redlined the other 266 (one batch timeout at 180 s —
+  `9f6f60f1db…`, deterministic ~300 s compare, regenerated with a 300 s timeout and kept;
+  its first `.part.docx` was 0 bytes and its bogus blank PDF was deleted and re-exported).
+  Word exported 2 of the 266; the 264 failures are `apryse-12.2.1/word_refused.csv` — 252
+  repair prompts declined, 11 crashed Word, 1 could not load. Raw scores of the 336: mean
+  50.76, median 47.50, >=90: 4.
+- **Apryse stamp-matched** (`apryse-12.2.1/measure_stamp.py`, the same normalisation as the
+  pool lane, `scores_apryse-12.2.1_set-redline_600_stamp_matched.json`): 336 scored, mean
+  50.78, median 47.50; delta vs raw mean +0.020, no compare moved more than 5 — as on the
+  pool lane (+0.03), the demo-key watermark does not explain Apryse's scores.
+
+All scored with torch-mps, 193 fresh oracles of the 600 (`--fresh` compare_regen), 0
+meant-fresh-but-old. Pins bumped in the same branch's `chore(bench)` commit: docxodus
+12.6.5 → 15.0.0 (npm/WASM lane) and superdoc-sdk 2.16.0 → 2.25.0.
+
 ## Accepted and rejected tracks (`measure_tracks.py`)
 
 The 100 compares of `accept_selection.csv` and the 100 of `reject_selection.csv` (copies of the
@@ -190,6 +275,9 @@ subset of `pdf_by_word`). Word's own files (`corpus/word`, `compare_regen`) stay
 jubarte-093 went up the same way later: 5706 files of its own (docx 2611, pdf_by_word 2497,
 accepted 100 + 198, rejected 100 + 200), 6785 staged with `fresh_compares`, meta and `run`
 refreshed, all verified, then deleted here (`hub_upload_093.log`).
+Apryse 12.2.1 went up the same way on 2026-11-02: `apryse/docx` (2599), `apryse/pdf_by_word`
+(1816 PDFs + `manifest.jsonl`) and `apryse/meta`, kept here as well. Its DOCX→PDF outputs on
+fixture set v1 are at `outputs/docx_to_pdf_v1_apryse/` (preset `docx-to-pdf-v1-apryse`).
 Page-by-page site: https://jandira-tech.github.io/neurotic_docx_bench/redlines/ (gh-pages a58adc22,
 with the jubarte 0.9.3 column; the builder fetches pruned tool PDFs from the hub).
 
