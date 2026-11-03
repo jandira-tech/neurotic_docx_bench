@@ -97,3 +97,17 @@ def test_a_listed_id_without_a_fresh_pdf_is_fresh_missing(measure, tmp_path: Pat
     pool = [{'id': '0000ae5089', 'key': 'k1'}, {'id': '001b877031', 'key': 'k2'}, {'id': '00288995f0', 'key': 'k3'}]
     oracle = measure.oracles(pool, fresh)
     assert measure.fresh_missing(pool, {'0000ae5089', '001b877031'}, oracle) == ['001b877031']
+
+
+def test_a_scored_row_keeps_its_per_page_scores(measure) -> None:
+    """#144: the redline score rows carry the scores of the pages they matched."""
+    row = measure._with_pages({'overall_score': 85.0,
+                               'pages': [{'page': 1, 'score': 90.0}, {'page': 2, 'score': 81.5}]})
+    assert row['per_page'] == [90.0, 81.5]
+    assert row['overall_score'] == 85.0
+
+
+def test_a_row_without_pages_carries_no_per_page_scores(measure) -> None:
+    assert 'per_page' not in measure._with_pages({'overall_score': 1.0})
+    assert measure._with_pages({'pages': []}) == {}
+

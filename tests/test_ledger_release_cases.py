@@ -257,6 +257,7 @@ def release_root(tmp_path: Path) -> Path:
                     "version": "docxide-pdf v0.18.4",
                     "n_scored": 1,
                     "per_doc": {CONVERT_A: 65.0},
+                    "per_page": {CONVERT_A: [65.0, 64.0]},
                     "convert_seconds": {CONVERT_A: 0.2},
                     "generate_failures": [],
                     "failures": 0,
@@ -277,6 +278,7 @@ def release_root(tmp_path: Path) -> Path:
                     "page_count_oracle": 3,
                     "page_count_candidate": 3,
                     "max_break_drift": -1,
+                    "per_page": [70.0, 69.0],
                 }
             }
         ),
@@ -395,6 +397,28 @@ def test_page_scores_are_real_values_null_for_unscored_and_bounded(release_root:
         for case in (conversion_a, redline_a)
         for values in case.page_scores.values()
     )
+
+
+def test_a_per_page_list_is_sliced_to_the_shown_pages_and_null_where_absent(
+    release_root: Path,
+) -> None:
+    """#144: the lane's per_page list becomes the case's page_scores.
+
+    A page the lane never scored has no value: it is null in the shard, never
+    a zero and never a value borrowed from another page.
+    """
+    _index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    by_key = {(shard.kind, case.case): case for shard in shards for case in shard.cases}
+
+    conversion_a = by_key[("conversion", CONVERT_A)]
+    assert conversion_a.shown == [1, 2, 3]
+    # Two page scores for three shown pages: the third is null, not zero.
+    assert conversion_a.page_scores["docxide-pdf"] == [65.0, 64.0, None]
+
+    redline_a = by_key[("redline", REDLINE_A)]
+    assert redline_a.shown == [1, 2, 3]
+    assert redline_a.page_scores["docxodus"] == [70.0, 69.0, None]
+
 
 
 def test_files_use_the_real_hub_layout_and_the_pinned_files_base(release_root: Path) -> None:

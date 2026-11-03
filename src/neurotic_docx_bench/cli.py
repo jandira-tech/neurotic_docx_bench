@@ -778,6 +778,45 @@ def itt_complete_reports(
     console.print(f"appended {total} line(s) to {store}")
 
 
+def _conversion_source(path: Path, tool: str) -> dict:
+    """The report of the run a score-only re-score replaces.
+
+    The lane must be named exactly: a report with one lane is not this lane
+    unless it says so, and a conversion record carried into the wrong lane
+    would be a lie.
+    """
+    source = json.loads(Path(path).read_text(encoding="utf-8"))
+    tools = source.get("tools") if isinstance(source, dict) else None
+    if not isinstance(tools, dict) or not tools:
+        raise typer.BadParameter(f"{path}: no tool scores to carry the conversion record from")
+    block = tools.get(tool)
+    if not isinstance(block, dict):
+        raise typer.BadParameter(f"{path}: no {tool!r} lane to carry the conversion record from")
+    return source
+
+
+def _carry_conversions(
+    report: dict, source: dict, tool: str, source_path: Path, json_out: Path,
+) -> None:
+    """Put the conversion record of ``source`` back into a score-only report.
+
+    The re-score knows the scores; the conversion (the binary, the seconds it
+    took, the documents the vendor refused) belongs to the run that converted
+    them.  The report says where that record came from.
+    """
+    from neurotic_docx_bench.docx_to_pdf import carry_conversion_record
+
+    try:
+        carry_conversion_record(report, source, tool)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    report["carried_conversions"] = {
+        "from": str(source_path),
+        "at": datetime.now(UTC).isoformat(),
+    }
+    json_out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+
+
 def _corpus_word_selection(
     *,
     origin: str | None,
@@ -894,6 +933,16 @@ def docx_to_pdf_eval(
         "--tool-version",
         help="with --score-only: version of the tool that made the PDFs (e.g. 'jubarte 0.9.3').",
     ),
+    carry_conversions_from: Path | None = typer.Option(
+        None,
+        "--carry-conversions-from",
+        help=(
+            "with --score-only: the report of the run that converted the documents. "
+            "Its conversion record (the converter and the per-document conversion "
+            "seconds) is carried into this report: a score-only run knows the "
+            "scores, not the conversion."
+        ),
+    ),
     store: bool = typer.Option(
         True,
         "--store/--no-store",
@@ -955,6 +1004,14 @@ def docx_to_pdf_eval(
             )
         label = tool[0] if score_only else None
         run_tools = (label,) if score_only else tools
+        carry = None
+        if carry_conversions_from is not None:
+            if not score_only:
+                raise typer.BadParameter(
+                    "--carry-conversions-from is for a --score-only re-score: a run "
+                    "that converts has the conversion record already",
+                )
+            carry = _conversion_source(carry_conversions_from, label or "")
         selected = _corpus_word_selection(
             origin=origin,
             files_list=files_list,
@@ -988,6 +1045,8 @@ def docx_to_pdf_eval(
         )
         if score_only:
             _stamp_tool_version(report, json_out, tool_version)
+        if carry is not None:
+            _carry_conversions(report, carry, label or "", carry_conversions_from, json_out)
     bits = [f"docx-to-pdf  n={report['n']}"]
     for name, data in (report.get("tools") or {}).items():
         bits.append(

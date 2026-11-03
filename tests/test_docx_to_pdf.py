@@ -510,6 +510,130 @@ def test_tool_report_keeps_pixel_map_and_means_only_scored_page_metrics():
     assert empty["page_metrics_mean"] == {"jaccard": None, "ssim": None, "text_boundary": None}
 
 
+def test_tool_report_keeps_the_per_page_scores_of_the_scored_rows():
+    """#144: one score per matched page, in document order; a failed row has none."""
+    from neurotic_docx_bench.docx_to_pdf import _tool_report
+
+    rows = {
+        "a": {"ink_jaccard": 0.4, "pages": [{"page": 1, "score": 90.0}, {"page": 2, "score": 70.5}]},
+        "failed": {"ink_jaccard": 1.0, "pages": [{"page": 1, "score": 100.0}]},
+        "outside": {"ink_jaccard": 1.0, "pages": [{"page": 1, "score": 100.0}]},
+    }
+    report = _tool_report("tool", None, ["a", "failed", "missing"],
+                          {"a": 90.0, "failed": 100.0},
+                          [{"doc": "failed", "stage": "generate", "error": "crash"}],
+                          score_rows=rows)
+    assert report["per_page"] == {"a": [90.0, 70.5]}
+    empty = _tool_report("tool", None, ["a"], {}, [])
+    assert empty["per_page"] == {}
+
+
+def test_score_only_report_persists_per_page_scores(tmp_path):
+    """#144: the report keeps one score per matched page, in document order."""
+    import pymupdf as fitz
+    from neurotic_docx_bench.docx_to_pdf import Fixture
+
+    def two_pages(path, second: str) -> Path:
+        with fitz.open() as doc:
+            doc.new_page().insert_text((72, 72), "The very same first page.")
+            doc.new_page().insert_text((72, 72), second)
+            doc.save(path)
+        return path
+
+    oracle = two_pages(tmp_path / "oracle.pdf", "Word's second page.")
+    candidate = two_pages(tmp_path / "candidate.pdf", "A completely different second page.")
+    item = Fixture(stem="a", kind="clean", original_stem="a", docx=tmp_path / "a.docx", oracle=oracle)
+    report = run_eval(tmp_path / "report.json", tools=["candidates"], fixtures=[item],
+                      check_pins=False, score_only=True, candidates={"a": candidate},
+                      work_dir=tmp_path / "work", jobs=1)
+    tool = report["tools"]["candidates"]
+    assert list(tool["per_page"]) == ["a"]
+    pages = tool["per_page"]["a"]
+    assert len(pages) == 2
+    assert pages[0] == pytest.approx(100.0, abs=1e-6)
+    assert pages[1] < 100.0
+    saved = json.loads((tmp_path / "report.json").read_text())
+    assert saved["tools"]["candidates"]["per_page"] == tool["per_page"]
+
+
+def test_a_failed_conversion_has_no_per_page_scores(tmp_path):
+    """#144: a document the tool never produced scores 0 and has no page scores."""
+    import pymupdf as fitz
+    from neurotic_docx_bench.docx_to_pdf import Fixture
+
+    oracle = tmp_path / "oracle.pdf"
+    with fitz.open() as doc:
+        doc.new_page().insert_text((72, 72), "A page Word exported.")
+        doc.save(oracle)
+    item = Fixture(stem="a", kind="clean", original_stem="a", docx=tmp_path / "a.docx", oracle=oracle)
+    report = run_eval(tmp_path / "report.json", tools=["candidates"], fixtures=[item],
+                      check_pins=False, score_only=True, candidates={},
+                      work_dir=tmp_path / "work", jobs=1)
+    tool = report["tools"]["candidates"]
+    assert tool["per_doc"] == {"a": 0.0}
+    assert tool["per_page"] == {}
+    assert tool["failures"] == 1
+
+
+def test_the_conversion_record_carries_the_vendors_refusals_over():
+    """#144: a score-only re-score keeps what the conversion run recorded."""
+    from neurotic_docx_bench.docx_to_pdf import carry_conversion_record
+
+    source = {
+        "tools": {
+            "docxodus": {
+                "converter": "/opt/docxodus",
+                "convert_seconds": {"a": 1.0},
+                "generate_failures": [
+                    {"doc": "b", "stage": "generate", "error": "output_verification_failure"}
+                ],
+            }
+        },
+        "warnings": [],
+    }
+    report = {
+        "tools": {
+            "docxodus": {
+                "converter": None,
+                "generate_failures": [
+                    {"doc": "b", "stage": "generate", "error": "no PDF to score"}
+                ],
+            }
+        },
+        "warnings": ["no PDF to score for b; listed, so it is a failure scored 0"],
+    }
+    carry_conversion_record(report, source, "docxodus")
+    tool = report["tools"]["docxodus"]
+    assert tool["converter"] == "/opt/docxodus"
+    assert tool["convert_seconds"] == {"a": 1.0}
+    # the vendor's own reason for the refusal, not the re-score's note
+    assert tool["generate_failures"][0]["error"] == "output_verification_failure"
+    assert report["warnings"] == []
+
+
+def test_a_conversion_record_that_names_other_documents_is_refused():
+    from neurotic_docx_bench.docx_to_pdf import carry_conversion_record
+
+    source = {
+        "tools": {
+            "docxodus": {
+                "generate_failures": [{"doc": "other", "stage": "generate", "error": "crash"}],
+            }
+        }
+    }
+    report = {
+        "tools": {
+            "docxodus": {
+                "generate_failures": [{"doc": "b", "stage": "generate", "error": "no PDF to score"}],
+            }
+        }
+    }
+    with pytest.raises(ValueError, match="not this lane's record"):
+        carry_conversion_record(report, source, "docxodus")
+    with pytest.raises(ValueError, match="no 'other' lane"):
+        carry_conversion_record(report, source, "other")
+
+
 def test_score_only_report_persists_page_metrics_and_drops_rasters(tmp_path):
     """Integration: actual PDF scoring through the report writer, including resume."""
     import pymupdf as fitz
