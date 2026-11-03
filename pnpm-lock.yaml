@@ -212,8 +212,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       docxodus:
-        specifier: 12.6.5
-        version: 12.6.5(react@19.3.1)
+        specifier: 15.0.0
+        version: 15.0.0(react@19.3.1)
       es-toolkit:
         specifier: ^1.52.0
         version: 1.52.0
@@ -349,8 +349,8 @@ importers:
   src/neurotic_docx_bench/utils/docxodus:
     dependencies:
       docxodus:
-        specifier: 12.6.5
-        version: 12.6.5(react@19.3.1)
+        specifier: 15.0.0
+        version: 15.0.0(react@19.3.1)
 
   src/neurotic_docx_bench/utils/folio:
     dependencies:
@@ -581,15 +581,6 @@ packages:
 
   '@atcute/varint@2.0.2':
     resolution: {integrity: sha512-/+hS1juMgnmf6eL6lICUkTw7wcGTo3I+Q0L1PI521mUz77rGSC6nXAUNKtvm2wYJpuWdEGq+GILGoYkOArn0TQ==}
-
-  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@3.2.1':
-    resolution: {integrity: sha512-2fhWAG48EjPoKhoHLG6RcT3/VaCzYEbRb6BtA/Vcfx4FrL0P1KrEgBJ6OAwB0X8MOV6UH22YgjFFHjv8fQD9rA==}
-
-  '@atlaskit/pragmatic-drag-and-drop@2.0.2':
-    resolution: {integrity: sha512-ou1j+lBqutK7p2S80lMresJeKu9qAL1zr1K+N0OyCTzbMpD6pXRHray8VkRoHgJICI7Wp1fk5ScJh6EctyAuPw==}
-
-  '@atlaskit/pragmatic-drag-and-drop@4.0.0':
-    resolution: {integrity: sha512-pyDo2B5NiaExoKGmgeXKGNUL4aR4UzzSZm8QWWjYTEyBLVqSqKyKUwtVxMw2YEkakagOGFONUdHM32LAH2nPug==}
 
   '@babel/helper-string-parser@7.29.7':
     resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
@@ -3093,9 +3084,6 @@ packages:
   bidi-js@1.1.0:
     resolution: {integrity: sha512-fX1Onk0tdVPC7obPWB5EbJ1z7NVhLq4m2xZLq2YXBkxzMXIGRpNMU88n0EPgWseKl12J7zXs7qrDxPK4sRs2fg==}
 
-  bind-event-listener@3.0.0:
-    resolution: {integrity: sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==}
-
   birpc@2.9.0:
     resolution: {integrity: sha512-KrayHS5pBi69Xi9JmvoqrIgYGDkD6mcSe/i6YKi3w5kekCLzrX4+nawcXqrj2tIp50Kw/mT/s3p+GVK0A0sKxw==}
 
@@ -3381,8 +3369,8 @@ packages:
   dingbat-to-unicode@1.0.2:
     resolution: {integrity: sha512-R0bRerYzy/EZP6QzD3Hkl6JjUDA1Mnn+pd928w0nWjPzihnbAR6dcjGJGiRyznj5E4S1duEKzWrTqw02DPcdzg==}
 
-  docxodus@12.6.5:
-    resolution: {integrity: sha512-TnZr0/InZAEIesK2tNZ8BmNHOGafYfoHooHzXboj+bO6EmBngvP5C9jGaIYkGLmztIXd4epdSDIPvSJp1xPF6A==}
+  docxodus@15.0.0:
+    resolution: {integrity: sha512-EK89QkDGvFch5wFKgHG/P/dmDChwqcTATEbuNHOn8f9vipeYuB5lgW+fXb01Z3A/gdmly0swqY85nV7Y/cZ8RQ==}
     peerDependencies:
       react: '>=16.8.0'
     peerDependenciesMeta:
@@ -4576,9 +4564,6 @@ packages:
 
   radix3@1.1.2:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
-
-  raf-schd@4.0.3:
-    resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
 
   range-parser@1.3.0:
     resolution: {integrity: sha512-hek2mFQpPuI4E1BBKrSto+BU3e3x4xuarsbiwr3+lf7p44juvFMV0XFWQAP3xUyqXA4RrXLIoaSUGbSt056ZMw==}
@@ -5936,23 +5921,6 @@ snapshots:
       unicode-segmenter: 0.17.3
 
   '@atcute/varint@2.0.2': {}
-
-  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@3.2.1':
-    dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 4.0.0
-      '@babel/runtime': 7.29.10
-
-  '@atlaskit/pragmatic-drag-and-drop@2.0.2':
-    dependencies:
-      '@babel/runtime': 7.29.10
-      bind-event-listener: 3.0.0
-      raf-schd: 4.0.3
-
-  '@atlaskit/pragmatic-drag-and-drop@4.0.0':
-    dependencies:
-      '@babel/runtime': 7.29.10
-      bind-event-listener: 3.0.0
-      raf-schd: 4.0.3
 
   '@babel/helper-string-parser@7.29.7': {}
 
@@ -8415,8 +8383,6 @@ snapshots:
     dependencies:
       require-from-string: 2.0.2
 
-  bind-event-listener@3.0.0: {}
-
   birpc@2.9.0: {}
 
   blake3-wasm@2.1.5: {}
@@ -8652,10 +8618,7 @@ snapshots:
 
   dingbat-to-unicode@1.0.2: {}
 
-  docxodus@12.6.5(react@19.3.1):
-    dependencies:
-      '@atlaskit/pragmatic-drag-and-drop': 2.0.2
-      '@atlaskit/pragmatic-drag-and-drop-auto-scroll': 3.2.1
+  docxodus@15.0.0(react@19.3.1):
     optionalDependencies:
       react: 19.3.1
 
@@ -10129,8 +10092,6 @@ snapshots:
       side-channel: 1.1.1
 
   radix3@1.1.2: {}
-
-  raf-schd@4.0.3: {}
 
   range-parser@1.3.0: {}
 
