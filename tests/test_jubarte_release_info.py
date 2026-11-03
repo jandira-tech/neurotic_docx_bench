@@ -26,6 +26,7 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
+from neurotic_docx_bench import fixed_sets as fs
 from neurotic_docx_bench import jubarte_release_info as jri
 from neurotic_docx_bench.jubarte_bench_release import Outcome, Release, Step, execute
 
@@ -198,9 +199,13 @@ def _sample(root: Path, regen: Path, n: int, **kw) -> list[Step]:
 # ------------------------------------------------------------------ stages and entry points
 
 def test_stages_are_the_owner_steps_in_order() -> None:
-    assert jri.STAGES == ('install', 'sample', 'generate', 'export', 'measure', 'convert', 'score', 'write')
-    steps = jri.plan(_rel(Path('/tmp/x')), conversion=['clean/docx/a.docx'])
-    assert [s.stage for s in steps] == sorted((s.stage for s in steps), key=jri.STAGES.index)
+    # the fixed-set flow (#130) replaces the draw's sample stage with a sets stage;
+    # --draw-sample keeps the old one for regenerating archived evidence
+    assert jri.STAGES == ('install', 'sample', 'sets', 'generate', 'export', 'measure', 'convert',
+                          'score', 'write')
+    for kw in ({}, {'draw_sample': True}):
+        steps = jri.plan(_rel(Path('/tmp/x')), conversion=['clean/docx/a.docx'], **kw)
+        assert [s.stage for s in steps] == sorted((s.stage for s in steps), key=jri.STAGES.index)
 
 
 def test_rejects_a_version_that_is_not_a_release(tmp_path: Path) -> None:
@@ -213,6 +218,12 @@ def test_the_module_and_the_script_are_entry_points(tmp_path: Path) -> None:
     for argv in (['-m', 'neurotic_docx_bench.jubarte_release_info'], ['scripts/jubarte_release_info.py']):
         out = subprocess.run([sys.executable, *argv, V, '--root', str(tmp_path), '--plan', '--only', 'measure'],
                              cwd=REPO, capture_output=True, text=True)
+        assert out.returncode == 0, out.stderr
+        lines = out.stdout.splitlines()
+        # the sets flow measures jubarte only; the comparators are read, not run
+        assert len(lines) == 1 and lines[0].startswith('measure   uv run python'), out.stdout
+        out = subprocess.run([sys.executable, *argv, V, '--root', str(tmp_path), '--plan', '--only', 'measure',
+                              '--draw-sample'], cwd=REPO, capture_output=True, text=True)
         assert out.returncode == 0, out.stderr
         lines = out.stdout.splitlines()
         assert len(lines) == 2 and all(line.startswith('measure   uv run python') for line in lines), out.stdout
@@ -329,7 +340,7 @@ def test_conversion_quotas_scale_with_n() -> None:
 
 def test_the_redline_sample_has_one_compare_per_pair_and_the_manifest_names_each(tmp_path: Path) -> None:
     root, regen = _tree(tmp_path)
-    steps = _plan(root, regen, n=8)
+    steps = _plan(root, regen, n=8, draw_sample=True)
     detail = _act(steps, 'draw redline sample')
     ev = root / jri.evidence_dir(V)
     sample = jri.read_csv(ev / f'sample_redline_{V}.csv')
@@ -356,11 +367,11 @@ def test_the_redline_sample_has_one_compare_per_pair_and_the_manifest_names_each
 def test_a_draw_skips_compares_without_an_oracle_and_refuses_to_come_up_short(tmp_path: Path) -> None:
     root, regen = _tree(tmp_path)
     (root / jri.RUN_DIR / 'oracle_pdf' / 'cle0.pdf').unlink()
-    _act(_plan(root, regen, n=8), 'draw redline sample')
+    _act(_plan(root, regen, n=8, draw_sample=True), 'draw redline sample')
     keys = [r['key'] for r in jri.read_csv(root / jri.redline_list(V))]
     assert 'cle0' not in keys and len(keys) == 8
     with pytest.raises(RuntimeError, match='only 8 compares have their Word PDF, 10 wanted'):
-        _act(_plan(root, regen, n=10), 'draw redline sample')
+        _act(_plan(root, regen, n=10, draw_sample=True), 'draw redline sample')
 
 
 def test_evidence_names_carry_the_version_so_measure_never_resumes_another_release(tmp_path: Path) -> None:
@@ -368,12 +379,13 @@ def test_evidence_names_carry_the_version_so_measure_never_resumes_another_relea
     assert jri.conversion_list(V) == Path(f'results/release_{V}_evidence/sample_conversion_{V}.csv')
     assert jri.scores_json(LANE, V) == jri.RUN_DIR / f'scores_{LANE}_sample_redline_{V}.json'
     assert jri.scores_json('docxodus', '0.11.4') != jri.scores_json('docxodus', V)
-    steps = jri.plan(_rel(tmp_path), conversion=[])
-    for name in ('measure jubarte', 'measure docxodus'):
-        cmd = _cmd(steps, name)
+    for kw in ({}, {'draw_sample': True}):
+        steps = jri.plan(_rel(tmp_path), conversion=[], **kw)
+        cmd = _cmd(steps, 'measure jubarte')
         assert cmd[cmd.index('--sample-csv') + 1] == str(jri.redline_list(V))
-    docxodus = [s for s in steps if s.stage == 'export' and 'docxodus' in s.name and s.argv]
-    assert all(V in str(s.log) and V in s.argv[s.argv.index('--log') + 1] for s in docxodus)
+    docxodus = [s for s in jri.plan(_rel(tmp_path), conversion=[], draw_sample=True) if s.stage == 'export'
+                and 'docxodus' in s.name and s.argv]
+    assert docxodus and all(V in str(s.log) and V in s.argv[s.argv.index('--log') + 1] for s in docxodus)
 
 
 def test_adopting_validates_the_lists_and_records_where_they_came_from(tmp_path: Path) -> None:
@@ -385,10 +397,11 @@ def test_adopting_validates_the_lists_and_records_where_they_came_from(tmp_path:
     # a list that names a pair twice is refused: the sample is one compare per pair
     jri.write_csv(root / 'results/twice.csv', jri.GEN_FIELDS, pool[:5])
     with pytest.raises(RuntimeError, match='1 compares repeat a pair already listed'):
-        _act(_plan(root, regen, n=5, adopt_redline_csv=Path('results/twice.csv')), 'adopt redline sample')
+        _act(_plan(root, regen, n=5, draw_sample=True, adopt_redline_csv=Path('results/twice.csv')),
+             'adopt redline sample')
     fixtures = [f'corpus/word/{state}/docx/fx{s}0.docx' for s, state in enumerate(jri.CONVERSION_QUOTAS)]
     listing = _put(root / 'results/convert.txt', ('\n'.join(fixtures) + '\n').encode())
-    steps = _plan(root, regen, n=5, seed=7, adopt_redline_csv=Path('results/mine.csv'),
+    steps = _plan(root, regen, n=5, seed=7, draw_sample=True, adopt_redline_csv=Path('results/mine.csv'),
                   adopt_conversion_list=listing)
     assert [s.name for s in steps if s.stage == 'sample'] == \
         ['bench inputs', 'adopt redline sample', 'adopt conversion sample']
@@ -398,7 +411,7 @@ def test_adopting_validates_the_lists_and_records_where_they_came_from(tmp_path:
     assert len(jri.read_csv(ev / 'gen_pairs_sample.csv')) == 5
     with pytest.raises(RuntimeError, match='4 fixtures, want 5'):
         _act(steps, 'adopt conversion sample')
-    four = _plan(root, regen, n=4, seed=7, adopt_conversion_list=listing)
+    four = _plan(root, regen, n=4, seed=7, draw_sample=True, adopt_conversion_list=listing)
     _act(four, 'adopt conversion sample')
     rows = jri.read_csv(ev / f'sample_conversion_{V}.csv')
     assert list(rows[0]) == ['state', 'stem', 'docx', 'word_pdf', 'docx_sha256', 'word_pdf_sha256']
@@ -437,8 +450,10 @@ def test_an_adopted_compare_without_its_word_pdf_is_refused(tmp_path: Path) -> N
     jri.write_csv(root / 'mine.csv', jri.GEN_FIELDS, [r for r in pool if r['key'] != 'wct0b'][:4])
     (root / jri.RUN_DIR / 'oracle_pdf' / 'cle0.pdf').unlink()
     with pytest.raises(RuntimeError, match='1 sampled compares have no Word PDF'):
-        _act(_plan(root, regen, n=4, adopt_redline_csv=root / 'mine.csv'), 'adopt redline sample')
-    missing = jri.select(_plan(root, regen, adopt_redline_csv=root / 'nope.csv'), only=['sample'])[0]
+        _act(_plan(root, regen, n=4, draw_sample=True, adopt_redline_csv=root / 'mine.csv'),
+             'adopt redline sample')
+    missing = jri.select(_plan(root, regen, draw_sample=True, adopt_redline_csv=root / 'nope.csv'),
+                         only=['sample'])[0]
     with pytest.raises(RuntimeError, match='no such list to adopt'):
         missing.action()
 
@@ -461,6 +476,10 @@ def test_generate_runs_the_given_binary_and_a_manifest_per_tool(tmp_path: Path) 
     _act(steps, 'generator dist')
     assert [p.name for p in (root / ev / 'dist').iterdir()] == ['jubarte']
     assert (root / ev / 'dist' / 'jubarte').resolve() == binary.resolve()
+    # the docxodus generate-missing path is the --draw-sample flow's, not the fixed-set flow's
+    docxodus = [s for s in steps if 'docxodus' in s.name]
+    assert not docxodus
+    steps = _plan(root, regen, binary=binary, draw_sample=True)
     docxodus = _cmd(steps, 'docxodus redlines (missing only)')
     assert docxodus[docxodus.index('--method') + 1] == 'docxodus-csharp-inproc'
     assert docxodus[docxodus.index('--dist') + 1] == str(jri.DOCXODUS_DIST)
@@ -538,7 +557,7 @@ def test_a_word_pdf_without_recorded_source_bytes_counts_as_stale(tmp_path: Path
 def test_the_draw_counts_the_hub_listing_as_coverage_and_caches_it(tmp_path: Path) -> None:
     root, regen = _tree(tmp_path)
     fake = FakeHub(['twc0_docxodus.pdf', 'README.md'])
-    steps = _plan(root, regen, n=9, hub=fake.hub())
+    steps = _plan(root, regen, n=9, draw_sample=True, hub=fake.hub())
     detail = _act(steps, 'draw redline sample')
     assert '9 pairs with a docxodus Word PDF (local PDFs + Hub listing)' in detail
     cache = root / jri.evidence_dir(V) / 'hub_docxodus_listing.json'
@@ -551,14 +570,14 @@ def test_the_draw_counts_the_hub_listing_as_coverage_and_caches_it(tmp_path: Pat
 def test_an_unreachable_hub_falls_back_to_local_pdfs_and_says_so(tmp_path: Path) -> None:
     root, regen = _tree(tmp_path)
     fake = FakeHub([], down=True)
-    steps = _plan(root, regen, n=9, hub=fake.hub())
+    steps = _plan(root, regen, n=9, draw_sample=True, hub=fake.hub())
     detail = _act(steps, 'draw redline sample')
     assert '8 pairs with a docxodus Word PDF (local PDFs only: Hub unreachable (ConnectionError))' in detail
     assert not (root / jri.evidence_dir(V) / 'hub_docxodus_listing.json').exists()
     assert 'Hub unreachable (ConnectionError): nothing fetched, 1 pairs left to Docxodus' in \
         _act(steps, 'docxodus PDFs from the hub')
     assert fake.fetched == []
-    assert 'Hub not consulted' in _act(_plan(root, regen, n=9), 'docxodus PDFs from the hub')
+    assert 'Hub not consulted' in _act(_plan(root, regen, n=9, draw_sample=True), 'docxodus PDFs from the hub')
 
 
 def test_missing_docxodus_pdfs_come_from_the_hub_and_docxodus_redlines_the_rest(tmp_path: Path) -> None:
@@ -573,7 +592,7 @@ def test_missing_docxodus_pdfs_come_from_the_hub_and_docxodus_redlines_the_rest(
         return Proc(0, 'wrote 1 redline(s)\n')
 
     fake = FakeHub(['wct0_docxodus.pdf'])  # the Hub has wct0, neither wct1 nor twc0
-    steps = _sample(root, regen, 9, hub=fake.hub(), run=run)
+    steps = _sample(root, regen, 9, draw_sample=True, hub=fake.hub(), run=run)
     assert _act(steps, 'docxodus PDFs from the hub') == \
         '1 docxodus Word PDFs fetched (cached Hub listing), 2 not on the Hub'
     assert fake.fetched == ['wct0_docxodus.pdf'] and (lane / 'wct0_docxodus.pdf').is_file()
@@ -589,7 +608,7 @@ def test_missing_docxodus_pdfs_come_from_the_hub_and_docxodus_redlines_the_rest(
     assert 'every sampled pair has its docxodus Word PDF locally' in _act(steps, 'docxodus PDFs from the hub')
     _act(steps, 'docxodus manifest')
     assert 'nothing to redline' in _act(steps, 'docxodus redlines (missing only)') and len(ran) == 1
-    failing = _sample(root, regen, 9, run=lambda cmd, **_: Proc(1, '', 'boom'))
+    failing = _sample(root, regen, 9, draw_sample=True, run=lambda cmd, **_: Proc(1, '', 'boom'))
     (lane / 'twc0_docxodus.pdf').unlink()
     _act(failing, 'docxodus manifest')
     with pytest.raises(RuntimeError, match='exit 1'):
@@ -613,25 +632,25 @@ def test_pairs_docxodus_itself_cannot_redline_score_zero_instead_of_stopping(tmp
     lane = root / jri.RUN_DIR / 'docxodus' / 'pdf_by_word'
     for key in ('wct0', 'wct1'):
         (lane / f'{key}_docxodus.pdf').unlink()
-    steps = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate'))
+    steps = _sample(root, regen, 9, draw_sample=True, run=_docxodus_fails(root, 'generate'))
     _act(steps, 'docxodus manifest')
     assert _act(steps, 'docxodus redlines (missing only)') == \
         '3 pairs Docxodus itself fails to redline (they score 0); none redlined'
     # the failures file that run left behind proves nothing about a run that crashed before writing one
-    stale = _sample(root, regen, 9, run=lambda cmd, **_: Proc(1, '', 'crash'))
+    stale = _sample(root, regen, 9, draw_sample=True, run=lambda cmd, **_: Proc(1, '', 'crash'))
     with pytest.raises(RuntimeError, match='exit 1'):
         _act(stale, 'docxodus redlines (missing only)')
     # a source the generator could not find is the bench's fault, not Docxodus's: it stops the run
-    missing = _sample(root, regen, 9, run=_docxodus_fails(root, 'missing_source'))
+    missing = _sample(root, regen, 9, draw_sample=True, run=_docxodus_fails(root, 'missing_source'))
     with pytest.raises(RuntimeError, match='exit 1'):
         _act(missing, 'docxodus redlines (missing only)')
     # so is a worker that crashed or timed out on every pair
     for error in ('timeout waiting for worker reply after 15000 ms bin=x', 'worker exited before reply (code=1)'):
-        harness = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate', error))
+        harness = _sample(root, regen, 9, draw_sample=True, run=_docxodus_fails(root, 'generate', error))
         with pytest.raises(RuntimeError, match='exit 1'):
             _act(harness, 'docxodus redlines (missing only)')
     # a failures file naming more than this manifest is another run's
-    other = _sample(root, regen, 9, run=_docxodus_fails(root, 'generate', extra=('not-in-the-sample',)))
+    other = _sample(root, regen, 9, draw_sample=True, run=_docxodus_fails(root, 'generate', extra=('not-in-the-sample',)))
     with pytest.raises(RuntimeError, match='exit 1'):
         _act(other, 'docxodus redlines (missing only)')
     # the lane's full-run failures record is never the release run's scratch
@@ -643,7 +662,7 @@ def test_a_docxodus_redline_word_refused_twice_is_recorded_and_never_opened_agai
     root, regen = _tree(tmp_path)
     lane = root / jri.RUN_DIR / 'docxodus'
     (lane / 'pdf_by_word' / 'wct1_docxodus.pdf').unlink()
-    steps = _sample(root, regen, 9)
+    steps = _sample(root, regen, 9, draw_sample=True)
     # Docxodus redlined five pairs; Word exported wct0 and wct1 only
     for key in ('twc0', 'twc1', 'twc2', 'wct1', 'wct0'):
         _put(lane / 'docx' / f'{key}_docxodus.docx')
@@ -683,7 +702,14 @@ def test_a_docxodus_redline_word_refused_twice_is_recorded_and_never_opened_agai
 # ------------------------------------------------------------------ export, measure, convert, score
 
 def test_word_exports_run_under_the_watchdog_with_timeout_300_and_may_fail(tmp_path: Path) -> None:
+    # the fixed-set flow exports jubarte only: batch + retry, no docxodus lane
     steps = jri.plan(_rel(tmp_path), conversion=[])
+    exports = [s for s in steps if s.stage == 'export' and s.argv]
+    assert [s.name for s in exports] == ['word export jubarte (batch)',
+                                         'word export jubarte (one osascript per document)']
+    assert [s.name for s in steps if s.stage == 'export'][0] == 'word answers'
+    # --draw-sample adds the docxodus lane and its refusal record
+    steps = jri.plan(_rel(tmp_path), conversion=[], draw_sample=True)
     exports = [s for s in steps if s.stage == 'export' and s.argv]
     assert len(exports) == 4  # batch + retry, jubarte lane and docxodus lane
     # what Word refused in both docxodus passes is recorded right after them
@@ -705,7 +731,7 @@ def test_word_exports_run_under_the_watchdog_with_timeout_300_and_may_fail(tmp_p
 
 
 def test_an_adopted_lane_skips_word_altogether(tmp_path: Path) -> None:
-    steps = jri.plan(_rel(tmp_path), conversion=[])
+    steps = jri.plan(_rel(tmp_path), conversion=[], draw_sample=True)
     assert next(s for s in steps if s.name == 'word answers').stage == 'export'
     kept = jri.select(steps, skip=['export', 'generate'])
     assert not any('word' in s.name or 'redlines' in s.name for s in kept)
@@ -715,18 +741,31 @@ def test_an_adopted_lane_skips_word_altogether(tmp_path: Path) -> None:
     assert jri.select(steps, only=['generate', 'export'])[0].name == 'word answers'
 
 
+def test_a_sets_lane_skips_word_too(tmp_path: Path) -> None:
+    steps = jri.plan(_rel(tmp_path), conversion=[])
+    kept = jri.select(steps, skip=['export', 'generate'])
+    assert not any('word' in s.name or 'redlines' in s.name for s in kept)
+    assert [s.name for s in jri.select(steps, only=['install', 'sets'])] == \
+        ['bench inputs', 'release binary', 'validate the fixed sets', 'adopt the fixed sets']
+    assert jri.select(steps, only=['generate', 'export'])[0].name == 'word answers'
+
+
 def test_measure_scores_the_sample_one_tool_at_a_time(tmp_path: Path) -> None:
     steps = jri.plan(_rel(tmp_path), conversion=[], jobs=6)
     jub = _cmd(steps, 'measure jubarte')
-    docx = _cmd(steps, 'measure docxodus')
-    for cmd in (jub, docx):
+    for cmd in (jub,):
         assert cmd[cmd.index('--sample-csv') + 1].endswith(f'sample_redline_{V}.csv')
         assert '--fresh' in cmd and '--regen-list' in cmd
         assert cmd[cmd.index('--jobs') + 1] == '6'
     assert jub[-1] == LANE
-    assert docx[-1] == 'docxodus'
     order = [s.name for s in steps if s.stage in ('measure', 'convert', 'score')]
-    # one scoring job at a time: jubarte, docxodus, the convert-and-score, the score-only
+    # one scoring job at a time, and only jubarte is scored: the comparators are read (#130)
+    assert order == ['measure jubarte', 'stale renders aside', 'convert jubarte (converts + scores)']
+    steps = jri.plan(_rel(tmp_path), conversion=[], jobs=6, draw_sample=True)
+    docx = _cmd(steps, 'measure docxodus')
+    assert docx[-1] == 'docxodus' and docx[docx.index('--jobs') + 1] == '6'
+    order = [s.name for s in steps if s.stage in ('measure', 'convert', 'score')]
+    # the draw flow still measures docxodus and renders what soffice lacks
     assert order == ['measure jubarte', 'measure docxodus', 'stale renders aside',
                      'convert jubarte (converts + scores)',
                      'soffice missing list', 'convert soffice (missing only)',
@@ -745,13 +784,16 @@ def test_convert_takes_one_files_list_flag_per_fixture(tmp_path: Path) -> None:
     assert convert[convert.index('--json') + 1].endswith(f'docx_to_pdf_jubarte_{V}_sample.json')
     assert convert[convert.index('--jobs') + 1] == '5'
     assert convert[convert.index('--convert-workers') + 1] == '2'
+    assert not [s for s in steps if s.stage in ('convert', 'score') and 'soffice' in s.name]  # jubarte only
+    defaults = _cmd(jri.plan(_rel(tmp_path), conversion=files), 'convert jubarte (converts + scores)')
+    assert defaults[defaults.index('--jobs') + 1] == '4'
+    assert defaults[defaults.index('--convert-workers') + 1] == '3'
+    # the soffice render-missing path is the --draw-sample flow's
+    steps = jri.plan(_rel(tmp_path), binary=Path('/bin/j'), conversion=files, draw_sample=True)
     missing = _cmd(steps, 'convert soffice (missing only)')
     assert missing[missing.index('--engine') + 1] == 'soffice'
     assert missing[missing.index('--out') + 1] == str(jri.SOFFICE_WORK)
     assert missing[missing.index('--files-list') + 1].endswith('soffice_missing.txt')
-    defaults = _cmd(jri.plan(_rel(tmp_path), conversion=files), 'convert jubarte (converts + scores)')
-    assert defaults[defaults.index('--jobs') + 1] == '4'
-    assert defaults[defaults.index('--convert-workers') + 1] == '3'
 
 
 def test_a_new_candidate_never_resumes_the_previous_binary_s_renders(tmp_path: Path) -> None:
@@ -797,7 +839,7 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(
         return Proc(0, f'{jri.SOFFICE_VERSION} bce0998afefdbc355585ca324285661a2170ba77\n') if cmd[-1] == '--version' \
             else Proc(1)
 
-    steps = _sample(root, regen, 8, jobs=5, adopt_conversion_list=Path('convert.txt'), run=pinned)
+    steps = _sample(root, regen, 8, draw_sample=True, jobs=5, adopt_conversion_list=Path('convert.txt'), run=pinned)
     ev = jri.evidence_dir(V)
     assert '1 fixtures without a LibreOffice render' in _act(steps, 'soffice missing list')
     assert (root / ev / 'soffice_missing.txt').read_text() == 'corpus/word/clean/docx/fx00.docx\n'
@@ -814,7 +856,7 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(
     _act(steps, 'stage soffice renders')  # a rerun rewrites only what differs
     assert kept.stat().st_mtime_ns == before
     assert (root / ev / 'soffice_sample' / 'fx10.pdf').read_bytes() == b'%PDF-1.7 fx10'
-    score = _cmd(_plan(root, regen, n=8, jobs=5), 'score soffice (score-only)')
+    score = _cmd(_plan(root, regen, n=8, jobs=5, draw_sample=True), 'score soffice (score-only)')
     assert '--score-only' in score
     assert score[score.index('--tool') + 1] == 'soffice'  # the store label its converters.jsonl line maps by
     assert score[score.index('--tool-version') + 1] == 'LibreOffice 26.8.0.3' == jri.SOFFICE_VERSION
@@ -834,7 +876,7 @@ def test_soffice_renders_are_staged_under_the_docx_stem_and_scored_from_there(
 
 def test_a_broken_soffice_render_is_rendered_again_not_published(tmp_path: Path) -> None:
     root, regen = _tree(tmp_path)
-    _sample(root, regen, 9)
+    _sample(root, regen, 9, draw_sample=True)
     cand = root / jri.SOFFICE_WORK / 'candidate'
     sample = jri.read_csv(root / jri.conversion_list(V))
     empty, truncated = [cand / f'{r["stem"]}.pdf' for r in sample if r['stem'] != 'clean__fx00'][:2]
@@ -858,13 +900,13 @@ def test_renders_of_another_libreoffice_never_join_the_set(tmp_path: Path, monke
         return run
 
     with pytest.raises(RuntimeError, match=re.escape('soffice is LibreOffice 25.2.1.1, not LibreOffice 26.8.0.3')):
-        _act(_sample(root, regen, 9, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
+        _act(_sample(root, regen, 9, draw_sample=True, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
     assert asked[-1] == ['/opt/lo/soffice', '--version']
-    said = _act(_sample(root, regen, 9, run=lo('LibreOffice 26.8.0.3')), 'soffice missing list')
+    said = _act(_sample(root, regen, 9, draw_sample=True, run=lo('LibreOffice 26.8.0.3')), 'soffice missing list')
     assert said.endswith('1 fixtures without a LibreOffice render (LibreOffice 26.8.0.3 renders them)')
     _put(root / jri.SOFFICE_WORK / 'candidate' / 'clean__fx00.pdf', b'%PDF-1.7')
     asked.clear()
-    said = _act(_sample(root, regen, 9, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
+    said = _act(_sample(root, regen, 9, draw_sample=True, run=lo('LibreOffice 25.2.1.1')), 'soffice missing list')
     assert said.endswith('0 fixtures without a LibreOffice render') and asked == []  # nothing to render
 
 
@@ -935,14 +977,15 @@ def test_sample_then_write_passes_the_engine_checker(tmp_path: Path, mode: str) 
     root, regen = _tree(tmp_path, fill=21, fixtures=8)
     binary = _put(tmp_path / 'build' / 'jubarte-rc')
     engine = tmp_path / 'engine'
-    adopt = {}
+    adopt = {'draw_sample': True}
     if mode == 'adopt':
         pool = jri.read_csv(root / jri.RUN_DIR / 'pool_pairs.csv')
         jri.write_csv(root / 'results/mine.csv', jri.GEN_FIELDS, [r for r in pool if r['key'] != 'wct0b'])
         lines = [f'corpus/word/{state}/docx/fx{s}{i}.docx'
                  for s, state in enumerate(jri.CONVERSION_QUOTAS) for i in range(6)]
         _put(root / 'results/convert.txt', ('\n'.join(lines) + '\n').encode())
-        adopt = {'adopt_redline_csv': Path('results/mine.csv'), 'adopt_conversion_list': Path('results/convert.txt')}
+        adopt = {'draw_sample': True, 'adopt_redline_csv': Path('results/mine.csv'),
+                 'adopt_conversion_list': Path('results/convert.txt')}
     steps = _sample(root, regen, 24, binary=binary, engine_dir=engine, run=_answers, **adopt)
     made = _scored(root, steps, binary)  # the lane and the scores exist only after the sample
     stale = _put(engine / 'release_info' / f'sample_redline_{V}_01-01-26_00-00.csv')
@@ -1052,35 +1095,378 @@ def test_the_write_stage_needs_the_engine_checkout_and_the_sample_meta(tmp_path:
     binary = _put(tmp_path / 'jubarte')
     with pytest.raises(RuntimeError, match='needs --engine-dir'):
         _act(_plan(root, regen, binary=binary, run=_answers), 'release_info')
-    with pytest.raises(RuntimeError, match='the sample stage writes it'):
+    # without the fixed sets the write names them; with them but no sets stage, the meta
+    _write_sets(root)
+    with pytest.raises(RuntimeError, match='the sets stage writes it'):
         _act(_plan(root, regen, binary=binary, engine_dir=tmp_path / 'engine', run=_answers), 'release_info')
+
+
+# ------------------------------------------------------------------ the fixed sets (plan 7.3, #130)
+
+SET_KEYS = ['wct0b', 'wct1', 'cle0', 'twc0', 'twc1']  # wct0b is its pair's second compare
+CONV_STEMS = [('clean', 'fx00'), ('clean', 'fx01'), ('tracking_without_comments', 'fx10'),
+              ('tracking_without_comments', 'fx11'), ('with_comments_clean', 'fx20'),
+              ('with_comments_clean', 'fx21'), ('with_comments_tracking', 'fx30'),
+              ('with_comments_tracking', 'fx31')]
+
+
+def _write_sets(root: Path, redline: list[str] = SET_KEYS, convert: list[tuple[str, str]] = CONV_STEMS,
+                *, folder: str = 'results/sets', set_version: str | None = None) -> None:
+    """The two fixed-set CSVs + sets.json over the _tree corpus (paths and shas real)."""
+    set_version = set_version if set_version is not None else fs.SET_VERSION
+    pool = {r['key']: r for r in jri.read_csv(root / jri.RUN_DIR / 'pool_pairs.csv')}
+    word = root / 'corpus/word'
+    red = []
+    for key in redline:
+        r = pool[key]
+        red.append({'key': key,
+                    'base': f'corpus/word/{r["base"]}.docx', 'base_sha256': _sha(word / f'{r["base"]}.docx'),
+                    'next': f'corpus/word/{r["next"]}.docx', 'next_sha256': _sha(word / f'{r["next"]}.docx'),
+                    'docx': f'corpus/word/{r["docx"]}', 'docx_sha256': _sha(word / r['docx']),
+                    'pdf': f'corpus/word/{r["pdf"]}', 'pdf_sha256': _sha(word / r['pdf']),
+                    'state': r['state'], 'id': r['id'], 'sets': r['sets'], 'oracle': 'corpus',
+                    'oracle_pdf': f'{jri.RUN_DIR}/oracle_pdf/{key}.pdf',
+                    'oracle_pdf_sha256': _sha(root / jri.RUN_DIR / 'oracle_pdf' / f'{key}.pdf'),
+                    'origin': fs.ORIGIN_SAMPLE, 'source': 'local'})
+    conv = []
+    for state, name in convert:
+        conv.append({'state': state, 'stem': f'{state}__{name}',
+                     'docx': f'corpus/word/{state}/docx/{name}.docx',
+                     'docx_sha256': _sha(word / state / 'docx' / f'{name}.docx'),
+                     'word_pdf': f'corpus/word/{state}/pdf/{name}.pdf',
+                     'word_pdf_sha256': _sha(word / state / 'pdf' / f'{name}.pdf'),
+                     'source': 'local', 'pages': '2', 'jubarte_score': '90.0'})
+    jri.write_csv(root / Path(folder) / 'convert_860.csv', fs.CONVERT_HEADER, conv)
+    jri.write_csv(root / Path(folder) / 'redline_600.csv', fs.REDLINE_SET_HEADER, red)
+    (root / Path(folder) / 'sets.json').write_text(json.dumps(
+        {'set_version': set_version, 'seed': fs.SEED,
+         'counts': {'convert_860': jri.state_counts(conv), 'redline_600': jri.state_counts(red)},
+         'totals': {'convert_860': len(conv), 'redline_600': len(red)},
+         'origins': {fs.ORIGIN_SAMPLE: len(red)}, 'excluded': []}, indent=1) + '\n')
+
+
+def _put_json(path: Path, doc: dict) -> Path:
+    return _put(path, json.dumps(doc).encode())
+
+
+def _scores_doc(vals: dict[str, float], backend: str = 'torch-mps') -> dict:
+    return {'rows': {k: {'overall_score': v, 'overall_score_pagefair': v} for k, v in vals.items()},
+            'summary': {'scorer_backend': backend}}
+
+
+def _lanes(root: Path, *, redline: dict[str, dict] | None = None,
+           convert: dict[str, dict] | None = None, run: Path | None = None) -> None:
+    """The vendor-refresh results (#129): one measure-scores / docx-to-pdf report JSON
+    per (tool, version), over the set's keys/stems."""
+    run = run or root / jri.RUN_DIR
+    for tool, versions in (redline or {}).items():
+        for version, doc in versions.items():
+            _put_json(run / f'scores_{tool}-{version}_set-redline_600.json', doc)
+    for tool, versions in (convert or {}).items():
+        for version, per in versions.items():
+            _put_json(root / 'results' / f'docx_to_pdf_{tool}_{version}_set-convert_860.json',
+                      {'scorer_backend': 'torch-cpu', 'tools': {tool: {'per_doc': per}}})
+
+
+def test_the_sets_flags_default_to_the_committed_sets_and_override(tmp_path: Path) -> None:
+    assert jri.DEFAULT_CONVERT_SET == Path('results/sets/convert_860.csv')
+    assert jri.DEFAULT_REDLINE_SET == Path('results/sets/redline_600.csv')
+    root, regen = _tree(tmp_path)
+    # the defaults are read relative to the bench root; their absence is refused by name
+    with pytest.raises(RuntimeError, match=r'no results/sets/convert_860\.csv'):
+        _act(_plan(root, regen), 'validate the fixed sets')
+    _write_sets(root, folder='results/mysets')
+    steps = _plan(root, regen, convert_set=Path('results/mysets/convert_860.csv'),
+                  redline_set=Path('results/mysets/redline_600.csv'))
+    assert 'set version' in _act(steps, 'validate the fixed sets')
+    # --draw-sample ignores the set flags; the two flows cannot be mixed
+    out = CliRunner().invoke(jri.app, [V, '--root', str(root), '--plan', '--draw-sample',
+                                       '--convert-set', 'results/mysets/convert_860.csv', '--only', 'sample'])
+    assert out.exit_code != 0 and '--draw-sample' in out.output
+    out = CliRunner().invoke(jri.app, [V, '--root', str(root), '--plan', '--adopt-redline', 'mine.csv'])
+    assert out.exit_code != 0 and '--draw-sample' in out.output
+
+
+def test_set_validation_refuses_any_drift(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    steps = _plan(root, regen)
+    assert '5 compares' in _act(steps, 'validate the fixed sets') and '8 fixtures' in _act(steps, 'validate the fixed sets')
+    # set_version drift: a changed set is a new set version, never an edit
+    _write_sets(root, set_version='1999-01-01.0')
+    with pytest.raises(RuntimeError, match=r'set_version is 1999-01-01\.0'):
+        _act(steps, 'validate the fixed sets')
+    _write_sets(root)
+    # count drift: a row dropped behind sets.json's back
+    rows = jri.read_csv(root / 'results/sets/redline_600.csv')
+    jri.write_csv(root / 'results/sets/redline_600.csv', fs.REDLINE_SET_HEADER, rows[:-1])
+    with pytest.raises(RuntimeError, match='redline_600.csv: counts by state drifted'):
+        _act(steps, 'validate the fixed sets')
+    # totals drift: sets.json claims another total than the CSVs hold
+    jri.write_csv(root / 'results/sets/redline_600.csv', fs.REDLINE_SET_HEADER, rows)
+    sets = json.loads((root / 'results/sets/sets.json').read_text())
+    sets['totals']['convert_860'] = 7
+    (root / 'results/sets/sets.json').write_text(json.dumps(sets))
+    with pytest.raises(RuntimeError, match=r'convert_860 totals 7, convert_860\.csv holds 8 rows'):
+        _act(steps, 'validate the fixed sets')
+    sets['totals']['convert_860'] = 8
+    (root / 'results/sets/sets.json').write_text(json.dumps(sets))
+    # input sha drift: the corpus moved under the pinned set
+    (root / 'corpus/word/clean/docx/wct0_base.docx').write_bytes(b'drifted')
+    with pytest.raises(RuntimeError, match=r'hashes to .* but base_sha256 records'):
+        _act(steps, 'validate the fixed sets')
+    # an input missing on disk is drift too, named
+    (root / 'corpus/word/clean/docx/wct0_base.docx').unlink()
+    with pytest.raises(RuntimeError, match=r'corpus/word/clean/docx/wct0_base\.docx .*is missing'):
+        _act(steps, 'validate the fixed sets')
+
+
+def test_the_sets_stage_adopts_the_sets_into_the_release_evidence(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    steps = _plan(root, regen)
+    detail = _act(steps, 'adopt the fixed sets')
+    ev = root / jri.evidence_dir(V)
+    sample = jri.read_csv(root / jri.redline_list(V))
+    assert [r['key'] for r in sample] == SET_KEYS
+    # the sample layout keeps the pool spelling measure.py and the generator expect
+    assert list(sample[0]) == jri.GEN_SHA_FIELDS
+    assert sample[0]['base'] == 'clean/docx/wct0_base' and sample[0]['docx'].endswith('.docx')
+    assert sample[0]['base_sha256'] == _sha(root / 'corpus/word/clean/docx/wct0_base.docx')
+    # the manifest redlines each pair once, under its FIRST key (measure.py's rule)
+    manifest = [r['key'] for r in jri.read_csv(ev / 'gen_pairs_sample.csv')]
+    assert 'wct0' in manifest and 'wct0b' not in manifest and len(manifest) == len(SET_KEYS)
+    conv = jri.read_csv(root / jri.conversion_list(V))
+    assert [r['stem'] for r in conv] == [f'{s}__{n}' for s, n in CONV_STEMS]
+    assert list(conv[0]) == jri.CONVERSION_SHA_FIELDS
+    meta = json.loads((ev / 'sample_meta.json').read_text())
+    for kind in ('redline', 'conversion'):
+        assert meta[kind]['set_version'] == fs.SET_VERSION and meta[kind]['date'] \
+            and 'not drawn' in meta[kind]['rule']
+    assert 'set version' in detail and 'not run' in detail
+
+
+def test_the_sets_flow_runs_jubarte_only(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    steps = _plan(root, regen)
+    # no other vendor's command anywhere in the plan: the comparator lanes are read, not run
+    whole = ' '.join(' '.join(s.argv) for s in steps if s.argv) + ' ' + ' '.join(s.name for s in steps)
+    for other in ('docxodus', 'soffice', 'superdoc'):
+        assert other not in whole.lower()
+    assert [s.name for s in steps if s.stage == 'sets'] == \
+        ['bench inputs', 'validate the fixed sets', 'adopt the fixed sets']
+    assert [s.name for s in steps if s.stage == 'generate'] == \
+        ['generator dist', 'redline snapshot', 'jubarte redlines', 'stale Word PDFs aside']
+    assert [s.name for s in steps if s.stage == 'export'] == \
+        ['word answers', 'word export jubarte (batch)', 'word export jubarte (one osascript per document)']
+    assert [s.name for s in steps if s.stage == 'measure'] == ['measure jubarte']
+    assert [s.name for s in steps if s.stage == 'convert'] == \
+        ['stale renders aside', 'convert jubarte (converts + scores)']
+    assert not [s for s in steps if s.stage == 'score']  # the convert stage scores jubarte itself
+    assert [s.name for s in steps if s.stage == 'write'] == ['release_info']
+
+
+def test_the_newest_vendor_refresh_lane_wins_per_tool(tmp_path: Path) -> None:
+    d = tmp_path / 'results'
+    for name in ('docx_to_pdf_soffice_26.8.0.3_set-convert_860.json',
+                 'docx_to_pdf_soffice_26.8.2.2_set-convert_860.json',
+                 'docx_to_pdf_soffice_9.9.9_set-convert_860.json',
+                 'docx_to_pdf_docxide_0.18.4_set-convert_860.json',
+                 'docx_to_pdf_docxide_0.18.10_set-convert_860.json',
+                 'docx_to_pdf_jubarte_0.17.0.json',                       # not a refresh lane
+                 'docx_to_pdf_apryse_12.2.1_set-convert_v1.json'):         # another set
+        _put(d / name)
+    lanes = jri.newest_vendor_lanes(d, prefix='docx_to_pdf_', sep='_', set_name='convert_860')
+    assert lanes == {'soffice': ('26.8.2.2', d / 'docx_to_pdf_soffice_26.8.2.2_set-convert_860.json'),
+                     'docxide': ('0.18.10', d / 'docx_to_pdf_docxide_0.18.10_set-convert_860.json')}
+    r = tmp_path / 'run'
+    for name in ('scores_docxodus-12.6.5_set-redline_600.json',
+                 'scores_docxodus-15.0.0_set-redline_600.json',
+                 'scores_superdoc-2.28.0_set-redline_600.json',
+                 'scores_jubarte-0.17.0.json',
+                 'scores_broken_set-redline_600.json'):                    # no tool<sep>version
+        _put(r / name)
+    lanes = jri.newest_vendor_lanes(r, prefix='scores_', sep='-', set_name='redline_600')
+    assert set(lanes) == {'docxodus', 'superdoc'}
+    assert lanes['docxodus'][:1] == ('15.0.0',)
+    assert not jri.newest_vendor_lanes(tmp_path / 'nowhere', prefix='scores_', sep='-',
+                                       set_name='redline_600')
+
+
+def test_a_comparator_that_never_ran_is_not_run_never_zero() -> None:
+    rows = {'k1': {'overall_score': 50.0, 'overall_score_pagefair': 50.0},
+            'k2': {'overall_score': 0.0, 'overall_score_pagefair': 0.0}}
+    # a key the refresh lane never scored stays out of its aggregates: not run, never 0
+    assert jri.refresh_scores(rows, ['k1', 'k2', 'k3']) == {'k1': 50.0, 'k2': 0.0}
+    report = {'tools': {'docxide': {'per_doc': {'S1': 80.0}}}}
+    assert jri.refresh_report_scores(report, 'docxide', ['s1', 's2']) == {'s1': 80.0}
+    block = jri.not_run_block(['a', 'b', 'c'])
+    assert block['status'] == 'not run' and block['n'] == 0 and block['not_run'] == 3
+    assert block['median'] is None and block['mean'] is None and block['median_ci95'] is None
+    assert block['by_state'] == {} and block['per_document'] == {}
+
+
+def _scored_sets(root: Path, steps: list[Step], binary: Path) -> dict:
+    """Jubarte's own artifacts after the sets stage: the lane, its measure scores,
+    its conversion report — everything else comes from the vendor refresh lanes."""
+    ev = root / jri.evidence_dir(V)
+    sample = jri.read_csv(root / jri.redline_list(V))
+    manifest = [r['key'] for r in jri.read_csv(ev / 'gen_pairs_sample.csv')]
+    lane = root / jri.RUN_DIR / LANE
+    for key in manifest:
+        _put(lane / 'docx' / f'{key}_{LANE}.docx')
+        if key != 'twc1':  # Word could not open this redline: no PDF, the compare scores 0
+            _put(lane / 'pdf_by_word' / f'{key}_{LANE}.pdf')
+    rows = {r['key']: 80.0 + i % 5 for i, r in enumerate(sample) if r['key'] != 'twc1'}
+    _put_json(root / jri.scores_json(LANE, V), _scores_doc(rows))
+    conv = jri.read_csv(root / jri.conversion_list(V))
+    absent = conv[2]['stem']
+    for i, r in enumerate(conv):
+        if r['stem'] != absent:
+            _put(ev / 'convert_work' / 'jubarte' / 'candidate' / f'{r["stem"]}.pdf')
+    per = {r['stem']: 90.0 + i % 3 for i, r in enumerate(conv) if r['stem'] != absent}
+    _put_json(root / jri.conversion_report('jubarte', V),
+              {'scorer_backend': 'torch-cpu', 'tools': {'jubarte': {'version': f'jubarte {V}', 'per_doc': per}}})
+    return {'sample': sample, 'conv': conv, 'absent': absent, 'binary_sha': _sha(binary)}
+
+
+def test_sets_sample_then_write_reads_the_vendor_lanes(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    binary = _put(tmp_path / 'build' / 'jubarte-rc')
+    engine = tmp_path / 'engine'
+    steps = _plan(root, regen, binary=binary, engine_dir=engine, run=_answers)
+    for name in ('validate the fixed sets', 'adopt the fixed sets'):
+        _act(steps, name)
+    made = _scored_sets(root, steps, binary)
+    # the vendor refresh lanes (#129): docxodus newest of two, superdoc misses one pair,
+    # apryse absent; conversions: soffice newest of two, docxide partial, the rest absent
+    keys = [r['key'] for r in made['sample']]
+    stems = [r['stem'] for r in made['conv']]
+    dx = {k: 60.0 + i for i, k in enumerate(keys)}
+    sup = {k: 55.0 for k in keys if k != 'cle0'}
+    sof = {s: 70.0 + i % 3 for i, s in enumerate(stems)}
+    did = {s: 65.0 for s in stems if s != stems[0]}
+    _lanes(root, redline={'docxodus': {'12.6.5': _scores_doc({}), '15.0.0': _scores_doc(dx)},
+                          'superdoc': {'2.28.0': _scores_doc(sup, backend='numpy')}},
+           convert={'soffice': {'26.8.0.3': {}, '26.8.2.2': sof},
+                    'docxide': {'0.18.4': did}})
+    # the refresh lane carries its own version string and scorer backend (#129's real
+    # files do): both are recorded, and a backend unlike this run's never refuses the write
+    lane_doc = json.loads((root / 'results/docx_to_pdf_docxide_0.18.4_set-convert_860.json').read_text())
+    lane_doc['tools']['docxide']['version'] = 'docxide-pdf 0.18.4'
+    lane_doc['scorer_backend'] = 'numpy'
+    _put_json(root / 'results/docx_to_pdf_docxide_0.18.4_set-convert_860.json', lane_doc)
+    detail = _act(steps, 'release_info')
+    assert f'six files of {V}' in detail
+    six = _six(engine / 'release_info')
+    redline = json.loads(six['results_redline'].read_text())
+    conversion = json.loads(six['results_conversion'].read_text())
+
+    # set_version recorded in the release_info files and the evidence
+    for doc, name in ((redline, 'redline_600'), (conversion, 'convert_860')):
+        assert doc['sample']['set_version'] == fs.SET_VERSION and doc['sample']['set'] == name
+    meta = json.loads((root / jri.evidence_dir(V) / 'sample_meta.json').read_text())
+    assert meta['redline']['set_version'] == meta['conversion']['set_version'] == fs.SET_VERSION
+
+    # jubarte scored ITT; the comparators read from the lanes, newest version per tool
+    tools = redline['tools']
+    assert set(tools) == {'jubarte', 'docxodus', 'superdoc', 'apryse'}
+    assert tools['jubarte']['failures'] == 1 and tools['jubarte']['n'] == 5  # twc1 ITT 0
+    assert tools['docxodus']['version'] == 'docxodus 15.0.0' and tools['docxodus']['n'] == 5
+    assert 'not_run' not in tools['docxodus']
+    assert tools['superdoc']['n'] == 4 and tools['superdoc']['not_run'] == 1  # cle0 not run, never 0
+    assert tools['apryse']['status'] == 'not run' and tools['apryse']['not_run'] == 5
+    assert tools['apryse']['median'] is None and tools['apryse']['mean'] is None
+    assert redline['comparison']['comparator'] == 'docxodus'  # 5 pairs sit under the bootstrap's 20, so no ci95
+    assert redline['provenance']['scores']['docxodus'] == \
+        f'{jri.RUN_DIR}/scores_docxodus-15.0.0_set-redline_600.json'
+    assert redline['versions']['scorer'] == 'torch-mps'
+
+    ctools = conversion['tools']
+    assert set(ctools) == {'jubarte', 'soffice', 'docxide', 'docxodus', 'apryse'}
+    assert ctools['soffice']['version'] == 'soffice 26.8.2.2' and ctools['soffice']['n'] == 8
+    assert ctools['docxide']['version'] == 'docxide-pdf 0.18.4'  # the lane's own string beats the file name
+    assert ctools['docxide']['n'] == 7 and ctools['docxide']['not_run'] == 1
+    assert ctools['docxide']['scorer'] == 'numpy' and tools['superdoc']['scorer'] == 'numpy'
+    assert ctools['docxodus']['status'] == 'not run' and ctools['apryse']['status'] == 'not run'
+    assert ctools['jubarte']['failures'] == 1  # the fixture left out scores 0, intent-to-treat
+    assert conversion['versions']['libreoffice'] == 'soffice 26.8.2.2'
+    assert conversion['provenance']['scores']['soffice'] == \
+        'results/docx_to_pdf_soffice_26.8.2.2_set-convert_860.json'
+
+    # the website tables: fixed-set titles, vendor rows, not-run notes
+    site = [json.loads(line) for line in six['website_data'].read_text().splitlines()]
+    by_key = {r['key']: r for r in site}
+    tables = {t['id']: t for t in by_key['bench.tables']['value']}
+    assert tables['conversion-sample']['title'] == "DOCX → PDF vs Word's own PDF — the 8-document set"
+    assert tables['redlines-sample']['title'] == "Redlines vs Word's compare — the 5-pair set"
+    for t in tables.values():
+        assert f'set {fs.SET_VERSION}' in t['meta'] and 'sample' not in t['title']
+    rows_c = {r['tool']: r for r in tables['conversion-sample']['rows']}
+    assert rows_c['apryse']['median'] is None and 'not run' in rows_c['apryse']['note']
+    assert rows_c['soffice']['pin'] == 'soffice 26.8.2.2'
+    ranks = [r['rank'] for r in tables['redlines-sample']['rows']]
+    assert ranks[-1] == '—' and '1' in ranks[0]  # the not-run row ranks last, unnumbered
+    heads = by_key['bench.headlines']['value']
+    assert 'docxodus 15.0.0' in heads[1]['vs'] and f'set {fs.SET_VERSION}' in heads[1]['sub']
+    assert 'not run' in tables['redlines-sample']['desc']  # never 0, said in the wording
+    method = {m['t']: m['d'] for m in by_key['bench.method']['value']}
+    assert 'Fixed sets' in method and 'vendor refresh' in method['Fixed sets']
+    generated = by_key['bench.generated']['value']
+    assert generated == meta['redline']['date']  # the day the sets were adopted, not the write
+
+
+def test_the_write_refuses_when_no_vendor_lane_exists(tmp_path: Path) -> None:
+    root, regen = _tree(tmp_path)
+    _write_sets(root)
+    binary = _put(tmp_path / 'build' / 'jubarte-rc')
+    steps = _plan(root, regen, binary=binary, engine_dir=tmp_path / 'engine', run=_answers)
+    for name in ('validate the fixed sets', 'adopt the fixed sets'):
+        _act(steps, name)
+    _scored_sets(root, steps, binary)
+    with pytest.raises(RuntimeError, match='vendor refresh'):
+        _act(steps, 'release_info')
 
 
 # ------------------------------------------------------------------ select, plan, execute
 
 def test_only_and_skip_keep_the_order_and_run_the_preflights_first(tmp_path: Path) -> None:
     steps = jri.plan(_rel(tmp_path), conversion=[])
-    names = [s.name for s in jri.select(steps, only=['sample', 'measure'])]
+    names = [s.name for s in jri.select(steps, only=['sets', 'measure'])]
     assert names[0] == 'bench inputs'  # preflights first
-    assert 'measure jubarte' in names and 'draw redline sample' in names
+    assert 'measure jubarte' in names and 'validate the fixed sets' in names
     assert 'release binary' not in names and 'release_info' not in names
     assert all(s.stage != 'export' for s in jri.select(steps, skip=['export', 'score']))
     with pytest.raises(ValueError, match='unknown stage'):
-        jri.select(steps, only=['sample', 'word'])
+        jri.select(steps, only=['sets', 'word'])
     with pytest.raises(ValueError, match='unknown stage'):
         jri.select(steps, skip=['write'], only=['install', 'six'])
+    # the draw flow's sample stage is still selectable under --draw-sample
+    names = [s.name for s in jri.select(jri.plan(_rel(tmp_path), conversion=[], draw_sample=True),
+                                        only=['sample', 'measure'])]
+    assert names[0] == 'bench inputs' and 'draw redline sample' in names
 
 
 def test_plan_flag_prints_and_runs_nothing(tmp_path: Path) -> None:
-    out = CliRunner().invoke(jri.app, [V, '--root', str(tmp_path), '--plan', '--only', 'sample,score',
-                                       '--adopt-redline', 'mine.csv', '--jobs', '7'])
+    out = CliRunner().invoke(jri.app, [V, '--root', str(tmp_path), '--plan', '--only', 'sets,measure', '--jobs', '7'])
+    assert out.exit_code == 0, out.output
+    lines = out.output.splitlines()
+    assert lines[0] == 'sets      (bench inputs)'
+    assert lines[1] == 'sets      (validate the fixed sets)'
+    assert lines[2] == 'sets      (adopt the fixed sets)'
+    assert lines[-1].startswith('measure   uv run python') and '--jobs 7' in lines[-1]
+    assert not (tmp_path / 'results').exists()
+    # --draw-sample keeps the old draw (and its soffice score stage) printable
+    out = CliRunner().invoke(jri.app, [V, '--root', str(tmp_path), '--plan', '--draw-sample',
+                                       '--only', 'sample,score', '--adopt-redline', 'mine.csv', '--jobs', '7'])
     assert out.exit_code == 0, out.output
     lines = out.output.splitlines()
     assert lines[0] == 'sample    (bench inputs)' and lines[1] == 'sample    (adopt redline sample)'
     assert lines[2] == 'sample    (draw conversion sample)'
     assert 'score     uv run bench docx-to-pdf --score-only --tool soffice --tool-version' in out.output
     assert '--jobs 7' in lines[-1]
-    assert not (tmp_path / 'results').exists()
     bad = CliRunner().invoke(jri.app, [V, '--plan', '--skip', 'word'])
     assert bad.exit_code != 0
 
@@ -1094,13 +1480,18 @@ def test_a_redline_stage_resumes_without_the_conversion_list(tmp_path: Path, mon
 
     monkeypatch.setattr(jri, 'execute', fake)
     args = [V, '--root', str(tmp_path), '--binary', str(_put(tmp_path / 'jubarte-rc'))]
-    for stage, step in (('generate', 'jubarte redlines'), ('export', 'word refusals docxodus'),
-                        ('measure', 'measure jubarte')):
-        out = CliRunner().invoke(jri.app, [*args, '--only', stage])
+    draw = ['--draw-sample']
+    for stage, step, extra in (('generate', 'jubarte redlines', draw),
+                               ('export', 'word refusals docxodus', draw),
+                               ('measure', 'measure jubarte', []),
+                               ('sets', 'adopt the fixed sets', [])):
+        out = CliRunner().invoke(jri.app, [*args, '--only', stage, *extra])
         assert out.exit_code == 0, out.output
         assert step in ran
-    # converting and scoring read the conversion list: without it the run stops and says why
+    # converting reads the conversion list: without it the run stops and says why
     out = CliRunner().invoke(jri.app, [*args, '--only', 'convert'])
+    assert out.exit_code == 1 and 'run the sets stage first' in out.output
+    out = CliRunner().invoke(jri.app, [*args, '--only', 'convert', *draw])
     assert out.exit_code == 1 and 'run the sample stage first' in out.output
 
 
@@ -1129,7 +1520,7 @@ def test_compare_regen_is_a_cli_option(tmp_path: Path) -> None:
 def test_the_plan_reads_the_fixtures_of_the_list_being_adopted_and_folds_them(tmp_path: Path) -> None:
     lines = [f'corpus/word/clean/docx/d{i}.docx' for i in range(5)]
     _put(tmp_path / 'convert.txt', '\n'.join(lines).encode())
-    steps = jri.plan(_rel(tmp_path), adopt_conversion_list=Path('convert.txt'))
+    steps = jri.plan(_rel(tmp_path), draw_sample=True, adopt_conversion_list=Path('convert.txt'))
     convert = next(s for s in steps if s.name == 'convert jubarte (converts + scores)')
     assert [convert.argv[i + 1] for i, flag in enumerate(convert.argv) if flag == '--files-list'] == lines
     line = jri.shown(convert)
@@ -1148,8 +1539,6 @@ def test_a_failed_step_stops_the_run_and_a_may_fail_step_does_not(tmp_path: Path
     done = execute(steps, tmp_path, run=rec.run, spawn=rec.spawn, echo=lambda _: None)
     assert rec.ran == ['word export jubarte (batch)',
                        'word export jubarte (one osascript per document)',
-                       'word export docxodus (batch)',
-                       'word export docxodus (one osascript per document)',
                        'measure jubarte']  # a failed export pass does not stop the run, a failed measure does
     assert not done[-1].ok and 'exit 1' in done[-1].detail
     assert all(o.ok or o.step.may_fail for o in done[:-1])
@@ -1164,6 +1553,10 @@ def test_two_scoring_jobs_never_share_a_stage_concurrently() -> None:
     """The plan is a list and execute walks it in order; every scoring job sits
     in its own Step, so no two scorers run at once (the watchdog contract)."""
     steps = jri.plan(_rel(Path('/tmp/x')), conversion=['corpus/word/clean/docx/a.docx'])
+    scorers = [s.name for s in steps if s.name.startswith(('measure', 'convert jubarte', 'score '))]
+    assert scorers == ['measure jubarte', 'convert jubarte (converts + scores)']
+    assert len(scorers) == len(set(scorers))
+    steps = jri.plan(_rel(Path('/tmp/x')), conversion=['corpus/word/clean/docx/a.docx'], draw_sample=True)
     scorers = [s.name for s in steps if s.name.startswith(('measure', 'convert jubarte', 'score '))]
     assert scorers == ['measure jubarte', 'measure docxodus', 'convert jubarte (converts + scores)',
                        'score soffice (score-only)']

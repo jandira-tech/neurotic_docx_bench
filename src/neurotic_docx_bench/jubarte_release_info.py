@@ -12,39 +12,33 @@ among the stages, the order never changes). Everything the run makes goes to
 ``results/release_<version>_evidence/`` (the evidence folder), under names
 that carry the version. Stage by owner step:
 
-1. ``sample`` — the two ``--n``-item samples: drawn seeded and balanced by
-   state with every scarce state's compares first, or adopted from lists
-   that already exist (``--adopt-redline CSV``, ``--adopt-conversion FILE``).
-   ``sample_redline_<v>.csv`` keeps every sampled pool key (pool columns);
-   ``gen_pairs_sample.csv`` is the generator manifest, one row per (base,
-   next) pair under the pair's first key; ``sample_conversion_<v>.csv`` is
-   ``state,stem,docx,word_pdf`` and each file's sha256; ``sample_meta.json`` records how each was
-   made. Every sample item must already have its Word PDF: the redline
-   oracle the ``measure.py`` rule picks (the fresh compare in
-   ``compare_regen`` when its file exists, else the corpus oracle) and the
-   conversion DOCX's own ``<state>/pdf/<stem>.pdf``.
-2. ``generate`` — redline the sample's pairs with the jubarte binary
+1. ``sets`` — the fixed evaluation sets (#130, plan 7.3): ``--convert-set``
+   (default ``results/sets/convert_860.csv``) and ``--redline-set`` (default
+   ``results/sets/redline_600.csv``) are validated against ``sets.json``
+   (row counts by state, totals, ``set_version`` pinned to
+   ``fixed_sets.SET_VERSION``, every input file hashed against the sha256 the
+   set records) and refused on drift, then adopted into the release's own
+   evidence lists (``sample_redline_<v>.csv`` in the pool spelling, one
+   manifest row per pair under its first key, ``sample_conversion_<v>.csv``)
+   with ``set_version`` in ``sample_meta.json``. The old 600/600 draw lives on
+   behind ``--draw-sample`` only, for regenerating archived evidence: it
+   draws (or adopts) the two ``--n``-item samples of the pre-#130 flow.
+2. ``generate`` — redline the set's pairs with the jubarte binary
    (``--binary``, a release candidate built from the release commit: the
    engine's release.sh requires these results before the version bump, so
    the candidate may still report the previous version; the GitHub release
-   binary is the default afterwards). The Docxodus Word PDFs the sample
-   lacks locally are fetched from the results dataset; Docxodus redlines
-   only the pairs still missing.
+   binary is the default afterwards). Only jubarte: every other vendor's
+   lane is read, never run (the vendor refresh, #129).
 3. ``export`` — the new redlines to PDF with Word: ``scripts/word_pdf.py``
    batch (``--do-not-close``), then one osascript per document
    (``--no-one-osascript``), ``--timeout 300``, the watchdog on each pass.
    An adopted lane needs neither stage: ``--skip export,generate``.
-4. ``measure`` — ``measure.py --sample-csv`` scores the redline sample for
-   jubarte, then for Docxodus (sequentially; one scoring job at a time).
+4. ``measure`` — ``measure.py --sample-csv`` scores the redline set for
+   jubarte only (intent-to-treat: a pair without a scored PDF is 0).
 5. ``convert`` — ``bench docx-to-pdf --converter … --origin list`` (one
    ``--files-list`` per fixture) converts — and thereby scores — the
-   conversion sample with jubarte; LibreOffice converts only the fixtures
-   that lack a render in ``results/soffice_26.8.0.3_work/candidate``
-   (``scripts/convert_candidates.py``).
-6. ``score`` — the sample's LibreOffice renders are staged as ``<docx
-   stem>.pdf`` (the name ``--score-only`` matches a fixture by) and scored
-   against the same Word PDFs.
-7. ``write`` — the six files into ``--engine-dir/release_info/``
+   conversion set with jubarte, intent-to-treat.
+6. ``write`` — the six files into ``--engine-dir/release_info/``
    (``sample_redline_<v>_<mm-dd-yy_hh-mm>.csv``, ``sample_conversion_…csv``,
    ``results_redline_…json``, ``results_conversion_…json``,
    ``website_data_…jsonl``, ``app_data_…jsonl``), one stamp for all six,
@@ -52,16 +46,27 @@ that carry the version. Stage by owner step:
    bytes, are also filed into the bench's evidence folder
    ``results/release_<v>_evidence/release_info/`` — the copy ``bench report``
    reads for scores.json's sample tables, so ndb and the sites hold one source.
-   The two CSVs are built here, from
-   the sample lists and the files then on disk: every path relative to the
-   bench root with its sha256 beside it, a file that does not exist an
-   empty path with an empty sha. The engine's
-   ``scripts/check_release_info.py`` gates the release on them.
+   jubarte's numbers are this run's own; every comparator's are READ from the
+   vendor refresh (#129), the newest version per tool present —
+   conversions ``results/docx_to_pdf_<tool>_<version>_set-<set>.json``, redlines
+   ``results/redlines_0929_full/scores_<tool>-<version>_set-<set>.json`` — and
+   a tool the refresh never ran shows as not run, never 0. The two results
+   documents record ``set_version``; the sample tables title themselves after
+   the fixed sets ("the 860-document set", "the 600-pair set").
 
 The ``install`` stage resolves the binary first: ``--binary PATH`` must run
 (whatever version it reports is recorded as ``candidate_reports``); without
 it the GitHub release's own binary is downloaded, sha256-checked
 (``jubarte_release.github_download``) and must report the release version.
+
+Under ``--draw-sample`` the flow is the pre-#130 one, kept only for
+regenerating archived evidence: the ``sample`` stage draws the two samples
+(or adopts them, ``--adopt-redline`` / ``--adopt-conversion``), Docxodus
+redlines the pairs still missing a Word PDF (fetched from the results dataset
+first), Word exports both lanes, ``measure`` scores jubarte then Docxodus,
+LibreOffice converts only the fixtures that lack a render and the ``score``
+stage scores them — and the write stage builds both comparators from this
+run's own artifacts, titled after the drawn samples.
 
 Every subprocess goes through ``run``, the watchdog through ``spawn`` and
 the results dataset through ``hub``, so the plan and the executor are tested
@@ -102,7 +107,15 @@ from neurotic_docx_bench.jubarte_bench_release import (
     execute,
 )
 
-STAGES = ('install', 'sample', 'generate', 'export', 'measure', 'convert', 'score', 'write')
+STAGES = ('install', 'sample', 'sets', 'generate', 'export', 'measure', 'convert', 'score', 'write')
+# the fixed sets a release runs on (#130, plan 7.3); --draw-sample runs the old draw instead
+DEFAULT_CONVERT_SET = Path('results/sets/convert_860.csv')
+DEFAULT_REDLINE_SET = Path('results/sets/redline_600.csv')
+# the vendor lanes a release READS instead of running them (the vendor refresh, #129):
+# redlines scores_<tool>-<version>_set-<set>.json in RUN_DIR, conversions
+# docx_to_pdf_<tool>_<version>_set-<set>.json in results/ — the newest version per tool
+REDLINE_VENDORS = ('docxodus', 'superdoc', 'apryse')
+CONVERT_VENDORS = ('soffice', 'docxide', 'docxodus', 'apryse')
 FILL_STATE = 'tracking_without_comments'  # the plentiful state the redline sample fills with
 CONVERSION_QUOTAS = {  # of 600: every with_comments_clean fixture the corpus has, the rest to comments + tracking
     'clean': 150,
@@ -234,6 +247,199 @@ def write_csv(path: Path, fieldnames: list[str], rows: Sequence[dict]) -> None:
 
 def _listed(path: Path) -> list[str]:
     return [line.strip() for line in path.read_text().splitlines() if line.strip()]
+
+
+# ------------------------------------------------------------------ the fixed sets
+
+#: which path column of each set CSV pins which sha256 column (fixed_sets._SHA_COLUMNS'
+#: spelling; the redline set's oracle fills the two oracle columns, one of which the
+#: release_info CSV header spells oracle_pdf_sha256)
+SET_SHA_COLUMNS = {
+    'convert': {'docx': 'docx_sha256', 'word_pdf': 'word_pdf_sha256'},
+    'redline': {'base': 'base_sha256', 'next': 'next_sha256', 'docx': 'docx_sha256',
+                'pdf': 'pdf_sha256', 'oracle_pdf': 'oracle_pdf_sha256'},
+}
+
+
+@dataclass(frozen=True)
+class SetFacts:
+    """A validated fixed set pair (plan 7.1): what a release runs and records."""
+
+    set_version: str
+    convert_name: str  # the CSV stem, the sets.json key
+    redline_name: str
+    convert: list[dict]
+    redline: list[dict]
+
+
+def _pinned_set_version() -> str:
+    """The set version the bench pins (fixed_sets.SET_VERSION; imported lazily —
+    fixed_sets imports this module)."""
+    from neurotic_docx_bench import fixed_sets
+
+    return fixed_sets.SET_VERSION
+
+
+def validate_sets(root: Path, *, convert_csv: Path, redline_csv: Path, sets_json: Path,
+                  want_version: str | None = None) -> SetFacts:
+    """Validate the fixed sets against sets.json and refuse on drift (#130).
+
+    Checked: the three files exist; ``set_version`` is the bench's pin (a
+    changed set is a new set version, never an edit); every set's row count,
+    totals and counts by state match sets.json; and every input file a row
+    names is on disk and hashes to the sha256 the set records (the corpus
+    drifted, or the corpus is not downloaded). Returns the sets' facts for
+    the adopt step and the write stage.
+    """
+    for path in (convert_csv, redline_csv, sets_json):
+        if not path.is_file():
+            raise RuntimeError(f'no {rel_path(path, root) if path.is_absolute() else path}: '
+                               'the fixed sets a release runs on (results/sets/, plan 7.1)')
+    try:
+        sets = json.loads(sets_json.read_text())
+    except ValueError as exc:
+        raise RuntimeError(f'{sets_json} is not JSON: {exc}') from exc
+    version = sets.get('set_version')
+    if not version:
+        raise RuntimeError(f'{sets_json}: no set_version')
+    want = _pinned_set_version() if want_version is None else want_version
+    if version != want:
+        raise RuntimeError(f'{sets_json}: set_version is {version}, the bench pins {want} '
+                           '(fixed_sets.SET_VERSION) — a changed set is a new set version, never an edit')
+    facts = {}
+    for kind, csv_path in (('convert', convert_csv), ('redline', redline_csv)):
+        name = csv_path.stem
+        rows = read_csv(csv_path)
+        counts = state_counts(rows)
+        want_counts = (sets.get('counts') or {}).get(name)
+        if want_counts is None:
+            raise RuntimeError(f'{sets_json}: no counts for {name}')
+        if counts != want_counts:
+            raise RuntimeError(f'{csv_path}: counts by state drifted from sets.json — {name} holds {counts}, '
+                               f'sets.json records {want_counts}')
+        total = (sets.get('totals') or {}).get(name)
+        if total != len(rows):
+            raise RuntimeError(f'{sets_json}: {name} totals {total}, {csv_path.name} holds {len(rows)} rows')
+        shas: dict[Path, str] = {}
+        for row in rows:
+            who = row.get('key') or row.get('stem') or '?'
+            for col, sha_col in SET_SHA_COLUMNS[kind].items():
+                rel, recorded = (row.get(col) or ''), (row.get(sha_col) or '')
+                if not rel or not recorded:
+                    raise RuntimeError(f'{csv_path}: row {who}: {col}/{sha_col} is empty — the set pins every input')
+                path = root / rel
+                if not path.is_file():
+                    raise RuntimeError(f'{csv_path}: {rel} (row {who}) is missing — bring the corpus back '
+                                       '(uv run bench fixtures download / bench hub get) before a release')
+                if path not in shas:
+                    shas[path] = _sha(path)
+                if shas[path] != recorded:
+                    raise RuntimeError(f'{csv_path}: {rel} (row {who}) hashes to {shas[path][:12]}… '
+                                       f'but {sha_col} records {recorded[:12]}… — the inputs drifted')
+        facts[kind] = rows
+    return SetFacts(set_version=version, convert_name=convert_csv.stem, redline_name=redline_csv.stem,
+                    convert=facts['convert'], redline=facts['redline'])
+
+
+def _pool_side(rel: str) -> str:
+    """A set CSV path in the pool spelling: relative to corpus/word. A document
+    column (base/next) also loses its .docx (fixed_sets._side's rule); the
+    docx/pdf columns keep theirs."""
+    stripped = rel.removeprefix('corpus/word/')
+    return stripped[:-5] if stripped.endswith('.docx') else stripped
+
+
+def adopt_sets(root: Path, ev: Path, version: str, facts: SetFacts, gen_pairs: Sequence[dict],
+               redline_set: Path, convert_set: Path, today: str) -> str:
+    """File the fixed sets as this release's evidence lists (#130).
+
+    ``sample_redline_<v>.csv`` carries the set's rows in the pool spelling
+    measure.py and the generator expect (shas kept — just validated);
+    ``gen_pairs_sample.csv`` redlines each pair once under its FIRST key
+    (measure.py's rule); ``sample_conversion_<v>.csv`` is the conversion set
+    as drawn. ``sample_meta.json`` records set_version for both. Returns the
+    detail line, with the vendor refresh lanes found for the comparators.
+    """
+    red = [{**r, 'base': _pool_side(r['base']), 'next': _pool_side(r['next']),
+            'docx': r['docx'].removeprefix('corpus/word/'),
+            'pdf': r['pdf'].removeprefix('corpus/word/')} for r in facts.redline]
+    write_csv(root / redline_list(version), GEN_SHA_FIELDS, red)
+    by_key = {r['key']: r for r in gen_pairs}
+    try:
+        keys = sample_first_keys(red, gen_pairs)
+    except KeyError as exc:
+        raise RuntimeError(f'{redline_set}: the pair {exc.args[0]} is not in {RUN_DIR}/gen_pairs.csv — '
+                           'the set and the run directory disagree') from exc
+    write_csv(root / ev / 'gen_pairs_sample.csv', GEN_SHA_FIELDS, [by_key[k] for k in keys])
+    conv = [{k: r[k] for k in CONVERSION_SHA_FIELDS} for r in facts.convert]
+    write_csv(root / conversion_list(version), CONVERSION_SHA_FIELDS, conv)
+    pairs = len(keys)
+    write_meta(root / ev, 'redline',
+               {'set_version': facts.set_version, 'date': today,
+                'rule': f'the fixed set {rel_path(redline_set, root)} (set version {facts.set_version}), not drawn',
+                'n': len(red), 'pairs': pairs, 'by_state': state_counts(facts.redline)})
+    write_meta(root / ev, 'conversion',
+               {'set_version': facts.set_version, 'date': today,
+                'rule': f'the fixed set {rel_path(convert_set, root)} (set version {facts.set_version}), not drawn',
+                'n': len(conv), 'by_state': state_counts(facts.convert)})
+    ran_r = _lanes_said(refresh_redline_lanes(root, facts.redline_name), REDLINE_VENDORS)
+    ran_c = _lanes_said(refresh_convert_lanes(root, facts.convert_name), CONVERT_VENDORS)
+    return (f'{redline_list(version)}: {len(red)} compares of {pairs} pairs '
+            f'(the fixed set {facts.redline_name}, set version {facts.set_version}); '
+            f'{conversion_list(version)}: {len(conv)} fixtures (the fixed set {facts.convert_name}); '
+            f'vendor refresh lanes read at write: redlines {ran_r}, conversions {ran_c}')
+
+
+# ------------------------------------------------------------------ the vendor refresh lanes
+
+_VERSION = re.compile(r'^\d+(?:\.\d+)*$')
+_LANE = re.compile(r'^(?P<tool>.+?)(?P<sep>[-_])(?P<version>\d+(?:\.\d+)*)$')
+
+
+def _version_key(version: str) -> tuple[int, ...]:
+    return tuple(int(part) for part in version.split('.'))
+
+
+def newest_vendor_lanes(folder: Path, *, prefix: str, sep: str, set_name: str) -> dict[str, tuple[str, Path]]:
+    """The newest vendor refresh lane per tool: ``{tool: (version, lane file)}`` (#129).
+
+    A release never runs another vendor (#130): the comparator lanes are
+    read from the refresh's files, ``<prefix><tool><sep><version>_set-<set_name>.json``
+    in ``folder``. The newest version per tool wins (numeric, dot-separated);
+    anything that does not name a ``tool<sep><version>`` is not a lane, and a
+    tool with no lane is simply absent — not run, never 0.
+    """
+    suffix = f'_set-{set_name}.json'
+    best: dict[str, tuple[tuple[int, ...], str, Path]] = {}
+    for path in sorted(folder.glob(f'{prefix}*{suffix}')):
+        found = _LANE.match(path.name[len(prefix):-len(suffix)]) if len(path.name) > len(prefix) + len(suffix) else None
+        if found is None or found.group('sep') != sep:
+            continue
+        tool, version = found.group('tool'), found.group('version')
+        if tool == 'jubarte' or not _VERSION.fullmatch(version):
+            continue
+        key = _version_key(version)
+        if tool not in best or key > best[tool][0]:
+            best[tool] = (key, version, path)
+    return {tool: (version, path) for tool, (_, version, path) in best.items()}
+
+
+def refresh_redline_lanes(root: Path, redline_name: str) -> dict[str, tuple[str, Path]]:
+    """The redline refresh lanes: ``RUN_DIR/scores_<tool>-<version>_set-<set>.json``."""
+    return newest_vendor_lanes(root / RUN_DIR, prefix='scores_', sep='-', set_name=redline_name)
+
+
+def refresh_convert_lanes(root: Path, convert_name: str) -> dict[str, tuple[str, Path]]:
+    """The conversion refresh lanes: ``results/docx_to_pdf_<tool>_<version>_set-<set>.json``."""
+    return newest_vendor_lanes(root / 'results', prefix='docx_to_pdf_', sep='_', set_name=convert_name)
+
+
+def _lanes_said(lanes: dict[str, tuple[str, Path]], vendors: Sequence[str] = ()) -> str:
+    """The refresh lanes as a detail line, one entry per expected ``vendor``:
+    an absent one says not run (#130). Without vendors, every lane found."""
+    if not vendors:
+        return ', '.join(f'{tool} {version}' for tool, (version, _) in sorted(lanes.items())) or 'none'
+    return ', '.join(f'{tool} {lanes[tool][0]}' if tool in lanes else f'{tool} not run' for tool in vendors)
 
 
 # ------------------------------------------------------------------ the samples
@@ -562,7 +768,7 @@ def fresh_conversions(work: Path, binary_sha: str) -> str:
 def read_meta(ev: Path) -> dict:
     path = ev / 'sample_meta.json'
     if not path.is_file():
-        raise RuntimeError(f'no {path}: the sample stage writes it')
+        raise RuntimeError(f'no {path}: the sets stage writes it (--draw-sample: the sample stage)')
     return json.loads(path.read_text())
 
 
@@ -798,15 +1004,19 @@ def fetch_docxodus(sample_csv: Path, root: Path, gen_pairs: Sequence[dict], ev: 
 # ------------------------------------------------------------------ release_info rows
 
 def redline_rows(sample: Sequence[dict], root: Path, lane: str, gen_pairs: Sequence[dict],
-                 fresh: Path) -> list[list[str]]:
+                 fresh: Path, *, with_docxodus: bool = True) -> list[list[str]]:
     """The release_info redline CSV's data rows, from the files on disk now.
 
     One row per sampled pool key with its own oracle and compare docx/pdf;
     the docxodus and jubarte columns name the pair's first-key files.
+    ``with_docxodus=False`` (the fixed-set flow, #130) leaves the docxodus
+    columns empty: the comparator's numbers come from the vendor refresh
+    lanes, not from files this run made.
     """
     first = first_keys(gen_pairs)
     word = root / 'corpus/word'
     lane_dir = root / RUN_DIR / lane
+    dx = (root / RUN_DIR / 'docxodus' / 'pdf_by_word') if with_docxodus else None
     cell = _Cells(root)
     rows = []
     for r in sample:
@@ -816,17 +1026,21 @@ def redline_rows(sample: Sequence[dict], root: Path, lane: str, gen_pairs: Seque
             r['key'], *cell(word / f'{r["base"]}.docx'), *cell(word / f'{r["next"]}.docx'),
             *cell(word / r['docx']), *cell(word / r['pdf']),
             r['state'], r['id'], r['sets'], kind,
-            *cell(oracle), *cell(docxodus_pdf(root, key)),
+            *cell(oracle), *cell((dx / f'{key}_docxodus.pdf') if dx else None),
             *cell(lane_dir / 'docx' / f'{key}_{lane}.docx'),
             *cell(lane_dir / 'pdf_by_word' / f'{key}_{lane}.pdf'),
         ])
     return rows
 
 
-def conversion_rows(sample: Sequence[dict], root: Path, jubarte_dir: Path) -> list[list[str]]:
-    """The release_info conversion CSV's data rows, from the files on disk now."""
+def conversion_rows(sample: Sequence[dict], root: Path, jubarte_dir: Path,
+                    *, with_soffice: bool = True) -> list[list[str]]:
+    """The release_info conversion CSV's data rows, from the files on disk now.
+    ``with_soffice=False`` (the fixed-set flow, #130) leaves the soffice column
+    empty: LibreOffice's numbers come from the vendor refresh lanes."""
     cell = _Cells(root)
-    jubarte, soffice = _by_lower(jubarte_dir), _by_lower(root / SOFFICE_WORK / 'candidate')
+    jubarte = _by_lower(jubarte_dir)
+    soffice = _by_lower(root / SOFFICE_WORK / 'candidate') if with_soffice else {}
     return [[r['state'], r['stem'], *cell(root / r['docx']), *cell(root / r['word_pdf']),
              *cell(jubarte.get(f'{r["stem"]}.pdf'.lower())), *cell(soffice.get(f'{r["stem"]}.pdf'.lower()))]
             for r in sample]
@@ -838,6 +1052,17 @@ def itt_scores(rows: dict[str, dict], keys: Sequence[str]) -> dict[str, float]:
     """Per-key overall scores (pipeline.overall_from_result, measure.py's rule)
     with 0.0 for every key that scored nothing (intent-to-treat)."""
     return {k: pipeline.overall_from_result(rows[k]) if k in rows else 0.0 for k in keys}
+
+
+def refresh_scores(rows: dict[str, dict], keys: Sequence[str]) -> dict[str, float]:
+    """A vendor refresh lane's own redline scores, only the keys it scored (#130).
+
+    A key the lane never scored stays out of its aggregates — not run, never
+    0 (the plan's rule: a release reads its comparators, it does not rerun
+    them, and a pair a tool lacks is that tool's absence, not its failure).
+    jubarte keeps the intent-to-treat rule above: its own failures are 0s.
+    """
+    return {k: pipeline.overall_from_result(rows[k]) for k in keys if k in rows}
 
 
 def report_scores(report: dict, tool: str, stems: Sequence[str]) -> dict[str, float]:
@@ -858,6 +1083,24 @@ def _score_only_tool(report: dict) -> str:
     """The key a ``--score-only`` report files its PDFs under: ``soffice`` (the step
     passes ``--tool soffice``) or ``candidates`` (reports written before it did)."""
     return 'soffice' if 'soffice' in (report.get('tools') or {}) else SCORE_ONLY_TOOL
+
+
+def refresh_report_scores(report: dict, tool: str, stems: Sequence[str]) -> dict[str, float]:
+    """A conversion refresh lane's scores, only the stems it scored (#130):
+    absent means not run (never 0), unlike the intent-to-treat ``report_scores``
+    a run's own report gets. Stems are matched whatever their case."""
+    per_doc = {str(k).lower(): float(v) for k, v in (_report_tool(report, tool).get('per_doc') or {}).items()}
+    return {stem: per_doc[stem.lower()] for stem in stems if stem.lower() in per_doc}
+
+
+def not_run_block(keys: Sequence[str]) -> dict:
+    """A comparator the vendor refresh never ran on the set: not run, never 0 (#130).
+
+    Same shape as ``tool_block``'s, with the aggregates a tool that scored
+    nothing cannot have set to None and ``status: not run`` said outright."""
+    return {'version': None, 'status': 'not run', 'n': 0, 'not_run': len(keys), 'failures': 0,
+            'mean': None, 'median': None, 'exact_100': 0, 'at_least_90': 0, 'median_ci95': None,
+            'by_state': {}, 'per_document': {}}
 
 
 def _agg(scores: dict[str, float]) -> dict:
@@ -919,23 +1162,32 @@ def _ranked(result: dict, rows: list[dict]) -> list[dict]:
     """``rows`` (ours, then the comparator) sorted by ITT median and ranked.
 
     The method note's rule: the two rank ``1=`` when the paired bootstrap
-    interval of the median difference includes 0.
+    interval of the median difference includes 0. A tool that was not run
+    (``median`` None, #130) sorts last and carries ``—``: it has no median to
+    rank.
     """
-    rows = sorted(rows, key=lambda row: -row['median'])
+    rows = sorted(rows, key=lambda row: (row['median'] is None, -(row['median'] or 0.0)))
     ci = (result.get('comparison') or {}).get('ci95')
-    if ci and ci[0] <= 0 <= ci[1]:
-        return [{'rank': '1='} | row for row in rows]
-    return [{'rank': str(i)} | row for i, row in enumerate(rows, 1)]
+    tie = bool(ci and ci[0] <= 0 <= ci[1])
+    numbers = iter(range(1, sum(row['median'] is not None for row in rows) + 1))
+    return [{'rank': '—' if row['median'] is None else ('1=' if tie else str(next(numbers)))} | row
+            for row in rows]
 
 
 def website_records(version: str, generated: str, redline: dict, conversion: dict,
-                    redline_stem: str, conversion_stem: str) -> list[dict]:
+                    redline_stem: str, conversion_stem: str,
+                    set_version: str | None = None) -> list[dict]:
     """facts.jsonl-shaped records for every key the release moves.
 
     The bench.* values are this run's own numbers; the values the bench
     cannot know before the release exists are placeholders for the site step
     (sync-release.ts) to fill, each marked ``"pending": true`` — the file is
     the checklist, facts.py the writer of data/facts.jsonl itself.
+    ``set_version`` names the fixed sets (#130): the tables title themselves
+    after the sets ("the N-document set", "the N-pair set") and the
+    comparator rows come from the vendor refresh lanes, a tool the refresh
+    never ran shown as not run. Without it (the ``--draw-sample`` flow) the
+    wording stays the drawn samples'.
     """
     def rec(key: str, value: object, pending: bool = False) -> dict:
         u = uuid.uuid7()
@@ -943,63 +1195,118 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
                 'source': f'release_info evidence of jubarte {version} ({generated})'} \
             | ({'pending': True} if pending else {})
 
-    jub_r, doc_r = redline['tools']['jubarte'], redline['tools']['docxodus']
-    jub_c, sof_c = conversion['tools']['jubarte'], conversion['tools']['soffice']
+    jub_r, jub_c = redline['tools']['jubarte'], conversion['tools']['jubarte']
+    doc_r, sof_c = redline['tools'].get('docxodus') or {}, conversion['tools'].get('soffice') or {}
+    ran_doc, ran_sof = doc_r.get('status') != 'not run', sof_c.get('status') != 'not run'
     docs, compares = jub_c['n'], jub_r['n']
     pairs = redline['sample'].get('pairs', compares)
     balance = '/'.join(str(block['n']) for block in jub_c['by_state'].values())
     scorer = conversion['versions']['scorer']
     r_ci = _span((redline.get('comparison') or {}).get('ci95'))
+    fixed = set_version is not None
+    set_bit = f'set {set_version} · ' if fixed else ''
+
+    def row(tool: str, block: dict, *, ours: bool = False, ci_note: bool = False) -> dict:
+        """One table row from a tool block; a not-run comparator has no numbers (#130)."""
+        if block.get('status') == 'not run':
+            return {'tool': tool, 'pin': None, 'median': None, 'mean': None, 'docs': 0,
+                    'failed': None, 'note': 'not run on this set (no vendor refresh lane)', 'ours': ours}
+        note = (_span(block.get('median_ci95')) if ci_note
+                else f"= 100: {block['exact_100']} · ≥ 90: {block['at_least_90']}")
+        if block.get('not_run'):
+            note += f" · not run: {block['not_run']}"
+        return {'tool': tool, 'pin': block['version'], 'median': block['median'], 'mean': block['mean'],
+                'docs': block['n'], 'failed': block['failures'], 'note': note, 'ours': ours}
+
+    if fixed:
+        conv_rows = [row('jubarte †', jub_c, ours=True, ci_note=True)] \
+            + [row(t, conversion['tools'][t], ci_note=True) for t in CONVERT_VENDORS]
+        red_rows = [row(f'jubarte-{version} †', jub_r, ours=True)] \
+            + [row(t, redline['tools'][t]) for t in REDLINE_VENDORS]
+    else:
+        conv_rows = [row('jubarte †', jub_c, ours=True, ci_note=True),
+                     row('soffice', sof_c, ci_note=True)]
+        red_rows = [row(f'jubarte-{version} †', jub_r, ours=True),
+                    row('docxodus', doc_r)]
     tables = [
-        {'id': 'conversion-sample', 'title': f"DOCX → PDF vs Word's own PDF — {docs}-document sample",
-         'meta': f'{docs} docs · {balance} by state · scorer {scorer} · {generated}',
-         'desc': f'A state-balanced {docs}-document sample of corpus/word (every path and sha256 in release_info/{conversion_stem}.csv), '
-                 "each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document "
-                 'scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).',
-         'rows': _ranked(conversion, [
-             {'tool': 'jubarte †', 'pin': jub_c['version'], 'median': jub_c['median'],
-              'mean': jub_c['mean'], 'docs': jub_c['n'], 'failed': jub_c['failures'],
-              'note': _span(jub_c.get('median_ci95')), 'ours': True},
-             {'tool': 'soffice', 'pin': sof_c['version'], 'median': sof_c['median'],
-              'mean': sof_c['mean'], 'docs': sof_c['n'], 'failed': sof_c['failures'],
-              'note': _span(sof_c.get('median_ci95')), 'ours': False}])},
-        {'id': 'redlines-sample', 'title': f"Redlines vs Word's compare — {pairs}-pair sample",
-         'meta': f'{pairs} pairs · one Word compare each · pixel scorer · opened in Word · {generated}',
-         'desc': f'A sample of {pairs} document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, '
-                 f'the rest spread over the document families (every path and sha256 in release_info/{redline_stem}.csv). '
-                 "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. "
-                 'A pair with no scored PDF counts 0.',
-         'rows': _ranked(redline, [
-             {'tool': f'jubarte-{version} †', 'pin': jub_r['version'], 'median': jub_r['median'],
-              'mean': jub_r['mean'], 'docs': jub_r['n'], 'failed': jub_r['failures'],
-              'note': f"= 100: {jub_r['exact_100']} · ≥ 90: {jub_r['at_least_90']}", 'ours': True},
-             {'tool': 'docxodus', 'pin': doc_r['version'], 'median': doc_r['median'],
-              'mean': doc_r['mean'], 'docs': doc_r['n'], 'failed': doc_r['failures'],
-              'note': f"= 100: {doc_r['exact_100']} · ≥ 90: {doc_r['at_least_90']}", 'ours': False}])},
+        {'id': 'conversion-sample',
+         'title': (f"DOCX → PDF vs Word's own PDF — the {docs}-document set" if fixed
+                   else f"DOCX → PDF vs Word's own PDF — {docs}-document sample"),
+         'meta': f'{docs} docs · {balance} by state · {set_bit}scorer {scorer} · {generated}',
+         'desc': (f'The fixed {docs}-document conversion set (every path and sha256 in '
+                  f'release_info/{conversion_stem}.csv): each converter turns the same DOCX into PDF, '
+                  "scored pixel-wise against Word's own export of the same file. jubarte converts and is "
+                  'scored by this run, intent-to-treat — a document it fails scores 0; the comparators are '
+                  "the vendor refresh's runs on the same set, the newest version per tool, and a document "
+                  'a converter did not run is not run, never 0. Sorted by median; 95% CI is a percentile '
+                  'bootstrap of the median (2,000 resamples, seed 42).'
+                  if fixed else
+                  f'A state-balanced {docs}-document sample of corpus/word (every path and sha256 in release_info/{conversion_stem}.csv), '
+                  "each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document "
+                  'scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).'),
+         'rows': _ranked(conversion, conv_rows)},
+        {'id': 'redlines-sample',
+         'title': (f"Redlines vs Word's compare — the {pairs}-pair set" if fixed
+                   else f"Redlines vs Word's compare — {pairs}-pair sample"),
+         'meta': f'{pairs} pairs · one Word compare each · pixel scorer · opened in Word · {set_bit}{generated}',
+         'desc': (f'The fixed {pairs}-pair redline set (every path and sha256 in '
+                  f'release_info/{redline_stem}.csv): every jubarte.pro case pair plus pairs drawn from the '
+                  'release sample, state-balanced, one Word compare each. Each tool redlines the pair; Word '
+                  "opens that redline and exports it to PDF, scored against Word's own compare. jubarte is "
+                  'scored by this run, intent-to-treat — a pair without a scored PDF counts 0; the '
+                  "comparators are the vendor refresh's runs on the same set, the newest version per tool, "
+                  'and a pair a comparator did not run is not run, never 0.'
+                  if fixed else
+                  f'A sample of {pairs} document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, '
+                  f'the rest spread over the document families (every path and sha256 in release_info/{redline_stem}.csv). '
+                  "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. "
+                  'A pair with no scored PDF counts 0.'),
+         'rows': _ranked(redline, red_rows)},
     ]
+    def state_median(block: dict, name: str) -> float | None:
+        return (block.get('by_state') or {}).get(name, {}).get('median')
+
     states = [{'name': name, 'n': str(block['n']),
                'rows': [{'tool': 'jubarte †', 'median': jub_c['by_state'][name]['median'], 'ours': True},
-                        {'tool': 'soffice', 'median': sof_c['by_state'][name]['median']}]}
+                        {'tool': 'soffice',
+                         'median': state_median(sof_c, name) if fixed else sof_c['by_state'][name]['median']}]}
               for name, block in sorted(jub_c['by_state'].items())]
     home = [
-        {'title': "DOCX → PDF vs Word's own export", 'meta': f'{docs}-doc sample · median · {generated}',
-         'rows': [{'name': f'jubarte {version} †', 'v': jub_c['median'], 'ours': True},
-                  {'name': sof_c['version'], 'v': sof_c['median']}]},
-        {'title': "Redlines vs Word's compare, opened in Word", 'meta': f'{pairs}-pair sample · median · {generated}',
-         'rows': [{'name': f'jubarte {version} †', 'v': jub_r['median'], 'ours': True},
-                  {'name': doc_r['version'], 'v': doc_r['median']}],
-         'note': "Both groups are the release's samples, state-balanced; "
-                 "the full-corpus tables live in the bench's RESULTS.md."},
+        {'title': "DOCX → PDF vs Word's own export",
+         'meta': (f'{docs}-doc set · median · {generated}' if fixed else f'{docs}-doc sample · median · {generated}'),
+         'rows': ([{'name': f'jubarte {version} †', 'v': jub_c['median'], 'ours': True},
+                   {'name': sof_c['version'], 'v': sof_c['median']}] if ran_sof
+                  else [{'name': f'jubarte {version} †', 'v': jub_c['median'], 'ours': True}])},
+        {'title': "Redlines vs Word's compare, opened in Word",
+         'meta': (f'{pairs}-pair set · median · {generated}' if fixed else f'{pairs}-pair sample · median · {generated}'),
+         'rows': ([{'name': f'jubarte {version} †', 'v': jub_r['median'], 'ours': True},
+                   {'name': doc_r['version'], 'v': doc_r['median']}] if ran_doc
+                  else [{'name': f'jubarte {version} †', 'v': jub_r['median'], 'ours': True}]),
+         **({} if fixed else {'note': "Both groups are the release's samples, state-balanced; "
+                                     "the full-corpus tables live in the bench's RESULTS.md."})},
     ]
     headlines = [
-        {'label': f'DOCX → PDF · median, {docs}-doc sample', 'value': f"{jub_c['median']:.2f}",
-         'vs': f"{sof_c['version']} {sof_c['median']:.2f}",
-         'sub': f"{docs} documents, state-balanced; {jub_c['failures']} jubarte failures. "
-                f"Sample list and shas: release_info/{conversion_stem}.csv."},
-        {'label': f'Redline vs Word compare · median, {pairs}-pair sample', 'value': f"{jub_r['median']:.2f}",
-         'vs': f"Docxodus {doc_r['median']:.2f}",
-         'sub': f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}. '
-                f'Sample list and shas: release_info/{redline_stem}.csv.'},
+        {'label': (f'DOCX → PDF · median, the {docs}-document set' if fixed
+                   else f'DOCX → PDF · median, {docs}-doc sample'),
+         'value': f"{jub_c['median']:.2f}",
+         'vs': (f"{sof_c['version']} {sof_c['median']:.2f}" if ran_sof else 'not run'),
+         'sub': (f"{docs} documents of the fixed conversion set (set {set_version}); "
+                 f"{jub_c['failures']} jubarte failures. "
+                 f"Set list and shas: release_info/{conversion_stem}.csv."
+                 if fixed else
+                 f"{docs} documents, state-balanced; {jub_c['failures']} jubarte failures. "
+                 f"Sample list and shas: release_info/{conversion_stem}.csv.")},
+        {'label': (f'Redline vs Word compare · median, the {pairs}-pair set' if fixed
+                   else f'Redline vs Word compare · median, {pairs}-pair sample'),
+         'value': f"{jub_r['median']:.2f}",
+         'vs': (f"{doc_r['version']} {doc_r['median']:.2f}" if fixed and ran_doc
+                else (f"Docxodus {doc_r['median']:.2f}" if ran_doc else 'not run')),
+         'sub': (f"{pairs} pairs of the fixed redline set (set {set_version}), one Word compare each; "
+                 f'paired 95% CI of the difference {r_ci}. '
+                 f'Set list and shas: release_info/{redline_stem}.csv.'
+                 if fixed else
+                 f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}. '
+                 f'Sample list and shas: release_info/{redline_stem}.csv.')},
     ]
     method = [
         {'t': 'Oracle: real Word',
@@ -1011,10 +1318,17 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
         {'t': 'Paired bootstrap',
          'd': 'Ranks tie (n=) when the paired bootstrap interval of the median difference to the row above '
               'includes 0. 2,000 resamples, seed 42.'},
-        {'t': 'Release samples',
-         'd': f"From {version} the tables on this page are the release's two samples — "
-              "state-balanced, every file sha256-listed in the engine's release_info/. Full-corpus runs "
-              "remain in the bench's RESULTS.md."},
+        ({'t': 'Fixed sets',
+          'd': f"From {version} the tables on this page are the bench's fixed evaluation sets "
+               f'(set version {set_version}), the same documents for every release; every row\'s inputs are '
+               "sha256-listed in the engine's release_info/. The comparators are the vendor refresh's runs "
+               'on the same sets, newest version per tool — a tool the refresh did not run shows as not '
+               "run, never 0. Full-corpus runs remain in the bench's RESULTS.md."}
+         if fixed else
+         {'t': 'Release samples',
+          'd': f"From {version} the tables on this page are the release's two samples — "
+               "state-balanced, every file sha256-listed in the engine's release_info/. Full-corpus runs "
+               "remain in the bench's RESULTS.md."}),
         {'t': 'Author-affiliated, same rules',
          'd': 'jubarte is marked † everywhere. Pins, run dates and sample lists are published so any row can '
               'be re-run; the harness is public.'},
@@ -1102,13 +1416,18 @@ def drawn_date(redline: dict, conversion: dict, now: datetime | None = None) -> 
 
 def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict,
               redline_data: Sequence[Sequence[str]], conversion_data: Sequence[Sequence[str]],
-              now: datetime | None = None, bench_root: Path | None = None) -> str:
+              now: datetime | None = None, bench_root: Path | None = None,
+              set_version: str | None = None) -> str:
     """Write the six files for ``version`` into engine_dir/release_info/ under one
     stamp, then delete that version's older stamps. With ``bench_root``, the
     same six files (same names, same bytes) are also filed into
     ``<bench_root>/results/release_<version>_evidence/release_info/`` — the
     bench's own copy of the record, which ``bench report`` reads. Returns the
     detail line.
+
+    ``set_version`` (#130) names the fixed sets the run scored; it reaches the
+    website records' titles and method note (None — the ``--draw-sample``
+    flow — keeps the drawn samples' wording).
 
     The six are written to a staging folder first and copied out only when all
     six exist: a write that fails halfway (a full disk, an interrupt) leaves
@@ -1138,7 +1457,8 @@ def write_six(engine_dir: Path, version: str, *, redline: dict, conversion: dict
             (staging / names[name]).write_text(json.dumps(doc, indent=1, sort_keys=True) + '\n')
         with (staging / names['website_data']).open('w') as fh:
             for record in website_records(version, generated, redline, conversion,
-                                          Path(names['sample_redline']).stem, Path(names['sample_conversion']).stem):
+                                          Path(names['sample_redline']).stem, Path(names['sample_conversion']).stem,
+                                          set_version=set_version):
                 fh.write(json.dumps(record, ensure_ascii=False) + '\n')
         with (staging / names['app_data']).open('w') as fh:
             for record in app_records(version):
@@ -1236,6 +1556,131 @@ def collect_results(root: Path, version: str, lane: str, *, jubarte: dict,
     return redline, conversion
 
 
+def collect_set_results(root: Path, version: str, lane: str, *, jubarte: dict, facts: SetFacts,
+                        word_version: str | None, fresh: Path = COMPARE_REGEN / 'out') -> tuple[dict, dict]:
+    """The fixed-set flow's two results documents (#130).
+
+    jubarte's numbers are this run's own (redlines intent-to-treat, its
+    conversion report intent-to-treat); every comparator's are READ from the
+    vendor refresh lanes (#129), the newest version per tool present, and a
+    key the lane never scored stays out of that tool's aggregates — not run,
+    never 0 — with ``not_run`` counting them. Both documents record the
+    ``set_version`` under ``sample``. Refuses when a whole side has no lane at
+    all: the engine gate needs a comparator beside jubarte.
+    """
+    ev = evidence_dir(version)
+    meta = read_meta(root / ev)
+    identity = {'version': f'jubarte {version}'} | jubarte
+    sample_rows = read_csv(root / redline_list(version))
+    keys = [r['key'] for r in sample_rows]
+    key_state = {r['key']: r['state'] for r in sample_rows}
+    measured = json.loads((root / scores_json(lane, version)).read_text())
+    a = itt_scores(measured.get('rows') or {}, keys)
+    generated = datetime.now(UTC).isoformat(timespec='seconds')
+
+    red_lanes = refresh_redline_lanes(root, facts.redline_name)
+    if not any(vendor in red_lanes for vendor in REDLINE_VENDORS):
+        raise RuntimeError(f'no vendor refresh lane for {facts.redline_name} in {RUN_DIR} '
+                           f'(scores_<tool>-<version>_set-{facts.redline_name}.json, #129): a release '
+                           'reads its comparators and runs jubarte only')
+    # the scorer of this run's own artifacts; each refresh lane names its own in its block
+    # (the refresh is another campaign — its backend is recorded, never required to match)
+    backends = {lane: measured.get('summary', {}).get('scorer_backend')}
+    tools = {'jubarte': tool_block(identity, a, key_state, {k: {'overall': v} for k, v in a.items()})}
+    scores_by = {}
+    provenance = {lane: str(scores_json(lane, version))}
+    for vendor in REDLINE_VENDORS:
+        if vendor not in red_lanes:
+            tools[vendor] = not_run_block(keys)
+            continue
+        lane_version, lane_path = red_lanes[vendor]
+        doc = json.loads((root / lane_path).read_text())
+        scores_by[vendor] = refresh_scores(doc.get('rows') or {}, keys)
+        state = {k: key_state[k] for k in scores_by[vendor]}
+        block = tool_block({'version': f'{vendor} {lane_version}', 'commit': None, 'binary_sha256': None},
+                           scores_by[vendor], state, {k: {'overall': v} for k, v in scores_by[vendor].items()})
+        if lane_backend := doc.get('summary', {}).get('scorer_backend'):
+            block['scorer'] = lane_backend
+        if len(scores_by[vendor]) != len(keys):
+            block['not_run'] = len(keys) - len(scores_by[vendor])
+        tools[vendor] = block
+        provenance[vendor] = rel_path(lane_path, root)
+    comparison = ({'comparator': 'docxodus', **(paired_interval(a, scores_by['docxodus']) or {})}
+                  if 'docxodus' in scores_by else None)
+    redline = {
+        'schema': 'jubarte-redlines/release_info/results_redline/1',
+        'release': version,
+        'stamp': None,
+        'generated': generated,
+        'sample': {'n': len(keys), 'pairs': len({(r['base'], r['next']) for r in sample_rows}),
+                   'set': facts.redline_name, 'set_version': facts.set_version, 'drawn': meta['redline']},
+        'tools': tools,
+        'comparison': comparison,
+        'versions': {'scorer': one_backend(backends), 'microsoft_word': word_version, 'libreoffice': None,
+                     'docxodus': red_lanes.get('docxodus', (None,))[0]},
+        'provenance': {
+            'measure': f'{RUN_DIR}/measure.py --fresh {rel_path(fresh, root)} --sample-csv {redline_list(version)} '
+                       f'(jubarte only); comparators read from the vendor refresh lanes (#129), '
+                       'newest version per tool',
+            'scores': provenance,
+        },
+    }
+
+    conv_rows = read_csv(root / conversion_list(version))
+    stems = [r['stem'] for r in conv_rows]
+    conv_state = {r['stem']: r['state'] for r in conv_rows}
+    jub_report = json.loads((root / conversion_report('jubarte', version)).read_text())
+    ja = report_scores(jub_report, 'jubarte', stems)  # its own run: intent-to-treat
+    conv_lanes = refresh_convert_lanes(root, facts.convert_name)
+    if not any(vendor in conv_lanes for vendor in CONVERT_VENDORS):
+        raise RuntimeError(f'no vendor refresh lane for {facts.convert_name} in results/ '
+                           f'(docx_to_pdf_<tool>_<version>_set-{facts.convert_name}.json, #129): a release '
+                           'reads its comparators and runs jubarte only')
+    c_backends = {'jubarte': jub_report.get('scorer_backend')}
+    c_tools = {'jubarte': tool_block(identity, ja, conv_state, dict(ja))}
+    c_scores_by = {}
+    c_provenance = {'jubarte': str(conversion_report('jubarte', version))}
+    for vendor in CONVERT_VENDORS:
+        if vendor not in conv_lanes:
+            c_tools[vendor] = not_run_block(stems)
+            continue
+        lane_version, lane_path = conv_lanes[vendor]
+        report = json.loads((root / lane_path).read_text())
+        c_scores_by[vendor] = refresh_report_scores(report, vendor, stems)
+        state = {k: conv_state[k] for k in c_scores_by[vendor]}
+        # the lane's own version string when it carries one, else its file name's
+        said = _report_tool(report, vendor).get('version') or f'{vendor} {lane_version}'
+        block = tool_block({'version': said, 'commit': None, 'binary_sha256': None},
+                           c_scores_by[vendor], state, dict(c_scores_by[vendor]))
+        if lane_backend := report.get('scorer_backend'):
+            block['scorer'] = lane_backend
+        if len(c_scores_by[vendor]) != len(stems):
+            block['not_run'] = len(stems) - len(c_scores_by[vendor])
+        c_tools[vendor] = block
+        c_provenance[vendor] = rel_path(lane_path, root)
+    c_comparison = ({'comparator': 'soffice', **(paired_interval(ja, c_scores_by['soffice']) or {})}
+                    if 'soffice' in c_scores_by else None)
+    conversion = {
+        'schema': 'jubarte-redlines/release_info/results_conversion/1',
+        'release': version,
+        'stamp': None,
+        'generated': generated,
+        'sample': {'n': len(stems), 'set': facts.convert_name, 'set_version': facts.set_version,
+                   'drawn': meta['conversion']},
+        'tools': c_tools,
+        'comparison': c_comparison,
+        'versions': {'scorer': one_backend(c_backends), 'microsoft_word': word_version,
+                     'libreoffice': (c_tools['soffice']['version'] if 'soffice' in c_scores_by else None),
+                     'docxodus': conv_lanes.get('docxodus', (None,))[0]},
+        'provenance': {
+            'measure': 'bench docx-to-pdf --origin list (one --files-list per fixture), jubarte only; '
+                       'comparators read from the vendor refresh lanes (#129), newest version per tool',
+            'scores': c_provenance,
+        },
+    }
+    return redline, conversion
+
+
 def engine_commit(engine_dir: Path | None,
                   run: Callable[..., release.ProcLike] | None = None,
                   ref: str | None = None) -> str | None:
@@ -1287,15 +1732,34 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
          adopt_redline_csv: Path | None = None, adopt_conversion_list: Path | None = None,
          jobs: int = DEFAULT_JOBS, convert_workers: int = DEFAULT_CONVERT_WORKERS,
          hub: Hub | None = None, compare_regen: Path = COMPARE_REGEN,
-         run: Callable[..., release.ProcLike] | None = None) -> list[Step]:
+         run: Callable[..., release.ProcLike] | None = None, draw_sample: bool = False,
+         convert_set: Path | None = None, redline_set: Path | None = None) -> list[Step]:
     """Every step of every stage, in order.
+
+    The fixed-set flow (#130): a ``sets`` stage validates and adopts the two
+    committed sets, only jubarte is generated, exported, measured, converted
+    and scored, and the write stage reads every comparator from the vendor
+    refresh lanes (#129). ``draw_sample=True`` is the pre-#130 flow — the
+    600/600 draw (or adoption), the docxodus generate-missing and soffice
+    render-missing paths — kept only for regenerating archived evidence.
+    ``convert_set``/``redline_set`` (default ``results/sets/*.csv``) name the
+    fixed sets; passing either with ``draw_sample`` is an error, and so is
+    adopting lists without it.
 
     ``conversion`` lists the conversion sample's corpus docx (one
     ``--files-list`` flag each); when None the plan reads the evidence
     folder's ``sample_conversion_<v>.csv``, else the list being adopted, and
-    falls back to a placeholder so ``--plan`` still prints before the sample
-    exists. ``hub`` is the results dataset (None: local files only).
+    falls back to a placeholder so ``--plan`` still prints before the sets
+    (or sample) stage ran. ``hub`` is the results dataset (None: local files
+    only; the draw flow's docxodus fetch is its only user).
     """
+    if draw_sample and (convert_set is not None or redline_set is not None):
+        raise ValueError('--draw-sample runs the old 600/600 draw; --convert-set/--redline-set name the '
+                         'fixed sets of the default flow')
+    if not draw_sample and (adopt_redline_csv is not None or adopt_conversion_list is not None):
+        raise ValueError('--adopt-redline/--adopt-conversion belong to the --draw-sample flow')
+    convert_set = convert_set if convert_set is not None else DEFAULT_CONVERT_SET
+    redline_set = redline_set if redline_set is not None else DEFAULT_REDLINE_SET
     lane, v, root = rel.lane, rel.version, rel.root
     ev = evidence_dir(v)
     fresh = compare_regen / 'out'
@@ -1524,8 +1988,49 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
                                             root / ev / 'convert_work' / 'jubarte' / 'candidate'))
         return f'{detail}; binary {identity["binary_sha256"][:12]} reports "{identity["candidate_reports"]}"'
 
+    # ------------------------------------------------- the fixed-set flow's steps (#130)
+
+    cset, rset = given(convert_set), given(redline_set)
+    sjson = cset.parent / 'sets.json'
+
+    def facts() -> SetFacts:
+        # validated fresh by every step that needs them: drift between two stages of one
+        # release is caught at the next one that looks (and each stage is independently runnable)
+        return validate_sets(root, convert_csv=cset, redline_csv=rset, sets_json=sjson)
+
+    def validate_action() -> str:
+        found = facts()
+        ran_r = _lanes_said(refresh_redline_lanes(root, found.redline_name), REDLINE_VENDORS)
+        ran_c = _lanes_said(refresh_convert_lanes(root, found.convert_name), CONVERT_VENDORS)
+        return (f'{rel_path(rset, root)}: {len(found.redline)} compares, set version {found.set_version} '
+                f'(by state {state_counts(found.redline)}); {rel_path(cset, root)}: {len(found.convert)} '
+                f'fixtures (by state {state_counts(found.convert)}); vendor refresh lanes: '
+                f'redlines {ran_r}; conversions {ran_c}')
+
+    def adopt_action() -> str:
+        return adopt_sets(root, ev, v, facts(), gen_rows(), rset, cset, today)
+
+    def write_action_sets() -> str:
+        if engine_dir is None:
+            raise RuntimeError('the write stage needs --engine-dir (the checkout whose release_info/ it fills)')
+        exe = binary_path()
+        identity = {'candidate_reports': binary_reports(exe, run), 'binary_sha256': _sha(exe),
+                    'commit': engine_commit(engine_dir, run, engine_ref)}
+        redline, conversion_doc = collect_set_results(
+            root, v, lane, jubarte=identity, facts=facts(), fresh=fresh,
+            word_version=release.word_version(run or release.default_runner()))
+        detail = write_six(
+            engine_dir, v, bench_root=root, redline=redline, conversion=conversion_doc,
+            set_version=facts().set_version,
+            redline_data=redline_rows(read_csv(root / redline_csv), root, lane, gen_rows(), fresh,
+                                      with_docxodus=False),
+            conversion_data=conversion_rows(read_csv(root / conversion_csv), root,
+                                            root / ev / 'convert_work' / 'jubarte' / 'candidate',
+                                            with_soffice=False))
+        return f'{detail}; binary {identity["binary_sha256"][:12]} reports "{identity["candidate_reports"]}"'
+
     adopting = 'adopt' if adopt_r is not None else 'draw', 'adopt' if adopt_c is not None else 'draw'
-    return [
+    draw_steps = [
         Step('install', 'candidate binary' if binary is not None else 'release binary', action=install),
         Step('sample', 'bench inputs', action=check_inputs, preflight=True),
         Step('sample', f'{adopting[0]} redline sample', action=redline_sample),
@@ -1594,6 +2099,48 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
              log=ev / f'score_soffice_{v}.log'),
         Step('write', 'release_info', action=write_action),
     ]
+    if draw_sample:
+        return draw_steps
+    # the fixed-set flow (#130): the sets stage replaces the draw, only jubarte is run,
+    # every comparator is read from the vendor refresh lanes at write
+    return [
+        Step('install', 'candidate binary' if binary is not None else 'release binary', action=install),
+        Step('sets', 'bench inputs', action=check_inputs, preflight=True),
+        Step('sets', 'validate the fixed sets', action=validate_action),
+        Step('sets', 'adopt the fixed sets', action=adopt_action),
+        Step('generate', 'generator dist', action=generator_dist),
+        Step('generate', 'redline snapshot',
+             action=lambda: snapshot_redlines(root / jub / 'docx', root / ev / 'redlines_before.json')),
+        # --force: a rerun with a new candidate must not keep the previous binary's redlines
+        Step('generate', 'jubarte redlines',
+             (*generate(lane, 'jubarte-rust', ev / 'dist', ev / 'gen_pairs_sample.csv'), '--force'),
+             log=ev / f'{lane}.generate.log'),
+        Step('generate', 'stale Word PDFs aside', action=stale_aside),
+        Step('export', 'word answers', action=word, preflight=True),
+        Step('export', 'word export jubarte (batch)',
+             (*word_pdf(jub / 'docx', jub / 'pdf_by_word', 'jubarte'), '--log', str(jub / 'word_pdf.sample.log')),
+             log=jub / 'word_pdf.sample.out', watch=(jub / 'word_pdf.sample.log',), may_fail=True,
+             refusal_codes=(2,)),
+        Step('export', 'word export jubarte (one osascript per document)',
+             (*word_pdf(jub / 'docx', jub / 'pdf_by_word', 'jubarte'), '--no-one-osascript',
+              '--log', str(jub / 'word_pdf.sample.retry.log')),
+             log=jub / 'word_pdf.sample.retry.out', watch=(jub / 'word_pdf.sample.retry.log', jub / 'pdf_by_word'),
+             may_fail=True),
+        # one scoring job at a time, and jubarte is the only one measured: the
+        # comparators' lanes are read at write, never run (#129, #130)
+        Step('measure', 'measure jubarte', measure(lane), log=ev / f'measure_{lane}.log'),
+        Step('convert', 'stale renders aside',
+             action=lambda: fresh_conversions(root / ev / 'convert_work' / 'jubarte', _sha(binary_path()))),
+        # converting with bench docx-to-pdf scores right after the last fixture — that is the
+        # score stage too; LibreOffice's numbers come from the vendor refresh lanes
+        Step('convert', 'convert jubarte (converts + scores)',
+             (*bench, 'docx-to-pdf', '--converter', str(binary_path()), '--origin', 'list', *files,
+              '--work-dir', str(ev / 'convert_work'),
+              '--json', str(conversion_report('jubarte', v)),
+              '--jobs', str(jobs), '--convert-workers', str(convert_workers)),
+             log=ev / f'convert_jubarte_{v}.log'),
+        Step('write', 'release_info', action=write_action_sets),
+    ]
 
 
 def select(steps: Sequence[Step], only: Sequence[str] = (), skip: Sequence[str] = ()) -> list[Step]:
@@ -1636,14 +2183,22 @@ def main(
     binary: Path = typer.Option(None, '--binary',
                                 help='a release candidate built from the release commit; any version it reports '
                                      'is accepted and recorded (default: the GitHub release binary)'),
-    seed: int = typer.Option(DEFAULT_SEED, '--seed', help='the sample draw seed'),
-    n: int = typer.Option(DEFAULT_N, '--n', help='items in each sample'),
+    seed: int = typer.Option(DEFAULT_SEED, '--seed', help='the sample draw seed (--draw-sample only)'),
+    n: int = typer.Option(DEFAULT_N, '--n', help='items in each sample (--draw-sample only)'),
     adopt_redline_csv: Path = typer.Option(None, '--adopt-redline',
                                            help='a CSV with a key column: the redline sample, instead of drawing '
-                                                '(a relative path is from the bench root)'),
+                                                '(--draw-sample only; a relative path is from the bench root)'),
     adopt_conversion_list: Path = typer.Option(None, '--adopt-conversion',
                                                help='a file of corpus/word/<state>/docx/<stem>.docx lines: the '
-                                                    'conversion sample, instead of drawing'),
+                                                    'conversion sample, instead of drawing (--draw-sample only)'),
+    draw_sample: bool = typer.Option(False, '--draw-sample',
+                                      help='the pre-#130 flow: draw the 600/600 samples (or adopt lists), '
+                                           'measure docxodus and render what soffice lacks — for regenerating '
+                                           'archived evidence only'),
+    convert_set: Path = typer.Option(None, '--convert-set',
+                                     help=f'the fixed conversion set CSV (default: {DEFAULT_CONVERT_SET})'),
+    redline_set: Path = typer.Option(None, '--redline-set',
+                                     help=f'the fixed redline set CSV (default: {DEFAULT_REDLINE_SET})'),
     jobs: int = typer.Option(DEFAULT_JOBS, '--jobs', help='scorer jobs of measure.py and docx-to-pdf'),
     convert_workers: int = typer.Option(DEFAULT_CONVERT_WORKERS, '--convert-workers',
                                         help='parallel convert processes'),
@@ -1661,6 +2216,11 @@ def main(
     except ValueError as exc:
         raise typer.BadParameter(str(exc)) from exc
     ev = evidence_dir(version)
+    if draw_sample and (convert_set is not None or redline_set is not None):
+        raise typer.BadParameter('--draw-sample runs the old 600/600 draw; --convert-set/--redline-set name '
+                                 'the fixed sets of the default flow — pass one or the other')
+    if not draw_sample and (adopt_redline_csv is not None or adopt_conversion_list is not None):
+        raise typer.BadParameter('--adopt-redline/--adopt-conversion belong to the --draw-sample flow')
 
     def steps_of(conversion: Sequence[str] | None = None) -> list[Step]:
         try:
@@ -1672,14 +2232,15 @@ def main(
                                jobs=jobs, convert_workers=convert_workers,
                                compare_regen=compare_regen.expanduser().resolve(),
                                hub=default_hub(rel.root / ev / 'hub_tmp') if use_hub else None,
-                               run=release.default_runner()), _stages(only), _stages(skip))
+                               run=release.default_runner(), draw_sample=draw_sample,
+                               convert_set=convert_set, redline_set=redline_set), _stages(only), _stages(skip))
         except ValueError as exc:
             raise typer.BadParameter(str(exc)) from exc
 
-    # The convert/score file lists come from the sample the run is about to
-    # make: install+sample run first, then the rest is planned again with
-    # the list on disk (its own preflights first).
-    light = ('install', 'sample')
+    # The convert/score file lists come from the sets (or sample) the run is
+    # about to adopt: install+sets run first, then the rest is planned again
+    # with the list on disk (its own preflights first).
+    light = ('install', 'sample') if draw_sample else ('install', 'sets')
     steps = steps_of()
     first = [s for s in steps if s.stage in light]
     rest = [s for s in steps if s.stage not in light]
@@ -1696,7 +2257,7 @@ def main(
         on_disk = rel.root / conversion_list(version)
         if any(s.stage in ('convert', 'score') for s in rest):
             if not on_disk.is_file():
-                typer.echo(f'no {on_disk}: run the sample stage first (--only install,sample)')
+                typer.echo(f'no {on_disk}: run the {light[1]} stage first (--only install,{light[1]})')
                 raise typer.Exit(code=1)
             rest = [s for s in steps_of(conversion_files(on_disk)) if s.stage not in light]
         done = execute(rest, rel.root, echo=typer.echo)
