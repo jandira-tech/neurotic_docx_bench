@@ -759,7 +759,7 @@
       "title": "Redlines vs Word's compare — 600-pair sample"
     },
     {
-      "desc": "",
+      "desc": "Each converter turns accepted and randomized-redline DOCX documents into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the same file. A failed conversion scores 0 for that document (intent-to-treat).",
       "id": "docx_to_pdf",
       "meta": "Document set `c28442e9bb5a5deb` (400 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.8`.",
       "rows": [
@@ -874,10 +874,10 @@
           "tool": "pdfitdown 4.2.0"
         }
       ],
-      "title": "docx_to_pdf: accepted and randomized redline DOCX to PDF vs Word export"
+      "title": "Accepted and randomized redline DOCX to PDF vs Word export"
     },
     {
-      "desc": "",
+      "desc": "Each converter turns the clean source DOCX documents, with no tracked changes in them, into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the same source. A failed conversion scores 0 (intent-to-treat).",
       "id": "docx_to_pdf_no_redline_docs",
       "meta": "Document set `c947065c59b2` (398 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.6`.",
       "rows": [
@@ -959,10 +959,10 @@
           "tool": "dxpdf"
         }
       ],
-      "title": "docx_to_pdf_no_redline_docs: source DOCX to PDF vs Word export"
+      "title": "Source DOCX → PDF, no redlines"
     },
     {
-      "desc": "",
+      "desc": "Word's PDF export of each DOCX in all four corpus/word states (clean; tracking without comments; comments with tracking; comments clean) is the oracle; the candidate is each converter's PDF of the same file, scored pixel-wise. A failed conversion scores 0 (intent-to-treat).",
       "id": "corpus/word:all",
       "meta": "Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `1.0`.",
       "rows": [
@@ -978,10 +978,10 @@
           "tool": "jubarte"
         }
       ],
-      "title": "corpus/word:all: every corpus/word DOCX to PDF vs Word's own PDF"
+      "title": "Every corpus/word DOCX → PDF vs Word's own PDF"
     },
     {
-      "desc": "",
+      "desc": "The same documents as the corpus-wide table, scored instead with docxide-pdf's own ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI against the same Word PDF exports, so no converter is measured only by this bench's pixel scorer.",
       "id": "docxide_metrics",
       "meta": "Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `1.0`.",
       "rows": [
@@ -997,10 +997,10 @@
           "tool": "jubarte"
         }
       ],
-      "title": "docxide_metrics: DOCX to PDF under docxide-pdf's own metrics"
+      "title": "The same documents under docxide-pdf's own metrics"
     },
     {
-      "desc": "",
+      "desc": "The corpus-wide conversion benchmark restricted to the documents Word lays out in 1 to 3 pages, so a converter that renders only the first 3 pages (unlicensed PyMuPDF Pro) is compared with every other converter on the same documents. The oracle stays Word's own PDF export of each document, scored pixel-wise; a failed conversion scores 0 (intent-to-treat).",
       "id": "corpus/word:le3pages",
       "meta": "Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.7`.",
       "rows": [
@@ -1049,10 +1049,10 @@
           "tool": "docxide-pdf"
         }
       ],
-      "title": "below 3 pages: corpus/word DOCX to PDF vs Word's own PDF"
+      "title": "Below 3 pages: every converter on the same short documents"
     },
     {
-      "desc": "",
+      "desc": "The docxide-pdf metrics on the same 1-to-3-page documents: each converter's PDF scored with ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI against Word's own PDF exports of the same files.",
       "id": "docxide_metrics:le3pages",
       "meta": "Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `0.7`.",
       "rows": [
@@ -1101,10 +1101,10 @@
           "tool": "docxide-pdf"
         }
       ],
-      "title": "below 3 pages: docxide_metrics on the same documents"
+      "title": "Below 3 pages: docxide-pdf's metrics on the same short documents"
     },
     {
-      "desc": "",
+      "desc": "Each tool redlines a document pair; Word opens that redline and exports it to PDF, and the PDF is scored with the pixel scorer against Word's own compare of the same pair. A pair with no scored PDF — no redline, or one Word could not open — counts 0 in the ITT columns; the = 100, ≥ 90 and < 50 counts and the docxide-pdf Ink Jaccard and Text boundary means are over the scored PDFs only.",
       "id": "redlines_vs_word",
       "meta": "",
       "rows": [
@@ -1197,10 +1197,10 @@
           "tool": "superdoc"
         }
       ],
-      "title": "redlines vs Word's compare"
+      "title": "Redlines vs Word's compare"
     },
     {
-      "desc": "",
+      "desc": "Each tool redlines a pair; Word accepts — or rejects — every change in that redline and exports the result to PDF, scored with the pixel scorer against Word's own compare of the pair resolved the same way. A pair with no scored PDF counts 0 (intent-to-treat); the calibration row is Word's own compare against itself.",
       "id": "redlines_accept_reject",
       "meta": "",
       "rows": [
@@ -1293,7 +1293,7 @@
           "tool": "superdoc"
         }
       ],
-      "title": "redlines accepted or rejected by Word"
+      "title": "Redlines accepted or rejected by Word"
     }
   ],
   "version": "1.0.0",
