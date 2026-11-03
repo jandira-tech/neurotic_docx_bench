@@ -21,7 +21,7 @@ README = (
 )
 BENCH_OPS_PIN = (
     "bench-ops @ git+https://github.com/arthrod/bench-ops@"
-    "35ab2cbeb8bc44d5059878d14176dc90c5b46f5d"
+    "6478817465f67726c1450dbeaf090a9fa7ca44b2"
 )
 
 
@@ -84,6 +84,7 @@ def test_release_views_pep723_block_is_pinned_and_minimal() -> None:
         "pyyaml",
         "scikit-image",
         "scipy",
+        "typer",
     }
 
 

@@ -28,7 +28,7 @@ pytest.importorskip(
     reason=(
         "bench-ops is a PEP 723 inline dependency of scripts/release_views.py, not a "
         "venv dependency (#134); run: uv run --with 'bench-ops @ git+https://github.com/"
-        "arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q "
+        "arthrod/bench-ops@6478817465f67726c1450dbeaf090a9fa7ca44b2' pytest -q "
         "tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py"
     ),
 )

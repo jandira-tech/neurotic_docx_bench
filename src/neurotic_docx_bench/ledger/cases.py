@@ -35,7 +35,6 @@ pins that split family by family.
 from __future__ import annotations
 
 import json
-import re
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -51,8 +50,11 @@ from bench_ops.models import (
     validate_bundle,
 )
 from neurotic_docx_bench.ledger import legacy as legacy_paths
+from neurotic_docx_bench.ledger.release_cases import build_release, emit_release
 from neurotic_docx_bench.ledger.scores import RESULTS_REPO_URL
 from neurotic_docx_bench.pages import render as pages_render
+
+__all__ = ["build_release", "emit_release"]
 
 # Re-export the dependency-free path helpers from this module's historical API.
 legacy_candidates = legacy_paths.legacy_candidates
@@ -406,12 +408,35 @@ def emit(root: Path, *, now: datetime | None = None) -> tuple[CasesIndex, list[C
     return _bundle(store_shards + legacy, now=now)
 
 
+def _release_text(model: Case | CaseShard | CasesIndex) -> str:
+    """The compact release text, without empty plan-7 fields.
+
+    The contract models default the new ``page_scores``/``files`` maps and the
+    index's ``files_base`` to empty/None.  Writing those defaults would change
+    every historical shard even though no plan-7 data exists there.  Omit an
+    empty value; a non-empty one stays and is validated by the model.
+    """
+    data = json.loads(dumps_compact(model))
+    if isinstance(data, dict):
+        if data.get("files_base", "missing") is None:
+            data.pop("files_base", None)
+        for case in data.get("cases") or []:
+            for field in ("page_scores", "files"):
+                if field in case and not case[field]:
+                    case.pop(field)
+    return json.dumps(
+        data,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    )
+
+
 def release_texts(index: CasesIndex, shards: list[CaseShard]) -> dict[str, str]:
     """The release files' texts: the index plus one shard per group, compact."""
     by_ref = {(shard.kind, shard.group): shard for shard in shards}
-    texts = {
-        ref.path: dumps_compact(by_ref[ref.kind, ref.group]) for ref in index.groups
-    }
+    texts = {ref.path: _release_text(by_ref[ref.kind, ref.group]) for ref in index.groups}
     if texts:
-        texts["cases/index.json"] = dumps_compact(index)
+        texts["cases/index.json"] = _release_text(index)
     return texts

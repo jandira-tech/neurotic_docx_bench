@@ -289,7 +289,12 @@ def build(
 
 
 def add_release_views(
-    root: Path, bundle: Bundle | None = None, *, now: datetime | None = None
+    root: Path,
+    bundle: Bundle | None = None,
+    *,
+    now: datetime | None = None,
+    release_version: str | None = None,
+    files_base: str | None = None,
 ) -> Bundle:
     """The results/release/ half of the Bundle: the case shards and speed.json of
     the plan-3b release contract. This is the code that needs bench-ops (the
@@ -303,7 +308,21 @@ def add_release_views(
     root = Path(root)
     bundle = build(root, now=now) if bundle is None else bundle
     release_cases: dict[str, str] = {}
-    cases_index, cases_shards = cases_mod.emit(root)
+    if release_version:
+        # A versioned release replaces the historical store/legacy case bundle
+        # with the two fixed-set shards.  The default (no release_version)
+        # remains the existing published data byte for byte.
+        files_base = files_base or (
+            "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/main/"
+        )
+        cases_index, cases_shards = cases_mod.emit_release(
+            root,
+            release_version,
+            files_base=files_base,
+            now=now,
+        )
+    else:
+        cases_index, cases_shards = cases_mod.emit(root)
     if cases_index.groups:
         release_cases = cases_mod.release_texts(cases_index, cases_shards)
     speed_doc = speed_mod.emit(root)
@@ -476,6 +495,8 @@ def run_release_views(
     check: bool = False,
     allow_no_cases: bool = False,
     echo: Callable[[str], None] = print,
+    release_version: str | None = None,
+    files_base: str | None = None,
 ) -> int:
     """The full report flow cli.py ran before bench-ops moved behind PEP 723
     (#134), shared by scripts/release_views.py and any caller: the legacy_cases
@@ -485,12 +506,18 @@ def run_release_views(
     from neurotic_docx_bench.ledger import cases_ref
 
     root = Path(root)
-    try:
-        cases_ref.ensure_legacy(root)
-    except cases_ref.CasesRefError as exc:
-        echo(f"error: {exc}")
-        return 1
-    bundle = add_release_views(root, build(root))
+    if not release_version:
+        try:
+            cases_ref.ensure_legacy(root)
+        except cases_ref.CasesRefError as exc:
+            echo(f"error: {exc}")
+            return 1
+    bundle = add_release_views(
+        root,
+        build(root),
+        release_version=release_version,
+        files_base=files_base,
+    )
     if not bundle.release_cases and not allow_no_cases:
         echo(
             "error: cases release: no sources — no legacy_cases snapshot and no "

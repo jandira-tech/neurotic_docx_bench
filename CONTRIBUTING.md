@@ -44,7 +44,7 @@ with Word; say so in your pull request and the maintainer will run them.
 uv run pytest -q
 
 # Release-contract ledger tests (bench-ops is a PEP 723/uv overlay here)
-uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py
+uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@6478817465f67726c1450dbeaf090a9fa7ca44b2' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py
 
 # TypeScript tests
 bunx vitest run
