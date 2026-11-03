@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark · neurotic_docx_bench</title>
+<meta name="description" content="DOCX conversion and redlines scored against Microsoft Word, failures included.">
+<meta name="generator" content="@jandira-tech/bench-viewer">
+<link rel="stylesheet" href="./tokens.css">
+<link rel="stylesheet" href="./arthur-law.css">
+</head>
+<body>
+<main class="wrap">
+<header class="mt-56">
+<p class="bench-badge">bench 1.0.0 · generated 2026-11-03</p>
+<h1 class="h1">Scored against Word, failures included.</h1>
+<p class="lead">The oracle is Word’s own PDF export of each document (SHA-pinned). A converter’s PDF is scored 0–100 by pixel similarity; redlines are additionally opened in Word and compared against Word’s own compare. Medians and means count a failed document as 0, so no tool gains by skipping a hard one. Every table is a ranking, and the tool that leads it is named above the table.</p>
+</header>
+<section class="mt-72" id="docx_to_pdf">
+<div class="section-head"><h2 id="docx_to_pdf-title">Accepted and randomized redline DOCX to PDF vs Word export</h2><span>Document set `c28442e9bb5a5deb` (400 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.8`.</span></div>
+<p class="note mt-12">Each converter turns accepted and randomized-redline DOCX documents into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the same file. A failed conversion scores 0 for that document (intent-to-treat).</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte 0.12.0</span> — median <span class="mono">82.45</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="docx_to_pdf-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte 0.12.0</div><div class="tool-pin">0.12.0@3c81203f1f66</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:82.45%"></div></div><span class="bar-note">[81.13, 83.23]</span></div>
+<span class="num strong" role="cell">82.45</span>
+<span class="num" role="cell">79.93</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1=</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte 0.11.0</div><div class="tool-pin">0.11.0@838d0e9603c8</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:79.75%"></div></div><span class="bar-note">[77.54, 81.89]</span></div>
+<span class="num strong" role="cell">79.75</span>
+<span class="num" role="cell">76.24</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">Wordcraft CLI 0.7.0</div><div class="tool-pin">wordcraft-cli 0.7.0@45fa52a260fb400857c6033c3cbfa90f8e9c67d05aeb9417cccbb3d6c51c0960</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:53.82%"></div></div><span class="bar-note">[52.41, 55.60]</span></div>
+<span class="num strong" role="cell">53.82</span>
+<span class="num" role="cell">56.59</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3=</span>
+<div class="tool" role="rowheader"><div class="tool-name">Wordcraft CLI</div><div class="tool-pin">0.6.1@b71aef4ee85a</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:52.82%"></div></div><span class="bar-note">[51.41, 54.53]</span></div>
+<span class="num strong" role="cell">52.82</span>
+<span class="num" role="cell">55.46</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3=</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxide-pdf 0.18.4</div><div class="tool-pin">docxide-pdf 0.18.4@503ea7e085ae9acd16a4f263c7802325cad254eedeff4cb2509e88714019e00b</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:52.37%"></div></div><span class="bar-note">[50.63, 54.45]</span></div>
+<span class="num strong" role="cell">52.37</span>
+<span class="num" role="cell">55.90</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3=</span>
+<div class="tool" role="rowheader"><div class="tool-name">libreoffice_convert_rust 0.1.0</div><div class="tool-pin">libreoffice_convert_rust 0.1.0@99552eb9ead6dc5dd2bbb3c69cbed958888dbb037553d586f08b5aa80794e172</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:47.87%"></div></div><span class="bar-note">[47.43, 48.97]</span></div>
+<span class="num strong" role="cell">47.87</span>
+<span class="num" role="cell">54.82</span>
+<span class="num" role="cell">398</span>
+<span class="num failed" role="cell">2</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3=</span>
+<div class="tool" role="rowheader"><div class="tool-name">soffice</div><div class="tool-pin">LibreOffice 26.8.1.1 bf6ef2662401c7d6dce671ab4deb26ee0af3a7c1</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:47.87%"></div></div><span class="bar-note">[47.43, 48.97]</span></div>
+<span class="num strong" role="cell">47.87</span>
+<span class="num" role="cell">54.82</span>
+<span class="num" role="cell">398</span>
+<span class="num failed" role="cell">2</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">8</span>
+<div class="tool" role="rowheader"><div class="tool-name">rdocx 0.16.0</div><div class="tool-pin">rdocx-cli 0.16.0@8c4d40caffb12177ac8ab21d568a5dd6c389f9cb4bd742653c2b180102d0abee</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:45.9%"></div></div><span class="bar-note">[45.14, 47.11]</span></div>
+<span class="num strong" role="cell">45.90</span>
+<span class="num" role="cell">50.69</span>
+<span class="num" role="cell">397</span>
+<span class="num failed" role="cell">3</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">9</span>
+<div class="tool" role="rowheader"><div class="tool-name">office2pdf 0.8.1</div><div class="tool-pin">office2pdf-cli 0.8.1@ec266239b0bdbf71275e79fde2ffaaa1155321050d716eab45ef43f60d6ff9f9</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:44.45%"></div></div><span class="bar-note">[42.81, 45.81]</span></div>
+<span class="num strong" role="cell">44.45</span>
+<span class="num" role="cell">48.66</span>
+<span class="num" role="cell">398</span>
+<span class="num failed" role="cell">2</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">10</span>
+<div class="tool" role="rowheader"><div class="tool-name">pdfitdown 4.2.0</div><div class="tool-pin">pdfitdown 4.2.0@6a8275fe29d0c7fd61465f56ca55c21fc22c84fbd228ceef4288bfb28bceac36</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:41.95%"></div></div><span class="bar-note">[40.89, 43.34]</span></div>
+<span class="num strong" role="cell">41.95</span>
+<span class="num" role="cell">43.48</span>
+<span class="num" role="cell">397</span>
+<span class="num failed" role="cell">3</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="docx_to_pdf_no_redline_docs">
+<div class="section-head"><h2 id="docx_to_pdf_no_redline_docs-title">Source DOCX → PDF, no redlines</h2><span>Document set `c947065c59b2` (398 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.6`.</span></div>
+<p class="note mt-12">Each converter turns the clean source DOCX documents, with no tracked changes in them, into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the same source. A failed conversion scores 0 (intent-to-treat).</p>
+<p class="lb-leader">Leader: <span class="lb-tool">office2pdf</span> — median <span class="mono">84.34</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="docx_to_pdf_no_redline_docs-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">office2pdf</div><div class="tool-pin">office2pdf 0.6.7</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:84.34%"></div></div><span class="bar-note">[79.83, 86.03]</span></div>
+<span class="num strong" role="cell">84.34</span>
+<span class="num" role="cell">73.82</span>
+<span class="num" role="cell">390</span>
+<span class="num failed" role="cell">8</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1=</span>
+<div class="tool" role="rowheader"><div class="tool-name">pdfitdown</div><div class="tool-pin">pdfitdown 4.0.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:84.34%"></div></div><span class="bar-note">[79.83, 86.03]</span></div>
+<span class="num strong" role="cell">84.34</span>
+<span class="num" role="cell">73.82</span>
+<span class="num" role="cell">390</span>
+<span class="num failed" role="cell">8</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">libreoffice_convert_rust</div><div class="tool-pin">LibreOffice Convert Rust v0.1.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:75.26%"></div></div><span class="bar-note">[72.14, 79.47]</span></div>
+<span class="num strong" role="cell">75.26</span>
+<span class="num" role="cell">73.98</span>
+<span class="num" role="cell">398</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.7.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:67.39%"></div></div><span class="bar-note">[66.94, 68.10]</span></div>
+<span class="num strong" role="cell">67.39</span>
+<span class="num" role="cell">66.25</span>
+<span class="num" role="cell">398</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4=</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxide-pdf</div><div class="tool-pin">docxide-pdf v0.17.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:63.97%"></div></div><span class="bar-note">[63.27, 64.73]</span></div>
+<span class="num strong" role="cell">63.97</span>
+<span class="num" role="cell">65.65</span>
+<span class="num" role="cell">398</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">6</span>
+<div class="tool" role="rowheader"><div class="tool-name">rdocx</div><div class="tool-pin">rdocx 0.7.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:54.49%"></div></div><span class="bar-note">[53.38, 55.31]</span></div>
+<span class="num strong" role="cell">54.49</span>
+<span class="num" role="cell">59.11</span>
+<span class="num" role="cell">398</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">7</span>
+<div class="tool" role="rowheader"><div class="tool-name">dxpdf</div><div class="tool-pin">dxpdf 0.5.1</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:52.52%"></div></div><span class="bar-note">[52.15, 52.94]</span></div>
+<span class="num strong" role="cell">52.52</span>
+<span class="num" role="cell">56.73</span>
+<span class="num" role="cell">381</span>
+<span class="num failed" role="cell">17</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="corpus/word:all">
+<div class="section-head"><h2 id="corpus/word:all-title">Every corpus/word DOCX → PDF vs Word&#39;s own PDF</h2><span>Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `1.0`.</span></div>
+<p class="note mt-12">Word&#39;s PDF export of each DOCX in all four corpus/word states (clean; tracking without comments; comments with tracking; comments clean) is the oracle; the candidate is each converter&#39;s PDF of the same file, scored pixel-wise. A failed conversion scores 0 (intent-to-treat).</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte</span> — median <span class="mono">82.36</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="corpus/word:all-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.17.0+c607894</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:82.36%"></div></div><span class="bar-note">[82.19, 82.54]</span></div>
+<span class="num strong" role="cell">82.36</span>
+<span class="num" role="cell">80.12</span>
+<span class="num" role="cell">6,427</span>
+<span class="num muted" role="cell">0</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="docxide_metrics">
+<div class="section-head"><h2 id="docxide_metrics-title">The same documents under docxide-pdf&#39;s own metrics</h2><span>Document set `a89ffc217bba` (6427 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `1.0`.</span></div>
+<p class="note mt-12">The same documents as the corpus-wide table, scored instead with docxide-pdf&#39;s own ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI against the same Word PDF exports, so no converter is measured only by this bench&#39;s pixel scorer.</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte</span> — median <span class="mono">70.68</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="docxide_metrics-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.17.0+c607894</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:70.68%"></div></div><span class="bar-note">[70.20, 71.23] · text 100.00</span></div>
+<span class="num strong" role="cell">70.68</span>
+<span class="num" role="cell">66.84</span>
+<span class="num" role="cell">6,397</span>
+<span class="num failed" role="cell">30</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="corpus/word:le3pages">
+<div class="section-head"><h2 id="corpus/word:le3pages-title">Below 3 pages: every converter on the same short documents</h2><span>Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `v1`, bench `0.7`.</span></div>
+<p class="note mt-12">The corpus-wide conversion benchmark restricted to the documents Word lays out in 1 to 3 pages, so a converter that renders only the first 3 pages (unlicensed PyMuPDF Pro) is compared with every other converter on the same documents. The oracle stays Word&#39;s own PDF export of each document, scored pixel-wise; a failed conversion scores 0 (intent-to-treat).</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte</span> — median <span class="mono">83.15</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="corpus/word:le3pages-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.9.3</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:83.15%"></div></div><span class="bar-note">[83.01, 83.28]</span></div>
+<span class="num strong" role="cell">83.15</span>
+<span class="num" role="cell">81.35</span>
+<span class="num" role="cell">2,626</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">soffice</div><div class="tool-pin">LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:68.4%"></div></div><span class="bar-note">[67.84, 68.83]</span></div>
+<span class="num strong" role="cell">68.40</span>
+<span class="num" role="cell">66.26</span>
+<span class="num" role="cell">2,611</span>
+<span class="num failed" role="cell">15</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">PyMuPDF Pro</div><div class="tool-pin">pymupdf-pro 1.28.2 (unlicensed, first 3 pages)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:60.06%"></div></div><span class="bar-note">[59.09, 60.77]</span></div>
+<span class="num strong" role="cell">60.06</span>
+<span class="num" role="cell">60.02</span>
+<span class="num" role="cell">2,601</span>
+<span class="num failed" role="cell">25</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxide-pdf</div><div class="tool-pin">docxide-pdf v0.17.1</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:54.24%"></div></div><span class="bar-note">[53.81, 54.89]</span></div>
+<span class="num strong" role="cell">54.24</span>
+<span class="num" role="cell">56.00</span>
+<span class="num" role="cell">2,626</span>
+<span class="num muted" role="cell">0</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="docxide_metrics:le3pages">
+<div class="section-head"><h2 id="docxide_metrics:le3pages-title">Below 3 pages: docxide-pdf&#39;s metrics on the same short documents</h2><span>Document set `27122f4d945e` (2626 documents), renderer `oracle:microsoft_word`, scorer `docxide-150dpi`, bench `0.7`.</span></div>
+<p class="note mt-12">The docxide-pdf metrics on the same 1-to-3-page documents: each converter&#39;s PDF scored with ink Jaccard (the ranked number) and text-boundary metrics at 150 DPI against Word&#39;s own PDF exports of the same files.</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte</span> — median <span class="mono">74.34</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="docxide_metrics:le3pages-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.9.3</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:74.34%"></div></div><span class="bar-note">[73.30, 75.08] · text 100.00</span></div>
+<span class="num strong" role="cell">74.34</span>
+<span class="num" role="cell">68.08</span>
+<span class="num" role="cell">2,626</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">soffice</div><div class="tool-pin">LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:24.03%"></div></div><span class="bar-note">[23.36, 24.50] · text 99.58</span></div>
+<span class="num strong" role="cell">24.03</span>
+<span class="num" role="cell">28.66</span>
+<span class="num" role="cell">2,611</span>
+<span class="num failed" role="cell">15</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">PyMuPDF Pro</div><div class="tool-pin">pymupdf-pro 1.28.2 (unlicensed, first 3 pages)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:21.86%"></div></div><span class="bar-note">[20.96, 22.71] · text 36.36</span></div>
+<span class="num strong" role="cell">21.86</span>
+<span class="num" role="cell">26.77</span>
+<span class="num" role="cell">2,595</span>
+<span class="num failed" role="cell">31</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxide-pdf</div><div class="tool-pin">docxide-pdf v0.17.1</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:11.42%"></div></div><span class="bar-note">[11.17, 11.96] · text 24.32</span></div>
+<span class="num strong" role="cell">11.42</span>
+<span class="num" role="cell">19.93</span>
+<span class="num" role="cell">2,619</span>
+<span class="num failed" role="cell">7</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="redlines_vs_word">
+<div class="section-head"><h2 id="redlines_vs_word-title">Redlines vs Word&#39;s compare</h2><span></span></div>
+<p class="note mt-12">Each tool redlines a document pair; Word opens that redline and exports it to PDF, and the PDF is scored with the pixel scorer against Word&#39;s own compare of the same pair. A pair with no scored PDF — no redline, or one Word could not open — counts 0 in the ITT columns; the = 100, ≥ 90 and &lt; 50 counts and the docxide-pdf Ink Jaccard and Text boundary means are over the scored PDFs only.</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte-0.17.0</span> — median <span class="mono">84.56</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="redlines_vs_word-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-0.17.0</div><div class="tool-pin">jubarte 0.17.0 (release)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:84.56%"></div></div><span class="bar-note">= 100: 342 · ≥ 90: 729 · &lt; 50: 500 · ink 0.75 · text 0.82</span></div>
+<span class="num strong" role="cell">84.56</span>
+<span class="num" role="cell">75.81</span>
+<span class="num" role="cell">3,454</span>
+<span class="num failed" role="cell">48</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-0.14.0</div><div class="tool-pin">jubarte 0.14.0 (release)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:84.46%"></div></div><span class="bar-note">= 100: 344 · ≥ 90: 704 · &lt; 50: 546 · ink 0.74 · text 0.81</span></div>
+<span class="num strong" role="cell">84.46</span>
+<span class="num" role="cell">74.33</span>
+<span class="num" role="cell">3,414</span>
+<span class="num failed" role="cell">88</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-0.10.1</div><div class="tool-pin">jubarte 0.10.1 (release)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:84.15%"></div></div><span class="bar-note">= 100: 241 · ≥ 90: 615 · &lt; 50: 619 · ink 0.73 · text 0.80</span></div>
+<span class="num strong" role="cell">84.15</span>
+<span class="num" role="cell">74.77</span>
+<span class="num" role="cell">3,496</span>
+<span class="num failed" role="cell">6</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-rust</div><div class="tool-pin">jubarte 0.10.0 (86b6b5d3)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:81.73%"></div></div><span class="bar-note">= 100: 310 · ≥ 90: 658 · &lt; 50: 793 · ink 0.67 · text 0.77</span></div>
+<span class="num strong" role="cell">81.73</span>
+<span class="num" role="cell">72.23</span>
+<span class="num" role="cell">3,499</span>
+<span class="num failed" role="cell">3</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">5</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-093</div><div class="tool-pin">jubarte 0.9.3 (release)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:79.07%"></div></div><span class="bar-note">= 100: 309 · ≥ 90: 634 · &lt; 50: 780 · ink 0.67 · text 0.76</span></div>
+<span class="num strong" role="cell">79.07</span>
+<span class="num" role="cell">68.62</span>
+<span class="num" role="cell">3,338</span>
+<span class="num failed" role="cell">164</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">6</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxodus-15.0.0</div><div class="tool-pin">docxodus 15.0.0 (npm/WASM, set redline_600)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:75.7%"></div></div><span class="bar-note">= 100: 46 · ≥ 90: 98 · &lt; 50: 135 · ink 0.65 · text 0.71</span></div>
+<span class="num strong" role="cell">75.70</span>
+<span class="num" role="cell">64.86</span>
+<span class="num" role="cell">543</span>
+<span class="num failed" role="cell">57</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">7</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxodus</div><div class="tool-pin">Docxodus 12.6.5 (C#)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:62.87%"></div></div><span class="bar-note">= 100: 204 · ≥ 90: 482 · &lt; 50: 614 · ink 0.65 · text 0.73</span></div>
+<span class="num strong" role="cell">62.87</span>
+<span class="num" role="cell">53.94</span>
+<span class="num" role="cell">2,612</span>
+<span class="num failed" role="cell">890</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">8</span>
+<div class="tool" role="rowheader"><div class="tool-name">apryse</div><div class="tool-pin">apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:43.17%"></div></div><span class="bar-note">= 100: 0 · ≥ 90: 39 · &lt; 50: 1285 · ink 0.18 · text 0.16</span></div>
+<span class="num strong" role="cell">43.17</span>
+<span class="num" role="cell">37.50</span>
+<span class="num" role="cell">2,524</span>
+<span class="num failed" role="cell">978</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">9</span>
+<div class="tool" role="rowheader"><div class="tool-name">apryse-12.2.1</div><div class="tool-pin">apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked; set redline_600)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:37.87%"></div></div><span class="bar-note">= 100: 0 · ≥ 90: 4 · &lt; 50: 190 · ink 0.18 · text 0.14</span></div>
+<span class="num strong" role="cell">37.87</span>
+<span class="num" role="cell">28.42</span>
+<span class="num" role="cell">336</span>
+<span class="num failed" role="cell">264</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">10</span>
+<div class="tool" role="rowheader"><div class="tool-name">superdoc-2.25.0</div><div class="tool-pin">superdoc-sdk 2.25.0 (set redline_600)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:0%"></div></div><span class="bar-note">= 100: 1 · ≥ 90: 1 · &lt; 50: 3 · ink 0.21 · text 0.20</span></div>
+<span class="num strong" role="cell">0.00</span>
+<span class="num" role="cell">6.92</span>
+<span class="num" role="cell">67</span>
+<span class="num failed" role="cell">533</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">11</span>
+<div class="tool" role="rowheader"><div class="tool-name">superdoc</div><div class="tool-pin">superdoc-sdk 2.16.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:0%"></div></div><span class="bar-note">= 100: 4 · ≥ 90: 7 · &lt; 50: 20 · ink 0.21 · text 0.29</span></div>
+<span class="num strong" role="cell">0.00</span>
+<span class="num" role="cell">6.66</span>
+<span class="num" role="cell">380</span>
+<span class="num failed" role="cell">3,122</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="redlines_accept_reject">
+<div class="section-head"><h2 id="redlines_accept_reject-title">Redlines accepted or rejected by Word</h2><span></span></div>
+<p class="note mt-12">Each tool redlines a pair; Word accepts — or rejects — every change in that redline and exports the result to PDF, scored with the pixel scorer against Word&#39;s own compare of the pair resolved the same way. A pair with no scored PDF counts 0 (intent-to-treat); the calibration row is Word&#39;s own compare against itself.</p>
+<p class="lb-leader">Leader: <span class="lb-tool">word-identity</span> — median <span class="mono">100.00</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="redlines_accept_reject-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">word-identity</div><div class="tool-pin">Word&#39;s own compare (calibration) · accept all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:100%"></div></div><span class="bar-note">= 100: 400 · ≥ 90: 400 · &lt; 50: 0 · ink 1.00 · text 1.00</span></div>
+<span class="num strong" role="cell">100.00</span>
+<span class="num" role="cell">100.00</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxodus</div><div class="tool-pin">docxodus 12.6.4 (npm) · accept all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:99.87%"></div></div><span class="bar-note">= 100: 166 · ≥ 90: 299 · &lt; 50: 16 · ink 0.85 · text 0.96</span></div>
+<span class="num strong" role="cell">99.87</span>
+<span class="num" role="cell">90.07</span>
+<span class="num" role="cell">394</span>
+<span class="num failed" role="cell">6</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-rust</div><div class="tool-pin">jubarte 0.9.3 (673aff74) · accept all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:99.7%"></div></div><span class="bar-note">= 100: 181 · ≥ 90: 261 · &lt; 50: 33 · ink 0.80 · text 0.94</span></div>
+<span class="num strong" role="cell">99.70</span>
+<span class="num" role="cell">87.56</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">superdoc</div><div class="tool-pin">superdoc-sdk 2.15.0 · accept all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:0%"></div></div><span class="bar-note">= 100: 4 · ≥ 90: 52 · &lt; 50: 1 · ink 0.95 · text 0.98</span></div>
+<span class="num strong" role="cell">0.00</span>
+<span class="num" role="cell">13.95</span>
+<span class="num" role="cell">58</span>
+<span class="num failed" role="cell">342</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">word-identity</div><div class="tool-pin">Word&#39;s own compare (calibration) · reject all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:100%"></div></div><span class="bar-note">= 100: 400 · ≥ 90: 400 · &lt; 50: 0 · ink 1.00 · text 1.00</span></div>
+<span class="num strong" role="cell">100.00</span>
+<span class="num" role="cell">100.00</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-rust</div><div class="tool-pin">jubarte 0.9.3 (673aff74) · reject all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:99.85%"></div></div><span class="bar-note">= 100: 186 · ≥ 90: 260 · &lt; 50: 35 · ink 0.77 · text 0.91</span></div>
+<span class="num strong" role="cell">99.85</span>
+<span class="num" role="cell">86.22</span>
+<span class="num" role="cell">400</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">3</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxodus</div><div class="tool-pin">docxodus 12.6.4 (npm) · reject all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:99.8%"></div></div><span class="bar-note">= 100: 155 · ≥ 90: 275 · &lt; 50: 26 · ink 0.80 · text 0.94</span></div>
+<span class="num strong" role="cell">99.80</span>
+<span class="num" role="cell">85.38</span>
+<span class="num" role="cell">385</span>
+<span class="num failed" role="cell">15</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">4</span>
+<div class="tool" role="rowheader"><div class="tool-name">superdoc</div><div class="tool-pin">superdoc-sdk 2.15.0 · reject all</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:0%"></div></div><span class="bar-note">= 100: 1 · ≥ 90: 36 · &lt; 50: 1 · ink 0.83 · text 0.95</span></div>
+<span class="num strong" role="cell">0.00</span>
+<span class="num" role="cell">11.07</span>
+<span class="num" role="cell">49</span>
+<span class="num failed" role="cell">351</span>
+</div>
+</div></div>
+</section>
+<div class="lb-samples-head">
+<h2 id="lb-samples">600-document samples</h2>
+<span>the release samples, scored on the same rules</span>
+</div>
+<section class="mt-72" id="conversion-sample">
+<div class="section-head"><h2 id="conversion-sample-title">DOCX → PDF vs Word&#39;s own PDF — 600-document sample</h2><span>600 docs · 150/150/117/183 by state · scorer numpy · 2026-11-01</span></div>
+<p class="note mt-12">A state-balanced 600-document sample of corpus/word (every path and sha256 in release_info/sample_conversion_0.17.0_11-01-26_01-06.csv), each converter&#39;s PDF scored against Word&#39;s own export of the same file. Sorted by ITT median; a failed document scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte</span> — median <span class="mono">81.09</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="conversion-sample-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte</div><div class="tool-pin">jubarte 0.17.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:81.0931%"></div></div><span class="bar-note">[80.42, 81.7]</span></div>
+<span class="num strong" role="cell">81.09</span>
+<span class="num" role="cell">79.24</span>
+<span class="num" role="cell">600</span>
+<span class="num muted" role="cell">0</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">soffice</div><div class="tool-pin">LibreOffice 26.8.0.3</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:47.8822%"></div></div><span class="bar-note">[47.53, 48.47]</span></div>
+<span class="num strong" role="cell">47.88</span>
+<span class="num" role="cell">54.61</span>
+<span class="num" role="cell">600</span>
+<span class="num failed" role="cell">2</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72" id="redlines-sample">
+<div class="section-head"><h2 id="redlines-sample-title">Redlines vs Word&#39;s compare — 600-pair sample</h2><span>600 pairs · one Word compare each · pixel scorer · opened in Word · 2026-11-01</span></div>
+<p class="note mt-12">A sample of 600 document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, the rest spread over the document families (every path and sha256 in release_info/sample_redline_0.17.0_11-01-26_01-06.csv). Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word&#39;s own compare. A pair with no scored PDF counts 0.</p>
+<p class="lb-leader">Leader: <span class="lb-tool">jubarte-0.17.0</span> — median <span class="mono">83.76</span></p>
+<div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="redlines-sample-title">
+<div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">1</span>
+<div class="tool" role="rowheader"><div class="tool-name">jubarte-0.17.0</div><div class="tool-pin">jubarte 0.17.0</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:83.7553%"></div></div><span class="bar-note">= 100: 47 · ≥ 90: 109</span></div>
+<span class="num strong" role="cell">83.76</span>
+<span class="num" role="cell">74.36</span>
+<span class="num" role="cell">600</span>
+<span class="num failed" role="cell">7</span>
+</div>
+<div class="t-row bench-cols" role="row">
+<span class="mono muted" role="cell">2</span>
+<div class="tool" role="rowheader"><div class="tool-name">docxodus</div><div class="tool-pin">Docxodus 12.6.5 (C#)</div></div>
+<div class="bar-cell" role="cell"><div class="bar" aria-hidden="true"><div style="width:70.2748%"></div></div><span class="bar-note">= 100: 38 · ≥ 90: 76</span></div>
+<span class="num strong" role="cell">70.27</span>
+<span class="num" role="cell">64.92</span>
+<span class="num" role="cell">600</span>
+<span class="num failed" role="cell">25</span>
+</div>
+</div></div>
+</section>
+<section class="mt-72">
+<div class="section-head"><h2>By corpus state</h2><span>median · documents per state in brackets</span></div>
+<div class="cells no-top cols-auto-220">
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(150)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">90.77</span></div><div class="bar thin"><div style="width:90.7695%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">68.83</span></div><div class="bar thin"><div style="width:68.8332%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(150)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">81.54</span></div><div class="bar thin"><div style="width:81.5365%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">64.40</span></div><div class="bar thin"><div style="width:64.3983%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(117)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">81.22</span></div><div class="bar thin"><div style="width:81.2207%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">46.33</span></div><div class="bar thin"><div style="width:46.3338%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(183)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">78.60</span></div><div class="bar thin"><div style="width:78.6001%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">42.85</span></div><div class="bar thin"><div style="width:42.8504%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(100)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte 0.12.0</span><span class="mono">90.78</span></div><div class="bar thin"><div style="width:90.78%"></div></div></div>
+<div class="state-row"><div><span>jubarte 0.11.0</span><span class="mono">90.72</span></div><div class="bar thin"><div style="width:90.72%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI 0.7.0</span><span class="mono">68.29</span></div><div class="bar thin"><div style="width:68.29%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI</span><span class="mono">63.87</span></div><div class="bar thin"><div style="width:63.87%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf 0.18.4</span><span class="mono">66.93</span></div><div class="bar thin"><div style="width:66.93%"></div></div></div>
+<div class="state-row"><div><span>libreoffice_convert_rust 0.1.0</span><span class="mono">69.33</span></div><div class="bar thin"><div style="width:69.33%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">69.33</span></div><div class="bar thin"><div style="width:69.33%"></div></div></div>
+<div class="state-row"><div><span>rdocx 0.16.0</span><span class="mono">62.29</span></div><div class="bar thin"><div style="width:62.29%"></div></div></div>
+<div class="state-row"><div><span>office2pdf 0.8.1</span><span class="mono">54.42</span></div><div class="bar thin"><div style="width:54.42%"></div></div></div>
+<div class="state-row"><div><span>pdfitdown 4.2.0</span><span class="mono">44.02</span></div><div class="bar thin"><div style="width:44.02%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(100)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte 0.12.0</span><span class="mono">82.16</span></div><div class="bar thin"><div style="width:82.16%"></div></div></div>
+<div class="state-row"><div><span>jubarte 0.11.0</span><span class="mono">81.85</span></div><div class="bar thin"><div style="width:81.85%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI 0.7.0</span><span class="mono">59.18</span></div><div class="bar thin"><div style="width:59.18%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI</span><span class="mono">55.56</span></div><div class="bar thin"><div style="width:55.56%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf 0.18.4</span><span class="mono">50.25</span></div><div class="bar thin"><div style="width:50.25%"></div></div></div>
+<div class="state-row"><div><span>libreoffice_convert_rust 0.1.0</span><span class="mono">65.47</span></div><div class="bar thin"><div style="width:65.47%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">65.47</span></div><div class="bar thin"><div style="width:65.47%"></div></div></div>
+<div class="state-row"><div><span>rdocx 0.16.0</span><span class="mono">49.35</span></div><div class="bar thin"><div style="width:49.35%"></div></div></div>
+<div class="state-row"><div><span>office2pdf 0.8.1</span><span class="mono">45.48</span></div><div class="bar thin"><div style="width:45.48%"></div></div></div>
+<div class="state-row"><div><span>pdfitdown 4.2.0</span><span class="mono">41.13</span></div><div class="bar thin"><div style="width:41.13%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(100)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte 0.12.0</span><span class="mono">80.11</span></div><div class="bar thin"><div style="width:80.11%"></div></div></div>
+<div class="state-row"><div><span>jubarte 0.11.0</span><span class="mono">71.20</span></div><div class="bar thin"><div style="width:71.2%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI 0.7.0</span><span class="mono">50.58</span></div><div class="bar thin"><div style="width:50.58%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI</span><span class="mono">48.46</span></div><div class="bar thin"><div style="width:48.46%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf 0.18.4</span><span class="mono">46.71</span></div><div class="bar thin"><div style="width:46.71%"></div></div></div>
+<div class="state-row"><div><span>libreoffice_convert_rust 0.1.0</span><span class="mono">42.12</span></div><div class="bar thin"><div style="width:42.12%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">42.12</span></div><div class="bar thin"><div style="width:42.12%"></div></div></div>
+<div class="state-row"><div><span>rdocx 0.16.0</span><span class="mono">41.75</span></div><div class="bar thin"><div style="width:41.75%"></div></div></div>
+<div class="state-row"><div><span>office2pdf 0.8.1</span><span class="mono">40.73</span></div><div class="bar thin"><div style="width:40.73%"></div></div></div>
+<div class="state-row"><div><span>pdfitdown 4.2.0</span><span class="mono">40.84</span></div><div class="bar thin"><div style="width:40.84%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(100)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte 0.12.0</span><span class="mono">80.63</span></div><div class="bar thin"><div style="width:80.63%"></div></div></div>
+<div class="state-row"><div><span>jubarte 0.11.0</span><span class="mono">68.97</span></div><div class="bar thin"><div style="width:68.97%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI 0.7.0</span><span class="mono">51.94</span></div><div class="bar thin"><div style="width:51.94%"></div></div></div>
+<div class="state-row"><div><span>Wordcraft CLI</span><span class="mono">51.82</span></div><div class="bar thin"><div style="width:51.82%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf 0.18.4</span><span class="mono">56.18</span></div><div class="bar thin"><div style="width:56.18%"></div></div></div>
+<div class="state-row"><div><span>libreoffice_convert_rust 0.1.0</span><span class="mono">45.33</span></div><div class="bar thin"><div style="width:45.33%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">45.33</span></div><div class="bar thin"><div style="width:45.33%"></div></div></div>
+<div class="state-row"><div><span>rdocx 0.16.0</span><span class="mono">45.21</span></div><div class="bar thin"><div style="width:45.21%"></div></div></div>
+<div class="state-row"><div><span>office2pdf 0.8.1</span><span class="mono">44.45</span></div><div class="bar thin"><div style="width:44.45%"></div></div></div>
+<div class="state-row"><div><span>pdfitdown 4.2.0</span><span class="mono">44.23</span></div><div class="bar thin"><div style="width:44.23%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(2,480)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">89.84</span></div><div class="bar thin"><div style="width:89.84%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(3,410)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">81.11</span></div><div class="bar thin"><div style="width:81.11%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(420)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">78.19</span></div><div class="bar thin"><div style="width:78.19%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(117)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">81.22</span></div><div class="bar thin"><div style="width:81.22%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(2,480)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">81.13</span></div><div class="bar thin"><div style="width:81.13%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(3,410)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">66.44</span></div><div class="bar thin"><div style="width:66.44%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(420)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">60.24</span></div><div class="bar thin"><div style="width:60.24%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(117)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">68.56</span></div><div class="bar thin"><div style="width:68.56%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(1,188)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">88.11</span></div><div class="bar thin"><div style="width:88.11%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">69.81</span></div><div class="bar thin"><div style="width:69.81%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">67.45</span></div><div class="bar thin"><div style="width:67.45%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">57.57</span></div><div class="bar thin"><div style="width:57.57%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(1,366)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">82.44</span></div><div class="bar thin"><div style="width:82.44%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">68.39</span></div><div class="bar thin"><div style="width:68.39%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">57.81</span></div><div class="bar thin"><div style="width:57.81%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">53.88</span></div><div class="bar thin"><div style="width:53.88%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(69)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">72.84</span></div><div class="bar thin"><div style="width:72.84%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">46.56</span></div><div class="bar thin"><div style="width:46.56%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">46.51</span></div><div class="bar thin"><div style="width:46.51%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">47.24</span></div><div class="bar thin"><div style="width:47.24%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(3)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">69.88</span></div><div class="bar thin"><div style="width:69.88%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">40.69</span></div><div class="bar thin"><div style="width:40.69%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">41.46</span></div><div class="bar thin"><div style="width:41.46%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">40.71</span></div><div class="bar thin"><div style="width:40.71%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">clean <span class="mono muted">(1,188)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">79.24</span></div><div class="bar thin"><div style="width:79.24%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">26.33</span></div><div class="bar thin"><div style="width:26.33%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">31.69</span></div><div class="bar thin"><div style="width:31.69%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">15.60</span></div><div class="bar thin"><div style="width:15.6%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">tracking, no comments <span class="mono muted">(1,366)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">70.50</span></div><div class="bar thin"><div style="width:70.5%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">22.90</span></div><div class="bar thin"><div style="width:22.9%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">18.55</span></div><div class="bar thin"><div style="width:18.55%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">9.95</span></div><div class="bar thin"><div style="width:9.95%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments + tracking <span class="mono muted">(69)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">41.71</span></div><div class="bar thin"><div style="width:41.71%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">1.17</span></div><div class="bar thin"><div style="width:1.17%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">0.26</span></div><div class="bar thin"><div style="width:0.26%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">0.89</span></div><div class="bar thin"><div style="width:0.89%"></div></div></div>
+</div>
+</div>
+<div class="cell-pad">
+<p class="state-name">comments, clean <span class="mono muted">(3)</span></p>
+<div class="state-rows">
+<div class="state-row"><div><span>jubarte</span><span class="mono">33.91</span></div><div class="bar thin"><div style="width:33.91%"></div></div></div>
+<div class="state-row"><div><span>soffice</span><span class="mono">4.02</span></div><div class="bar thin"><div style="width:4.02%"></div></div></div>
+<div class="state-row"><div><span>PyMuPDF Pro</span><span class="mono">3.75</span></div><div class="bar thin"><div style="width:3.75%"></div></div></div>
+<div class="state-row"><div><span>docxide-pdf</span><span class="mono">4.51</span></div><div class="bar thin"><div style="width:4.51%"></div></div></div>
+</div>
+</div>
+</div>
+</section>
+<section class="cells cols-auto-240 mt-72">
+<div class="cell-pad"><p class="note-title">Oracle: real Word</p><p class="small mt-12">Every reference PDF is exported by Microsoft Word and SHA-pinned. Redlines are opened in Word too: if Word refuses the file, the tool scores 0 for that pair.</p></div>
+<div class="cell-pad"><p class="note-title">Intent-to-treat</p><p class="small mt-12">Failures are not dropped. A crash, a timeout or an unopenable file counts as 0 in ITT mean and median, so a tool cannot improve its rank by skipping hard documents.</p></div>
+<div class="cell-pad"><p class="note-title">Paired bootstrap</p><p class="small mt-12">Ranks tie (n=) when the paired bootstrap interval of the median difference to the row above includes 0. 2,000 resamples, seed 42.</p></div>
+<div class="cell-pad"><p class="note-title">Release samples</p><p class="small mt-12">From 0.17.0 the tables on this page are the release&#39;s two samples — state-balanced, every file sha256-listed in the engine&#39;s release_info/. Full-corpus runs remain in the bench&#39;s RESULTS.md.</p></div>
+</section>
+<section class="mt-72">
+<div class="section-head"><h2>Provenance</h2><span>where every number came from</span></div>
+<ul class="bench-list mt-12">
+<li><span class="mono">docsets</span> <span class="muted">27122f4d945e · a89ffc217bba · c28442e9bb5a5deb · c947065c59b2</span></li>
+<li><span class="mono">renderers</span> <span class="muted">oracle:microsoft_word</span></li>
+<li><span class="mono">scorers</span> <span class="muted">docxide-150dpi · v1</span></li>
+</ul>
+</section>
+<footer class="mt-72">
+<p class="note">Harness and raw records: <a href="https://github.com/jandira-tech/neurotic_docx_bench">neurotic_docx_bench</a>. Per-case viewer: <a href="https://jandira-tech.github.io/neurotic_docx_bench/">https://jandira-tech.github.io/neurotic_docx_bench/</a>. Figures are project-maintained and reproducible, not a neutral third-party benchmark.</p>
+</footer>
+</main>
+</body>
+</html>

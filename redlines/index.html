@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>neurotic_docx_bench: Redlines vs Microsoft Word</title>
+<meta name="description" content="Redlines produced by jubarte, docxodus and SuperDoc, rendered beside Microsoft Word&#39;s compare and scored per page by neurotic_docx_bench.">
+<meta name="generator" content="@jandira-tech/bench-viewer">
+<link rel="stylesheet" href="../cases.css">
+</head>
+<body class="viewer">
+<header id="brand"><a class="logo" href="../index.html">NEUROTIC.DOCX.BENCH</a><span class="crumb">/ Redlines vs Microsoft Word</span><span class="links"><a href="../index.html">Scores</a><a href="../speed/index.html">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench">Bench repo ↗</a></span></header>
+<div id="mbar"><button id="mMenu" type="button" aria-label="Open the case list" aria-expanded="false" aria-controls="side">&#9776;</button><select id="mMode" aria-label="Which bench"></select><button id="mLayout" type="button">Layout</button></div>
+<div id="mhead"><span id="mCase"></span><span id="mPos"></span><label>vs <select id="mSecond" aria-label="Engine compared with Word"></select></label><button id="mExpand" type="button" class="hidden">Whole page</button></div>
+<div id="bar">
+  <button id="sideToggle" aria-label="Hide or show the case list" title="hide / show the case list (s)">&#9776;</button>
+  <span class="grp"><select id="mode" autocomplete="off" title="what to compare"><option value="../cases/index.html">Convert DOCX → PDF</option><option value="../redlines/index.html" selected>Compare (redline) two documents</option></select></span>
+  <span class="grp" id="nav"><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span></span>
+  <span class="grp"><span id="pageinfo"></span></span>
+  <span class="grp"><label>zoom <input type="range" id="zoom" min="200" max="1400" value="600" step="20"></label></span>
+  <span class="grp"><label><input type="checkbox" id="ovl"> overlay</label><select id="ovlA" aria-label="Engine under"></select> under <select id="ovlB" aria-label="Engine over"></select><select id="blend" aria-label="Blend mode"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select><input type="range" id="alpha" aria-label="Overlay opacity" min="0" max="100" value="50"></span>
+  <span class="grp"><button id="viewToggle">Scores table</button></span>
+  <span id="keys" class="hidden"><kbd>1</kbd>-<kbd>9</kbd> engines &nbsp;<kbd>&uarr;</kbd><kbd>&darr;</kbd> cases &nbsp;<kbd>r</kbd> random &nbsp;<kbd>s</kbd> side panel &nbsp;<kbd>o</kbd> overlay &nbsp;<kbd>m</kbd> more pages &nbsp;<kbd>t</kbd> scores table</span>
+</div>
+<div id="engines" aria-label="Engines"></div>
+<div id="legend"></div>
+<aside id="side" aria-label="Cases"><div id="sidehead"><input id="filter" type="search" autocomplete="off" aria-label="Filter cases" placeholder="filter cases (name, group)…"><div id="fx">
+  <label for="fxGroup">group</label><select id="fxGroup"></select>
+  <label for="fxPages">pages</label><select id="fxPages"><option value="">any</option><option value="1-1">1</option><option value="2-3">2–3</option><option value="4-10">4–10</option><option value="11-">11+</option></select>
+  <label for="fxEng">score</label><span class="row"><select id="fxEng"></select><select id="fxMetric" aria-label="Score metric"></select> ≤ <input type="number" id="fxMax" aria-label="Maximum score" min="0" max="100" step="1" placeholder="any"></span>
+  <label for="fxDiffer">pages</label><span class="row"><label><input type="checkbox" id="fxDiffer"> differ from Word</label></span>
+  <span class="foot"><span id="fxn"></span><button id="fxRand" title="open a random case of this list (r)">random</button><button id="fxClear" title="clear every filter">clear</button></span>
+</div></div><div id="list"><div class="case" aria-busy="true"><span class="name">Loading cases…</span></div></div></aside>
+<main id="main"><div id="grid"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
+<div id="mfoot"><button id="mPrev" type="button">&lsaquo; Prev</button><button id="mRand" type="button">Random</button><button id="mNext" type="button">Next &rsaquo;</button><button id="mOvl" type="button" aria-pressed="false">Overlay</button></div>
+<div id="scrim"></div>
+<dialog id="msheet" aria-labelledby="msheetTitle"><form method="dialog"><h2 id="msheetTitle"><span class="sq"></span> Mobile layout</h2>
+<label class="opt"><input type="radio" name="ml" value="half"><span><b>Side by side, top half</b><small>Word and one engine, cropped to the top of each page so text stays legible. Tap “Whole page” to see the rest.</small></span></label>
+<label class="opt"><input type="radio" name="ml" value="overlay"><span><b>Overlay, Word under the engine</b><small>One page, both renders stacked. “Overlay” in the bottom bar clears it.</small></span></label>
+<label class="opt"><input type="radio" name="ml" value="tiny"><span><b>Side by side, whole pages</b><small>Two small full pages. Best for spotting pagination drift.</small></span></label>
+<div class="row"><label>Blend <select id="mBlend"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select></label><label>Mix <input type="range" id="mAlpha" min="0" max="100" value="50"></label></div>
+<button type="submit">Done</button></form></dialog>
+<footer class="site"><span class="mono">neurotic_docx_bench · © MMXXVI</span><span>Maintained by <a href="https://arthur.law/" rel="noopener">Arthur Souza Rodrigues</a>, author of jubarte, one of the engines compared.</span><a href="../index.html">Scores →</a><a href="../speed/index.html">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench" rel="noopener">Bench repo →</a></footer>
+<script type="module">
+import { mountCasesPage } from "../js/cases.js";
+mountCasesPage({ kind: "redline", indexUrl: "../release/cases/index.json", modeUrl: "../redlines/index.html" });
+</script>
+</body>
+</html>
