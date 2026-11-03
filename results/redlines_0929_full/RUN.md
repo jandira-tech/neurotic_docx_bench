@@ -204,8 +204,9 @@ ITT is over the 600 (a missing candidate PDF, whatever the reason, is 0).
   crashed Word on open (twice each, `--crash-limit 1`), 1 open produced no document.
   Raw scores of the 543: mean 71.67, median 80.37, >=90: 98.
 - **superdoc 2.25.0**: 533 of 600 generate failures, all the engine's own limits (230 tracked
-  header/footer slot or topology, 102 shared definition replacement, 61 numbering replay,
-  38 comment replay, 21 invalid snapshot, 17 v2-runtime open failures, 22 other). The same
+  header/footer slot or topology, 102 shared definition replacement, 63 numbering replay,
+  38 comment replay, 32 invalid snapshot, 17 v2-runtime open failures, 15 changed families,
+  8 settings replay, 28 other single-digit causes). The same
   67/533 split the recorded 2.16.0 pool lane shows on these 600 keys (it holds PDFs for
   exactly 67 of them), so this is version-consistent coverage, not an infra stall. Raw scores
   of the 67: mean 61.98, median 61.89 (2.16.0: 61.87/61.80 on the same compares).
