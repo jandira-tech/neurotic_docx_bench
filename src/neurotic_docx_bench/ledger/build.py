@@ -26,6 +26,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from neurotic_docx_bench import hub_outputs
 from neurotic_docx_bench import version as ver
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import rows as rws
@@ -300,7 +301,12 @@ def add_release_views(
     the plan-3b release contract. This is the code that needs bench-ops (the
     contract's models), imported lazily because bench-ops is a PEP 723 inline
     dependency of scripts/release_views.py, not a venv dependency (#134) — a
-    plain `bench report` must run without it."""
+    plain `bench report` must run without it.
+
+    A versioned release's ``files_base`` is the hub revision the release's
+    outputs landed on, read from the release evidence (``hub_outputs.json``);
+    without one the release is refused (a moving branch would make the file
+    links drift). ``files_base`` given explicitly wins."""
     from bench_ops.models import dumps_compact
     from neurotic_docx_bench.ledger import cases as cases_mod
     from neurotic_docx_bench.ledger import speed as speed_mod
@@ -312,9 +318,9 @@ def add_release_views(
         # A versioned release replaces the historical store/legacy case bundle
         # with the two fixed-set shards.  The default (no release_version)
         # remains the existing published data byte for byte.
-        files_base = files_base or (
-            "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/main/"
-        )
+        # The file links resolve against the hub revision the release's outputs
+        # landed on (recorded in the release evidence), never a moving branch.
+        files_base = files_base or hub_outputs.files_base(root, release_version)
         cases_index, cases_shards = cases_mod.emit_release(
             root,
             release_version,
@@ -510,6 +516,15 @@ def run_release_views(
         try:
             cases_ref.ensure_legacy(root)
         except cases_ref.CasesRefError as exc:
+            echo(f"error: {exc}")
+            return 1
+    elif files_base is None:
+        # The file links resolve against the hub revision the release's outputs
+        # landed on.  Without that revision the links would drift with the
+        # dataset, so the release is refused rather than pinned to a branch.
+        try:
+            files_base = hub_outputs.files_base(root, release_version)
+        except hub_outputs.PinnedRevisionMissing as exc:
             echo(f"error: {exc}")
             return 1
     bundle = add_release_views(

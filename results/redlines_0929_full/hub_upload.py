@@ -20,100 +20,64 @@ then checks every file with ``hub.verify_uploaded`` (LFS sha256 or git blob sha1
 tool outputs (``PRUNE``) only when every file verified; Word's own files (``corpus/word``,
 ``compare_regen``) are never touched.
 The manifest carries the previous manifest's entries this run does not restage, as they are.
+
+The staging, the upload and the verification live in ``neurotic_docx_bench.hub_outputs`` — the
+same path the conversion lane uploader and the release's own jubarte lane use, so there is one
+upload path, not three.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
-import re
 import shutil
 from pathlib import Path
 
-from neurotic_docx_bench import hub
+from neurotic_docx_bench import hub, hub_outputs
+from neurotic_docx_bench.hub_outputs import StaleParentError, next_parent
 
 HERE = Path(__file__).parent
-REPO_PREFIX = 'outputs/redlines_0929_full'
+REPO_PREFIX = hub_outputs.REDLINE_PREFIX
 FRESH = Path.home() / 'temp/T/compare_regen/out'
 # Every tool of the run: the keys of versions.json (to_scores_jsonl.py reads the same).
 TOOLS = tuple(json.loads((HERE / 'versions.json').read_text()))
 TOOL_DIRS = ('docx', 'pdf_by_word', 'accepted/src', 'accepted/by_word', 'rejected/src', 'rejected/by_word')
-TOP_SUFFIXES = {'.csv', '.json', '.py', '.sh', '.md'}
+TOP_SUFFIXES = hub_outputs.META_SUFFIXES
 # docx_rest and docx_sample500 hold symlinks into docxodus/docx; pdf_staged is a byte-identical
 # subset of docxodus/pdf_by_word (checked 2026-09-30).
 PRUNE = tuple(HERE / t / d for t in TOOLS for d in TOOL_DIRS) + tuple(
     HERE / 'docxodus' / d for d in ('docx_rest', 'docx_sample500', 'pdf_staged'))
 
-
-class StaleParentError(RuntimeError):
-    """Someone else committed to the hub while this run was uploading."""
-
-
-def next_parent(api, parent, info, message):
-    """The commit an upload made, or ``parent`` when it made none.
-
-    An upload that changes nothing makes no commit, skips the ``parent_commit`` check and
-    returns the branch head, which may be someone else's commit. A large folder lands as
-    several commits, ``message (part N)`` (huggingface_hub 2.0), so every commit between
-    ``parent`` and the head must carry our message, alone or with its part number (#103).
-    """
-    if info.oid == parent:
-        return parent
-    history = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)
-    part = re.compile(rf'{re.escape(message)}( \(part \d+\))?')
-    for commit in history:
-        if commit.commit_id == parent:
-            return info.oid
-        if not part.fullmatch(commit.title):
-            break
-    raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
+__all__ = ['StaleParentError', 'main', 'next_parent', 'stage']
 
 
 def stage(root: Path, previous=None) -> list[str]:
     """Hard-link every file to upload under ``root``; return the subfolders (one commit each)."""
     if root.exists():
         shutil.rmtree(root)
-    parts = []
+    subdirs = []
     for t in TOOLS:
         for d in TOOL_DIRS:
             if (HERE / t / d).is_dir():
-                parts.append((HERE / t / d, f'{t}/{d}'))
-    # Gone locally once uploaded (2026-10-25): the hub copy stands.
-    if FRESH.is_dir():
-        parts.append((FRESH, 'fresh_compares'))
-    for t in TOOLS:
-        meta = root / t / 'meta'
-        meta.mkdir(parents=True)
+                subdirs.append(f'{t}/{d}')
         # A tool whose folder is not in this checkout (its outputs were deleted after
         # its upload, or the lane never ran here) has nothing to stage: the hub copy
         # stands, and the manifest carries its entries.
-        if not (HERE / t).is_dir():
-            continue
-        for f in sorted((HERE / t).iterdir()):
-            if f.is_file() and f.suffix in TOP_SUFFIXES:
-                os.link(f, meta / f.name)
-        parts.append((None, f'{t}/meta'))
-    for src, rel in parts:
-        if src is None:
-            continue
-        dst = root / rel
-        dst.mkdir(parents=True)
-        for f in sorted(src.iterdir()):
-            if f.is_file() and not f.name.startswith(('.', '~$')):
-                os.link(f, dst / f.name)
-    top = root / 'run'
-    top.mkdir()
-    for f in sorted(HERE.iterdir()):
-        if f.is_file() and f.suffix in TOP_SUFFIXES and not f.name.endswith('.partial.json'):
-            os.link(f, top / f.name)
+        if (HERE / t).is_dir():
+            subdirs.append(f'{t}/meta')
+        hub_outputs.stage_redline_lane(root, lane=t, lane_dir=HERE / t, dirs=TOOL_DIRS)
+    # Gone locally once uploaded (2026-10-25): the hub copy stands.
+    if FRESH.is_dir():
+        hub_outputs.stage_tree(root, 'fresh_compares', FRESH)
+        subdirs.append('fresh_compares')
+    hub_outputs.stage_tree(root, 'run', HERE, suffixes=TOP_SUFFIXES, exclude=('.partial.json',))
     staged = hub.build_manifest(root)
     # upload_folder is the only hub check before the upload: unrestaged entries carry as they are.
     carried = {path: digest for path, digest in (previous or {}).items() if path not in staged}
-    hub.write_manifest(root, path=top / hub.MANIFEST_NAME, files=staged | carried)
+    hub.write_manifest(root, path=root / 'run' / hub.MANIFEST_NAME, files=staged | carried)
     if previous is not None:
         print(f'manifest: {len(staged)} staged + {len(carried)} carried from the previous manifest', flush=True)
-    return [rel for _, rel in parts] + ['run']
+    return subdirs + ['run']
 
 
 def main() -> None:
@@ -160,10 +124,13 @@ def main() -> None:
     parent = head
     for s in subdirs:
         message = f'redlines_0929_full: {s} ({counts[s]} files)'
-        info = api.upload_folder(repo_id=hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, folder_path=a.staging / s,
-                                 path_in_repo=f'{REPO_PREFIX}/{s}', commit_message=message,
-                                 parent_commit=parent)
-        parent = next_parent(api, parent, info, message)
+        parent = hub_outputs.upload_folder(
+            api=api,
+            folder=a.staging / s,
+            path_in_repo=f'{REPO_PREFIX}/{s}',
+            message=message,
+            parent_commit=parent,
+        )
         print(f'uploaded {s}', flush=True)
     if a.prune:
         # Local files are deleted only once every staged file is proven on the hub.

@@ -184,6 +184,43 @@ the 2026-10-11 renewal; read it before inventing a new one.
 
 If `site/` is missing: `git worktree add site gh-pages`.
 
+## Publish a release's own outputs (HF hub)
+
+A jubarte release publishes **its own** lane to the results dataset, under the
+layout the vendor lanes use, so the release's case links point at real files:
+
+| Path on `arthrod/neurotic_docx_bench` | What |
+|---|---|
+| `outputs/convert_860/jubarte_<v>/pdf/<state>__<stem>.pdf` | the conversion set's candidate PDFs |
+| `outputs/convert_860/jubarte_<v>/docx_to_pdf_jubarte_<v>_sample.json` | the conversion report (the record) |
+| `outputs/convert_860/jubarte_<v>/MANIFEST.sha256.json` | the manifest over the lane |
+| `outputs/redlines_0929_full/jubarte-<v>/{docx,pdf_by_word,meta}` | the redlines, Word's export of them, the lane's meta |
+
+```bash
+uv run python -m neurotic_docx_bench.jubarte_release_info <v> --only publish   # the stage
+```
+
+The stage is the last of the fixed-set flow (`--only publish` runs it alone).
+It uploads through `neurotic_docx_bench.hub_outputs` — **the** upload path, the
+same one `results/convert_860/hub_upload.py` and
+`results/redlines_0929_full/hub_upload.py` use — verifies every file with
+`hub.verify_uploaded`, and records the commit it landed on in the release
+evidence:
+
+```
+results/release_<v>_evidence/release_info/hub_outputs.json
+{"revision": "<40-hex>", "paths": [...], "verified": true, ...}
+```
+
+That revision is the pin the release shards' file links resolve against:
+
+```bash
+uv run scripts/release_views.py --release-version <v>   # files_base = the pinned revision
+```
+
+Without a recorded revision the release views **refuse** (never a moving
+branch): pass `--files-base` explicitly to override.
+
 ## Publish corpus fixtures (HF hub)
 
 Corpus docx/PDF live in the public dataset, not in git (see AGENTS.md "Getting the

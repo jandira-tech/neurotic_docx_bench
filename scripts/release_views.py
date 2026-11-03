@@ -95,7 +95,8 @@ def main(argv: list[str] | None = None) -> int:
         "--files-base",
         help=(
             "the Hugging Face resolve base for the release shards' file links "
-            "(default: the results dataset's main branch)"
+            "(default: the revision the release's outputs landed on, read from the "
+            "release evidence; never a moving branch)"
         ),
     )
     args = parser.parse_args(argv)
