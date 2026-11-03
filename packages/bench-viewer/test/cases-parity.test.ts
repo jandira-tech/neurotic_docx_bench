@@ -10,7 +10,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, test } from "vitest";
+import { describe, expect, it, test } from "vitest";
 import type { Case, CasesIndex, Engine } from "../src/cases.ts";
 import {
   caseFilesUrl,
@@ -539,7 +539,7 @@ describe("the file links", () => {
       filesBase: FILES_BASE,
     });
     expect(html).not.toContain('onmouseover="alert(1)"');
-    expect(html).toContain("&quot;");
+    expect(html).toContain("x%22%20onmouseover%3D%22alert(1)");
   });
 
   test("a hostile lane name is escaped in the link", () => {
@@ -712,5 +712,17 @@ describe("the old data", () => {
         alpha: 40,
       }),
     ).toBe(legacy.overlay);
+  });
+});
+
+describe("file URLs are encoded per segment and stay under the base", () => {
+  const base = "https://huggingface.co/datasets/o/r/resolve/abc/";
+  it("encodes characters that would end the path", () => {
+    expect(resolveFileUrl(base, "~/out/a b#1?.pdf")).toBe(`${base}out/a%20b%231%3F.pdf`);
+  });
+  it("refuses dot segments and empty segments", () => {
+    expect(resolveFileUrl(base, "~/../escape.pdf")).toBe("");
+    expect(resolveFileUrl(base, "~/a/./b.pdf")).toBe("");
+    expect(resolveFileUrl(base, "~/a//b.pdf")).toBe("");
   });
 });

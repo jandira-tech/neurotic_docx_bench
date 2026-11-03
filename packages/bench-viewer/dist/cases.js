@@ -417,7 +417,10 @@ export function resolveFileUrl(filesBase, path) {
         return "";
     if (!path.startsWith("~/"))
         return "";
-    return `${filesBase}${path.slice(2)}`;
+    const segments = path.slice(2).split("/");
+    if (segments.some((s) => s === "" || s === "." || s === ".."))
+        return "";
+    return `${filesBase}${segments.map(encodeURIComponent).join("/")}`;
 }
 /** The URL of a case file, or the empty string when it is not safe to use. */
 export function safeFileUrl(filesBase, path) {

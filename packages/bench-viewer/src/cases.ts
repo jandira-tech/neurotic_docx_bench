@@ -515,7 +515,9 @@ export function safeAssetUrl(assetsBase: string, path: string | null | undefined
 export function resolveFileUrl(filesBase: string, path: string | null | undefined): string {
   if (!path) return "";
   if (!path.startsWith("~/")) return "";
-  return `${filesBase}${path.slice(2)}`;
+  const segments = path.slice(2).split("/");
+  if (segments.some((s) => s === "" || s === "." || s === "..")) return "";
+  return `${filesBase}${segments.map(encodeURIComponent).join("/")}`;
 }
 
 /** The URL of a case file, or the empty string when it is not safe to use. */
