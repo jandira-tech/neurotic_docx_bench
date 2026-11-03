@@ -617,6 +617,12 @@ _LABEL = re.compile(r"[A-Za-z0-9._-]+")
 # hand focus straight back). Word's alert after "No" does not exist for System Events
 # while Word is in the background, so without this the open hangs to its timeout.
 _focus: ContextVar[bool] = ContextVar("word_focus", default=True)
+# `--nudge-after`, `--nudge-wait`, `--empty-limit` (#107): seconds before an unfinished
+# item brings Word forward, seconds that look waits for an alert, and empty loads in a
+# row that end a batch pass (after which Word is quit and relaunched).
+_nudge_after: ContextVar[float] = ContextVar("word_nudge_after", default=10.0)
+_nudge_wait: ContextVar[float] = ContextVar("word_nudge_wait", default=2.0)
+_empty_limit: ContextVar[int] = ContextVar("word_empty_limit", default=3)
 # Only one script drives Word's focus at a time: the watchdog's answer and the batch
 # progress nudge are separate threads and would otherwise fight over frontmost.
 _FOCUS_LOCK = threading.Lock()
@@ -2018,9 +2024,9 @@ class _Progress:
     stall_after: float = 30.0
     diagnose: Callable[[Path], str] = stall_report
     focus: bool = field(default_factory=lambda: _focus.get())
-    nudge_after: float = 10.0
+    nudge_after: float = field(default_factory=lambda: _nudge_after.get())
     nudge_every: float = 15.0
-    nudge_wait: float = 2.0
+    nudge_wait: float = field(default_factory=lambda: _nudge_wait.get())
     nudges: int = 0
     _stop: threading.Event = field(default_factory=threading.Event)
     _thread: threading.Thread | None = None
@@ -2535,6 +2541,11 @@ _ACCEPT_EDITS = (
 )
 
 
+def _with_empty_limit(script: str) -> str:
+    """The batch script with `--empty-limit` in place of its default 3 (#107)."""
+    return script.replace("if emptyStreak ≥ 3 then exit repeat", f"if emptyStreak ≥ {_empty_limit.get()} then exit repeat")
+
+
 def batch_script(*, close_documents: bool, accept: bool, reject: bool = False) -> str:
     """The monolithic batch AppleScript for the chosen close policy.
 
@@ -2543,14 +2554,14 @@ def batch_script(*, close_documents: bool, accept: bool, reject: bool = False) -
     """
     script = _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN
     if not accept:
-        return script
+        return _with_empty_limit(script)
     for old, new in _ACCEPT_EDITS:
         if reject:
             new = new.replace("accept all revisions", "reject all revisions")
         if script.count(old) != 1:
             raise RuntimeError(f"accept-all edit does not apply to the batch script: {old!r}")
         script = script.replace(old, new)
-    return script
+    return _with_empty_limit(script)
 
 
 def accepted_paths_for(docx: Path, out_dir: Path | None, suffix: str) -> tuple[Path, Path]:
@@ -3217,6 +3228,27 @@ def main(
             "Word (one Word, one driver). 0 refuses at once and names the holder.",
         ),
     ] = 900.0,
+    nudge_after: Annotated[
+        float,
+        typer.Option(
+            "--nudge-after",
+            help="Seconds (> 0) an item may run before Word is brought forward to look for an "
+            "alert (then every 15 s while it stays unfinished).",
+        ),
+    ] = 10.0,
+    nudge_wait: Annotated[
+        float,
+        typer.Option("--nudge-wait", min=0.0, help="Seconds that look waits for an alert to appear."),
+    ] = 2.0,
+    empty_limit: Annotated[
+        int,
+        typer.Option(
+            "--empty-limit",
+            min=1,
+            help="Empty loads in a row (Word answers, opens nothing) that end a pass; Word "
+            "is then quit and relaunched. A declined repair prompt is not counted.",
+        ),
+    ] = 3,
 ) -> None:
     """Export every .docx in a folder to PDF using Microsoft Word.
 
@@ -3225,7 +3257,13 @@ def main(
     documents that were open before the run.
     """
     timeout = positive_seconds(timeout, "--timeout")
+    nudge_after = positive_seconds(nudge_after, "--nudge-after")
     focus_token = _focus.set(focus)
+    timing_tokens = (
+        (_nudge_after, _nudge_after.set(nudge_after)),
+        (_nudge_wait, _nudge_wait.set(nudge_wait)),
+        (_empty_limit, _empty_limit.set(empty_limit)),
+    )
     try:
         _main(
             src, out, force=force, timeout=timeout, one_osascript=one_osascript,
@@ -3236,6 +3274,8 @@ def main(
         )
     finally:
         _focus.reset(focus_token)
+        for var, token in timing_tokens:
+            var.reset(token)
 
 
 def _main(

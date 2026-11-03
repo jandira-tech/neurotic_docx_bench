@@ -1175,6 +1175,17 @@
           "tool": "docxodus"
         },
         {
+          "docs": 2524,
+          "failed": 978,
+          "mean": 37.5,
+          "median": 43.17,
+          "note": "= 100: 0 · ≥ 90: 39 · < 50: 1285 · ink 0.18 · text 0.16",
+          "ours": false,
+          "pin": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)",
+          "rank": "7",
+          "tool": "apryse"
+        },
+        {
           "docs": 380,
           "failed": 3122,
           "mean": 6.66,
@@ -1182,7 +1193,7 @@
           "note": "= 100: 4 · ≥ 90: 7 · < 50: 20 · ink 0.21 · text 0.29",
           "ours": false,
           "pin": "superdoc-sdk 2.16.0",
-          "rank": "7",
+          "rank": "8",
           "tool": "superdoc"
         }
       ],

@@ -465,8 +465,8 @@ checks the hub listing at that commit against the manifest, downloads through `h
 
 ## Everything else on the hub: `bench hub list|get` (2026-10-26, #79)
 
-The corpus is one of fifteen download presets. The 0929 run's tool outputs, Word's fresh compares,
-the 0.13.0 release evidence, the R2 cohort mirrors, the website's R2 objects, the results
+The corpus is one of sixteen download presets. The 0929 run's tool outputs, Word's fresh compares,
+Apryse's DOCX→PDF outputs on fixture set v1 (`docx-to-pdf-v1-apryse`), the 0.13.0 release evidence, the R2 cohort mirrors, the website's R2 objects, the results
 dataset's parquet tables and the private git-history archive also live only on the hub. Each has
 a named preset:
 

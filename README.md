@@ -135,6 +135,7 @@ Pins: [`bench.yaml`](bench.yaml). Tool identities: [`bench.registry.yaml`](bench
 | [doxx](https://github.com/bgreenwell/doxx) | converter | doxx |  | No PDF export; listed as not applicable, never ranked. |
 | [libreoffice_convert_rust](https://gitcode.com/dnrops/libreoffice_convert_rust) | converter | LibreOffice |  |  |
 | [soffice](https://www.libreoffice.org/) | converter | LibreOffice |  |  |
+| [Apryse SDK](https://apryse.com/products/core-sdk) | converter | apryse-sdk |  |  |
 | [dxpdf](https://github.com/nerdy-pro/dxpdf) | converter | dxpdf |  |  |
 | [docxide-pdf](https://github.com/sverrejb/docxide-pdf) | converter | docxide-pdf |  |  |
 | [PyMuPDF Pro](https://pymupdf.io/pro) | converter | pymupdf-pro |  | Unlicensed (Restricted Mode): converts only the first 3 pages, so it is scored on the at-most-3-page set. |

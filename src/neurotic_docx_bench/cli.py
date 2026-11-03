@@ -833,7 +833,7 @@ def docx_to_pdf_eval(
     tool: list[str] = typer.Option(
         [],
         "--tool",
-        help="converter to run (repeatable): rdocx, office2pdf, pdfitdown, doxx, libreoffice_convert_rust, dxpdf, docxide-pdf, pymupdf-pro, genoffice.",
+        help="converter to run (repeatable): rdocx, office2pdf, pdfitdown, doxx, libreoffice_convert_rust, dxpdf, docxide-pdf, pymupdf-pro, genoffice, docxodus, apryse.",
     ),
     json_out: Path = typer.Option(
         Path("results/docx_to_pdf.json"),
