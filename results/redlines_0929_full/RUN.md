@@ -183,6 +183,48 @@ fixtures): **mean 51.99, median 49.87**, against 52.03 / 49.84 raw. Each compare
 (−0.96 to +0.47). So the watermark is not why Apryse scores low
 (`scores_apryse_stamp_matched.json`, `scores_jubarte-0.17.0_stamp_matched_sample300_seed0.json`).
 
+## The fixed set `redline_600` (#129)
+
+The three vendor-refresh lanes on `results/sets/redline_600.csv` (600 pairs, #128), scored
+exactly like the lanes above — each vendor's redline exported by Word, measured against the
+same oracles with `--sample-csv set-redline_600.csv` (the set's keys live in
+`set-redline_600.csv`, its pairs in `set-redline_600_pairs.csv`). A set lane's scores file is
+`scores_<tool>_set-redline_600.json` and its `scores.jsonl` line carries `set: redline_600`;
+ITT is over the 600 (a missing candidate PDF, whatever the reason, is 0).
+
+| lane | version | generated | Word PDFs | scored | ITT mean | ITT median |
+|---|---|---|---|---|---|---|
+| `docxodus-15.0.0` | docxodus 15.0.0 (npm/WASM) | 587/600 | 543/587 | 543/600 | 64.86 | 75.70 |
+| `superdoc-2.25.0` | superdoc-sdk 2.25.0 | 67/600 | 67/67 | 67/600 | 6.92 | 0.00 |
+| `apryse-12.2.1` | apryse-sdk 12.2.1 (demo key) | 600/600 | 336/600 | 336/600 | 28.42 | 37.87 |
+
+- **docxodus 15.0.0**: 13 "Comparison failed - empty result" generate failures
+  (`generate_failures.json`). Of the 587 redlines, Word exported 543; the 44 failures are
+  `docxodus-15.0.0/word_refused.csv` — 30 repair prompts declined (unreadable content), 13
+  crashed Word on open (twice each, `--crash-limit 1`), 1 open produced no document.
+  Raw scores of the 543: mean 71.67, median 80.37, >=90: 98.
+- **superdoc 2.25.0**: 533 of 600 generate failures, all the engine's own limits (230 tracked
+  header/footer slot or topology, 102 shared definition replacement, 61 numbering replay,
+  38 comment replay, 21 invalid snapshot, 17 v2-runtime open failures, 22 other). The same
+  67/533 split the recorded 2.16.0 pool lane shows on these 600 keys (it holds PDFs for
+  exactly 67 of them), so this is version-consistent coverage, not an infra stall. Raw scores
+  of the 67: mean 61.98, median 61.89 (2.16.0: 61.87/61.80 on the same compares).
+- **apryse 12.2.1**: `reuse.py` copied the 334 redlines the 0929 pool lane already held with
+  Word PDFs for; the generator redlined the other 266 (one batch timeout at 180 s —
+  `9f6f60f1db…`, deterministic ~300 s compare, regenerated with a 300 s timeout and kept;
+  its first `.part.docx` was 0 bytes and its bogus blank PDF was deleted and re-exported).
+  Word exported 2 of the 266; the 264 failures are `apryse-12.2.1/word_refused.csv` — 252
+  repair prompts declined, 11 crashed Word, 1 could not load. Raw scores of the 336: mean
+  50.76, median 47.50, >=90: 4.
+- **Apryse stamp-matched** (`apryse-12.2.1/measure_stamp.py`, the same normalisation as the
+  pool lane, `scores_apryse-12.2.1_set-redline_600_stamp_matched.json`): 336 scored, mean
+  50.78, median 47.50; delta vs raw mean +0.020, no compare moved more than 5 — as on the
+  pool lane (+0.03), the demo-key watermark does not explain Apryse's scores.
+
+All scored with torch-mps, 193 fresh oracles of the 600 (`--fresh` compare_regen), 0
+meant-fresh-but-old. Pins bumped in the same branch's `chore(bench)` commit: docxodus
+12.6.5 → 15.0.0 (npm/WASM lane) and superdoc-sdk 2.16.0 → 2.25.0.
+
 ## Accepted and rejected tracks (`measure_tracks.py`)
 
 The 100 compares of `accept_selection.csv` and the 100 of `reject_selection.csv` (copies of the

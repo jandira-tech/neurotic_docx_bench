@@ -8,5 +8,6 @@
   "jubarte-0.17.0": "jubarte 0.17.0 (release)",
   "apryse": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)",
   "docxodus-15.0.0": "docxodus 15.0.0 (npm/WASM, set redline_600)",
-  "superdoc-2.25.0": "superdoc-sdk 2.25.0 (set redline_600)"
+  "superdoc-2.25.0": "superdoc-sdk 2.25.0 (set redline_600)",
+  "apryse-12.2.1": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked; set redline_600)"
 }

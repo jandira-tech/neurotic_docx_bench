@@ -2,7 +2,7 @@
 <!-- provenance: bench_version=1.0.0; docsets=27122f4d945e,a89ffc217bba,c28442e9bb5a5deb,c947065c59b2; scorers=docxide-150dpi,v1; renderers=oracle:microsoft_word -->
 # Benchmark results
 
-Generated 2026-11-03 03:46 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
+Generated 2026-11-03 10:55 UTC from `results/bench.jsonl`, `results/converters.jsonl`, `results/redlines_*/scores.jsonl`, `results/speed.jsonl` and `results/redline_speed_bench/**/summary.json`.
 
 Compare rows only within one table. Full history, paired comparisons and methodology: [RESULTS_DETAILED.md](RESULTS_DETAILED.md).
 
@@ -143,8 +143,11 @@ Each tool redlines the pair; Word opens that redline and exports it to PDF, scor
 | jubarte-0.10.1 | jubarte 0.10.1 (release) | 3496/3502 (2610/2612) | 74.77 (75.45) | 84.15 (84.34) | 241 (174) | 615 (456) | 619 (435) | 0.73 (0.74) | 0.80 (0.81) |
 | jubarte-rust | jubarte 0.10.0 (86b6b5d3) | 3499/3502 (2611/2612) | 72.23 (73.30) | 81.73 (83.01) | 310 (244) | 658 (517) | 793 (558) | 0.67 (0.69) | 0.77 (0.78) |
 | jubarte-093 | jubarte 0.9.3 (release) | 3338/3502 (2584/2612) | 68.62 (72.44) | 79.07 (82.61) | 309 (254) | 634 (524) | 780 (562) | 0.67 (0.68) | 0.76 (0.78) |
+| docxodus-15.0.0 | docxodus 15.0.0 (npm/WASM, set redline_600) | 543/600 | 64.86 | 75.70 | 46 | 98 | 135 | 0.65 | 0.71 |
 | docxodus | Docxodus 12.6.5 (C#) | 2612/3502 (2612/2612) | 53.94 (72.33) | 62.87 (81.75) | 204 (204) | 482 (482) | 614 (614) | 0.65 (0.65) | 0.73 (0.73) |
 | apryse | apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked) | 2524/3502 (1936/2612) | 37.50 (39.02) | 43.17 (44.13) | 0 (0) | 39 (31) | 1285 (962) | 0.18 (0.18) | 0.16 (0.16) |
+| apryse-12.2.1 | apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked; set redline_600) | 336/600 | 28.42 | 37.87 | 0 | 4 | 190 | 0.18 | 0.14 |
+| superdoc-2.25.0 | superdoc-sdk 2.25.0 (set redline_600) | 67/600 | 6.92 | 0.00 | 1 | 1 | 3 | 0.21 | 0.20 |
 | superdoc | superdoc-sdk 2.16.0 | 380/3502 (323/2612) | 6.66 (7.60) | 0.00 (0.00) | 4 (0) | 7 (3) | 20 (18) | 0.21 (0.21) | 0.29 (0.27) |
 
 ### redlines accepted or rejected by Word

@@ -41,15 +41,19 @@ def set_lane(tool: str) -> tuple[str, Path] | None:
     ``scores_<tool>_set-<set>.json`` → the set's name and ``set-<set>.csv`` (the
     ``--sample-csv`` of ``measure.py``). None when the lane is a pool lane.
     """
-    found = sorted(HERE.glob(f"scores_{tool}_set-*.json"))
+    found = []
+    for f in sorted(HERE.glob(f"scores_{tool}_set-*.json")):
+        name = f.stem[len(f"scores_{tool}_set-"):]
+        # Only a file whose set list exists is the lane's own scores file; the others
+        # (e.g. scores_<tool>_set-<set>_stamp_matched.json) are labelled side figures.
+        if (HERE / f"set-{name}.csv").is_file():
+            found.append((f, name))
     if not found:
         return None
     if len(found) > 1:
-        raise SystemExit(f"{tool}: {len(found)} set score files: {[p.name for p in found]}")
-    name = found[0].stem[len(f"scores_{tool}_set-"):]
+        raise SystemExit(f"{tool}: {len(found)} set score files: {[p.name for p, _ in found]}")
+    name = found[0][1]
     keys = HERE / f"set-{name}.csv"
-    if not keys.is_file():
-        raise SystemExit(f"{found[0].name}: no key list {keys.name}")
     return name, keys
 
 
