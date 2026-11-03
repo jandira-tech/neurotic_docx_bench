@@ -14,19 +14,20 @@ Everything lands under ``outputs/redlines_0929_full/`` of ``hub.RESULTS_REPO``:
   the oracles of the ``fresh`` rows. The other oracles are ``corpus/word`` files, not uploaded here.
 - the run's CSVs, score JSONs, scripts and ``RUN.md``; ``MANIFEST.sha256.json`` over all of it.
 
-Files are hard-linked into a staging folder, uploaded one ``upload_folder`` commit per subfolder,
-then checked by ``hub.verify_uploaded`` (LFS sha256 or git blob sha1 of every file). ``--prune``
-deletes the tool outputs (``PRUNE``) only when every file verified; Word's own files
-(``corpus/word``, ``compare_regen``) are never touched.
-The manifest keeps the previous manifest's entries that the hub still matches.
+Files are hard-linked into a staging folder and uploaded one ``upload_folder`` commit per
+subfolder; ``upload_folder`` is the only hub check, sending what the hub does not hold. ``--prune``
+then checks every file with ``hub.verify_uploaded`` (LFS sha256 or git blob sha1) and deletes the
+tool outputs (``PRUNE``) only when every file verified; Word's own files (``corpus/word``,
+``compare_regen``) are never touched.
+The manifest carries the previous manifest's entries this run does not restage, as they are.
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -45,10 +46,6 @@ PRUNE = tuple(HERE / t / d for t in TOOLS for d in TOOL_DIRS) + tuple(
     HERE / 'docxodus' / d for d in ('docx_rest', 'docx_sample500', 'pdf_staged'))
 
 
-class ManifestCarryError(RuntimeError):
-    """Previous manifest entries are missing or different on the hub."""
-
-
 class StaleParentError(RuntimeError):
     """Someone else committed to the hub while this run was uploading."""
 
@@ -57,50 +54,23 @@ def next_parent(api, parent, info, message):
     """The commit an upload made, or ``parent`` when it made none.
 
     An upload that changes nothing makes no commit, skips the ``parent_commit`` check and
-    returns the branch head, which may be someone else's commit; only a commit with our
-    message directly on ``parent`` is ours.
+    returns the branch head, which may be someone else's commit. A large folder lands as
+    several commits, ``message (part N)`` (huggingface_hub 2.0), so every commit between
+    ``parent`` and the head must carry our message, alone or with its part number (#103).
     """
     if info.oid == parent:
         return parent
-    newest = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)[:2]
-    if [c.commit_id for c in newest] != [info.oid, parent] or newest[0].title != message:
-        raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
-    return info.oid
+    history = api.list_repo_commits(hub.RESULTS_REPO, repo_type=hub.REPO_TYPE, revision=info.oid)
+    part = re.compile(rf'{re.escape(message)}( \(part \d+\))?')
+    for commit in history:
+        if commit.commit_id == parent:
+            return info.oid
+        if not part.fullmatch(commit.title):
+            break
+    raise StaleParentError(f'the hub moved to {info.oid} while uploading on {parent}; nothing more uploaded')
 
 
-def carried_entries(previous, staged, remote, fetch) -> dict[str, str]:
-    """Carry previous entries only when their hub bytes still match."""
-    carried = {}
-    missing = []
-    mismatched = []
-    for path, expected in previous.items():
-        if path in staged:
-            continue
-        entry = remote.get(path)
-        if entry is None:
-            missing.append(path)
-            continue
-        lfs = getattr(entry, 'lfs', None)
-        if lfs:
-            actual = lfs.get('sha256') if isinstance(lfs, dict) else getattr(lfs, 'sha256', None)
-        else:
-            data = fetch(path)
-            if data is None:
-                missing.append(path)
-                continue
-            actual = hashlib.sha256(data).hexdigest()
-        if actual != expected:
-            mismatched.append(path)
-        else:
-            carried[path] = expected
-    if missing or mismatched:
-        raise ManifestCarryError(
-            f'{len(missing)} missing: {sorted(missing)[:10]}; {len(mismatched)} mismatched: {sorted(mismatched)[:10]}'
-        )
-    return carried
-
-
-def stage(root: Path, previous=None, remote=None, fetch=None) -> list[str]:
+def stage(root: Path, previous=None) -> list[str]:
     """Hard-link every file to upload under ``root``; return the subfolders (one commit each)."""
     if root.exists():
         shutil.rmtree(root)
@@ -133,7 +103,8 @@ def stage(root: Path, previous=None, remote=None, fetch=None) -> list[str]:
         if f.is_file() and f.suffix in TOP_SUFFIXES and not f.name.endswith('.partial.json'):
             os.link(f, top / f.name)
     staged = hub.build_manifest(root)
-    carried = {} if previous is None else carried_entries(previous, staged, remote or {}, fetch)
+    # upload_folder is the only hub check before the upload: unrestaged entries carry as they are.
+    carried = {path: digest for path, digest in (previous or {}).items() if path not in staged}
     hub.write_manifest(root, path=top / hub.MANIFEST_NAME, files=staged | carried)
     if previous is not None:
         print(f'manifest: {len(staged)} staged + {len(carried)} carried from the previous manifest', flush=True)
@@ -164,22 +135,6 @@ def main() -> None:
             if a.previous_revision
             else head
         )
-        prefix = REPO_PREFIX + '/'
-        remote = {}
-        try:
-            for entry in api.list_repo_tree(
-                hub.RESULTS_REPO,
-                repo_type=hub.REPO_TYPE,
-                path_in_repo=REPO_PREFIX,
-                recursive=True,
-                expand=True,
-                revision=head,
-            ):
-                path = getattr(entry, 'path', None)
-                if path and path.startswith(prefix):
-                    remote[path[len(prefix) :]] = entry
-        except RemoteEntryNotFoundError:
-            remote = {}
         try:
             local = api.hf_hub_download(
                 hub.RESULTS_REPO, f'{REPO_PREFIX}/run/{hub.MANIFEST_NAME}', repo_type=hub.REPO_TYPE, revision=baseline
@@ -189,16 +144,7 @@ def main() -> None:
         else:
             previous = hub.read_manifest(Path(local))
 
-        def fetch(rel):
-            try:
-                local = api.hf_hub_download(
-                    hub.RESULTS_REPO, f'{REPO_PREFIX}/{rel}', repo_type=hub.REPO_TYPE, revision=head
-                )
-            except RemoteEntryNotFoundError:
-                return None
-            return Path(local).read_bytes()
-
-        subdirs = stage(a.staging, previous=previous, remote=remote, fetch=fetch)
+        subdirs = stage(a.staging, previous=previous)
     counts = {s: sum(1 for p in (a.staging / s).iterdir()) for s in subdirs}
     size = sum(p.stat().st_size for p in hub.iter_files(a.staging))
     print(f'staged {sum(counts.values())} files, {size / 1e9:.2f} GB: {counts}', flush=True)
@@ -214,11 +160,12 @@ def main() -> None:
                                  parent_commit=parent)
         parent = next_parent(api, parent, info, message)
         print(f'uploaded {s}', flush=True)
-    bad = hub.verify_uploaded(a.staging, api=api, repo_id=hub.RESULTS_REPO, path_in_repo=REPO_PREFIX)
-    if bad:
-        raise SystemExit(f'{len(bad)} file(s) missing or different on the hub, nothing deleted: {bad[:10]}')
-    print(f'verified {sum(counts.values())} files on {hub.RESULTS_REPO}/{REPO_PREFIX}', flush=True)
     if a.prune:
+        # Local files are deleted only once every staged file is proven on the hub.
+        bad = hub.verify_uploaded(a.staging, api=api, repo_id=hub.RESULTS_REPO, path_in_repo=REPO_PREFIX)
+        if bad:
+            raise SystemExit(f'{len(bad)} file(s) missing or different on the hub, nothing deleted: {bad[:10]}')
+        print(f'verified {sum(counts.values())} files on {hub.RESULTS_REPO}/{REPO_PREFIX}', flush=True)
         for d in PRUNE:
             if d.is_dir():
                 shutil.rmtree(d)
