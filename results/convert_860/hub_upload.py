@@ -21,6 +21,7 @@ listing and compares hashes. Nothing local is deleted.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import tempfile
@@ -30,7 +31,6 @@ from neurotic_docx_bench import hub
 
 HERE = Path(__file__).resolve().parent
 REPO_PREFIX = "outputs/convert_860"
-EXPECTED = 860
 
 # lane -> (the report JSON under results/, a one-line note for the commit message)
 LANES: dict[str, str] = {
@@ -42,10 +42,20 @@ LANES: dict[str, str] = {
 
 
 def stage(root: Path, lane: str, pdf_dir: Path, report: Path) -> int:
-    """The lane's files, hardlinked into a staging tree, with its manifest."""
+    """The lane's files, hardlinked into a staging tree, with its manifest.
+
+    The PDF count is the report's own: a vendor that refused some documents
+    (docxodus 15.0.0 verifies what it prints and writes no PDF for 38 of the
+    860) wrote fewer PDFs than the set has, and those documents are scored 0
+    under intent-to-treat. The manifest and the report together say so.
+    """
+    data = json.loads(report.read_text(encoding="utf-8"))
+    tools = data.get("tools") or {}
+    row = next(iter(tools.values()), {})
+    expected = int(row.get("n_scored") or 0)
     pdfs = sorted(p for p in pdf_dir.iterdir() if p.suffix == ".pdf" and not p.name.startswith("."))
-    if len(pdfs) != EXPECTED:
-        raise SystemExit(f"{pdf_dir}: {len(pdfs)} PDFs, expected {EXPECTED}")
+    if len(pdfs) != expected:
+        raise SystemExit(f"{pdf_dir}: {len(pdfs)} PDFs, the report scored {expected}")
     (root / "pdf").mkdir(parents=True)
     for p in pdfs:
         os.link(p, root / "pdf" / p.name)
