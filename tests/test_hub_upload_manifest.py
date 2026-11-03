@@ -325,7 +325,10 @@ MESSAGE = 'redlines_0929_full: jubarte-0.17.0/docx (2611 files)'
 
 
 def test_a_folder_split_into_part_commits_is_ours(upload) -> None:
-    api = _Commits(*[(f'p{n}', f'{MESSAGE} (part {n})') for n in range(8, 0, -1)], ('base', 'before'))
+    # huggingface_hub 2.0 (_upload_pipeline.py:650): the first commit carries the bare
+    # message, the later ones ' (part 2)', ' (part 3)', ...
+    api = _Commits(*[(f'p{n}', f'{MESSAGE} (part {n})') for n in range(8, 1, -1)],
+                   ('p1', MESSAGE), ('base', 'before'))
     assert upload.next_parent(api, 'base', SimpleNamespace(oid='p8'), MESSAGE) == 'p8'
 
 
