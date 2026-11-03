@@ -86,6 +86,15 @@ Key modules (`src/neurotic_docx_bench/`):
   (per-run `report.html`: worst-first candidate-vs-oracle page gallery from the
   persisted `score/` rasters; emitted automatically by `bench run`).
 - `aggregate.py` `gate.py` `tool_updater.py` `provenance.py` `config.py` `cli.py`.
+- `pages/render.py` — the **shown-page renderer** (plan 7.4, #131): the first
+  `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI, 16-colour
+  median-cut, lossless WebP (method 4), plus the same pages as `pages.pdf`
+  (`mutool clean -gggz`'s equivalent: garbage 4, deflated). Scoring is **not**
+  here: it stays in `raster.py` at 144 DPI over every page. `bench pages render`
+  renders a lane of PDFs in a process pool and resumes (a per-PDF `render.json`
+  manifest holds the input's sha256). The `mupdf` backend (PyMuPDF) is the
+  default and byte-identical to `mutool draw -r 180`; the `mutool` backend is
+  there for parity work.
 - `superdoc_gen.py` — the SuperDoc (Python SDK) redline generator.
 - `scripts/generate-native-redlines.ts` — jubarte / docxodus / folio / SuperDoc generators.
 

@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- `pages/render.py` + `bench pages render`: the shown-page renderer (#131, plan 7.4).
+  The first `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI,
+  16-colour median-cut, lossless WebP (method 4), plus the same pages as
+  `pages.pdf` (garbage 4, deflated — `mutool clean -gggz`'s equivalent). The
+  `mupdf` backend (PyMuPDF) is byte-identical to `mutool draw -r 180`; the
+  `mutool` backend is kept for parity work. A lane of PDFs renders in a process
+  pool and resumes: a per-PDF `render.json` manifest holds the input's sha256.
+  Scoring is untouched — it stays in `raster.py` at 144 DPI over every page.
 - docxide-pdf SSIM beside ink Jaccard and text boundary on scored document rows (#97),
   parity-tested against upstream `a72d91bc` on the existing five PDF pairs at 150 DPI.
 - Per-document `page_metrics` and means in DOCX-to-PDF, accepted-change and roundtrip
