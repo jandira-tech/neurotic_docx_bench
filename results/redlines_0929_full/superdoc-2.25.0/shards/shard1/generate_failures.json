@@ -1,0 +1,347 @@
+[
+  {
+    "doc": "ae9360e096_behavior__sd_2672_merged_table_821b922c__vs__a5903a7c15_super_editor__pci_table_dc840852_redline_00baea9614",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "56d68160f4_doc_api_stories__sd_2086_header_row_shading_api__vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_06bfdc32c8",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2dc3e97d2a_super_editor__hyperlink_node_52b7695b__vs__7c31a68295_behavior__pageref_standalone_h_7b3ab72e_redline_09e156c52d",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "d6229441a5_0022208cff905cd74261067032c22afa148e0f63496c7f66__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_0cbbcaa7f0",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "7e77c2f888_file_120__vs__525c779243_file_121_redline_0e99767f9f",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c7dbacb26a_file_37__vs__fdaf71bd6b_file_38_redline_135dfbf65a",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c434e0a09__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_15929d1b69",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c2d49e9ede_super_editor__sd_978_remove_table_borders_47f7ed__vs__f782ae23ec_super_editor__wordoriginatedcomments_c146be65_redline_18380da4e0",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3539cf2404_cli_legacy__replace_test_0a793f01__vs__3b639ef236_super_editor__sdpr_8cc15994_redline_1b5dd9fc3f",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3acaee795f_red_strikethrough_demo_style_default_missing__vs__70fd78a4f8_redline_cicerodo_v_plate_30_redline_1dbbf3be63",
+    "stage": "generate",
+    "error": "diff.compare: invalid full snapshot \u2014 payload.compareSnapshot.annotations[1].entries[3].key: duplicate key \"/word/document.xml|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|3|3|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|3|wId:3\" within family \"tracked-changes\" (first declared at annotations[1].entries[2].key); payload.compareSnapshot.annotations[1].entries[7].key: duplicate key \"/word/document.xml|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|6|6|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|6|wId:6\" within family \"tracked-changes\" (first declared at annotations[1].entries[6].key); payload.compareSnapshot.annotations[1].entries[44].key: duplicate key \"/word/document.xml|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|42|42|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|42|wId:42\" within family \"tracked-changes\" (first declared at annotations[1].entries[43].key); payload.compareSnapshot.annotations[1].entries[46].key: duplicate key \"/word/document.xml|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|43|43|sd:main:/word/document.xml|ins|Arthur Souza Rodrigues|2026-05-02T10:41:00Z|43|wId:43\" within family \"tracked-changes\" (first declared at annotations[1].entries[45].key); payload.compareSnapshot.annotations[1].entries[59].key: duplicate key \"/word/document.xml|sd:main:/word/document.xml|del|Arthur Souza Rodrigues|2026-05-02T10:42:00Z|55|55|sd:main:/word/document.xml|del|Arthur Souza Rodrigues|2026-05-02T10:42:00Z|55|wId:55\" within family \"tracked-changes\" (first declared at annotations[1].entries[58].key)."
+  },
+  {
+    "doc": "b742aca0d1_839f86bfde5b019768d7fa57ea25f61ff70e1642f87a90fc__vs__f89aaa5382_a6154e64eecf7e61bcc7412e4f00462d11abfb711484a9e8_redline_2405610dc2",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c8a9a6e711_62caeb83a2234e23b2b174c85c0168e0375fb9afba53987b__vs__d7f1b4b348_4719d6f01f9ae9f32bd0869e814f1d2e53038477e2fec13c_redline_27b0d94ddb",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "1e212fbfdc_file_122__vs__85692b483f_file_123_redline_2ba84d60d1",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_2ea0a59b6a",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2936af4459_super_editor__sd_1480_two_col_tab_positions_0095__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_redline_30a9d969c4",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "6a8a9e859c_e38f976d3258562dfa09cecb9a34e94403098d5b8a0cd338__vs__1c96e575f8_f907e44f658eab72c9fec3635a6a64fb051c7fb2142a0d03_redline_327c9f02a2",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d01f80a__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_3350b94022",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [picture-bullet definition replay requires relationship and media closure]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "b389f55091_super_editor__comment_23ee5ec1__vs__3e50084c2e_super_editor__diff_after16_2a48697a_redline_371ef9feed",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "531cf3d312_00ce789bc3226c2a68967cc29792927c80b7f55d9b5267ad__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_3c920d5996",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "008908795c_increase_indent_demo_id_paraid_overflow__vs__5adc853144_insert_link_demo_id_paraid_overflow_redline_2564d80f8c",
+    "stage": "generate",
+    "error": "diff.apply: cannot apply the complete diff because changed families [body (blocked: body target structure cannot be replayed safely: target runs require unsupported structural or relationship replay); hyperlinks (deferred: compare-apply-deferred (ws09): table topology, media / object, hyperlink target, and package-graph (relationship / content-type / media-reference) changes are detected and reported in the analysis result, but they are not authored as in-story tracked review markup this release. The reviewed output stays package-valid by construction (the kernel compare-apply path leaves no orphaned rels, missing content types, missing media binaries, or stranded payloads \u2014 proven by the package-integrity oracle). (owner: ws09)); package-graph (deferred: compare-apply-deferred (ws09): table topology, media / object, hyperlink target, and package-graph (relationship / content-type / media-reference) changes are detected and reported in the analysis result, but they are not authored as in-story tracked review markup this release. The reviewed output stays package-valid by construction (the kernel compare-apply path leaves no orphaned rels, missing content types, missing media binaries, or stranded payloads \u2014 proven by the package-integrity oracle). (owner: ws09))] in this build. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "5ad6e6d44f_0199027cbf967c88ab833b77e5bc5d629bacecbd40a87c26__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_3f9670141d",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "e137a3db25_file_140__vs__0f5a806b4c_file_141_redline_421d863d4e",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "4492bbb1f8_file_172__vs__838af02d11_file_173_redline_485b916ef9",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_4aca112da9",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "902a69f0e4_super_editor__line_space_table_9b1ee54b__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_4d5de07b0e",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_5280c55017",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "d3b73b5ecf_534f02b4ceb3be8720d64c2c9de45e7b41f6f232c07177fa__vs__b464bb2f28_53fae2563e6bafcd40cf05ce3f1d6b2d66f0d965f9b5c8e2_redline_548d133393",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "18eb110b3b_numwords_fldsimple__vs__60697d46b7_strict01_redline_57dfcda882",
+    "stage": "generate",
+    "error": "Failed to open document in the v2 runtime."
+  },
+  {
+    "doc": "735c372b41_super_editor__diff_after8_58e5c288__vs__75aeff4f58_super_editor__diff_after9_a9d4b4b0_redline_5a72b1ad9e",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "19891583af_000f23dc2592a0044f1da2e4f2166c6b41e8fde6a66a1988__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_5e3904f9f6",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "8c3cb2e7dd_file_60__vs__bdf199d4af_file_61_redline_613c950c41",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "a0e6a09304_super_editor__diff_after11_1d5b767f__vs__3e50084c2e_super_editor__diff_after16_2a48697a_redline_63ec3a403e",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f3e1a4d__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_67da4b412e",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "26ccb443f6_file_11__vs__799980e6af_file_12_redline_69e44ac125",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "4ed1b6d133_0020e4099d611a050ed83fb7e0b16d6f48200018bbb1e757__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_6d0354470e",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "b8783e46c5_file_6__vs__84617b8b4d_file_7_redline_703530e684",
+    "stage": "generate",
+    "error": "diff.compare: Invalid base compare snapshot: base.annotations[1].entries[84].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[89].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[94].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[99].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[104].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[115].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[120].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[125].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[130].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[135].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[140].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[145].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[150].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[155].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[160].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[165].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key)"
+  },
+  {
+    "doc": "438e423482_track_changes_suggesting_italic_id_paraid_overfl__vs__9f56ca58a1_track_changes_suggesting_title_id_paraid_overflo_redline_73e6a51032",
+    "stage": "generate",
+    "error": "diff.apply: cannot apply the complete diff because changed families [body (blocked: body target structure cannot be replayed safely: target structure contains unproven style or numbering references)] in this build. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "f71a12ee23_super_editor__fields_attrs1_83837249__vs__3539cf2404_cli_legacy__replace_test_0a793f01_redline_7a1d3fbeba",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "f43929f70c_verdana_bold_large_font_id_paraid_overflow__vs__3413da1703_verdana_font_demo_id_paraid_overflow_2_redline_7da45f822a",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ec19540e2c_d6ef382e948b98e757f3fd2067de5daf1a944935d8906ebc__vs__090acc461f_d27134788fec08eea4972a5641b965c0ff2238bfd18e7cfa_redline_859b75527f",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "8cd372b814_0193e5015be906eb45df5f7b3ceb682c7ff53cb52f15a0bf__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_86dd7a85be",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576b0e48e__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_8ccb7ab63a",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_9013a94f33",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "6e2576a091_docx_lots_of_comments__vs__2c0a2ac35f_double_spacing_bold_demo_id_paraid_overflow_redline_9382e03243",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "7692b33045_super_editor__list_with_break_exported_broken_45__vs__ddfa313a5f_super_editor__list_with_break_from_word_5cc0d638_redline_9971a714c7",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_9cb8afca44",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_a27125cb58",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "af540c50e4_00edeec4b73ab68a9a4e2b0281464f067656d89fc9969ab4__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_a702002b5b",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__6c0ad6c8ef_behavior__math_matrix_tests_a3b17e15_redline_a9272f69c1",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "d93f1dafca_sample_document_word_repair_of_our_output_iter2__vs__970fd9303f_sample_document_word_repair_of_our_output_word_r_redline_ace788a217",
+    "stage": "generate",
+    "error": "diff.apply: localized section/reference body correspondence is ambiguous. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3c47f1b463_8dcbefa6e9bcf0c292392ca7fda1d9f2260ea724f9ad5f98__vs__f400cafcba_6565bfe1c9b7b19a2feedc7c358db69a32ed064149f2920f_redline_b00e0b4340",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "90cef57bac_eigenpal_docx_editor_suggesting_mixed_edits__vs__f644da9aeb_employee_directory_table_2_redline_b351836b34",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c4ee483519_tiff_image__vs__d0423646cd_times_new_roman_bold_id_paraid_overflow_redline_7321b254f7",
+    "stage": "generate",
+    "error": "diff.apply: styles replay is unsafe \u2014 [creating a Style Definitions part is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "01d1b3da75_table_bookmark_end__vs__906753e55b_super_editor__table_c70ca973_redline_ba99cf4c8d",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "b6f757462e_0006f7905281867ab0d0a45d88f88f72e2c15efbd9a8ed69__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_c0d5b06bcf",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "cc5f989c56_0090ba7896cba5f43500e77e151ddab12f16b20e3ddf5822__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_c645866078",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ee61fb4ab3_super_editor__base_ordered_fdff1fb2__vs__f529133cd5_super_editor__basic_comment_d3ba5f1e_redline_cb0a7d2c98",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c09b14fcd7_file_196__vs__4e6a261969_file_197_redline_cfb0498eef",
+    "stage": "generate",
+    "error": "Failed to open document in the v2 runtime."
+  },
+  {
+    "doc": "52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d525625b0d",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "75b13139d1_01424129e67ac16566c504bbb091d985cb6316a08abf5730__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d9cfcf4633",
+    "stage": "generate",
+    "error": "diff.apply: header/footer physical lifecycle is unsafe \u2014 [/word/header1.xml: relationship-backed header/footer dependencies are not supported]. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3f96a7ac81_80122bb2a76402060fc993788f57535ec2ab4f433a1bdda1__vs__1c7613f27c_858e0b906671516712d44243643f864adc6ec82ae1dbb09a_redline_e05a60bda3",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "899ef4306e_0017891576e438292c35db3155e97d16ec0d68144e21bfc3__vs__2e04202552_000e3e7bd2d6215fc7b469cc3e296c1b2a510bc1abc7e0fd_redline_e56ce4ec16",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "f529133cd5_super_editor__basic_comment_d3ba5f1e__vs__8df6dfa8d7_alternate_content_redline_e8fafc3cba",
+    "stage": "generate",
+    "error": "Failed to open document in the v2 runtime."
+  },
+  {
+    "doc": "95bdaad1fe_support_tickets_table__vs__c917cc5055_support_tickets_summary_id_paraid_overflow_redline_48b8d1fb7b",
+    "stage": "generate",
+    "error": "diff.apply: compare apply was rejected before commit \u2014 rejected unsupported-context. No mutation was performed."
+  },
+  {
+    "doc": "bc514b554e_00d979c97e42f03faff5f49e2a7dfa9afd30996214602e19__vs__aa5340125d_00a4b0b91e9b5b072dc3771391c2d608518690eccf44eae8_redline_ef5c07563d",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2ad8d15e88_00e901c5aa86bd93002ce801375c57e44c2c78a0e5b308d3__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_f263af77b3",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "92589c3e37_super_editor__pre_separated_list_bd330d28__vs__382497a0a8_super_editor__python_docx_comment_test_501f21cb_redline_f70e805c70",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__deff0e697a_00b5defcad6e58038eac35472a2d48c89905068e5ece0cc3_redline_fce8ea8032",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  }
+]

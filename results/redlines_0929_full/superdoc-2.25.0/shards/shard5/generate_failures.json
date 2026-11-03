@@ -1,0 +1,347 @@
+[
+  {
+    "doc": "50d8be9682_file_190__vs__e9d5410452_file_191_redline_01f3deda92",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "7d89bf44b4_single_paragraph__vs__e355cec096_small_font_size_demo_id_paraid_overflow_redline_03c465ec7f",
+    "stage": "generate",
+    "error": "diff.apply: settings replay is unsafe \u2014 [removing a settings part requires package graph replay]. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__671ff91b1d_behavior__sd_2750_borderbox_7cd3768d_redline_0858ee25d5",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "1072677c3a_file_6__vs__1b8ec2a8cd_file_7_redline_0b033b1c23",
+    "stage": "generate",
+    "error": "diff.compare: Invalid base compare snapshot: base.annotations[1].entries[84].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[89].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[94].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[99].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[104].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[115].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[120].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[125].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[130].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[135].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[140].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[145].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[150].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[155].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[160].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[165].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key)"
+  },
+  {
+    "doc": "81f7cad226_009fa3f6b717df4d0e9371d67f305110d5096bc9178134b0__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_0dadb2386e",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2523714a7f_166230a5d0c1ffc0b39476f0358811a3ae000db31e399eeb__vs__fa99066c51_19d1ea39b560e3746c8fdebc84dfc3dfbb74c345dd5e3f35_redline_0f8eb45f51",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "8138a2180b_file_145__vs__ac0bcc10fe_file_146_redline_11e99a0b24",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "9f27b9f0d4_text_highlight_demo_style_default_missing__vs__37ce636fd7_tiff_image_redline_14a7ea9557",
+    "stage": "generate",
+    "error": "diff.apply: styles replay is unsafe \u2014 [removing a Style Definitions part is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "33cebde869_08d15aff33c39a743c5ef90ad0990696ad4bdd4e3b814f6c__vs__5b7ffafbb8_7deb23120af5cf67a58eb2d64fd1b545ef81ebcf8ef24664_redline_17b13be73c",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "00b4bca293_ba67b1a0b34e662dd68f08ac7dd30bf0db3b1e2054002207__vs__daadabf34a_d3a0981ed305b4a50bf3b4780a018be510b1f8012281f045_redline_1971c5ad89",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "82b365789e_file_117__vs__cd54518381_file_118_redline_1c7fc8dc88",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "adc9f524d1_comments__vs__5d17fd43a9_complex_style_attr_redline_2061218d44",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3bfcb371e2_00003fff80a444ad2f706c74f3c0d9fbef00d7a99ba0c105__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_23c28907ad",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "9f6091a4ac_super_editor__threaded_comment_27bda0ba__vs__b3028f2d5b_super_editor__super_basic_table_86d8d916_redline_254bc964f4",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "970e9bbbcc_behavior__math_all_objects_36ab389c__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_2a64722aad",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "97c3dd2e86_docx_lots_of_comments_addition_redline_addition__vs__9f5481078e_docx_lots_of_comments_addition_redline_redline_2d65e392ab",
+    "stage": "generate",
+    "error": "diff.compare: invalid full snapshot \u2014 payload.compareSnapshot.annotations[1].entries[82].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[87].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[92].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[97].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[102].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[113].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[118].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[123].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[128].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[133].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[138].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[143].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[148].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[153].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[158].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[163].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key)."
+  },
+  {
+    "doc": "13ea153d22_file_174__vs__66dcec3e49_file_175_redline_301e236134",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3755bf5762_0000a3a991f56b6660c630eb426231a3b4ec31e40313aab9__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_30e7502764",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "f782ae23ec_super_editor__wordoriginatedcomments_c146be65__vs__3539cf2404_cli_legacy__replace_test_0a793f01_redline_3303e707c8",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "5c207ef361_super_editor__font_formatting_runs_8be3565a__vs__bb9c5a8bd5_doc_api_stories__table_style_options_roundtrip_1_redline_34e52d37ea",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "d48e02b548_super_editor__google_docs_originated_comments__vs__d0281643d2_super_editor__hello_docx_world_12f11074_redline_37c978d405",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_3b63fb2ef1",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "0f5a806b4c_file_141__vs__dccd972179_file_142_redline_3d22ad3c37",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_3f1f7e911f",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "08286ffbfb_super_editor__basic_resolved_comment_cac5a1b0__vs__5fa01813d3_super_editor__basic_table_shading_d3212ffd_redline_3fdab4ace6",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "19313bb0d2_013bfd9bed003f93622f5b45095bb7471499aea576b0e48e__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_436a150ce2",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "849eefdb7e_7429fdae0db732bd2f2dbd382964e22d8200733591aa421d__vs__67555165fa_5aaa1b479afe01ccd8430417730f6ce91d16f00d01314895_redline_4699b416f2",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_5095f45581",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "e81d1fa10c_behavior__pageref_standalone_uppercase_h_7701e07__vs__735c372b41_super_editor__diff_after8_58e5c288_redline_5325dc70b4",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2ad8d15e88_00e901c5aa86bd93002ce801375c57e44c2c78a0e5b308d3__vs__333bfe069a_003416d620331122b93b434dad901db5836f60d2cad4b533_redline_5666a8b6aa",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2dc3e97d2a_super_editor__hyperlink_node_52b7695b__vs__d48e02b548_super_editor__google_docs_originated_comments_redline_58b3bd3cbc",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ef1e1c68e9_super_editor__basic_paragraph_1774f4e4__vs__08286ffbfb_super_editor__basic_resolved_comment_cac5a1b0_redline_603ef0419b",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "9f6091a4ac_super_editor__threaded_comment_27bda0ba__vs__84f5fb598b_super_editor__diff_before11_1b953eaf_redline_621637d747",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [comment topology cannot be replayed losslessly]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "6758689ba7_text_box__vs__9f27b9f0d4_text_highlight_demo_style_default_missing_redline_6615bbe1a9",
+    "stage": "generate",
+    "error": "diff.apply: settings replay is unsafe \u2014 [removing a settings part requires package graph replay]. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "dcf7dd476f_super_editor__superdoc_table_tester_3b2de2e1__vs__f89ff5989b_evals__nda_7f304918_redline_699b8c72c1",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "a0738533be_gdocs_comments_export__vs__199cb211b5_super_editor__basic_footnotes_5be96945_redline_6b7f035223",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "75b13139d1_01424129e67ac16566c504bbb091d985cb6316a08abf5730__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_6eae0d41a0",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ba3f04f252_sample_document_really_repaired_word_repaired__vs__d93f1dafca_sample_document_word_repair_of_our_output_iter2_redline_713774d8e1",
+    "stage": "generate",
+    "error": "diff.apply: localized section/reference body correspondence is ambiguous. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2a7aebb7ce_1118d92e486cd8c59e3b10ec9f28ef9188ec989b1120da52__vs__196c44dfba_2663487136794495a0c6c3b7f67609c690cfe18469576cbb_redline_766a042194",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "68526de79b_file_77__vs__7476f5fbb1_file_78_redline_7cc19c9376",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "abd0b75d88_file_184__vs__9c6ebd430d_file_185_redline_7f412aa4b4",
+    "stage": "generate",
+    "error": "Failed to open document in the v2 runtime."
+  },
+  {
+    "doc": "1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2__vs__d03da97287_super_editor__nested_comments_gdocs_0c8668e1_redline_83ec2122ff",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "76a40d9ffd_000e618d79bf03ff1783da81e6c34b7ad651896dd56e75a4__vs__2773adf157_0004c94ca2a8684d47449bb0e7abf87de1df71a7e6543252_redline_8684b04242",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "bc85714262_file_170__vs__15b6035cc0_file_171_redline_89c44edb8b",
+    "stage": "generate",
+    "error": "diff.compare: Invalid base compare snapshot: base.annotations[1].entries[106].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-05-02T14:41:00Z|tbl:p:676A8069\" within family \"tracked-changes\" (first declared at annotations[1].entries[101].key); base.annotations[1].entries[111].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-05-02T14:41:00Z|tbl:p:676A8069\" within family \"tracked-changes\" (first declared at annotations[1].entries[101].key); base.annotations[1].entries[116].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-05-02T14:41:00Z|tbl:p:676A8069\" within family \"tracked-changes\" (first declared at annotations[1].entries[101].key); base.annotations[1].entries[121].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-05-02T14:41:00Z|tbl:p:676A8069\" within family \"tracked-changes\" (first declared at annotations[1].entries[101].key); base.annotations[1].entries[145].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-05-02T14:42:00Z|tbl:p:77D83D83\" within family \"tracked-changes\" (first declared at annotations[1].entries[140].key); base.annotations[1].entries[150].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-05-02T14:42:00Z|tbl:p:77D83D83\" within family \"tracked-changes\" (first declared at annotations[1].entries[140].key); base.annotations[1].entries[155].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-05-02T14:42:00Z|tbl:p:77D83D83\" within family \"tracked-changes\" (first declared at annotations[1].entries[140].key); base.annotations[1].entries[160].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-05-02T14:42:00Z|tbl:p:77D83D83\" within family \"tracked-changes\" (first declared at annotations[1].entries[140].key)"
+  },
+  {
+    "doc": "8ef32902e8_file_158__vs__8061e5912f_file_159_redline_8de55978f2",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "eb2f3c86b5_vfdsdfcacawesd_suggesting_mixed_edits__vs__cefef4e4f5_yellow_highlight_demo_id_paraid_overflow_redline_913d076e79",
+    "stage": "generate",
+    "error": "diff.apply: settings replay is unsafe \u2014 [removing a settings part requires package graph replay]. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "4c4f8515c5_title_style_centered_demo_id_paraid_overflow__vs__f8f9857e80_title_style_demo_id_paraid_overflow_redline_3bb3312335",
+    "stage": "generate",
+    "error": "diff.apply: cannot apply the complete diff because changed families [body (blocked: body target structure cannot be replayed safely: target structure contains unproven style or numbering references)] in this build. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ee91b9e453_9385adbfd34ee40a4bd2429d7385293b31a127fc9e9208d1__vs__409867707c_61a16c9bdc534801a19fcf808fdddd50a7cd74d1efd6113e_redline_9f2ce6d6bb",
+    "stage": "generate",
+    "error": "diff.apply: comment replay is unsafe \u2014 [multiple comment creations require revision-stable anchor replay]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_a321bd4223",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "bcae83f080_docx_lots_of_comments_addition_removal__vs__07fce8e954_docx_lots_of_comments_addition_redline_a7cd72afd8",
+    "stage": "generate",
+    "error": "diff.compare: invalid full snapshot \u2014 payload.compareSnapshot.annotations[1].entries[82].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[87].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[92].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[97].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[102].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[78].key); payload.compareSnapshot.annotations[1].entries[113].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[118].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[123].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[128].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[133].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[138].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[143].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[148].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[153].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[158].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key); payload.compareSnapshot.annotations[1].entries[163].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[108].key)."
+  },
+  {
+    "doc": "970fd9303f_sample_document_word_repair_of_our_output_word_r__vs__e355cec096_small_font_size_demo_id_paraid_overflow_redline_aa31228e52",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "27c9cbd809_b4b5463ef111d72dc319a5ccf52ae7b396c494e99b89c857__vs__7f90ff7f2c_d94124e867cf9e31389cfa780818a638161d676f6b79049f_redline_b14882f3e9",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "9c1fb4747e_super_editor__sd_1495_auto_page_break_854a2dd9__vs__14211b982b_super_editor__simple_ordered_list_8288421a_redline_b4bafdd04d",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part creation (no base /word/numbering.xml) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "2ba392cdd2_super_editor__broken_list_missing_items_36b4199e__vs__1c5bd81def_super_editor__multiple_nodes_in_list_79d915a2_redline_b88ba7adc8",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "c090b9f082_file_8__vs__3f91c8f0cd_file_9_redline_bc6f8076f9",
+    "stage": "generate",
+    "error": "diff.compare: invalid full snapshot \u2014 payload.compareSnapshot.annotations[1].entries[100].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:0D867B8F\" within family \"tracked-changes\" (first declared at annotations[1].entries[96].key); payload.compareSnapshot.annotations[1].entries[105].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:0D867B8F\" within family \"tracked-changes\" (first declared at annotations[1].entries[96].key); payload.compareSnapshot.annotations[1].entries[110].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:0D867B8F\" within family \"tracked-changes\" (first declared at annotations[1].entries[96].key); payload.compareSnapshot.annotations[1].entries[115].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:0D867B8F\" within family \"tracked-changes\" (first declared at annotations[1].entries[96].key); payload.compareSnapshot.annotations[1].entries[120].key: duplicate key \"struct:main:/word/document.xml|row-deletion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:0D867B8F\" within family \"tracked-changes\" (first declared at annotations[1].entries[96].key); payload.compareSnapshot.annotations[1].entries[138].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[134].key); payload.compareSnapshot.annotations[1].entries[143].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[134].key); payload.compareSnapshot.annotations[1].entries[148].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[134].key); payload.compareSnapshot.annotations[1].entries[153].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[134].key); payload.compareSnapshot.annotations[1].entries[158].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[134].key); payload.compareSnapshot.annotations[1].entries[169].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[174].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[179].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[184].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[189].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[194].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[199].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[204].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[209].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[214].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key); payload.compareSnapshot.annotations[1].entries[219].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:55:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[164].key)."
+  },
+  {
+    "doc": "1d137d70ee_005bf179b17b3d109d473d5bb10a968731ba985c4bff3743__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_bf007373d6",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "ec3dd0df69_file_53__vs__94ed0def64_file_54_redline_c2380a4677",
+    "stage": "generate",
+    "error": "diff.compare: Invalid base compare snapshot: base.annotations[1].entries[84].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[89].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[94].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[99].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[104].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:615E37D7\" within family \"tracked-changes\" (first declared at annotations[1].entries[80].key); base.annotations[1].entries[115].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[120].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[125].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[130].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[135].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[140].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[145].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[150].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[155].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[160].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key); base.annotations[1].entries[165].key: duplicate key \"struct:main:/word/document.xml|row-insertion|Arthur Souza Rodrigues|2026-07-03T18:56:00Z|tbl:p:368BD2AC\" within family \"tracked-changes\" (first declared at annotations[1].entries[110].key)"
+  },
+  {
+    "doc": "7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_c8545d372b",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "45e6f5a2e1_00077bf334f45f6bc64fb5b73e579587002b3ccb55de03f8__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d244fd1091",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "725cdbebe3_0013892c946c551d309fcec9bb3f3500fc08bc77121a3849__vs__342f364d46_001342333d45627868f4dc5282abbba4598a91b4a7584b08_redline_d6dcdfe5e4",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "a5c5107d45_0f7fe6d73dc418024d632068da59a4370f871a3adb0fba52__vs__05159a58e9_06dea9396d4be7cf0c8f8aec224f7e0ad1db2f48bebd167b_redline_dad4367d08",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "98bc895b4b_super_editor__listwithspacernodes_cf53e890__vs__36c5050fba_super_editor__list_with_indents_efc7d4f5_redline_e41893335f",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "203c24d1e7_00cb988053156ab17763897a184a6655864f9c50f7ef2e53__vs__1424386e9b_017447de83753a0e3b7afc659df038ef56972925336c6a5b_redline_e682703ae3",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "a4c38b1bf5_4c17189eb7a543ae96f42443a9f4001a3be8fec6e47f7481__vs__cd63d2dccf_3f2752287dacf8e3e52d649dc467cbab2214df665039ab15_redline_e9ef73a8e4",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "66cfa52b0c_fe09ce606b20a9bbd10d61a87218cb0a70e980d2bb3639e7__vs__c28aafcf60_4e3bc5acd19c432f43ad0adb3fb56f5739bcbe6cd8e9bcb4_redline_ee3c219df7",
+    "stage": "generate",
+    "error": "diff.apply: tracked header/footer slot or physical topology changes are not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "3acdeac275_df07344201b2e66cf9240d031d4d557ff431584640d8b6e2__vs__9c1bf5f235_e8ae4e9f3b84c0245227948ea7906659c244ca4bf1ac5b96_redline_f0b602dce0",
+    "stage": "generate",
+    "error": "diff.apply: numbering replay is unsafe \u2014 [numbering part removal (/word/numbering.xml deleted in target) is out of scope]. No mutation was performed (full payloads are never partially applied). For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "0e6f813e69_00d2ca27359f3d1d5ee2c2904b48a3e4717faf7fdf6413f6__vs__a5f2b9318d_002aa60c2ae1187417b4b157c5ec6450324cc056ec551a12_redline_f5a297b6a7",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "0048ba31dd_000be19a055234f8e79ec0baadc41d2a49050b2ea0a60654__vs__bd3824dd1e_000ee64ef7226d353297888f59a251e24ce5d776fea000fa_redline_f852ffac2f",
+    "stage": "generate",
+    "error": "diff.apply: tracked shared definition replacement is not supported. No mutation was performed. For a complete DOCX pair, use the versioned document review session's applyTarget operation."
+  },
+  {
+    "doc": "b8115d0dab_file_100__vs__c500e0081f_file_101_redline_ff24600d87",
+    "stage": "generate",
+    "error": "Failed to open document in the v2 runtime."
+  }
+]
