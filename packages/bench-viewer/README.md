@@ -116,6 +116,12 @@ what the tests drive.
 | `inlineCode(text)`                                       | escaped text, `backtick` spans as `<code>`                                |
 | `resolveAssetUrl(base, path)`                            | a `~/` path against the asset base                                        |
 | `safeAssetUrl(base, path)`                               | the same, or `""` when it is not http(s)                                  |
+| `resolveFileUrl(base, path)`                             | a `~/` path against the files base                                        |
+| `safeFileUrl(base, path)`                                | the same, or `""` when it is not https                                    |
+| `caseFilesUrl(base, case)`                               | the case's own folder on the files base                                   |
+| `formatPageScore(value)`                                 | one page score: one decimal, or `—`                                       |
+| `randomIndex(length, random?)`                           | the index a random draw lands on                                          |
+| `pickRandomCase(cases, random?)`                         | a random case of the list                                                 |
 | `shardUrl(indexUrl, path, base?)`                        | a shard's URL in the release                                              |
 | `caseHash(group, case)` / `parseCaseHash(hash, groups?)` | the `#<group>/<case>` link                                                |
 | `laneState(case, engine)`                                | what a lane holds: measured, failed, dropped, unavailable, not applicable |
@@ -128,6 +134,28 @@ A lane's state comes from the case's own lists: `not_applicable` and
 `unavailable` are said so in the column and in the engine bar, `dropped` lanes
 are folded away behind the "+N more" button, and a failed lane keeps its error
 under its pages.
+
+### What plan 7 added (issue #132)
+
+The case browsers gained what only jubarte.pro had. The contract grew three
+optional fields, and the viewer reads them when the release carries them:
+
+| Field                              | What the page does with it                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------- |
+| `Case.page_scores` (lane → scores) | the score of each shown page, under the page (`—` when the page was not scored) |
+| `Case.files` (lane → path)         | a `files ↗` link per lane, and one `files on Hugging Face ↗` link for the case  |
+| `CasesIndex.files_base`            | the public base the two above resolve against (the record on Hugging Face)      |
+
+A release without them renders exactly as it did before — the page scores and
+the file links are simply absent (`test/fixtures/cases-legacy.json` pins the
+old output).
+
+The page shows **up to 12 pages** of a case (`PAGE_STEP`), the cap the shown-page
+renderer stores; the "more pages" button still grows the strip. And a URL that
+names no case opens on a **random** one, the old gh-pages viewer's
+`if (!linked) pickRandom()`. The random source is a parameter
+(`mountCasesPage({ random })`), so a seeded generator makes the page
+deterministic under test.
 
 ## Build the page
 

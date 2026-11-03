@@ -637,6 +637,33 @@ body.alleng #engines label.legacy {
   box-shadow: 0 0 0 1px var(--line);
 }
 
+/* the score of one shown page, under the page it belongs to */
+.page-score {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: center;
+  margin: -6px 0 6px;
+}
+
+/* the case's own files, on the record */
+.case-files {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-bottom: 2px;
+}
+
+.case-files a {
+  text-decoration: none;
+}
+
+.case-files a:hover {
+  text-decoration: underline;
+}
+
 .missing {
   width: 100%;
   aspect-ratio: 8.5 / 11;
