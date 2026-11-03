@@ -1,9 +1,13 @@
-"""The cases release — adapter, emitter, `bench report` wiring (Plan 3b, #119).
+"""The cases release — adapter, emitter, the release-views flow (Plan 3b, #119).
 
 Spec: docs/plans/2026-11-02-plan3b-cases-speed.md; survey:
 docs/plans/reviews/plan3b-survey.md. The release contract is `bench_ops.models`
 (the bench-ops dependency): Case, CaseShard, CasesIndex, engines_from_cases,
 validate_bundle, shard_path, dumps_compact.
+
+bench-ops is not a venv dependency (#134): it is a PEP 723 inline dependency of
+scripts/release_views.py. This module skips under a plain `uv run pytest` and
+runs under the overlay that provides it.
 """
 
 from __future__ import annotations
@@ -15,6 +19,18 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip(
+    "bench_ops",
+    reason=(
+        "bench-ops is a PEP 723 inline dependency of scripts/release_views.py, not a "
+        "venv dependency (#134); run: uv run --with 'bench-ops @ git+https://github.com/"
+        "arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q "
+        "tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py"
+    ),
+)
+
+from neurotic_docx_bench.ledger import build as bd
 from neurotic_docx_bench.ledger import cases as cases_emit
 from neurotic_docx_bench.ledger import cases_adapter
 from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
@@ -718,7 +734,7 @@ def test_emit_matches_the_published_adapter_for_every_case() -> None:
         f"-{sorted(ADAPTER_ONLY_FAMILIES - adapter_only)}; update ADAPTER_ONLY_FAMILIES "
         "only together with the store coverage it documents"
     )
-    # the merged release (what `bench report` writes) still covers every published
+    # the merged release (what `scripts/release_views.py` writes) still covers every published
     # case exactly: emitted families from the stores, the rest from the legacy input
     if not cases_emit.legacy_path(REPO).is_file():
         pytest.skip("the adapter-produced legacy_cases input is absent; produce it once")
@@ -737,12 +753,12 @@ def test_emit_matches_the_published_adapter_for_every_case() -> None:
     )
 
 
-# ---- bench report writes results/release/ and --check covers it -------------------------
+# ---- the release-views flow writes results/release/ and --check covers it -------------
 
 
 def _write_speed_sources(root: Path) -> None:
     """A minimal results/speed_10k (the shapes test_ledger_speed.py pins in
-    detail) so `bench report` has both release sources on the fake repo."""
+    detail) so the release-views flow has both release sources on the fake repo."""
     base = root / "results" / "speed_10k"
     per_pair = base / "redlines" / "per_pair"
     per_pair.mkdir(parents=True)
@@ -775,32 +791,31 @@ def _write_speed_sources(root: Path) -> None:
 @pytest.fixture
 def repo_with_release_sources(_ledger_repo: Path) -> Path:  # noqa: F811  fixture parameter
     """The test_ledger_build fake repo plus the synthetic cases and speed sources
-    `bench report` needs to write the release bundle."""
+    the release-views flow needs to write the release bundle."""
     _write_cases_sources(_ledger_repo)
     _write_speed_sources(_ledger_repo)
     return _ledger_repo
 
 
-def test_report_writes_the_release_files(repo_with_release_sources: Path, monkeypatch) -> None:
-    from neurotic_docx_bench.cli import app
-    from typer.testing import CliRunner
-
-    monkeypatch.chdir(repo_with_release_sources)
-    result = CliRunner().invoke(app, ["report"])
-    assert result.exit_code == 0, result.output
+def test_release_views_write_the_release_files(repo_with_release_sources: Path) -> None:
+    """ledger.build.run_release_views — the shared body scripts/release_views.py
+    runs — is the only writer of results/release/ since `bench report` stopped
+    writing it (#134)."""
+    said: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, echo=said.append) == 0
     index_path = repo_with_release_sources / "results" / "release" / "cases" / "index.json"
-    assert index_path.is_file(), "bench report must write results/release/cases/index.json"
+    assert index_path.is_file(), "the release views must write results/release/cases/index.json"
     index = CasesIndex.model_validate_json(index_path.read_text(encoding="utf-8"))
     shard_paths: list[Path] = []
     for ref in index.groups:
         shard_path = repo_with_release_sources / "results" / "release" / ref.path
-        assert shard_path.is_file(), f"bench report must write {ref.path}"
+        assert shard_path.is_file(), f"the release views must write {ref.path}"
         shard = CaseShard.model_validate_json(shard_path.read_text(encoding="utf-8"))
         index.validate_shard(shard)
         assert len(shard.cases) == ref.count
         shard_paths.append(shard_path)
     speed_path = repo_with_release_sources / "results" / "release" / "speed.json"
-    assert speed_path.is_file(), "bench report must write results/release/speed.json"
+    assert speed_path.is_file(), "the release views must write results/release/speed.json"
     # the written bytes are the contract's compact serialization: parsing a file
     # and re-dumping it reproduces the file byte for byte
     for path in (index_path, speed_path, shard_paths[0]):
@@ -811,14 +826,11 @@ def test_report_writes_the_release_files(repo_with_release_sources: Path, monkey
         )
 
 
-def test_report_check_covers_the_release_files(repo_with_release_sources: Path, monkeypatch) -> None:
-    from neurotic_docx_bench.cli import app
-    from typer.testing import CliRunner
-
-    monkeypatch.chdir(repo_with_release_sources)
-    assert CliRunner().invoke(app, ["report"]).exit_code == 0
-    ok = CliRunner().invoke(app, ["report", "--check"])
-    assert ok.exit_code == 0, ok.output
+def test_release_views_check_covers_the_release_files(repo_with_release_sources: Path) -> None:
+    said: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, echo=said.append) == 0
+    ok: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, check=True, echo=ok.append) == 0
     index_path = repo_with_release_sources / "results" / "release" / "cases" / "index.json"
     shard_path = (
         repo_with_release_sources
@@ -828,16 +840,39 @@ def test_report_check_covers_the_release_files(repo_with_release_sources: Path, 
         / "redline"
         / "ar--accept_all.json"
     )
-    assert shard_path.is_file(), f"bench report must write {shard_path.name} for --check to cover"
+    assert shard_path.is_file(), f"the release views must write {shard_path.name} for --check to cover"
     for stale in (index_path, shard_path):
         original = stale.read_text(encoding="utf-8")
         stale.write_text('{"tampered":true}\n', encoding="utf-8")
-        r = CliRunner().invoke(app, ["report", "--check"])
-        assert r.exit_code == 1, f"--check must flag a tampered {stale.name}"
-        assert str(stale.relative_to(repo_with_release_sources)) in r.output
+        lines: list[str] = []
+        assert bd.run_release_views(repo_with_release_sources, check=True, echo=lines.append) == 1, (
+            f"--check must flag a tampered {stale.name}"
+        )
+        assert str(stale.relative_to(repo_with_release_sources)) in " ".join(lines)
         stale.write_text(original, encoding="utf-8")
-    missing = CliRunner().invoke(app, ["report", "--check"])
-    assert missing.exit_code == 0, missing.output  # restored: current again
+    missing: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, check=True, echo=missing.append) == 0  # restored: current again
+
+
+def test_the_script_runs_the_shared_flow(repo_with_release_sources: Path) -> None:
+    """scripts/release_views.py is a thin argparse front over the shared body;
+    through `uv run` its PEP 723 block supplies the bench-ops the venv lacks."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "release_views", REPO / "scripts" / "release_views.py"
+    )
+    module = importlib.util.module_from_spec(spec)
+    assert spec is not None and spec.loader is not None
+    spec.loader.exec_module(module)
+    assert module.main(["--root", str(repo_with_release_sources)]) == 0
+    release = repo_with_release_sources / "results" / "release"
+    assert (release / "cases" / "index.json").is_file()
+    assert module.main(["--root", str(repo_with_release_sources), "--check"]) == 0
+
+    speed = release / "speed.json"
+    speed.write_text('{"tampered":true}\n', encoding="utf-8")
+    assert module.main(["--root", str(repo_with_release_sources), "--check"]) == 1
 
 
 def test_results_release_is_git_ignored() -> None:

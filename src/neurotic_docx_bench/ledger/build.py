@@ -2,8 +2,15 @@
 RESULTS_DETAILED.md, the README vendor block and the frozen pages
 ``RESULTS_v{bench_version}.md``.
 
+Since #134 the module splits in two halves: ``build`` (the pages, plus
+``run_page_views`` — `bench report`'s body) needs no bench-ops, and
+``add_release_views`` / ``run_release_views`` (the results/release/ bundle:
+case shards and speed.json) import it lazily — bench-ops is a PEP 723 inline
+dependency of scripts/release_views.py, not a venv dependency, so a plain
+`uv run bench report` must work in a venv without it.
+
 RESULTS.md states its provenance (bench version, docset ids, scorers, renderer
-ids) in an HTML comment. When ``bench report`` finds a page written under an
+ids) in an HTML comment. When a view run finds a page written under an
 earlier bench version it freezes that page as ``RESULTS_v{old}.md`` before
 overwriting it; a frozen page is written once and never touched again. Pages
 written before the provenance line existed count as bench 0.6.0.
@@ -13,18 +20,16 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from bench_ops.models import dumps_compact
 from neurotic_docx_bench import version as ver
-from neurotic_docx_bench.ledger import cases as cases_mod
 from neurotic_docx_bench.ledger import policy as pol
 from neurotic_docx_bench.ledger import rows as rws
 from neurotic_docx_bench.ledger import scores as sc
-from neurotic_docx_bench.ledger import speed as speed_mod
 from neurotic_docx_bench.ledger import stats as st
 from neurotic_docx_bench.ledger import tables as tb
 from neurotic_docx_bench.ledger.registry import DEFAULT_REGISTRY_PATH, load_registry
@@ -120,7 +125,9 @@ class Bundle(BaseModel):
     scores_json: str
     # results/release/: the cases shards (path relative to results/release/)
     # and speed.json — compact contract JSON, git-ignored (HF is the record).
-    # Empty when this repo's stores emit no case families and no legacy input
+    # Empty from `build` (the pages half); filled by `add_release_views`, the
+    # bench-ops half behind scripts/release_views.py (#134). Empty there too
+    # when this repo's stores emit no case families and no legacy input
     # exists (ledger/cases.py documents that split).
     release_cases: dict[str, str] = Field(default_factory=dict)
     release_speed: str | None = None
@@ -149,6 +156,10 @@ def _tie(a: rws.ResultRow, b: rws.ResultRow) -> bool:
 def build(
     root: Path, *, now: datetime | None = None, version: str | None = None
 ) -> Bundle:
+    """The page views only (RESULTS.md, RESULTS_DETAILED.md, the README vendor
+    table, results/scores.json): every release field of the Bundle stays empty.
+    The results/release/ views are added by ``add_release_views`` — the half
+    that needs bench-ops (#134)."""
     root = Path(root)
     now = now or datetime.now(UTC)
     version = version or ver.bench_version()
@@ -221,12 +232,6 @@ def build(
         site=sc.read_site_facts(evidence) if evidence is not None else None,
         affiliated_tools=frozenset(t.id for t in registry.tools if t.affiliated),
     )
-    release_cases: dict[str, str] = {}
-    cases_index, cases_shards = cases_mod.emit(root)
-    if cases_index.groups:
-        release_cases = cases_mod.release_texts(cases_index, cases_shards)
-    speed_doc = speed_mod.emit(root)
-    release_speed = None if speed_doc is None else dumps_compact(speed_doc)
     results_parts = [
         GENERATED_NOTE,
         prov.line(),
@@ -280,8 +285,31 @@ def build(
         scores_json=scores_json,
         headline_groups=tuple(groups),
         provenance=prov,
-        release_cases=release_cases,
-        release_speed=release_speed,
+    )
+
+
+def add_release_views(
+    root: Path, bundle: Bundle | None = None, *, now: datetime | None = None
+) -> Bundle:
+    """The results/release/ half of the Bundle: the case shards and speed.json of
+    the plan-3b release contract. This is the code that needs bench-ops (the
+    contract's models), imported lazily because bench-ops is a PEP 723 inline
+    dependency of scripts/release_views.py, not a venv dependency (#134) — a
+    plain `bench report` must run without it."""
+    from bench_ops.models import dumps_compact
+    from neurotic_docx_bench.ledger import cases as cases_mod
+    from neurotic_docx_bench.ledger import speed as speed_mod
+
+    root = Path(root)
+    bundle = build(root, now=now) if bundle is None else bundle
+    release_cases: dict[str, str] = {}
+    cases_index, cases_shards = cases_mod.emit(root)
+    if cases_index.groups:
+        release_cases = cases_mod.release_texts(cases_index, cases_shards)
+    speed_doc = speed_mod.emit(root)
+    release_speed = None if speed_doc is None else dumps_compact(speed_doc)
+    return bundle.model_copy(
+        update={"release_cases": release_cases, "release_speed": release_speed}
     )
 
 
@@ -397,7 +425,8 @@ def _without_generated(text: str) -> str:
 
 def changed_files(root: Path, bundle: Bundle) -> list[Path]:
     """Published files whose content (ignoring the generation stamp) is not what the
-    stores produce now."""
+    stores produce now. A pages-only bundle (from ``build``) covers the pages;
+    one from ``add_release_views`` covers results/release/ as well."""
     out: list[Path] = []
     for path, text in _page_files(root, bundle).items():
         current = path.read_text(encoding="utf-8") if path.is_file() else ""
@@ -414,3 +443,78 @@ def changed_files(root: Path, bundle: Bundle) -> list[Path]:
         if _without_generated(current) != _without_generated(bundle.release_speed):
             out.append(path)
     return out
+
+
+def run_page_views(
+    root: Path, *, check: bool = False, echo: Callable[[str], None] = print
+) -> int:
+    """Build, check or write the page views (RESULTS.md, RESULTS_DETAILED.md, the
+    README vendor table, results/scores.json) — `bench report`'s body since #134.
+    The results/release/ bundle is not touched: that half needs bench-ops and
+    lives behind scripts/release_views.py. Returns the exit code."""
+    root = Path(root)
+    bundle = build(root)
+    if check:
+        stale = changed_files(root, bundle)
+        for p in stale:
+            echo(f"stale: {p}")
+        if stale:
+            return 1
+        echo("published views are current")
+        return 0
+    frozen = freeze(root, bundle)
+    if frozen is not None:
+        echo(f"froze {frozen.name}")
+    for p in write(root, bundle):
+        echo(f"wrote {p}")
+    return 0
+
+
+def run_release_views(
+    root: Path,
+    *,
+    check: bool = False,
+    allow_no_cases: bool = False,
+    echo: Callable[[str], None] = print,
+) -> int:
+    """The full report flow cli.py ran before bench-ops moved behind PEP 723
+    (#134), shared by scripts/release_views.py and any caller: the legacy_cases
+    snapshot is downloaded when only the pointer exists, every view is built
+    (the pages plus the results/release/ bundle), then everything is checked, or
+    frozen and written. Returns the exit code."""
+    from neurotic_docx_bench.ledger import cases_ref
+
+    root = Path(root)
+    try:
+        cases_ref.ensure_legacy(root)
+    except cases_ref.CasesRefError as exc:
+        echo(f"error: {exc}")
+        return 1
+    bundle = add_release_views(root, build(root))
+    if not bundle.release_cases and not allow_no_cases:
+        echo(
+            "error: cases release: no sources — no legacy_cases snapshot and no "
+            "results/legacy_cases.ref.json pointer; never a release without cases "
+            "(rerun with --allow-no-cases to emit one without them)"
+        )
+        return 1
+    if check:
+        stale = changed_files(root, bundle)
+        for p in stale:
+            echo(f"stale: {p}")
+        if stale:
+            return 1
+        echo("published views are current")
+        return 0
+    frozen = freeze(root, bundle)
+    if frozen is not None:
+        echo(f"froze {frozen.name}")
+    if not bundle.release_cases:
+        echo(
+            "cases release: no sources — the stores hold no complete asset trees "
+            "and no legacy_cases input exists (the adapter is the source; see "
+            "neurotic_docx_bench/ledger/cases.py)"
+        )
+    for p in write(root, bundle):
+        echo(f"wrote {p}")
+    return 0

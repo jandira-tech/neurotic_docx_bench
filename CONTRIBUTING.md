@@ -32,15 +32,19 @@ bun install --frozen-lockfile
 
 Most contributions do not need Word. Without it you can still run the test
 suites below, `uv run bench try` and `uv run bench compare` on your own files,
-and `uv run bench report --check` to confirm the published views are current.
-Ranked rows are recorded on a Mac with Word; say so in your pull request and
-the maintainer will run them.
+and `uv run bench report --check` to confirm the page views are current. The
+release bundle has its own isolated check:
+`uv run scripts/release_views.py --check`. Ranked rows are recorded on a Mac
+with Word; say so in your pull request and the maintainer will run them.
 
 ### Running Tests
 
 ```bash
 # Python tests
 uv run pytest -q
+
+# Release-contract ledger tests (bench-ops is a PEP 723/uv overlay here)
+uv run --with 'bench-ops @ git+https://github.com/arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py
 
 # TypeScript tests
 bunx vitest run

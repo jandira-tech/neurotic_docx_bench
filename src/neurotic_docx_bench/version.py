@@ -9,8 +9,10 @@ Rows written before the stamp existed were all produced by the code released as
 from __future__ import annotations
 
 import re
+import tomllib
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _metadata_version
+from pathlib import Path
 
 PACKAGE = "neurotic-docx-bench"
 UNKNOWN = "0.0.0+unknown"
@@ -22,12 +24,33 @@ def _installed_version(name: str) -> str:
     return _metadata_version(name)
 
 
+def _pyproject_path() -> Path:
+    """The pyproject.toml of the checkout this module lives in (src layout).
+    In an installation (site-packages) the path points at nothing useful and
+    the read is simply refused."""
+    return Path(__file__).resolve().parents[2] / "pyproject.toml"
+
+
+def _checkout_version() -> str | None:
+    """The checkout's own ``project.version``, for contexts that run ndb from
+    ``src/`` without installing it (scripts/release_views.py's PEP 723
+    environment, #134); None when this is not a checkout or it states no
+    version."""
+    try:
+        with _pyproject_path().open("rb") as fh:
+            found = tomllib.load(fh)["project"]["version"]
+    except (OSError, KeyError, TypeError, tomllib.TOMLDecodeError):
+        return None
+    return str(found) or None
+
+
 def bench_version() -> str:
-    """The installed package version, or ``0.0.0+unknown`` outside an installation."""
+    """The installed package version; outside an installation, the checkout's
+    pyproject.toml; ``0.0.0+unknown`` when neither exists."""
     try:
         return _installed_version(PACKAGE)
     except PackageNotFoundError:
-        return UNKNOWN
+        return _checkout_version() or UNKNOWN
 
 
 def series(full: str | None) -> str:

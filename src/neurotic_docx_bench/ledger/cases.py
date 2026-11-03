@@ -27,9 +27,9 @@ adapter stays the documented source for those families until the stores grow
 the missing records; the acceptance test in ``tests/test_ledger_cases.py``
 pins that split family by family.
 
-``bench report`` writes what this module returns under ``results/release/``:
-``cases/index.json`` plus one shard per group at ``shard_path(kind, group)``,
-both through ``bench_ops.models.dumps_compact``.
+``scripts/release_views.py`` writes what this module returns under
+``results/release/``: ``cases/index.json`` plus one shard per group at
+``shard_path(kind, group)``, both through ``bench_ops.models.dumps_compact``.
 """
 
 from __future__ import annotations
@@ -50,7 +50,12 @@ from bench_ops.models import (
     shard_path,
     validate_bundle,
 )
+from neurotic_docx_bench.ledger import legacy as legacy_paths
 from neurotic_docx_bench.ledger.scores import RESULTS_REPO_URL
+
+# Re-export the dependency-free path helpers from this module's historical API.
+legacy_candidates = legacy_paths.legacy_candidates
+legacy_path = legacy_paths.legacy_path
 
 #: The public R2 base every ``~/`` asset path in the release resolves against.
 ASSETS_BASE = "https://pub-92c80eda1059428394970066c8500eda.r2.dev/"
@@ -372,22 +377,6 @@ def from_stores(root: Path, *, now: datetime | None = None) -> tuple[CasesIndex,
         if families:
             shards.extend(families)
     return _bundle(shards, now=now)
-
-
-def legacy_candidates(root: Path) -> list[Path]:
-    """Where the adapter-produced legacy input may sit, in lookup order."""
-    return [
-        Path(root) / "results" / "legacy_cases.jsonl",
-        Path(root) / "results" / "release" / "legacy_cases.jsonl",
-    ]
-
-
-def legacy_path(root: Path) -> Path:
-    """The legacy input that exists, else the canonical (committed) location."""
-    for candidate in legacy_candidates(root):
-        if candidate.is_file():
-            return candidate
-    return legacy_candidates(root)[0]
 
 
 def read_legacy(root: Path) -> list[CaseShard]:

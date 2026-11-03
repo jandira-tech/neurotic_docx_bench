@@ -7,17 +7,18 @@ so it is not committed — it lives, content-addressed, on the results dataset a
 content-addressed path, the 40-hex revision whose tree holds exactly those bytes,
 the sha256, the size and the source line.
 
-* :func:`ensure_legacy` is what ``bench report`` calls before building: the local
-  snapshot (``results/legacy_cases.jsonl`` when it was small enough to commit,
-  else git-ignored ``results/release/legacy_cases.jsonl``) wins when it exists;
-  otherwise the pointer is satisfied through :mod:`neurotic_docx_bench.hub_get`'s
-  pinned, hash-verified download machinery and the bytes land at the release
-  location. A pointer that cannot be satisfied — the hub copy is absent or hashes
-  differently, the download fails, the placed file does not hash to the pin — is
-  a :class:`CasesRefError` with a one-line message: a release is never emitted
-  without the cases the pointer promises. ``None`` means neither the snapshot nor
-  a pointer exists; the caller decides whether a release without cases is allowed
-  (``bench report --allow-no-cases``).
+* :func:`ensure_legacy` is what ``scripts/release_views.py`` calls before building:
+  the local snapshot (``results/legacy_cases.jsonl`` when it was small enough to
+  commit, else git-ignored ``results/release/legacy_cases.jsonl``) wins when it
+  exists; otherwise the pointer is satisfied through
+  :mod:`neurotic_docx_bench.hub_get`'s pinned, hash-verified download machinery
+  and the bytes land at the release location. A pointer that cannot be satisfied —
+  the hub copy is absent or hashes differently, the download fails, the placed
+  file does not hash to the pin — is a :class:`CasesRefError` with a one-line
+  message: a release is never emitted without the cases the pointer promises.
+  ``None`` means neither the snapshot nor a pointer exists; the caller decides
+  whether a release without cases is allowed
+  (``scripts/release_views.py --allow-no-cases``).
 * :func:`snapshot_upload` is ``bench cases snapshot-upload``: upload the local
   snapshot once to its content-addressed path (never over a moved head), verify
   it through the plain tree listing (``expand=False``) at the revision it lands
@@ -37,16 +38,13 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from neurotic_docx_bench import hub, hub_get
-from neurotic_docx_bench.ledger import cases as cases_mod
+from neurotic_docx_bench.ledger.legacy import LEGACY_NAME, legacy_candidates
 
 #: Where the pointer lives, committed (``root / REF_FILE``).
 REF_FILE = Path("results") / "legacy_cases.ref.json"
 
 #: The folder of content-addressed snapshots on the results dataset.
 HUB_DIR = "inputs/legacy_cases"
-
-#: The local file name the report reads (under ``results/`` or ``results/release/``).
-LEGACY_NAME = "legacy_cases.jsonl"
 
 #: The default pointer ``source``: the adapter run of the published gh-pages pages.
 _SOURCE_PREFIX = "cases_adapter.from_published of site/index.html + site/redlines/index.html"
@@ -119,14 +117,14 @@ def write_ref(root: Path, ref: LegacyCasesRef) -> Path:
 
 def local_snapshot(root: Path) -> Path | None:
     """The local snapshot, at either location ``ledger.cases`` reads, else None."""
-    for candidate in cases_mod.legacy_candidates(root):
+    for candidate in legacy_candidates(root):
         if candidate.is_file():
             return candidate
     return None
 
 
 def ensure_legacy(root: Path, *, api=None) -> Path | None:
-    """The legacy_cases input for ``bench report``; None when there is none.
+    """The legacy_cases input for the release-views run; None when there is none.
 
     The local snapshot wins when it exists. Otherwise the pointer is satisfied
     through ``hub_get``: the plain listing at the pinned revision must hold the

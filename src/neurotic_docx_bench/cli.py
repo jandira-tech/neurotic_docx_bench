@@ -3024,61 +3024,19 @@ def docset_cmd(
 def report_cmd(
     root: Path = typer.Option(Path("."), "--root", help="repository root"),
     check: bool = typer.Option(False, "--check", help="exit 1 when the published views are stale"),
-    allow_no_cases: bool = typer.Option(
-        False,
-        "--allow-no-cases",
-        help="emit the release even when no case source exists (no legacy_cases snapshot, no pointer)",
-    ),
 ) -> None:
     """Regenerate RESULTS.md, RESULTS_DETAILED.md, the README vendor table and
     results/scores.json (the release contract's numbers, with the release-evidence
-    sample tables) from the stores, plus the results/release/ bundle: the case
-    shards and speed.json of the plan-3b release contract.
+    sample tables) from the stores.
 
-    The case shards come from the stores and the legacy_cases snapshot: when the
-    snapshot is absent locally, the committed pointer results/legacy_cases.ref.json
-    is downloaded through the pinned hub machinery first. A pointer that cannot be
-    satisfied fails the report; a repo with no case source at all needs
-    --allow-no-cases."""
+    The results/release/ bundle (case shards and speed.json) is NOT written or
+    checked here: it needs bench-ops, a PEP 723 inline dependency — regenerate
+    it with `uv run scripts/release_views.py [--check]` (#134)."""
     from neurotic_docx_bench.ledger import build as ledger_build
-    from neurotic_docx_bench.ledger import cases_ref
 
-    try:
-        cases_ref.ensure_legacy(root)
-    except cases_ref.CasesRefError as exc:
-        console.print(Text.assemble(("error: ", "red"), str(exc)), soft_wrap=True)
-        raise typer.Exit(code=1) from exc
-    bundle = ledger_build.build(root)
-    if not bundle.release_cases and not allow_no_cases:
-        console.print(
-            Text.assemble(
-                ("error: ", "red"),
-                "cases release: no sources — no legacy_cases snapshot and no "
-                "results/legacy_cases.ref.json pointer; never a release without cases "
-                "(rerun with --allow-no-cases to emit one without them)",
-            ),
-            soft_wrap=True,
-        )
-        raise typer.Exit(code=1)
-    if check:
-        stale = ledger_build.changed_files(root, bundle)
-        for p in stale:
-            console.print(f"stale: {p}")
-        if stale:
-            raise typer.Exit(code=1)
-        console.print("published views are current")
-        return
-    frozen = ledger_build.freeze(root, bundle)
-    if frozen is not None:
-        console.print(f"froze {frozen.name}")
-    if not bundle.release_cases:
-        console.print(
-            "cases release: no sources — the stores hold no complete asset trees "
-            "and no legacy_cases input exists (the adapter is the source; see "
-            "neurotic_docx_bench/ledger/cases.py)"
-        )
-    for p in ledger_build.write(root, bundle):
-        console.print(f"wrote {p}")
+    raise typer.Exit(
+        code=ledger_build.run_page_views(root, check=check, echo=console.print)
+    )
 
 
 @app.command(name="archive")
@@ -3765,7 +3723,7 @@ def hub_get_cmd(
 
 cases_app = typer.Typer(
     name="cases",
-    help="The legacy_cases snapshot: upload it once and record the pointer `bench report` downloads.",
+    help="The legacy_cases snapshot: upload it once and record the pointer `scripts/release_views.py` downloads.",
     no_args_is_help=True,
 )
 app.add_typer(cases_app)
@@ -3787,7 +3745,7 @@ def cases_snapshot_upload_cmd(
     """Upload the local legacy_cases input to inputs/legacy_cases/<sha256>.jsonl
     (content-addressed, never overwritten), verify it through the plain tree
     listing, and write/update results/legacy_cases.ref.json — the committed
-    pointer a fresh clone's `bench report` downloads the snapshot through."""
+    pointer a fresh clone's `scripts/release_views.py` downloads the snapshot through."""
     from neurotic_docx_bench import hub
     from neurotic_docx_bench.ledger import cases_ref
 

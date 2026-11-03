@@ -1,11 +1,15 @@
 """The speed release — ledger.speed.emit and the results/release/speed.json half of
-`bench report` (Plan 3b, #119).
+the release-views flow (Plan 3b, #119).
 
 Spec: docs/plans/2026-11-02-plan3b-cases-speed.md; survey:
 docs/plans/reviews/plan3b-survey.md §1.2. The contract is the 10,000-input page
 (per-pair raw rows aggregated), NOT the results/speed.jsonl leaderboard view.
 The release contract is `bench_ops.models` (the bench-ops dependency):
 Speed, dumps_compact.
+
+bench-ops is not a venv dependency (#134): it is a PEP 723 inline dependency of
+scripts/release_views.py. This module skips under a plain `uv run pytest` and
+runs under the overlay that provides it.
 """
 
 from __future__ import annotations
@@ -15,6 +19,18 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip(
+    "bench_ops",
+    reason=(
+        "bench-ops is a PEP 723 inline dependency of scripts/release_views.py, not a "
+        "venv dependency (#134); run: uv run --with 'bench-ops @ git+https://github.com/"
+        "arthrod/bench-ops@35ab2cbeb8bc44d5059878d14176dc90c5b46f5d' pytest -q "
+        "tests/test_ledger_cases.py tests/test_ledger_speed.py tests/test_ledger_cases_ref.py"
+    ),
+)
+
+from neurotic_docx_bench.ledger import build as bd
 from neurotic_docx_bench.ledger import speed as speed_emit
 from test_ledger_build import repo as _ledger_repo  # noqa: F401  the fake-repo fixture, shared with test_ledger_build
 
@@ -223,7 +239,7 @@ def test_emit_real_is_deterministic() -> None:
     assert _stable(speed_emit.emit(REPO)) == _stable(speed_emit.emit(REPO))
 
 
-# ---- bench report writes results/release/speed.json and --check covers it ---------------
+# ---- the release-views flow writes results/release/speed.json and --check covers it ----
 
 
 @pytest.fixture
@@ -233,16 +249,19 @@ def repo_with_release_sources(_ledger_repo: Path) -> Path:  # noqa: F811  fixtur
     return _ledger_repo
 
 
-def test_report_writes_speed_json(repo_with_release_sources: Path, monkeypatch) -> None:
-    from neurotic_docx_bench.cli import app
-    from typer.testing import CliRunner
-
-    monkeypatch.chdir(repo_with_release_sources)
-    # no case sources on this repo (speed only): --allow-no-cases
-    result = CliRunner().invoke(app, ["report", "--allow-no-cases"])
-    assert result.exit_code == 0, result.output
+def test_release_views_write_speed_json(repo_with_release_sources: Path) -> None:
+    """ledger.build.run_release_views — the shared body scripts/release_views.py
+    runs — writes speed.json since `bench report` stopped writing it (#134); no
+    case sources on this repo (speed only), so --allow-no-cases."""
+    said: list[str] = []
+    assert (
+        bd.run_release_views(
+            repo_with_release_sources, allow_no_cases=True, echo=said.append
+        )
+        == 0
+    )
     speed_path = repo_with_release_sources / "results" / "release" / "speed.json"
-    assert speed_path.is_file(), "bench report must write results/release/speed.json"
+    assert speed_path.is_file(), "the release views must write results/release/speed.json"
     speed = Speed.model_validate_json(speed_path.read_text(encoding="utf-8"))
     assert speed.generated.tzinfo is not None  # naive timestamps are rejected
     assert [t.id for t in speed.tasks] == ["pdf", "redlines"]  # sorted by id
@@ -251,9 +270,10 @@ def test_report_writes_speed_json(repo_with_release_sources: Path, monkeypatch) 
         json.dumps(json.loads(text), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
         == text.strip()
     ), "speed.json must be compact JSON with sorted keys"
-    # --check passes right after a report, and flags a tampered speed.json
-    assert CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"]).exit_code == 0
+    # --check passes right after a write, and flags a tampered speed.json
+    ok: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, check=True, allow_no_cases=True, echo=ok.append) == 0
     speed_path.write_text('{"tampered":true}\n', encoding="utf-8")
-    stale = CliRunner().invoke(app, ["report", "--check", "--allow-no-cases"])
-    assert stale.exit_code == 1
-    assert "results/release/speed.json" in stale.output
+    stale: list[str] = []
+    assert bd.run_release_views(repo_with_release_sources, check=True, allow_no_cases=True, echo=stale.append) == 1
+    assert "results/release/speed.json" in " ".join(stale)
