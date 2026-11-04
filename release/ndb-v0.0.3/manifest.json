@@ -1,0 +1,159 @@
+{
+  "archived_root": null,
+  "created": "2026-11-04T16:12:10.177584Z",
+  "excludes": [],
+  "files": [
+    {
+      "bytes": 167858,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/cases.json",
+      "served": false,
+      "sha256": "7bacb3dd90f832afb4dbe1054872cf88f9a7ef45dbe88df2e5d05f91b7906a2c"
+    },
+    {
+      "bytes": 2089848,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/corpus--clean.json",
+      "served": false,
+      "sha256": "5262a42a52b478bb9b7a3d8b0a2a61ebeb5760692be5df65b5eb7c6d9efe01ad"
+    },
+    {
+      "bytes": 1310870,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/corpus--tracking_without_comments.json",
+      "served": false,
+      "sha256": "c994007a3328039b556601b599495f5c8e1ae2f1274d382ee056672c245da8c4"
+    },
+    {
+      "bytes": 142501,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/corpus--with_comments_clean.json",
+      "served": false,
+      "sha256": "5272d2ee02404bab2039f2f19fc20dc9ab0168d06d9aa50154e7c7dca6f08909"
+    },
+    {
+      "bytes": 380112,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/corpus--with_comments_tracking.json",
+      "served": false,
+      "sha256": "cc6c839ab344fc25cfd50497b74ccdcb54dfd3c3869fffb6bb226d13fb9c0aa0"
+    },
+    {
+      "bytes": 167153,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/new.json",
+      "served": false,
+      "sha256": "18ff28b6a6b023fbf14c6dfd2464400764478b88824dab0943ea96b3ec678db0"
+    },
+    {
+      "bytes": 9746,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/samples.json",
+      "served": false,
+      "sha256": "a812b783b6feedf07855fb842d1fd233755e21030891c2b873063c309297c594"
+    },
+    {
+      "bytes": 115813,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/scraped.json",
+      "served": false,
+      "sha256": "f8a578144ceceae689880415bdfb0c87a6d529886d2abb1a8f3a9a3a73796d57"
+    },
+    {
+      "bytes": 4092708,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/v1--clean.json",
+      "served": false,
+      "sha256": "66d65ba40ed7a865f470df2d46eacb0e1a896415573782693ccf7748d168cdf0"
+    },
+    {
+      "bytes": 460510,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/v1--tracking_without_comments.json",
+      "served": false,
+      "sha256": "a72d37248f8ec2737e111a193d2c48f308cebccf6ac450969d841b346f01ed7d"
+    },
+    {
+      "bytes": 204990,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/v1--with_comments_clean.json",
+      "served": false,
+      "sha256": "5a00e2069de351eebda7e456168ee1880c274879e15d0cfd2b9aed56b232c528"
+    },
+    {
+      "bytes": 207747,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/v1--with_comments_tracking.json",
+      "served": false,
+      "sha256": "1658fb8b73d7d2f38c2643bbb52d561f6092647c886cf0d32dcd4054e250bd68"
+    },
+    {
+      "bytes": 3005446,
+      "path": "release/ndb-v0.0.3/results/release/cases/conversion/wordcraft1014--convert.json",
+      "served": false,
+      "sha256": "d893a6aab87da6dd5ae8e40c1928785bc6388b5291ee3b7a09df08aba91a73fc"
+    },
+    {
+      "bytes": 4017,
+      "path": "release/ndb-v0.0.3/results/release/cases/index.json",
+      "served": false,
+      "sha256": "1b4b5f0d1cd5ce58af6d94b0afa3c5400357269d3977f6bdcebadcb8ef482b98"
+    },
+    {
+      "bytes": 4624,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/accepted--tracking_without_comments.json",
+      "served": false,
+      "sha256": "df908dbb2f3df15ca7d20501f104f5fcb5031bd526617af2690ec8878938c17b"
+    },
+    {
+      "bytes": 2048891,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/ar--accept_all.json",
+      "served": false,
+      "sha256": "5bbd1867d13385134daae556c5edfdc7437b15a5c2a2e1d29417b48d6d9b89b8"
+    },
+    {
+      "bytes": 2071258,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/ar--reject_all.json",
+      "served": false,
+      "sha256": "d28c563c8c44cb9e7bf6bf0bbc9a1a5670bb6f1e1b04f9e3d10bd5a4128447d9"
+    },
+    {
+      "bytes": 2622987,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/redlines--tracking_without_comments.json",
+      "served": false,
+      "sha256": "6cde1cdf0460232ffc535006c480421493695b05f72ea5ab673682a5ebceb997"
+    },
+    {
+      "bytes": 7885,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/redlines--with_comments_clean.json",
+      "served": false,
+      "sha256": "2c5a1e104c9695beb19a04837fee0f80c6956445a4dbcd3728d6547c530d09ee"
+    },
+    {
+      "bytes": 320322,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/redlines--with_comments_tracking.json",
+      "served": false,
+      "sha256": "7104627effe21b8153c436bbaf98b9b38b9a109433dba9f39c17aa25ad5690bc"
+    },
+    {
+      "bytes": 7333,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/rejected--tracking_without_comments.json",
+      "served": false,
+      "sha256": "1b03e93dc5cebff18f51fe80286df10d736a2afa2a91255b831fd3d274f0cfdf"
+    },
+    {
+      "bytes": 1192561,
+      "path": "release/ndb-v0.0.3/results/release/cases/redline/wordcraft1014--compare.json",
+      "served": false,
+      "sha256": "c696e1315ff146bf1d07154cc538f615b7d8c6e08fd42ed916d0854cba7680b5"
+    },
+    {
+      "bytes": 13470,
+      "path": "release/ndb-v0.0.3/results/release/speed.json",
+      "served": false,
+      "sha256": "4ee801f59a7e5f960e8d57faf10ad2020d359d4e25eb18a1ad26bc904b7bb12c"
+    },
+    {
+      "bytes": 36584,
+      "path": "release/ndb-v0.0.3/results/scores.json",
+      "served": false,
+      "sha256": "888e4d25275a54b13d62af09c14fc43d2c61d3be45cff17cab76f4c3346e96d9"
+    }
+  ],
+  "hf": {
+    "repo": "arthrod/neurotic_docx_bench",
+    "revision": "7704b013875dd1965b7e6002c507c23eb9232c49"
+  },
+  "producer": "ndb",
+  "r2_prefix": "ndb-v0.0.3/",
+  "tag": "ndb-v0.0.3",
+  "viewer_version": null
+}
