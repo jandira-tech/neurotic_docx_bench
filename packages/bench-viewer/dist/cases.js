@@ -653,9 +653,9 @@ export function renderCaseHead(opts) {
     if (opts.compact) {
         const first = METRICS.find((metric) => scores[metric] != null);
         const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-        return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}</h3>`;
+        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}</h3>`;
     }
-    return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
+    return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
         ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
         : ""}${filesLink}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
         ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
@@ -687,7 +687,7 @@ export function renderCaseGrid(opts) {
     // the lanes' columns.
     const filesUrl = opts.filesBase ? caseFilesUrl(opts.filesBase, opts.case) : "";
     const filesLink = filesUrl
-        ? `<div class="case-files" style="grid-column:1 / -1"><a href="${esc(filesUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files on Hugging Face ↗</a></div>`
+        ? `<div class="case-files"><a href="${esc(filesUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files on Hugging Face ↗</a></div>`
         : "";
     return `${filesLink}${heads}${cols}`;
 }
@@ -707,13 +707,39 @@ export function renderOverlay(opts) {
         const b = safeAssetUrl(opts.assetsBase, over[i]);
         const pageNo = shown?.[i] ?? i + 1;
         const score = pageScores && i < pageScores.length ? renderPageScore(pageScores[i], pageNo) : "";
-        return `<div class="ovl-page" style="position:relative;margin-bottom:8px">${a
+        return `<div class="ovl-page">${a
             ? `<img src="${esc(a)}" width="1020" height="1320" alt="${esc(opts.under.label)}, page ${esc(pageNo)}">`
             : '<div class="missing">no page</div>'}${b
-            ? `<img class="top" src="${esc(b)}" width="1020" height="1320" alt="${esc(opts.over.label)}, page ${esc(pageNo)}" style="opacity:${alpha / 100};mix-blend-mode:${esc(blend)}">`
+            ? `<img class="top" src="${esc(b)}" width="1020" height="1320" alt="${esc(opts.over.label)}, page ${esc(pageNo)}" data-css="opacity:${alpha / 100};mix-blend-mode:${esc(blend)}">`
             : ""}${score}</div>`;
     }).join("");
     return items;
+}
+/**
+ * Apply every `data-css` under `root` through the CSSOM. The renderers never
+ * write a `style="…"` attribute: a host whose CSP is `style-src 'self'`
+ * (benchmarks.law) drops those, and with them the overlay's opacity and blend
+ * and the engine colours (#158). CSSOM writes are not governed by style-src.
+ */
+export function applyInlineCss(root) {
+    if (!root?.querySelectorAll)
+        return;
+    for (const el of root.querySelectorAll("[data-css]")) {
+        const css = el.dataset?.css;
+        if (css === undefined || !el.style)
+            continue;
+        // One property at a time: a CSS string (cssText) may itself fall under a
+        // strict style-src in some engines; setProperty never does.
+        for (const decl of css.split(";")) {
+            const at = decl.indexOf(":");
+            if (at <= 0)
+                continue;
+            const name = decl.slice(0, at).trim();
+            const value = decl.slice(at + 1).trim();
+            if (name && value)
+                el.style.setProperty(name, value);
+        }
+    }
 }
 /**
  * A case's identity: its group and its id. One id can sit in several groups
@@ -752,7 +778,7 @@ export function renderEngineToggles(opts) {
         const version = opts.versions?.[engine.key] ?? "";
         const state = opts.states?.[engine.key];
         const note = state && state !== "measured" && state !== "no-pages" ? ` · ${LANE_LABEL[state]}` : "";
-        return `<label${legacy ? ' class="legacy"' : ""} title="${esc(version)}"><input type="checkbox" data-e="${esc(engine.key)}"${opts.on[engine.key] ? " checked" : ""}> <span class="sw" style="background:${esc(laneColor(opts.engines, engine.key))}"></span> ${esc(engine.label)}${version ? ` <small class="ver">${esc(version)}</small>` : ""}${esc(note)}${i < 9 ? ` <kbd>${esc(i + 1)}</kbd>` : ""}</label>`;
+        return `<label${legacy ? ' class="legacy"' : ""} title="${esc(version)}"><input type="checkbox" data-e="${esc(engine.key)}"${opts.on[engine.key] ? " checked" : ""}> <span class="sw" data-css="background:${esc(laneColor(opts.engines, engine.key))}"></span> ${esc(engine.label)}${version ? ` <small class="ver">${esc(version)}</small>` : ""}${esc(note)}${i < 9 ? ` <kbd>${esc(i + 1)}</kbd>` : ""}</label>`;
     });
     const legacyCount = active ? lanes.filter((engine) => !active.has(engine.key)).length : 0;
     const more = legacyCount
@@ -816,7 +842,7 @@ export function renderScoresTable(opts) {
     let html = `<div class="note">${esc(rows.length)} cases · click a column to sort, a row to open it · green = best engine for that column (highest score, lowest time)</div><table><thead>`;
     html += `<tr>${head(0, "case")}${head(1, "group")}${head(2, "pages", "num")}`;
     html += engines
-        .map((engine) => `<th class="eng" colspan="${esc(shown.length)}" style="border-top:2px solid ${esc(laneColor(opts.engines, engine.key))}">${esc(engine.label)}</th>`)
+        .map((engine) => `<th class="eng" colspan="${esc(shown.length)}" data-css="border-top:2px solid ${esc(laneColor(opts.engines, engine.key))}">${esc(engine.label)}</th>`)
         .join("");
     html += "</tr>";
     html +=
@@ -905,7 +931,7 @@ export function renderCasesLegend(opts) {
     ];
     const links = `<a href="../index.html">DOCX → PDF</a><a href="../redlines/index.html">Redlines</a><a href="../speed/index.html">Speed</a>`;
     return `<details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</summary><div class="items">${items
-        .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" style="background:var(--mark)"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
+        .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" data-css="background:var(--mark)"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
         .join("")}</div></details>`;
 }
 /** The whole page: the shell the wiring fills in. No data in it. */
@@ -975,6 +1001,10 @@ mountCasesPage({ kind: ${JSON.stringify(opts.kind)}, indexUrl: "${esc(opts.index
 </html>
 `;
 }
+/** At most this many pre-loaded pages are held at once. */
+const PRELOAD_MAX = 48;
+/** At most this many pages are requested ahead for one next case. */
+export const PRELOAD_STEP = 12;
 /**
  * How many pages the grid shows before "more pages". The release shows up
  * to 12 pages of a case (the producer's own cap), so the page opens on all
@@ -1097,6 +1127,7 @@ export async function mountCasesPage(opts) {
     const legend = $("#legend");
     if (legend)
         legend.innerHTML = renderCasesLegend({ kind: opts.kind });
+    applyInlineCss(legend);
     const cases = () => shards.get(group)?.cases ?? [];
     const current = () => cases()[sel];
     const sameCase = (a, b) => b !== undefined && a.case === b.case && a.group === b.group;
@@ -1161,6 +1192,73 @@ export async function mountCasesPage(opts) {
         return laneOrder.find((engine) => has(engine.key))?.key ?? "";
     };
     const mobileOverlay = () => state.mobile.ovl ?? state.mobile.layout === "overlay";
+    // ---- the next case, pre-loaded (#159)
+    const held = [];
+    const preloaded = new Set();
+    const preload = opts.preload ??
+        ((url) => {
+            const Img = doc.defaultView?.Image;
+            if (!Img)
+                return;
+            const img = new Img();
+            img.decoding = "async";
+            img.src = url;
+            // Keep a reference while it loads; drop the oldest past the cap.
+            held.push(img);
+            if (held.length > PRELOAD_MAX)
+                held.shift();
+        });
+    /** The lanes a case would draw with the current toggles and layout. */
+    const lanesShownFor = (c) => {
+        const keys = new Set(["reference"]);
+        if (mobile)
+            keys.add(secondEngine(c));
+        else if (state.ovl) {
+            // The overlay hides the grid: only its two lanes paint.
+            keys.clear();
+            keys.add(state.ovlA);
+            keys.add(overlayTop(c, state.ovlB || (defaultOverlayLane(laneOrder)?.key ?? "")));
+        }
+        else {
+            for (const lane of lanesForCase(c, laneOrder)) {
+                if (lane.state !== "dropped" && state.on[lane.engine.key])
+                    keys.add(lane.engine.key);
+            }
+        }
+        keys.delete("");
+        return [...keys];
+    };
+    /** The next case last pre-loaded, with its lanes: each is fetched ahead once. */
+    let preloadedFor = "";
+    const preloadNext = (shown, at) => {
+        if (shown.length < 2 || at < 0)
+            return;
+        const next = shown[(at + 1) % shown.length];
+        if (!next)
+            return;
+        const lanesKey = `${caseKey(next)}|${lanesShownFor(next).join(",")}`;
+        if (lanesKey === preloadedFor)
+            return;
+        preloadedFor = lanesKey;
+        // Page-major: every lane's first page before any lane's second, so the
+        // capped budget covers what the next case paints first.
+        const keys = lanesShownFor(next);
+        let budget = PRELOAD_STEP;
+        for (let page = 0; page < PAGE_STEP && budget > 0; page++) {
+            for (const key of keys) {
+                if (budget <= 0)
+                    break;
+                const url = safeAssetUrl(index.assets_base, next.pages?.[key]?.[page]);
+                if (!url || preloaded.has(url))
+                    continue;
+                if (preloaded.size >= PRELOAD_MAX * 4)
+                    preloaded.clear();
+                preloaded.add(url);
+                budget--;
+                preload(url);
+            }
+        }
+    };
     const setMobile = () => {
         const query = new URLSearchParams(doc.defaultView?.location.search ?? "");
         const forced = query.get("mobile");
@@ -1196,6 +1294,7 @@ export async function mountCasesPage(opts) {
                     }
                     : {}),
             });
+            applyInlineCss(enginesBar);
         }
         const c = current();
         if (!c)
@@ -1226,6 +1325,7 @@ export async function mountCasesPage(opts) {
                     selected: caseKey(c),
                     sort: state.sort,
                 });
+                applyInlineCss(scores);
             }
             return;
         }
@@ -1270,7 +1370,11 @@ export async function mountCasesPage(opts) {
                     blend,
                     alpha,
                 });
+                applyInlineCss(overlay);
             }
+            if (mobile)
+                renderMobile(c, shown, at);
+            preloadNext(shown, at);
             return;
         }
         if (grid) {
@@ -1287,9 +1391,11 @@ export async function mountCasesPage(opts) {
                 half: mobile && state.mobile.layout === "half",
                 ...(index.files_base ? { filesBase: index.files_base } : {}),
             });
+            applyInlineCss(grid);
         }
         if (mobile)
             renderMobile(c, shown, at);
+        preloadNext(shown, at);
     };
     /**
      * Scroll the selected case to the middle of the list area, below the sticky
@@ -1405,6 +1511,8 @@ export async function mountCasesPage(opts) {
     };
     /** Each group load's number: only the newest load may change the view. */
     let loadGen = 0;
+    /** Group loads still fetching. */
+    let inFlight = 0;
     /** The group whose cases are on screen; a failed load returns to it. */
     let shownGroup = "";
     /**
@@ -1414,6 +1522,15 @@ export async function mountCasesPage(opts) {
      * list's status line). A failure with nothing on screen yet still throws.
      */
     const openGroup = async (name, caseId) => {
+        inFlight += 1;
+        try {
+            return await openGroupNow(name, caseId);
+        }
+        finally {
+            inFlight -= 1;
+        }
+    };
+    const openGroupNow = async (name, caseId) => {
         // "all groups" is every shard of this browser, one after the other.
         const refs = name === ALL_GROUPS ? groups : groups.filter((entry) => entry.group === name);
         if (!refs.length)
@@ -1551,7 +1668,13 @@ export async function mountCasesPage(opts) {
     const groupSelectNow = $("#fxGroup");
     groupSelectNow?.addEventListener("change", (event) => {
         const value = event.target.value;
-        void openGroup(value).catch(() => undefined);
+        // A pick that fails before any group was shown falls back to the first
+        // group, so the page is never left blank (the startup fallback stays out
+        // of a pick that is still loading).
+        void openGroup(value).catch(async () => {
+            if (!shownGroup && inFlight === 0)
+                await openGroup(groups[0].group).catch(() => undefined);
+        });
     });
     $("#navPrev")?.addEventListener("click", () => step(-1));
     $("#navNext")?.addEventListener("click", () => step(1));
@@ -1800,9 +1923,28 @@ export async function mountCasesPage(opts) {
     if (fxDiffer)
         fxDiffer.checked = state.fx.differ;
     const linked = await applyHash();
-    if (!linked && (await openGroup(groups[0].group)))
-        pickRandom();
-    if (!loaded)
+    // All groups by default (#159); a link to a group's case opens that group.
+    // One shard that fails must not blank the page: fall back to the first
+    // group (whose own failure still throws, as before) and say why.
+    // A #scores link opened no group either: it gets all groups too, without
+    // the random pick (the table has no current case to choose).
+    let allFailed = "";
+    if (!loaded) {
+        try {
+            if ((await openGroup(ALL_GROUPS)) && !linked)
+                pickRandom();
+        }
+        catch (err) {
+            allFailed = err.message;
+        }
+    }
+    // Fall back on whether a group owns the view, not on whether some load
+    // finished: a stale load that a failed newer pick superseded still sets
+    // `loaded` but shows nothing.
+    if (!shownGroup && inFlight === 0)
         await openGroup(groups[0].group);
     render();
+    const status = $("#fxn");
+    if (allFailed && status)
+        status.textContent = `all groups did not load: ${allFailed}`;
 }
