@@ -686,3 +686,51 @@ def test_release_pages_cli_stages_the_same_assets(release_root: Path, tmp_path: 
     assert result.exit_code == 0, result.output
     assert (out / "r2-plan.json").is_file()
     assert "per-page scores" in result.output
+
+
+#: The case fields the viewer never reads; the release text drops them (#162).
+UNREAD_CASE_FIELDS = ("metric_diagnostics", "stem", "lang", "type", "set", "sets", "state", "pair")
+
+
+def test_release_texts_drop_the_case_fields_the_viewer_never_reads(
+    release_root: Path,
+) -> None:
+    index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    filled = [
+        shard.model_copy(
+            update={
+                "cases": [
+                    case.model_copy(
+                        update={
+                            "metric_diagnostics": {"jubarte": {"ink_jaccard": 0.5}},
+                            "stem": "s",
+                            "lang": "en",
+                            "type": "t",
+                            "set": "v1",
+                            "sets": ["v1"],
+                            "state": "clean",
+                            "pair": "a__b",
+                        }
+                    )
+                    for case in shard.cases
+                ]
+            }
+        )
+        for shard in shards
+    ]
+    texts = cases_emit.release_texts(index, filled)
+    plain = cases_emit.release_texts(index, shards)
+    assert texts.keys() == plain.keys()
+    for ref in index.groups:
+        data = json.loads(texts[ref.path])
+        for case in data["cases"]:
+            assert not set(UNREAD_CASE_FIELDS) & case.keys(), case.keys()
+        # Everything else is what the unfilled shard wrote, minus the same fields.
+        expected = json.loads(plain[ref.path])
+        for case in expected["cases"]:
+            for field in UNREAD_CASE_FIELDS:
+                case.pop(field, None)
+        assert data == expected
+        index.validate_shard(CaseShard.model_validate_json(texts[ref.path]))
+    # The source models keep their fields.
+    assert filled[0].cases[0].stem == "s"
