@@ -1,23 +1,23 @@
-"""The shown-page renderer: MuPDF rasters -> 16-colour lossless WebP + a pages PDF.
+"""The shown-page renderer: MuPDF rasters -> 16-colour lossless WebP.
 
 Plan 7.4 (issue #131): the gh-pages ``_build`` rendering moves onto main. What the
 published pages show is the **first** ``min(12, page count)`` pages of a PDF,
 rasterised by MuPDF at **180 DPI** (no downscale), quantised to **16 colours**
-(median cut) and stored as **lossless WebP (method 4)**, next to a ``pages.pdf``
-holding the same pages (``mutool clean -gggz``'s equivalent: garbage collection 4,
-deflated). Arthur's decision of 2026-11-03 (option 3) fixed the page cap at 12 and
+(median cut) and stored as **lossless WebP (method 4)**. The ``pages.pdf`` this
+module once wrote beside them is gone (#149): the source PDF is already linked
+on Hugging Face, so the second copy only added release size and upload time.
+Arthur's decision of 2026-11-03 (option 3) fixed the page cap at 12 and
 the storage resolution at 180 DPI; scoring stays in ``raster.py`` at 144 DPI over
 every page and is *not* part of this module.
 
 Two backends rasterise the same MuPDF pages:
 
 * ``mupdf`` (the default) — PyMuPDF, already a dependency, no external binary;
-* ``mutool`` — the ``mutool draw``/``mutool clean`` of the reference build, for
+* ``mutool`` — the ``mutool draw`` of the reference build, for
   parity work; it must exist on PATH or the render says so.
 
 Every render is a pure function of its input: the same PDF gives byte-identical
-WebPs and ``pages.pdf`` (the pages PDF carries a deterministic ``/ID`` derived
-from the input's sha256, so it never depends on a clock or a random draw).
+WebPs.
 
     uv run python -m neurotic_docx_bench.cli pages render \\
         --set results/sets/convert_860.csv --column word_pdf \\
@@ -51,8 +51,6 @@ DEFAULT_DPI = 180
 COLORS = 16
 #: The WebP encoder effort (lossless; the reference build's setting).
 WEBP_METHOD = 4
-#: The shown-page PDF's name inside a render directory.
-PAGES_PDF_NAME = "pages.pdf"
 #: The render manifest's name inside a render directory.
 MANIFEST_NAME = "render.json"
 #: The page image's name inside a render directory.
@@ -92,19 +90,12 @@ class RenderResult:
     colors: int
     backend: str
     images: tuple[PageImage, ...]
-    pdf_bytes: int
-    pdf_sha256: str
     input_sha256: str
     reused: bool = False  # True when the render directory was already up to date
 
     @property
-    def total_bytes(self) -> int:
-        """The bytes of every stored file (the page images and the pages PDF)."""
-        return sum(image.bytes for image in self.images) + self.pdf_bytes
-
-    @property
     def image_bytes(self) -> int:
-        """The bytes of the page images alone."""
+        """The bytes of the page images."""
         return sum(image.bytes for image in self.images)
 
 
@@ -118,14 +109,13 @@ class CaseResult:
     page_count: int = 0
     shown: tuple[int, ...] = ()
     image_bytes: int = 0
-    pdf_bytes: int = 0
     reused: bool = False
     error: str | None = None
 
     @property
     def bytes(self) -> int:
-        """Every byte the case stored (the page images and the pages PDF)."""
-        return self.image_bytes + self.pdf_bytes
+        """Every byte the case stored (the page images)."""
+        return self.image_bytes
 
 
 @dataclass(frozen=True)
@@ -140,13 +130,12 @@ class LaneReport:
     failed: int = 0
     pages: int = 0
     image_bytes: int = 0
-    pdf_bytes: int = 0
     cases: tuple[CaseResult, ...] = ()
 
     @property
     def bytes(self) -> int:
-        """Every byte the lane stored (the page images and the pages PDFs)."""
-        return self.image_bytes + self.pdf_bytes
+        """Every byte the lane stored (the page images)."""
+        return self.image_bytes
 
     @property
     def errors(self) -> tuple[tuple[str, str], ...]:
@@ -306,51 +295,6 @@ def encode_webp(png: bytes, colors: int = COLORS) -> bytes:
     return buffer.getvalue()
 
 
-def write_pages_pdf(
-    pdf: Path,
-    out: Path,
-    pages: Sequence[int],
-    input_sha256: str,
-    backend: str = BACKEND_MUPDF,
-) -> None:
-    """The shown pages as one PDF (garbage collected and deflated).
-
-    The ``mupdf`` backend writes a deterministic ``/ID`` (derived from the input's
-    sha256) so the file is a pure function of its input.
-
-    Raises:
-        RenderError: when the PDF cannot be written.
-    """
-    if backend == BACKEND_MUTOOL:
-        binary = require_mutool()
-        command = [
-            binary, "clean", "-gggz", str(pdf), str(out),
-            ",".join(str(number) for number in pages),
-        ]
-        finished = subprocess.run(command, capture_output=True, text=True)
-        if finished.returncode:
-            raise RenderError(
-                f"mutool clean failed ({finished.returncode}): {finished.stderr[-500:].strip()}"
-            )
-        return
-    if backend != BACKEND_MUPDF:
-        raise RenderError(f"unknown backend: {backend!r} (one of {', '.join(BACKENDS)})")
-    try:
-        doc = pymupdf.open(pdf)
-    except Exception as exc:
-        raise RenderError(f"cannot open PDF: {pdf} ({exc})") from exc
-    try:
-        doc.select([number - 1 for number in pages])
-        # A deterministic /ID: no clock, no random draw in the output.
-        identifier = input_sha256[:32]
-        doc.xref_set_key(-1, "ID", f"[<{identifier}><{identifier}>]")
-        doc.save(out, garbage=4, deflate=True, no_new_id=True)
-    except Exception as exc:
-        raise RenderError(f"cannot write {out}: {exc}") from exc
-    finally:
-        doc.close()
-
-
 def _params(max_pages: int, dpi: int, colors: int, backend: str) -> dict[str, object]:
     return {"max_pages": max_pages, "dpi": dpi, "colors": colors, "backend": backend}
 
@@ -389,12 +333,6 @@ def _result_from_manifest(
                 sha256=str(entry["sha256"]),
             )
         )
-    pages_pdf = manifest.get("pages_pdf") or {}
-    pdf_path = out_dir / str(pages_pdf.get("name", PAGES_PDF_NAME))
-    if not pdf_path.is_file() or pdf_path.stat().st_size != pages_pdf.get("bytes"):
-        return None
-    if sha256_file(pdf_path) != pages_pdf.get("sha256"):
-        return None
     return RenderResult(
         pdf=pdf,
         out_dir=out_dir,
@@ -404,14 +342,12 @@ def _result_from_manifest(
         colors=int(params["colors"]),  # type: ignore[arg-type]
         backend=str(params["backend"]),
         images=tuple(images),
-        pdf_bytes=int(pages_pdf["bytes"]),
-        pdf_sha256=str(pages_pdf["sha256"]),
         input_sha256=input_sha256,
         reused=True,
     )
 
 
-def render_pdf(
+def render_pages(
     pdf: Path,
     out_dir: Path,
     *,
@@ -423,9 +359,10 @@ def render_pdf(
 ) -> RenderResult:
     """Render a PDF's shown pages into ``out_dir``.
 
-    Writes ``page-001.webp``… (one per shown page) and ``pages.pdf`` (the same
-    pages), plus ``render.json`` — the manifest that makes a rerun cheap: an
-    input whose sha256 and parameters match is skipped.
+    Writes ``page-001.webp``… (one per shown page), plus ``render.json`` — the
+    manifest that makes a rerun cheap: an input whose sha256 and parameters
+    match is skipped. The ``pages.pdf`` this once wrote beside the images is
+    gone (#149); a stale one left by an older render is removed.
 
     Args:
         pdf: the PDF to render.
@@ -481,8 +418,7 @@ def render_pdf(
     for stale in out_dir.glob("page-*.webp"):
         if stale.name not in keep:
             stale.unlink()
-    pages_pdf = out_dir / PAGES_PDF_NAME
-    write_pages_pdf(pdf, pages_pdf, shown, input_sha256, backend)
+    (out_dir / "pages.pdf").unlink(missing_ok=True)  # a pre-#149 render's PDF
     manifest = {
         "input": pdf.name,
         "input_sha256": input_sha256,
@@ -493,11 +429,6 @@ def render_pdf(
             {"page": image.page, "name": image.name, "bytes": image.bytes, "sha256": image.sha256}
             for image in images
         ],
-        "pages_pdf": {
-            "name": PAGES_PDF_NAME,
-            "bytes": pages_pdf.stat().st_size,
-            "sha256": sha256_file(pages_pdf),
-        },
     }
     manifest_path.write_text(json.dumps(manifest, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     return RenderResult(
@@ -509,8 +440,6 @@ def render_pdf(
         colors=colors,
         backend=backend,
         images=tuple(images),
-        pdf_bytes=manifest["pages_pdf"]["bytes"],  # type: ignore[index]
-        pdf_sha256=manifest["pages_pdf"]["sha256"],  # type: ignore[index]
         input_sha256=input_sha256,
         reused=False,
     )
@@ -535,7 +464,7 @@ def _render_task(task: tuple[str, str, str, dict[str, object]]) -> dict[str, obj
     """Render one lane row in a worker process (picklable: module level)."""
     case, pdf, out_dir, params = task
     try:
-        result = render_pdf(Path(pdf), Path(out_dir), **params)  # type: ignore[arg-type]
+        result = render_pages(Path(pdf), Path(out_dir), **params)  # type: ignore[arg-type]
     except Exception as exc:
         return {"case": case, "pdf": pdf, "out_dir": out_dir, "error": f"{exc}"}
     return {
@@ -545,7 +474,6 @@ def _render_task(task: tuple[str, str, str, dict[str, object]]) -> dict[str, obj
         "page_count": result.page_count,
         "shown": list(result.shown),
         "image_bytes": result.image_bytes,
-        "pdf_bytes": result.pdf_bytes,
         "reused": result.reused,
         "error": None,
     }
@@ -639,7 +567,6 @@ def render_lane(
                 page_count=int(outcome.get("page_count") or 0),
                 shown=tuple(int(number) for number in outcome.get("shown") or ()),
                 image_bytes=int(outcome.get("image_bytes") or 0),
-                pdf_bytes=int(outcome.get("pdf_bytes") or 0),
                 reused=bool(outcome.get("reused")),
                 error=str(error) if error else None,
             )
@@ -657,6 +584,5 @@ def render_lane(
         failed=failed,
         pages=sum(len(case.shown) for case in cases if case.error is None),
         image_bytes=sum(case.image_bytes for case in cases if case.error is None),
-        pdf_bytes=sum(case.pdf_bytes for case in cases if case.error is None),
         cases=tuple(cases),
     )

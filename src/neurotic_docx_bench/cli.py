@@ -3887,7 +3887,7 @@ def sets_build_cmd(
 pages_app = typer.Typer(
     name="pages",
     help="Render the shown pages of a lane of PDFs: the first 12 pages at 180 DPI, "
-         "16-colour lossless WebP, plus the same pages as a pages.pdf.",
+         "16-colour lossless WebP.",
     no_args_is_help=True,
 )
 app.add_typer(pages_app)
@@ -3939,8 +3939,7 @@ def pages_render_cmd(
         f"({report.rows} rows, {report.pages} pages)"
     )
     console.print(
-        f"  page images: {report.image_bytes / 1024 / 1024:.1f} MB ({per_page:.1f} KB/page); "
-        f"pages.pdf: {report.pdf_bytes / 1024 / 1024:.1f} MB"
+        f"  page images: {report.image_bytes / 1024 / 1024:.1f} MB ({per_page:.1f} KB/page)"
     )
     for case, message in report.errors:
         console.print(Text(f"  {case}: {message}", style="red"), soft_wrap=True)

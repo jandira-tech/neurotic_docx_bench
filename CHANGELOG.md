@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Removed
+- `pages.pdf` from the shown-page renderer and the case files (#149). `pages/render.py`
+  writes the WebP page images only (byte-identical to before; a stale `pages.pdf`
+  left by an older render is deleted, and pre-#149 render directories still resume);
+  `bench pages render` no longer prints it; `ledger/cases.py` no longer emits the
+  `pdfs` links to it (legacy families keep their historic R2 links through the
+  adapter-produced `legacy_cases` input). The source PDF is already linked on
+  Hugging Face, so the second copy only added release size and upload time.
+
 ### Added
 - `pages/render.py` + `bench pages render`: the shown-page renderer (#131, plan 7.4).
   The first `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI,

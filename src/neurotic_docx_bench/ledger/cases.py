@@ -162,9 +162,6 @@ def _v1_shards(root: Path) -> list[CaseShard] | None:
             "reference": [f"~/{prefix}/reference/page_{p:03d}.webp" for p in shown]
         }
         page_counts: dict[str, int] = {"reference": shown[-1]}
-        pdfs: dict[str, str] = {}
-        if (base / "reference" / "pages.pdf").is_file():
-            pdfs["reference"] = f"~/{prefix}/reference/pages.pdf"
         scores: dict[str, dict[str, float | None]] = {}
         times: dict[str, float] = {}
         errors: dict[str, str] = {}
@@ -179,11 +176,9 @@ def _v1_shards(root: Path) -> list[CaseShard] | None:
                 scores[lane] = {"pixel": float(per_doc.get(stem, 0.0))}
                 if failed:
                     errors[lane] = failures[tool][stem]
-                continue  # a failed lane carries no pages, counts or PDF
+                continue  # a failed lane carries no pages or counts
             pages[lane] = lane_pages
             page_counts[lane] = lane_count
-            if (base / lane / "pages.pdf").is_file():
-                pdfs[lane] = f"~/{prefix}/{lane}/pages.pdf"
             if stem in per_doc:
                 scores[lane] = {"pixel": float(per_doc[stem])}
             seconds = (row.get("convert_seconds") or {}).get(stem)
@@ -201,7 +196,6 @@ def _v1_shards(root: Path) -> list[CaseShard] | None:
                 versions=dict(versions),
                 dropped=[],
                 reference_app=reference_app,
-                pdfs=pdfs,
                 errors=errors,
                 shown=list(shown),
                 stem=str(stem),
@@ -276,9 +270,6 @@ def _ar_shards(root: Path) -> list[CaseShard] | None:
             page_counts: dict[str, int] = {
                 "reference": oracle_pages.get(pair) or shown[-1]
             }
-            pdfs: dict[str, str] = {}
-            if (base / "reference" / "pages.pdf").is_file():
-                pdfs["reference"] = f"~/{prefix}/reference/pages.pdf"
             scores: dict[str, dict[str, float | None]] = {}
             errors: dict[str, str] = {}
             diagnostics: dict[str, MetricDiagnostics] = {}
@@ -299,8 +290,6 @@ def _ar_shards(root: Path) -> list[CaseShard] | None:
                 page_counts[tool] = int(row.get("page_count_candidate") or 0) or max(
                     (shown[i] for i, v in enumerate(lane_pages) if v is not None), default=0
                 )
-                if (base / tool / "pages.pdf").is_file():
-                    pdfs[tool] = f"~/{prefix}/{tool}/pages.pdf"
                 pixel = row.get(
                     "overall_score_pagefair", row.get("overall_score", row.get("average_score"))
                 )
@@ -330,7 +319,6 @@ def _ar_shards(root: Path) -> list[CaseShard] | None:
                     | {tool: str(pins[tool]) for tool in tools},
                     dropped=[],
                     reference_app=_AR_REFERENCE_APP,
-                    pdfs=pdfs,
                     errors=errors,
                     metric_diagnostics=diagnostics,
                     shown=list(shown),
@@ -414,14 +402,16 @@ def _release_text(model: Case | CaseShard | CasesIndex) -> str:
     The contract models default the new ``page_scores``/``files`` maps and the
     index's ``files_base`` to empty/None.  Writing those defaults would change
     every historical shard even though no plan-7 data exists there.  Omit an
-    empty value; a non-empty one stays and is validated by the model.
+    empty value; a non-empty one stays and is validated by the model.  The same
+    goes for ``pdfs`` since #149 dropped the pages.pdf links: the emitter never
+    fills it, while legacy families keep their historic links.
     """
     data = json.loads(dumps_compact(model))
     if isinstance(data, dict):
         if data.get("files_base", "missing") is None:
             data.pop("files_base", None)
         for case in data.get("cases") or []:
-            for field in ("page_scores", "files"):
+            for field in ("page_scores", "files", "pdfs"):
                 if field in case and not case[field]:
                     case.pop(field)
     return json.dumps(
