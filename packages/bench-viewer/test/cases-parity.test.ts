@@ -1098,3 +1098,100 @@ describe("the pre-load is bounded per step (#159)", () => {
     expect(urls.slice(0, 2).every((u) => /page_001/.test(u))).toBe(true);
   });
 });
+
+describe("review round 2 on #160", () => {
+  test("with the desktop overlay on, only the under and over lanes are pre-loaded", async () => {
+    const { index, shards } = twoGroupBundle();
+    const shard = shards["A.json"] as { cases: Case[] };
+    shard.cases = shard.cases.map((c) => ({
+      ...c,
+      pages: {
+        reference: c.pages.reference,
+        jubarte: c.pages.reference.map((p) => p.replace("/reference/", "/jubarte/")),
+        docxodus: c.pages.reference.map((p) => p.replace("/reference/", "/docxodus/")),
+      },
+      page_counts: { ...c.page_counts, docxodus: 1 },
+      scores: { ...c.scores, docxodus: { pixel: 50 } },
+    }));
+    const idx = {
+      ...(index as { engines: unknown[] }),
+      engines: [
+        ...(index as { engines: Engine[] }).engines,
+        { key: "docxodus", label: "docxodus" },
+      ],
+    };
+    const urls: string[] = [];
+    const doc = new FakeDocument("#A/one");
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const name = Object.keys(shards).find((k) => url.endsWith(k));
+      const body = url.includes("index.json") ? idx : name ? shards[name] : undefined;
+      return { ok: true, status: 200, statusText: "OK", json: async () => body } as Response;
+    }) as typeof fetch;
+    try {
+      await mountCasesPage({
+        kind: "conversion",
+        indexUrl: "../release/cases/index.json",
+        root: doc as unknown as Document,
+        preload: (u) => urls.push(u),
+      });
+    } finally {
+      globalThis.fetch = original;
+    }
+    urls.length = 0;
+    const box = doc.element("#ovl");
+    box.checked = true;
+    box.dispatch("change", { target: box });
+    // Move on: the next case is now "one", not yet pre-loaded with any lane.
+    doc.element("#navNext").dispatch("click");
+    const lanes = new Set(urls.map((u) => /\/cases\/one\/([^/]+)\//.exec(u)?.[1]));
+    expect(urls.length).toBeGreaterThan(0);
+    expect(lanes.size).toBe(2);
+    expect(lanes.has("reference")).toBe(true);
+  });
+
+  test("a stale startup load does not leave the page blank after the visitor's own pick failed", async () => {
+    const { index, shards } = twoGroupBundle();
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let bCalls = 0;
+    const doc = new FakeDocument("");
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const respond = (ok: boolean, body: unknown) =>
+        ({
+          ok,
+          status: ok ? 200 : 503,
+          statusText: ok ? "OK" : "Service Unavailable",
+          json: async () => body,
+        }) as Response;
+      if (url.includes("index.json")) return respond(true, index);
+      if (url.endsWith("B.json") && ++bCalls === 2) return respond(false, {});
+      await gate;
+      const name = Object.keys(shards).find((k) => url.endsWith(k)) as string;
+      return respond(true, shards[name]);
+    }) as typeof fetch;
+    try {
+      const mounted = mountCasesPage({
+        kind: "conversion",
+        indexUrl: "../release/cases/index.json",
+        root: doc as unknown as Document,
+        random: seeded(5),
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const select = doc.element("#fxGroup");
+      select.value = "B";
+      select.dispatch("change", { target: select });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      release();
+      await mounted;
+    } finally {
+      globalThis.fetch = original;
+    }
+    expect(selectedCaseId(doc.element("#list").innerHTML)).toBeDefined();
+  });
+});

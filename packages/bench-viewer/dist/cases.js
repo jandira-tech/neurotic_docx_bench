@@ -1213,14 +1213,16 @@ export async function mountCasesPage(opts) {
         const keys = new Set(["reference"]);
         if (mobile)
             keys.add(secondEngine(c));
+        else if (state.ovl) {
+            // The overlay hides the grid: only its two lanes paint.
+            keys.clear();
+            keys.add(state.ovlA);
+            keys.add(overlayTop(c, state.ovlB || (defaultOverlayLane(laneOrder)?.key ?? "")));
+        }
         else {
             for (const lane of lanesForCase(c, laneOrder)) {
                 if (lane.state !== "dropped" && state.on[lane.engine.key])
                     keys.add(lane.engine.key);
-            }
-            if (state.ovl) {
-                keys.add(state.ovlA);
-                keys.add(overlayTop(c, state.ovlB || (defaultOverlayLane(laneOrder)?.key ?? "")));
             }
         }
         keys.delete("");
@@ -1919,7 +1921,10 @@ export async function mountCasesPage(opts) {
             allFailed = err.message;
         }
     }
-    if (!loaded)
+    // Fall back on whether a group owns the view, not on whether some load
+    // finished: a stale load that a failed newer pick superseded still sets
+    // `loaded` but shows nothing.
+    if (!shownGroup)
         await openGroup(groups[0].group);
     render();
     const status = $("#fxn");
