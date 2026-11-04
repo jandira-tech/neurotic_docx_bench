@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- The ledger adapter tests read the legacy viewers from `archive/gh-pages-2026-11-02`
+  when the local gh-pages worktree no longer holds them. gh-pages became the bench-viewer
+  build (0c74c1c2) on 2026-11-03, and the two adapter tests failed on `const DATA` (#150).
+
 ### Added
 - `pages/render.py` + `bench pages render`: the shown-page renderer (#131, plan 7.4).
   The first `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI,
