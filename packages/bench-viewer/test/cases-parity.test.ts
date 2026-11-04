@@ -949,6 +949,7 @@ async function mountTwo(
   hash: string,
   preload?: (url: string) => void,
   search = "",
+  failing = "",
 ): Promise<{ doc: FakeDocument; fetched: string[] }> {
   const { index, shards } = twoGroupBundle();
   const fetched: string[] = [];
@@ -960,6 +961,14 @@ async function mountTwo(
     fetched.push(url);
     const name = Object.keys(shards).find((k) => url.endsWith(k));
     const body = url.includes("index.json") ? index : name ? shards[name] : undefined;
+    if (failing && url.endsWith(failing)) {
+      return {
+        ok: false,
+        status: 503,
+        statusText: "Service Unavailable",
+        json: async () => ({}),
+      } as Response;
+    }
     return { ok: true, status: 200, statusText: "OK", json: async () => body } as Response;
   }) as typeof fetch;
   try {
@@ -986,6 +995,13 @@ describe("all groups by default (#159)", () => {
       [...doc.element("#list").innerHTML.matchAll(/data-key="([^/"]*)\//g)].map((m) => m[1]),
     );
     expect([...groupsShown].sort()).toEqual(["A", "B"]);
+  });
+
+  test("one group that fails to load leaves the others on screen and says so", async () => {
+    const { doc } = await mountTwo("", undefined, "", "B.json");
+    expect(doc.element("#fxGroup").value).toBe("A");
+    expect(selectedCaseId(doc.element("#list").innerHTML)).toBeDefined();
+    expect(doc.element("#fxn").textContent).toMatch(/all groups did not load: 503/);
   });
 
   test("a link to one group's case still opens that group", async () => {

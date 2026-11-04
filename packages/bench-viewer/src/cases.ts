@@ -2279,7 +2279,18 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
 
   const linked = await applyHash();
   // All groups by default (#159); a link to a group's case opens that group.
-  if (!linked && (await openGroup(ALL_GROUPS))) pickRandom();
+  // One shard that fails must not blank the page: fall back to the first
+  // group (whose own failure still throws, as before) and say why.
+  let allFailed = "";
+  if (!linked) {
+    try {
+      if (await openGroup(ALL_GROUPS)) pickRandom();
+    } catch (err) {
+      allFailed = (err as Error).message;
+    }
+  }
   if (!loaded) await openGroup(groups[0].group);
   render();
+  const status = $("#fxn");
+  if (allFailed && status) status.textContent = `all groups did not load: ${allFailed}`;
 }
