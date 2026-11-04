@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it, test } from "vitest";
 import type { Case, CasesIndex, Engine } from "../src/cases.ts";
 import {
+  applyInlineCss,
   caseFilesUrl,
   formatPageScore,
   lanesForCase,
@@ -25,8 +26,11 @@ import {
   randomIndex,
   renderCaseGrid,
   renderCaseHead,
+  renderCaseList,
   renderCaseStrip,
+  renderEngineToggles,
   renderOverlay,
+  renderScoresTable,
   resolveFileUrl,
   safeFileUrl,
 } from "../src/cases.ts";
@@ -766,7 +770,8 @@ describe("switching groups while a load is in flight", () => {
   }
 
   async function mountOnA(fetchFake: typeof fetch): Promise<FakeDocument> {
-    const doc = new FakeDocument("");
+    // Linked to group A: with no link the page opens all groups (#159).
+    const doc = new FakeDocument("#A/one");
     globalThis.fetch = fetchFake;
     await mountCasesPage({
       kind: "conversion",
@@ -855,5 +860,160 @@ describe("switching groups while a load is in flight", () => {
     } finally {
       globalThis.fetch = original;
     }
+  });
+});
+
+// ---- #158: no inline style attributes (benchmarks.law's CSP is style-src 'self') ----
+
+describe("the renderers emit no style attribute (#158)", () => {
+  const bundle = caseBundle(2, 2);
+  const shard = parseCaseShard(bundle.shard);
+  const parsedIndex = parseCasesIndex(bundle.index);
+  const c = shard.cases[0] as Case;
+  const engines = parsedIndex.engines;
+  const lanes = lanesForCase(c, engines);
+  const word = engines.find((e) => e.key === "reference") as Engine;
+  const jub = engines.find((e) => e.key === "jubarte") as Engine;
+  const html = [
+    renderOverlay({
+      case: c,
+      under: word,
+      over: jub,
+      assetsBase: parsedIndex.assets_base,
+      alpha: 30,
+      blend: "difference",
+    }),
+    renderCaseGrid({
+      case: c,
+      lanes,
+      assetsBase: parsedIndex.assets_base,
+      engines,
+      filesBase: "https://example.invalid/f/",
+    }),
+    renderCaseGrid({ case: c, lanes, assetsBase: parsedIndex.assets_base, engines, compact: true }),
+    renderEngineToggles({
+      engines,
+      lanes: engines,
+      on: { jubarte: true, reference: true },
+      active: new Set(["jubarte", "reference"]),
+      versions: {},
+    }),
+    renderScoresTable({
+      cases: shard.cases,
+      engines,
+      lanes: engines,
+      selected: "",
+      sort: { key: "", dir: 1 },
+    } as never),
+    renderCaseList({ cases: shard.cases }),
+  ];
+
+  test.each(html.map((h, i) => [i, h]))("renderer %i has no style= attribute", (_i, h) => {
+    expect(h).not.toMatch(/\sstyle="/);
+  });
+
+  test("the overlay's top page carries its opacity and blend in data-css", () => {
+    expect(html[0]).toMatch(/class="top"[^>]*data-css="opacity:0\.3;mix-blend-mode:difference"/);
+  });
+
+  test("applyInlineCss writes each data-css through the CSSOM", () => {
+    const el = { dataset: { css: "opacity:0.3" }, style: { cssText: "" } };
+    const root = { querySelectorAll: () => [el] };
+    applyInlineCss(root as unknown as ParentNode);
+    expect(el.style.cssText).toBe("opacity:0.3");
+  });
+});
+
+// ---- #159: all groups by default, and the next case pre-loaded ----
+
+function twoGroupBundle(): { index: unknown; shards: Record<string, unknown> } {
+  const a = caseBundle(1, 2);
+  const b = caseBundle(1, 3);
+  const shardA = a.shard as { cases: Case[] };
+  const shardB = b.shard as { cases: Case[] };
+  shardA.cases = shardA.cases.map((c) => ({ ...c, group: "A" }));
+  shardB.cases = shardB.cases.map((c) => ({ ...c, group: "B" }));
+  return {
+    index: {
+      ...(a.index as object),
+      groups: [
+        { kind: "conversion", group: "A", count: 2, path: "cases/conversion/A.json" },
+        { kind: "conversion", group: "B", count: 3, path: "cases/conversion/B.json" },
+      ],
+    },
+    shards: { "A.json": { ...shardA, group: "A" }, "B.json": { ...shardB, group: "B" } },
+  };
+}
+
+async function mountTwo(
+  hash: string,
+  preload?: (url: string) => void,
+  search = "",
+): Promise<{ doc: FakeDocument; fetched: string[] }> {
+  const { index, shards } = twoGroupBundle();
+  const fetched: string[] = [];
+  const doc = new FakeDocument(hash);
+  doc.defaultView.location.search = search;
+  const original = globalThis.fetch;
+  globalThis.fetch = (async (input: RequestInfo | URL) => {
+    const url = String(input);
+    fetched.push(url);
+    const name = Object.keys(shards).find((k) => url.endsWith(k));
+    const body = url.includes("index.json") ? index : name ? shards[name] : undefined;
+    return { ok: true, status: 200, statusText: "OK", json: async () => body } as Response;
+  }) as typeof fetch;
+  try {
+    await mountCasesPage({
+      kind: "conversion",
+      indexUrl: "../release/cases/index.json",
+      root: doc as unknown as Document,
+      random: seeded(3),
+      ...(preload ? { preload } : {}),
+    });
+  } finally {
+    globalThis.fetch = original;
+  }
+  return { doc, fetched };
+}
+
+describe("all groups by default (#159)", () => {
+  test("a page opened without a link loads every group and shows all of them", async () => {
+    const { doc, fetched } = await mountTwo("");
+    expect(fetched.some((u) => u.endsWith("A.json"))).toBe(true);
+    expect(fetched.some((u) => u.endsWith("B.json"))).toBe(true);
+    expect(doc.element("#fxGroup").value).toBe("*");
+    const groupsShown = new Set(
+      [...doc.element("#list").innerHTML.matchAll(/data-key="([^/"]*)\//g)].map((m) => m[1]),
+    );
+    expect([...groupsShown].sort()).toEqual(["A", "B"]);
+  });
+
+  test("a link to one group's case still opens that group", async () => {
+    const { doc } = await mountTwo("#B/two");
+    expect(doc.element("#fxGroup").value).toBe("B");
+    expect(selectedCaseId(doc.element("#list").innerHTML)).toBe("two");
+  });
+});
+
+describe("the next case is pre-loaded (#159)", () => {
+  test("after a case renders, the next visible case's pages are pre-loaded, and only those", async () => {
+    const urls: string[] = [];
+    const { doc } = await mountTwo("#A/one", (u) => urls.push(u));
+    // The list order in group A is one, two: the next case is "two".
+    expect(selectedCaseId(doc.element("#list").innerHTML)).toBe("one");
+    expect(urls.length).toBeGreaterThan(0);
+    expect(urls.every((u) => u.includes("/cases/two/"))).toBe(true);
+  });
+});
+
+describe("the mobile overlay keeps its header current (#158)", () => {
+  test("with the overlay on, Next moves the case name and the Overlay button stays pressed", async () => {
+    const { doc } = await mountTwo("#A/one", () => undefined, "?mobile=1");
+    doc.element("#mOvl").dispatch("click");
+    expect(doc.element("#mOvl").getAttribute("aria-pressed")).toBe("true");
+    expect(doc.element("#mCase").textContent).toBe("one");
+    doc.element("#mNext").dispatch("click");
+    expect(doc.element("#mCase").textContent).toBe("two");
+    expect(doc.element("#mOvl").getAttribute("aria-pressed")).toBe("true");
   });
 });

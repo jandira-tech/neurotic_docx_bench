@@ -812,12 +812,12 @@ export function renderCaseHead(opts: CaseHeadOptions): string {
   if (opts.compact) {
     const first = METRICS.find((metric) => scores[metric] != null);
     const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-    return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(
+    return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(
       pages,
     )} p${esc(score)}</h3>`;
   }
 
-  return `<h3 class="colhead" style="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${
+  return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${
     pdfUrl
       ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
       : ""
@@ -876,7 +876,7 @@ export function renderCaseGrid(opts: CaseGridOptions): string {
   // the lanes' columns.
   const filesUrl = opts.filesBase ? caseFilesUrl(opts.filesBase, opts.case) : "";
   const filesLink = filesUrl
-    ? `<div class="case-files" style="grid-column:1 / -1"><a href="${esc(filesUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files on Hugging Face ↗</a></div>`
+    ? `<div class="case-files"><a href="${esc(filesUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files on Hugging Face ↗</a></div>`
     : "";
   return `${filesLink}${heads}${cols}`;
 }
@@ -916,17 +916,31 @@ export function renderOverlay(opts: OverlayOptions): string {
     const b = safeAssetUrl(opts.assetsBase, over[i]);
     const pageNo = shown?.[i] ?? i + 1;
     const score = pageScores && i < pageScores.length ? renderPageScore(pageScores[i], pageNo) : "";
-    return `<div class="ovl-page" style="position:relative;margin-bottom:8px">${
+    return `<div class="ovl-page">${
       a
         ? `<img src="${esc(a)}" width="1020" height="1320" alt="${esc(opts.under.label)}, page ${esc(pageNo)}">`
         : '<div class="missing">no page</div>'
     }${
       b
-        ? `<img class="top" src="${esc(b)}" width="1020" height="1320" alt="${esc(opts.over.label)}, page ${esc(pageNo)}" style="opacity:${alpha / 100};mix-blend-mode:${esc(blend)}">`
+        ? `<img class="top" src="${esc(b)}" width="1020" height="1320" alt="${esc(opts.over.label)}, page ${esc(pageNo)}" data-css="opacity:${alpha / 100};mix-blend-mode:${esc(blend)}">`
         : ""
     }${score}</div>`;
   }).join("");
   return items;
+}
+
+/**
+ * Apply every `data-css` under `root` through the CSSOM. The renderers never
+ * write a `style="…"` attribute: a host whose CSP is `style-src 'self'`
+ * (benchmarks.law) drops those, and with them the overlay's opacity and blend
+ * and the engine colours (#158). CSSOM writes are not governed by style-src.
+ */
+export function applyInlineCss(root: ParentNode | null | undefined): void {
+  if (!root?.querySelectorAll) return;
+  for (const el of root.querySelectorAll<HTMLElement>("[data-css]")) {
+    const css = el.dataset?.css;
+    if (css !== undefined && el.style) el.style.cssText = css;
+  }
 }
 
 /** The case list in the side panel. */
@@ -1012,7 +1026,7 @@ export function renderEngineToggles(opts: EngineToggleOptions): string {
       state && state !== "measured" && state !== "no-pages" ? ` · ${LANE_LABEL[state]}` : "";
     return `<label${legacy ? ' class="legacy"' : ""} title="${esc(version)}"><input type="checkbox" data-e="${esc(
       engine.key,
-    )}"${opts.on[engine.key] ? " checked" : ""}> <span class="sw" style="background:${esc(
+    )}"${opts.on[engine.key] ? " checked" : ""}> <span class="sw" data-css="background:${esc(
       laneColor(opts.engines, engine.key),
     )}"></span> ${esc(engine.label)}${version ? ` <small class="ver">${esc(version)}</small>` : ""}${esc(
       note,
@@ -1103,7 +1117,7 @@ export function renderScoresTable(opts: ScoresTableOptions): string {
   html += engines
     .map(
       (engine) =>
-        `<th class="eng" colspan="${esc(shown.length)}" style="border-top:2px solid ${esc(
+        `<th class="eng" colspan="${esc(shown.length)}" data-css="border-top:2px solid ${esc(
           laneColor(opts.engines, engine.key),
         )}">${esc(engine.label)}</th>`,
     )
@@ -1217,7 +1231,7 @@ export function renderCasesLegend(opts: CasesLegendOptions): string {
   )} notes</span><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</summary><div class="items">${items
     .map(
       (item) =>
-        `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" style="background:var(--mark)"></span><b>${esc(
+        `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" data-css="background:var(--mark)"></span><b>${esc(
           item.title,
         )}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`,
     )
@@ -1352,7 +1366,16 @@ export interface MountCasesOptions {
    * deterministic under test.
    */
   random?: () => number;
+  /**
+   * Fetch one page image ahead of time (#159). The next case's shown pages go
+   * through it after each case renders, so "next" paints from the cache. A
+   * detached `Image` by default; tests pass a recorder.
+   */
+  preload?: (url: string) => void;
 }
+
+/** At most this many pre-loaded pages are held at once. */
+const PRELOAD_MAX = 48;
 
 interface ViewerState {
   on: Record<string, boolean>;
@@ -1506,6 +1529,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   // kind, in the group's display order.
   const legend = $("#legend");
   if (legend) legend.innerHTML = renderCasesLegend({ kind: opts.kind });
+  applyInlineCss(legend);
 
   const cases = (): Case[] => shards.get(group)?.cases ?? [];
   const current = (): Case | undefined => cases()[sel];
@@ -1576,6 +1600,54 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
 
   const mobileOverlay = (): boolean => state.mobile.ovl ?? state.mobile.layout === "overlay";
 
+  // ---- the next case, pre-loaded (#159)
+  const held: HTMLImageElement[] = [];
+  const preloaded = new Set<string>();
+  const preload =
+    opts.preload ??
+    ((url: string): void => {
+      const Img = doc.defaultView?.Image;
+      if (!Img) return;
+      const img = new Img();
+      img.decoding = "async";
+      img.src = url;
+      // Keep a reference while it loads; drop the oldest past the cap.
+      held.push(img);
+      if (held.length > PRELOAD_MAX) held.shift();
+    });
+
+  /** The lanes a case would draw with the current toggles and layout. */
+  const lanesShownFor = (c: Case): string[] => {
+    const keys = new Set<string>(["reference"]);
+    if (mobile) keys.add(secondEngine(c));
+    else {
+      for (const lane of lanesForCase(c, laneOrder)) {
+        if (lane.state !== "dropped" && state.on[lane.engine.key]) keys.add(lane.engine.key);
+      }
+      if (state.ovl) {
+        keys.add(state.ovlA);
+        keys.add(overlayTop(c, state.ovlB || (defaultOverlayLane(laneOrder)?.key ?? "")));
+      }
+    }
+    keys.delete("");
+    return [...keys];
+  };
+
+  const preloadNext = (shown: Case[], at: number): void => {
+    if (shown.length < 2 || at < 0) return;
+    const next = shown[(at + 1) % shown.length];
+    if (!next) return;
+    for (const key of lanesShownFor(next)) {
+      for (const path of (next.pages?.[key] ?? []).slice(0, PAGE_STEP)) {
+        const url = safeAssetUrl(index.assets_base, path);
+        if (!url || preloaded.has(url)) continue;
+        if (preloaded.size >= PRELOAD_MAX * 4) preloaded.clear();
+        preloaded.add(url);
+        preload(url);
+      }
+    }
+  };
+
   const setMobile = (): void => {
     const query = new URLSearchParams(doc.defaultView?.location.search ?? "");
     const forced = query.get("mobile");
@@ -1614,6 +1686,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
             }
           : {}),
       });
+      applyInlineCss(enginesBar);
     }
 
     const c = current();
@@ -1643,6 +1716,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
           selected: caseKey(c),
           sort: state.sort,
         });
+        applyInlineCss(scores);
       }
       return;
     }
@@ -1692,7 +1766,10 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
           blend,
           alpha,
         });
+        applyInlineCss(overlay);
       }
+      if (mobile) renderMobile(c, shown, at);
+      preloadNext(shown, at);
       return;
     }
 
@@ -1710,8 +1787,10 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
         half: mobile && state.mobile.layout === "half",
         ...(index.files_base ? { filesBase: index.files_base } : {}),
       });
+      applyInlineCss(grid);
     }
     if (mobile) renderMobile(c, shown, at);
+    preloadNext(shown, at);
   };
 
   /**
@@ -2199,7 +2278,8 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   if (fxDiffer) fxDiffer.checked = state.fx.differ;
 
   const linked = await applyHash();
-  if (!linked && (await openGroup(groups[0].group))) pickRandom();
+  // All groups by default (#159); a link to a group's case opens that group.
+  if (!linked && (await openGroup(ALL_GROUPS))) pickRandom();
   if (!loaded) await openGroup(groups[0].group);
   render();
 }

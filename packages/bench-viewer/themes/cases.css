@@ -668,6 +668,7 @@ body.alleng #engines label.legacy {
 
 /* the case's own files, on the record */
 .case-files {
+  grid-column: 1 / -1;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -705,6 +706,11 @@ body.alleng #engines label.legacy {
 
 #overlay {
   position: relative;
+}
+
+.ovl-page {
+  position: relative;
+  margin-bottom: 8px;
 }
 
 #overlay img {
@@ -846,9 +852,16 @@ footer.site .mono {
 }
 
 body.mobile {
+  --mfoot-h: 52px;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
-  height: 100vh;
+  height: 100dvh;
+}
+
+@supports not (height: 100dvh) {
+  body.mobile {
+    height: 100vh;
+  }
 }
 
 body.mobile > * {
@@ -996,6 +1009,8 @@ body.mobile.drawer #scrim {
 
 body.mobile #main {
   padding: 8px 8px 16px;
+  /* the fixed bottom bar (#mfoot) covers this much of the case area */
+  padding-bottom: calc(16px + var(--mfoot-h) + env(safe-area-inset-bottom, 0px));
 }
 
 body.mobile #grid {
@@ -1062,11 +1077,19 @@ body.mobile #more {
 }
 
 body.mobile #mfoot {
+  /* Pinned to the bottom of the viewport on every host (#157): the grid row
+   * alone left it under the browser chrome (100vh is the large viewport) and
+   * moved when a host added its own header. Under the drawer (62) and scrim (61). */
   display: grid;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
 }
 
 #mfoot button {
-  min-height: 52px;
+  min-height: var(--mfoot-h, 52px);
   border: 0;
   background: var(--surface);
   color: var(--ink);

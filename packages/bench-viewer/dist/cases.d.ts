@@ -290,6 +290,13 @@ export interface OverlayOptions {
 }
 /** The overlay. */
 export declare function renderOverlay(opts: OverlayOptions): string;
+/**
+ * Apply every `data-css` under `root` through the CSSOM. The renderers never
+ * write a `style="…"` attribute: a host whose CSP is `style-src 'self'`
+ * (benchmarks.law) drops those, and with them the overlay's opacity and blend
+ * and the engine colours (#158). CSSOM writes are not governed by style-src.
+ */
+export declare function applyInlineCss(root: ParentNode | null | undefined): void;
 /** The case list in the side panel. */
 export interface CaseListOptions {
     cases: Case[];
@@ -398,6 +405,12 @@ export interface MountCasesOptions {
      * deterministic under test.
      */
     random?: () => number;
+    /**
+     * Fetch one page image ahead of time (#159). The next case's shown pages go
+     * through it after each case renders, so "next" paints from the cache. A
+     * detached `Image` by default; tests pass a recorder.
+     */
+    preload?: (url: string) => void;
 }
 /**
  * How many pages the grid shows before "more pages". The release shows up
