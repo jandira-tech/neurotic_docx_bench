@@ -17,11 +17,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Hugging Face, so the second copy only added release size and upload time.
 
 ### Fixed
+- bench-viewer `cases.css`: shown pages were stretched to 1320 px tall at every zoom (the
+  `<img>`'s `height="1320"` attribute survived the CSS width), which squeezed every page
+  on the case browsers, gh-pages included. `.page img` and `#overlay img` set
+  `height: auto`.
 - The ledger adapter tests read the legacy viewers from `archive/gh-pages-2026-11-02`
   when the local gh-pages worktree no longer holds them. gh-pages became the bench-viewer
   build (0c74c1c2) on 2026-11-03, and the two adapter tests failed on `const DATA` (#150).
 
 ### Added
+- bench-viewer case browsers (Arthur, 2026-11-03): an "all groups" choice in the group
+  picker (every shard of the browser; a case is now identified by group and id, since one
+  id sits in several groups); the bar breaks before overlay on both browsers; the
+  "Scores table"/"Viewer" toggle moved into the About line, before the page links; the
+  "pages 1–N of N" counter is gone (each lane has its own page count).
+- bench-viewer `themes/arthur-law-cases.css`: the arthur.law skin for the case browsers and
+  the speed page (#153). A `:root`-only layer that remaps `cases.css`'s palette and type onto
+  arthur.law's tokens. The consumer links it: benchmarks.law appends it after `cases.css`;
+  `build-pages` does not, so gh-pages keeps its palette (its `cases.css` does take the
+  page-shape and header fixes below).
 - `pages/render.py` + `bench pages render`: the shown-page renderer (#131, plan 7.4).
   The first `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI,
   16-colour median-cut, lossless WebP (method 4), plus the same pages as

@@ -1,0 +1,39 @@
+/* arthur-law-cases.css — the arthur.law skin for the case browsers and the
+ * speed page (#153).
+ *
+ * Load it after cases.css. It is a :root layer only: every rule stays
+ * cases.css's, and the published palette (paper, ink, navy) and type
+ * (Manrope, JetBrains Mono) are remapped onto arthur.law's tokens, the ones
+ * themes/arthur-law.css declares: #FAFAF8 paper, #0A0A0A ink, #6B6B6B muted,
+ * #E8E8E5 hairlines, the #FFD400 mark, Libre Franklin and Roboto Mono.
+ * cases.css's corners are already square. Green and red keep their meaning
+ * (better, worse) and are only darkened toward the ink.
+ */
+
+:root {
+  /* the published palette, remapped */
+  --ink: #0a0a0a;
+  --muted: #6b6b6b;
+  --line: #e8e8e5;
+  --paper: #fafaf8;
+  --white: #ffffff;
+  --blue: #0a0a0a;
+  --blue-d: #000000;
+  --navy: #0a0a0a;
+  --sky: #fbf1ba;
+  --hover: #f2f2ef;
+  --steel: #c9c9c5;
+  --off: #9a9a96;
+  --forest: #1f5c3a;
+  --brick: #8f2f22;
+  --mark: #ffd400;
+  --mark-text: #0a0a0a;
+
+  /* the names the components read */
+  --accent: var(--ink);
+
+  /* arthur.law's type */
+  --sans: "Libre Franklin", system-ui, -apple-system, sans-serif;
+  --ff: var(--sans);
+  --mono: "Roboto Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}

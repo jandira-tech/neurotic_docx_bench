@@ -715,18 +715,34 @@ export function renderOverlay(opts) {
     }).join("");
     return items;
 }
+/**
+ * A case's identity: its group and its id. One id can sit in several groups
+ * (the same document in two corpora), so "all groups" needs both.
+ */
+export function caseKey(c) {
+    return `${c.group}/${c.case}`;
+}
+/** Whether `selected` (a case key, or a bare id) names this case. */
+function isSelected(c, selected) {
+    return selected !== undefined && (selected === caseKey(c) || selected === c.case);
+}
 /** The case list. */
 export function renderCaseList(opts) {
     return opts.cases
-        .map((c) => `<div class="case${opts.selected === c.case ? " sel" : ""}" data-case="${esc(c.case)}"><span class="name" title="${esc(c.case)}">${esc(c.case)}</span><span class="grp">${esc(c.group)}</span></div>`)
+        .map((c) => `<div class="case${isSelected(c, opts.selected) ? " sel" : ""}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(c.case)}</span><span class="grp">${esc(c.group)}</span></div>`)
         .join("");
 }
 /** The group picker: one option per group of this kind. */
 export function renderGroupOptions(groups, selected) {
-    return groups
-        .map((group) => `<option value="${esc(group.group)}"${group.group === selected ? " selected" : ""}>${esc(group.group)} (${esc(group.count)})</option>`)
-        .join("");
+    const total = groups.reduce((sum, group) => sum + group.count, 0);
+    const all = `<option value="${ALL_GROUPS}"${selected === ALL_GROUPS ? " selected" : ""}>all groups (${esc(total)})</option>`;
+    return (all +
+        groups
+            .map((group) => `<option value="${esc(group.group)}"${group.group === selected ? " selected" : ""}>${esc(group.group)} (${esc(group.count)})</option>`)
+            .join(""));
 }
+/** The group picker's value for every group of the browser at once. */
+export const ALL_GROUPS = "*";
 /** The engine toggles. */
 export function renderEngineToggles(opts) {
     const lanes = opts.lanes ?? opts.engines;
@@ -836,7 +852,7 @@ export function renderScoresTable(opts) {
                     : Math.max(...values)
                 : null;
         }
-        html += `<tr data-case="${esc(row.c.case)}"${row.c.case === opts.selected ? ' class="sel"' : ""}>`;
+        html += `<tr data-case="${esc(row.c.case)}" data-key="${esc(caseKey(row.c))}"${isSelected(row.c, opts.selected) ? ' class="sel"' : ""}>`;
         html += cols
             .map((col, j) => {
             const cell = j < 3 ? null : flat[j - 3];
@@ -888,7 +904,7 @@ export function renderCasesLegend(opts) {
         },
     ];
     const links = `<a href="../index.html">DOCX → PDF</a><a href="../redlines/index.html">Redlines</a><a href="../speed/index.html">Speed</a>`;
-    return `<details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span>${links}</summary><div class="items">${items
+    return `<details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</summary><div class="items">${items
         .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" style="background:var(--mark)"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
         .join("")}</div></details>`;
 }
@@ -927,10 +943,9 @@ export function renderCasesPage(opts) {
   <button id="sideToggle" aria-label="Hide or show the case list" title="hide / show the case list (s)">&#9776;</button>
   <span class="grp"><select id="mode" autocomplete="off" title="what to compare"><option value="${esc(conversionHref)}">Convert DOCX → PDF</option><option value="${esc(redlinesHref)}"${opts.kind === "redline" ? " selected" : ""}>Compare (redline) two documents</option></select></span>
   <span class="grp" id="nav"><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span></span>
-  <span class="grp"><span id="pageinfo"></span></span>
   <span class="grp"><label>zoom <input type="range" id="zoom" min="200" max="1400" value="600" step="20"></label></span>
+  <span class="brk" aria-hidden="true"></span>
   <span class="grp"><label><input type="checkbox" id="ovl"> overlay</label><select id="ovlA" aria-label="Engine under"></select> under <select id="ovlB" aria-label="Engine over"></select><select id="blend" aria-label="Blend mode"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select><input type="range" id="alpha" aria-label="Overlay opacity" min="0" max="100" value="50"></span>
-  <span class="grp"><button id="viewToggle">Scores table</button></span>
   <span id="keys" class="hidden"><kbd>1</kbd>-<kbd>9</kbd> engines &nbsp;<kbd>&uarr;</kbd><kbd>&darr;</kbd> cases &nbsp;<kbd>r</kbd> random &nbsp;<kbd>s</kbd> side panel &nbsp;<kbd>o</kbd> overlay &nbsp;<kbd>m</kbd> more pages &nbsp;<kbd>t</kbd> scores table</span>
 </div>
 <div id="engines" aria-label="Engines"></div>
@@ -1084,6 +1099,11 @@ export async function mountCasesPage(opts) {
         legend.innerHTML = renderCasesLegend({ kind: opts.kind });
     const cases = () => shards.get(group)?.cases ?? [];
     const current = () => cases()[sel];
+    const sameCase = (a, b) => b !== undefined && a.case === b.case && a.group === b.group;
+    const selKey = () => {
+        const c = current();
+        return c ? caseKey(c) : undefined;
+    };
     const visibleCases = () => {
         const filter = state.filter.toLowerCase();
         return cases().filter((c) => {
@@ -1152,7 +1172,7 @@ export async function mountCasesPage(opts) {
         saveState(opts.kind, state);
         const list = $("#list");
         const shown = visibleCases();
-        const at = shown.findIndex((c) => c.case === current()?.case);
+        const at = shown.findIndex((c) => sameCase(c, current()));
         const count = $("#fxn");
         if (count)
             count.textContent = `${shown.length} of ${cases().length} cases`;
@@ -1160,7 +1180,7 @@ export async function mountCasesPage(opts) {
         if (navPos)
             navPos.textContent = `${at < 0 ? "–" : at + 1} / ${shown.length}`;
         if (list)
-            list.innerHTML = renderCaseList({ cases: shown, selected: current()?.case });
+            list.innerHTML = renderCaseList({ cases: shown, selected: selKey() });
         const enginesBar = $("#engines");
         if (enginesBar) {
             const c = current();
@@ -1198,15 +1218,12 @@ export async function mountCasesPage(opts) {
             grid?.classList.add("hidden");
             overlay?.classList.add("hidden");
             more?.classList.add("hidden");
-            const pageinfo = $("#pageinfo");
-            if (pageinfo)
-                pageinfo.textContent = "";
             if (scores) {
                 scores.innerHTML = renderScoresTable({
                     cases: shown,
                     engines: index.engines,
                     lanes: laneOrder,
-                    selected: c.case,
+                    selected: caseKey(c),
                     sort: state.sort,
                 });
             }
@@ -1220,10 +1237,6 @@ export async function mountCasesPage(opts) {
             : lanes.filter((lane) => state.on[lane.engine.key]);
         const maxPages = Math.max(1, ...Object.values(c.pages ?? {}).map((pages) => pages.length));
         state.shown = Math.min(Math.max(PAGE_STEP, state.shown), maxPages);
-        const pageinfo = $("#pageinfo");
-        if (pageinfo) {
-            pageinfo.textContent = `pages 1–${state.shown} of ${c.page_counts?.reference ?? maxPages}`;
-        }
         const left = maxPages - state.shown;
         if (more) {
             more.classList.toggle("hidden", left <= 0);
@@ -1336,7 +1349,7 @@ export async function mountCasesPage(opts) {
         const before = lastSelKey;
         renderNow();
         const c = current();
-        const key = c ? `${group}/${c.case}` : "";
+        const key = c ? `${group}|${caseKey(c)}` : "";
         if (key !== before) {
             lastSelKey = key;
             showSel();
@@ -1375,9 +1388,9 @@ export async function mountCasesPage(opts) {
         const shown = visibleCases();
         if (!shown.length)
             return;
-        const at = shown.findIndex((c) => c.case === current()?.case);
+        const at = shown.findIndex((c) => sameCase(c, current()));
         const next = at < 0 ? 0 : (at + delta + shown.length) % shown.length;
-        sel = cases().findIndex((c) => c.case === shown[next].case);
+        sel = cases().findIndex((c) => sameCase(c, shown[next]));
         state.view = "viewer";
         state.shown = PAGE_STEP;
         render();
@@ -1386,34 +1399,77 @@ export async function mountCasesPage(opts) {
         const chosen = pickRandomCase(visibleCases(), opts.random);
         if (!chosen)
             return;
-        sel = cases().findIndex((c) => c.case === chosen.case);
+        sel = cases().findIndex((c) => sameCase(c, chosen));
         state.view = "viewer";
         state.shown = PAGE_STEP;
     };
+    /** Each group load's number: only the newest load may change the view. */
+    let loadGen = 0;
+    /** The group whose cases are on screen; a failed load returns to it. */
+    let shownGroup = "";
+    /**
+     * Open a group (or every group, ALL_GROUPS). Resolves true when this load
+     * now owns the view; false when a newer load superseded it, or when it failed
+     * and the picker went back to the group on screen (the error is shown in the
+     * list's status line). A failure with nothing on screen yet still throws.
+     */
     const openGroup = async (name, caseId) => {
-        const ref = groups.find((entry) => entry.group === name);
-        if (!ref)
-            return;
-        group = name;
+        // "all groups" is every shard of this browser, one after the other.
+        const refs = name === ALL_GROUPS ? groups : groups.filter((entry) => entry.group === name);
+        if (!refs.length)
+            return false;
+        const gen = ++loadGen;
         const groupSelectNow = $("#fxGroup");
         if (groupSelectNow)
             groupSelectNow.value = name;
-        if (!shards.has(name)) {
-            const url = shardUrl(opts.indexUrl, ref.path, doc.defaultView?.location.href);
-            const response = await fetch(url);
-            if (!response.ok)
-                throw new Error(`${response.status} ${response.statusText}`);
-            shards.set(name, parseCaseShard(await response.json()));
+        try {
+            await Promise.all(refs
+                .filter((ref) => !shards.has(ref.group))
+                .map(async (ref) => {
+                const url = shardUrl(opts.indexUrl, ref.path, doc.defaultView?.location.href);
+                const response = await fetch(url);
+                if (!response.ok)
+                    throw new Error(`${response.status} ${response.statusText}`);
+                shards.set(ref.group, parseCaseShard(await response.json()));
+            }));
         }
+        catch (err) {
+            if (gen !== loadGen)
+                return false;
+            if (!shownGroup)
+                throw err;
+            group = shownGroup;
+            if (groupSelectNow)
+                groupSelectNow.value = shownGroup;
+            render();
+            const status = $("#fxn");
+            if (status) {
+                status.textContent = `${name === ALL_GROUPS ? "all groups" : name} did not load: ${err.message}`;
+            }
+            return false;
+        }
+        if (name === ALL_GROUPS && !shards.has(ALL_GROUPS)) {
+            shards.set(ALL_GROUPS, {
+                kind: opts.kind,
+                group: ALL_GROUPS,
+                cases: refs.flatMap((ref) => shards.get(ref.group)?.cases ?? []),
+            });
+        }
+        // A newer choice owns the view now; this load only counts as having loaded.
+        loaded = true;
+        if (gen !== loadGen)
+            return false;
+        group = name;
+        shownGroup = name;
         const list = cases();
         laneOrder = orderLanes(list, index.engines);
         laneData = lanesWithData(list);
         refreshPickers();
-        const at = caseId ? list.findIndex((c) => c.case === caseId) : 0;
+        const at = caseId ? list.findIndex((c) => caseKey(c) === caseId || c.case === caseId) : 0;
         sel = Math.max(at, 0);
         state.shown = PAGE_STEP;
-        loaded = true;
         render();
+        return true;
     };
     const applyHash = async () => {
         const hash = doc.defaultView?.location.hash ?? "";
@@ -1425,10 +1481,12 @@ export async function mountCasesPage(opts) {
         if (!parsed)
             return false;
         state.view = "viewer";
-        if (parsed.group !== group)
-            await openGroup(parsed.group, parsed.case);
+        const key = caseKey(parsed);
+        const inAll = group === ALL_GROUPS && cases().some((c) => caseKey(c) === key);
+        if (parsed.group !== group && !inAll)
+            await openGroup(parsed.group, key);
         else {
-            const at = cases().findIndex((c) => c.case === parsed.case);
+            const at = cases().findIndex((c) => caseKey(c) === key);
             if (at >= 0)
                 sel = at;
         }
@@ -1440,8 +1498,8 @@ export async function mountCasesPage(opts) {
         const target = event.target?.closest("[data-case]");
         if (!target)
             return;
-        const id = target.dataset.case;
-        const at = cases().findIndex((c) => c.case === id);
+        const key = target.dataset.key;
+        const at = cases().findIndex((c) => caseKey(c) === key);
         if (at < 0)
             return;
         sel = at;
@@ -1463,9 +1521,9 @@ export async function mountCasesPage(opts) {
             render();
             return;
         }
-        const row = target?.closest("tr[data-case]");
-        if (row?.dataset.case) {
-            const at = cases().findIndex((c) => c.case === row.dataset.case);
+        const row = target?.closest("tr[data-key]");
+        if (row?.dataset.key) {
+            const at = cases().findIndex((c) => caseKey(c) === row.dataset.key);
             if (at >= 0) {
                 sel = at;
                 state.view = "viewer";
@@ -1505,7 +1563,9 @@ export async function mountCasesPage(opts) {
         state.shown += PAGE_STEP;
         render();
     });
-    $("#viewToggle")?.addEventListener("click", () => {
+    $("#viewToggle")?.addEventListener("click", (event) => {
+        // It sits in the About summary: the click must not open or close the notes.
+        event.preventDefault();
         state.view = state.view === "scores" ? "viewer" : "scores";
         render();
     });
@@ -1669,16 +1729,16 @@ export async function mountCasesPage(opts) {
             return;
         }
         const shown = visibleCases();
-        const at = shown.findIndex((c) => c.case === current()?.case);
+        const at = shown.findIndex((c) => sameCase(c, current()));
         if (keyboard.key === "ArrowDown") {
             const next = shown[Math.min(at + 1, shown.length - 1)];
             if (next)
-                sel = cases().findIndex((c) => c.case === next.case);
+                sel = cases().findIndex((c) => sameCase(c, next));
         }
         else if (keyboard.key === "ArrowUp") {
             const previous = shown[Math.max(at - 1, 0)];
             if (previous)
-                sel = cases().findIndex((c) => c.case === previous.case);
+                sel = cases().findIndex((c) => sameCase(c, previous));
         }
         else if (keyboard.key === "r") {
             pickRandom();
@@ -1740,10 +1800,8 @@ export async function mountCasesPage(opts) {
     if (fxDiffer)
         fxDiffer.checked = state.fx.differ;
     const linked = await applyHash();
-    if (!linked) {
-        await openGroup(groups[0].group);
+    if (!linked && (await openGroup(groups[0].group)))
         pickRandom();
-    }
     if (!loaded)
         await openGroup(groups[0].group);
     render();

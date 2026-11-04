@@ -726,3 +726,134 @@ describe("file URLs are encoded per segment and stay under the base", () => {
     expect(resolveFileUrl(base, "~/a//b.pdf")).toBe("");
   });
 });
+
+// ---- the group picker under load (CodeRabbit, #154) ------------------------------------
+
+describe("switching groups while a load is in flight", () => {
+  /** Two groups, A and B; B's shard is served only when the test says so. */
+  function twoGroups() {
+    const a = caseBundle(1, 2);
+    const b = caseBundle(1, 3);
+    const shardA = { ...(a.shard as object), group: "A" } as { cases: Case[] };
+    shardA.cases = shardA.cases.map((c) => ({ ...c, group: "A" }));
+    const shardB = { ...(b.shard as object), group: "B" } as { cases: Case[] };
+    shardB.cases = shardB.cases.map((c) => ({ ...c, group: "B" }));
+    const index = {
+      ...(a.index as object),
+      groups: [
+        { kind: "conversion", group: "A", count: 2, path: "cases/conversion/A.json" },
+        { kind: "conversion", group: "B", count: 3, path: "cases/conversion/B.json" },
+      ],
+    };
+    let releaseB: (ok: boolean) => void = () => undefined;
+    const gateB = new Promise<boolean>((resolve) => {
+      releaseB = resolve;
+    });
+    const fetchFake = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const respond = (ok: boolean, body: unknown) =>
+        ({
+          ok,
+          status: ok ? 200 : 503,
+          statusText: ok ? "OK" : "Service Unavailable",
+          json: async () => body,
+        }) as Response;
+      if (url.includes("index.json")) return respond(true, index);
+      if (url.includes("A.json")) return respond(true, shardA);
+      return respond(await gateB, shardB);
+    }) as typeof fetch;
+    return { fetchFake, releaseB: (ok: boolean) => releaseB(ok) };
+  }
+
+  async function mountOnA(fetchFake: typeof fetch): Promise<FakeDocument> {
+    const doc = new FakeDocument("");
+    globalThis.fetch = fetchFake;
+    await mountCasesPage({
+      kind: "conversion",
+      indexUrl: "../release/cases/index.json",
+      root: doc as unknown as Document,
+      random: seeded(11),
+    });
+    return doc;
+  }
+
+  const pick = (doc: FakeDocument, value: string) => {
+    const select = doc.element("#fxGroup");
+    select.value = value;
+    select.dispatch("change", { target: select });
+  };
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+  const groupsInList = (doc: FakeDocument) =>
+    [...doc.element("#list").innerHTML.matchAll(/data-key="([^/"]*)\//g)].map((m) => m[1]);
+
+  test("a slow load that a newer choice superseded does not take the view back", async () => {
+    const original = globalThis.fetch;
+    const { fetchFake, releaseB } = twoGroups();
+    try {
+      const doc = await mountOnA(fetchFake);
+      pick(doc, "*"); // all groups: waits on B
+      await settle();
+      pick(doc, "A"); // the visitor changes their mind; A is cached
+      await settle();
+      doc.element("#navNext").dispatch("click");
+      const chosen = selectedCaseId(doc.element("#list").innerHTML);
+      expect(chosen).toBeDefined();
+      releaseB(true); // the superseded load finishes last
+      await settle();
+      await settle();
+      expect(doc.element("#fxGroup").value).toBe("A");
+      expect(selectedCaseId(doc.element("#list").innerHTML)).toBe(chosen);
+      expect(new Set(groupsInList(doc))).toEqual(new Set(["A"]));
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+
+  test("all groups lists every group's cases, each under its own group", async () => {
+    const original = globalThis.fetch;
+    const { fetchFake, releaseB } = twoGroups();
+    try {
+      const doc = await mountOnA(fetchFake);
+      pick(doc, "*");
+      releaseB(true);
+      await settle();
+      await settle();
+      expect(doc.element("#fxGroup").value).toBe("*");
+      expect(groupsInList(doc).sort()).toEqual(["A", "A", "B", "B", "B"]);
+      expect(doc.element("#fxn").textContent).toBe("5 of 5 cases");
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+
+  test("the Scores table click cancels its default action (it sits in the About summary)", async () => {
+    const bundle = caseBundle(2);
+    const doc = await mountPage({ index: bundle.index, shard: bundle.shard });
+    let prevented = false;
+    doc.element("#viewToggle").dispatch("click", {
+      target: null,
+      preventDefault: () => {
+        prevented = true;
+      },
+    });
+    expect(prevented).toBe(true);
+  });
+
+  test("a load that fails puts the picker back on the group on screen and says why", async () => {
+    const original = globalThis.fetch;
+    const { fetchFake, releaseB } = twoGroups();
+    try {
+      const doc = await mountOnA(fetchFake);
+      pick(doc, "B");
+      await settle();
+      releaseB(false);
+      await settle();
+      await settle();
+      expect(doc.element("#fxGroup").value).toBe("A");
+      expect(new Set(groupsInList(doc))).toEqual(new Set(["A"]));
+      expect(doc.element("#fxn").textContent).toMatch(/B did not load: 503/);
+    } finally {
+      globalThis.fetch = original;
+    }
+  });
+});
