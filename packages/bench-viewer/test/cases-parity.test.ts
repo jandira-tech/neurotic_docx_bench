@@ -1107,8 +1107,8 @@ describe("review round 2 on #160", () => {
       ...c,
       pages: {
         reference: c.pages.reference,
-        jubarte: c.pages.reference.map((p) => p.replace("/reference/", "/jubarte/")),
-        docxodus: c.pages.reference.map((p) => p.replace("/reference/", "/docxodus/")),
+        jubarte: c.pages.reference.map((p) => (p ?? "").replace("/reference/", "/jubarte/")),
+        docxodus: c.pages.reference.map((p) => (p ?? "").replace("/reference/", "/docxodus/")),
       },
       page_counts: { ...c.page_counts, docxodus: 1 },
       scores: { ...c.scores, docxodus: { pixel: 50 } },
@@ -1193,5 +1193,63 @@ describe("review round 2 on #160", () => {
       globalThis.fetch = original;
     }
     expect(selectedCaseId(doc.element("#list").innerHTML)).toBeDefined();
+  });
+});
+
+describe("review round 3 on #160", () => {
+  test("the startup fallback does not cancel the visitor's pick that is still loading", async () => {
+    const { index, shards } = twoGroupBundle();
+    let releaseAll: () => void = () => undefined;
+    let releasePick: () => void = () => undefined;
+    const allGate = new Promise<void>((resolve) => {
+      releaseAll = resolve;
+    });
+    const pickGate = new Promise<void>((resolve) => {
+      releasePick = resolve;
+    });
+    let bCalls = 0;
+    const doc = new FakeDocument("");
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const respond = (body: unknown) =>
+        ({ ok: true, status: 200, statusText: "OK", json: async () => body }) as Response;
+      if (url.includes("index.json")) return respond(index);
+      // The startup load's B arrives with A; the visitor's own B is slower.
+      if (url.endsWith("B.json")) {
+        bCalls += 1;
+        await (bCalls === 1 ? allGate : pickGate);
+        return respond(shards["B.json"]);
+      }
+      await allGate;
+      return respond(shards["A.json"]);
+    }) as typeof fetch;
+    const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
+    try {
+      const mounted = mountCasesPage({
+        kind: "conversion",
+        indexUrl: "../release/cases/index.json",
+        root: doc as unknown as Document,
+        random: seeded(5),
+      });
+      await tick();
+      const select = doc.element("#fxGroup");
+      select.value = "B";
+      select.dispatch("change", { target: select });
+      await tick();
+      releaseAll();
+      await tick();
+      releasePick();
+      await tick();
+      await tick();
+      void mounted;
+    } finally {
+      globalThis.fetch = original;
+    }
+    expect(doc.element("#fxGroup").value).toBe("B");
+    const shownGroups = new Set(
+      [...doc.element("#list").innerHTML.matchAll(/data-key="([^/"]*)\//g)].map((m) => m[1]),
+    );
+    expect([...shownGroups]).toEqual(["B"]);
   });
 });

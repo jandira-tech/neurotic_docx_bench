@@ -1928,6 +1928,8 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
 
   /** Each group load's number: only the newest load may change the view. */
   let loadGen = 0;
+  /** Group loads still fetching. */
+  let inFlight = 0;
   /** The group whose cases are on screen; a failed load returns to it. */
   let shownGroup = "";
 
@@ -1938,6 +1940,15 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
    * list's status line). A failure with nothing on screen yet still throws.
    */
   const openGroup = async (name: string, caseId?: string): Promise<boolean> => {
+    inFlight += 1;
+    try {
+      return await openGroupNow(name, caseId);
+    } finally {
+      inFlight -= 1;
+    }
+  };
+
+  const openGroupNow = async (name: string, caseId?: string): Promise<boolean> => {
     // "all groups" is every shard of this browser, one after the other.
     const refs = name === ALL_GROUPS ? groups : groups.filter((entry) => entry.group === name);
     if (!refs.length) return false;
@@ -2071,7 +2082,12 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   const groupSelectNow = $<HTMLSelectElement>("#fxGroup");
   groupSelectNow?.addEventListener("change", (event) => {
     const value = (event.target as HTMLSelectElement).value;
-    void openGroup(value).catch(() => undefined);
+    // A pick that fails before any group was shown falls back to the first
+    // group, so the page is never left blank (the startup fallback stays out
+    // of a pick that is still loading).
+    void openGroup(value).catch(async () => {
+      if (!shownGroup && inFlight === 0) await openGroup(groups[0].group).catch(() => undefined);
+    });
   });
 
   $("#navPrev")?.addEventListener("click", () => step(-1));
@@ -2317,7 +2333,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   // Fall back on whether a group owns the view, not on whether some load
   // finished: a stale load that a failed newer pick superseded still sets
   // `loaded` but shows nothing.
-  if (!shownGroup) await openGroup(groups[0].group);
+  if (!shownGroup && inFlight === 0) await openGroup(groups[0].group);
   render();
   const status = $("#fxn");
   if (allFailed && status) status.textContent = `all groups did not load: ${allFailed}`;

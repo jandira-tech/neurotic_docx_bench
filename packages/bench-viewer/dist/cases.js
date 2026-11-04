@@ -1511,6 +1511,8 @@ export async function mountCasesPage(opts) {
     };
     /** Each group load's number: only the newest load may change the view. */
     let loadGen = 0;
+    /** Group loads still fetching. */
+    let inFlight = 0;
     /** The group whose cases are on screen; a failed load returns to it. */
     let shownGroup = "";
     /**
@@ -1520,6 +1522,15 @@ export async function mountCasesPage(opts) {
      * list's status line). A failure with nothing on screen yet still throws.
      */
     const openGroup = async (name, caseId) => {
+        inFlight += 1;
+        try {
+            return await openGroupNow(name, caseId);
+        }
+        finally {
+            inFlight -= 1;
+        }
+    };
+    const openGroupNow = async (name, caseId) => {
         // "all groups" is every shard of this browser, one after the other.
         const refs = name === ALL_GROUPS ? groups : groups.filter((entry) => entry.group === name);
         if (!refs.length)
@@ -1657,7 +1668,13 @@ export async function mountCasesPage(opts) {
     const groupSelectNow = $("#fxGroup");
     groupSelectNow?.addEventListener("change", (event) => {
         const value = event.target.value;
-        void openGroup(value).catch(() => undefined);
+        // A pick that fails before any group was shown falls back to the first
+        // group, so the page is never left blank (the startup fallback stays out
+        // of a pick that is still loading).
+        void openGroup(value).catch(async () => {
+            if (!shownGroup && inFlight === 0)
+                await openGroup(groups[0].group).catch(() => undefined);
+        });
     });
     $("#navPrev")?.addEventListener("click", () => step(-1));
     $("#navNext")?.addEventListener("click", () => step(1));
@@ -1924,7 +1941,7 @@ export async function mountCasesPage(opts) {
     // Fall back on whether a group owns the view, not on whether some load
     // finished: a stale load that a failed newer pick superseded still sets
     // `loaded` but shows nothing.
-    if (!shownGroup)
+    if (!shownGroup && inFlight === 0)
         await openGroup(groups[0].group);
     render();
     const status = $("#fxn");
