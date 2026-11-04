@@ -396,6 +396,13 @@ def emit(root: Path, *, now: datetime | None = None) -> tuple[CasesIndex, list[C
     return _bundle(store_shards + legacy, now=now)
 
 
+#: Case fields the release does not write (#162, option A of #155): the case
+#: browsers parse them but never render, filter or mount on them, and they were
+#: about 2 MB of ndb-v0.0.2's 22.4 MB of shards. The models keep them, so old
+#: releases and the legacy snapshot still load; only the written text drops them.
+UNREAD_CASE_FIELDS = ("metric_diagnostics", "stem", "lang", "type", "set", "sets", "state", "pair")
+
+
 def _release_text(model: Case | CaseShard | CasesIndex) -> str:
     """The compact release text, without empty plan-7 fields.
 
@@ -404,7 +411,8 @@ def _release_text(model: Case | CaseShard | CasesIndex) -> str:
     every historical shard even though no plan-7 data exists there.  Omit an
     empty value; a non-empty one stays and is validated by the model.  The same
     goes for ``pdfs`` since #149 dropped the pages.pdf links: the emitter never
-    fills it, while legacy families keep their historic links.
+    fills it, while legacy families keep their historic links. The
+    ``UNREAD_CASE_FIELDS`` are dropped from every case object (#162).
     """
     data = json.loads(dumps_compact(model))
     if isinstance(data, dict):
@@ -414,6 +422,8 @@ def _release_text(model: Case | CaseShard | CasesIndex) -> str:
             for field in ("page_scores", "files", "pdfs"):
                 if field in case and not case[field]:
                     case.pop(field)
+            for field in UNREAD_CASE_FIELDS:
+                case.pop(field, None)
     return json.dumps(
         data,
         sort_keys=True,
