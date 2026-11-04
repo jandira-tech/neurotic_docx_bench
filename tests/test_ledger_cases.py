@@ -12,9 +12,12 @@ runs under the overlay that provides it.
 
 from __future__ import annotations
 
+import atexit
 import json
 import os
+import shutil
 import subprocess
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -107,7 +110,10 @@ _LEGACY_CACHE: dict[str, Path | None] = {}
 def _is_legacy_site(p: Path) -> bool:
     """A directory holding the old viewers: both pages carry the inline ``const DATA``."""
     pages = (p / "index.html", p / "redlines" / "index.html")
-    return all(f.is_file() and "const DATA = " in f.read_text(encoding="utf-8") for f in pages)
+    try:
+        return all(f.is_file() and "const DATA = " in f.read_text(encoding="utf-8") for f in pages)
+    except (OSError, UnicodeDecodeError):
+        return False
 
 
 def _legacy_site_from_git(tmp_root: Path) -> Path | None:
@@ -136,9 +142,8 @@ def _site_dir(tmp_root: Path | None = None) -> Path | None:
     gh-pages worktree when it still holds the old viewers, else the pages of
     LEGACY_SITE_REF. None when this machine has none of them (test skips)."""
     env = os.environ.get("NDB_SITE_DIR")
-    if env:
-        p = Path(env)
-        return p if _is_legacy_site(p) else None
+    if env and _is_legacy_site(Path(env)):
+        return Path(env)
     cand = REPO / "site"
     if _is_legacy_site(cand):
         return cand
@@ -161,35 +166,59 @@ def _site_dir(tmp_root: Path | None = None) -> Path | None:
                         return p
     key = str(tmp_root)
     if key not in _LEGACY_CACHE:
-        import tempfile
-
-        root = tmp_root or Path(tempfile.mkdtemp(prefix="ndb-legacy-site-"))
-        _LEGACY_CACHE[key] = _legacy_site_from_git(root)
+        if tmp_root is None:
+            tmp_root = Path(tempfile.mkdtemp(prefix="ndb-legacy-site-"))
+            atexit.register(shutil.rmtree, tmp_root, ignore_errors=True)
+        _LEGACY_CACHE[key] = _legacy_site_from_git(tmp_root)
     return _LEGACY_CACHE[key]
+
+
+def _archive_ref_available() -> bool:
+    """LEGACY_SITE_REF resolves here, locally or from origin/."""
+    for ref in (LEGACY_SITE_REF, f"origin/{LEGACY_SITE_REF}"):
+        try:
+            subprocess.run(
+                ["git", "-C", str(REPO), "rev-parse", "--verify", "-q", ref],
+                capture_output=True,
+                check=True,
+                timeout=30,
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+        return True
+    return False
 
 
 def test_site_dir_never_returns_a_non_legacy_site(tmp_path: Path, monkeypatch) -> None:
     """A gh-pages copy without the inline DATA (the bench-viewer build) is not the
-    adapter's source: NDB_SITE_DIR pointing at one yields None, not a crash (#150)."""
+    adapter's source: NDB_SITE_DIR pointing at one is passed over for the other
+    candidates and the archive branch, never returned (#150)."""
     new = tmp_path / "new"
     (new / "redlines").mkdir(parents=True)
     (new / "index.html").write_text("<script type=module src=js/app.js></script>", encoding="utf-8")
     (new / "redlines" / "index.html").write_text("<script type=module></script>", encoding="utf-8")
     monkeypatch.setenv("NDB_SITE_DIR", str(new))
-    assert _site_dir() is None
+    site = _site_dir(tmp_path / "cache")
+    assert site != new
+    if _archive_ref_available():
+        assert site is not None and _is_legacy_site(site)
+    else:
+        assert site is None
+
+
+def test_unreadable_site_pages_are_rejected_not_raised(tmp_path: Path) -> None:
+    """A candidate whose page is not UTF-8 is simply not the legacy site (#151 review)."""
+    bad = tmp_path / "bad"
+    (bad / "redlines").mkdir(parents=True)
+    (bad / "index.html").write_bytes(b"\xff\xfe const DATA = \xff")
+    (bad / "redlines" / "index.html").write_bytes(b"\xff")
+    assert _is_legacy_site(bad) is False
 
 
 def test_legacy_site_comes_from_the_archive_branch(tmp_path: Path) -> None:
     """With no legacy worktree, the pages are read from LEGACY_SITE_REF (#150)."""
-    try:
-        subprocess.run(
-            ["git", "-C", str(REPO), "rev-parse", "--verify", "-q", f"origin/{LEGACY_SITE_REF}"],
-            capture_output=True,
-            check=True,
-            timeout=30,
-        )
-    except (OSError, subprocess.SubprocessError):
-        pytest.skip(f"{LEGACY_SITE_REF} is not fetched here")
+    if not _archive_ref_available():
+        pytest.skip(f"{LEGACY_SITE_REF} is not available here, locally or from origin/")
     site = _legacy_site_from_git(tmp_path)
     assert site is not None and _is_legacy_site(site)
 
