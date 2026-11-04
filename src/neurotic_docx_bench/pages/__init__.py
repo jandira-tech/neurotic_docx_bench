@@ -2,8 +2,9 @@
 
 ``neurotic_docx_bench.pages.render`` is the gh-pages ``_build`` rendering moved
 onto main: the first ``min(12, page count)`` pages of a PDF at 180 DPI, 16
-colours, lossless WebP, plus the same pages as a ``pages.pdf``. The imports are
-lazy on purpose — ``neurotic_docx_bench.pages`` stays cheap to import.
+colours, lossless WebP. The ``pages.pdf`` it once wrote beside them is gone
+(#149). The imports are lazy on purpose — ``neurotic_docx_bench.pages`` stays
+cheap to import.
 """
 
 from __future__ import annotations
@@ -14,7 +15,6 @@ from neurotic_docx_bench.pages.render import (
     IMAGE_NAME,
     MANIFEST_NAME,
     MAX_PAGES,
-    PAGES_PDF_NAME,
     WEBP_METHOD,
     CaseResult,
     LaneReport,
@@ -24,7 +24,7 @@ from neurotic_docx_bench.pages.render import (
     encode_webp,
     page_count,
     render_lane,
-    render_pdf,
+    render_pages,
     sha256_file,
     shown_pages,
 )
@@ -35,7 +35,6 @@ __all__ = [
     "IMAGE_NAME",
     "MANIFEST_NAME",
     "MAX_PAGES",
-    "PAGES_PDF_NAME",
     "WEBP_METHOD",
     "CaseResult",
     "LaneReport",
@@ -45,7 +44,7 @@ __all__ = [
     "encode_webp",
     "page_count",
     "render_lane",
-    "render_pdf",
+    "render_pages",
     "sha256_file",
     "shown_pages",
 ]

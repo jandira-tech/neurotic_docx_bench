@@ -249,6 +249,11 @@ def _diff_cases(want: Case, got: Case | None) -> list[str]:
     if got is None:
         return ["<case missing>"]
     a, b = want.model_dump(mode="json"), got.model_dump(mode="json")
+    # #149 dropped the pages.pdf links: the emitter never emits them, while the
+    # adapter keeps reading the historic links from the published pages, so the
+    # field cannot be compared across the two.
+    a.pop("pdfs", None)
+    b.pop("pdfs", None)
     keys = sorted(set(a) | set(b))
     return [f"{k}: adapter={a.get(k)!r} emitter={b.get(k)!r}" for k in keys if a.get(k) != b.get(k)]
 
@@ -679,10 +684,6 @@ def _expected_conversion_case(case_id: str, docxodus: float, jubarte: float, sof
         },
         dropped=[],
         reference_app="Microsoft Word",
-        pdfs={
-            e: f"~/d2p_v1/v1/clean/{case_id}/{e}/pages.pdf"
-            for e in ("reference", "docxodus", "jubarte", "libreoffice")
-        },
         shown=[1],
         stem=stem,
         set="v1",
@@ -706,10 +707,6 @@ def _expected_ar_case() -> Case:
         versions={"reference": "Microsoft Word for Mac accept/reject", "jubarte-rust": "jubarte 0.14.0"},
         dropped=[],
         reference_app="Microsoft Word for Mac",
-        pdfs={
-            e: f"~/renew1030/ar/accept_all/{_AR_PAIR}/{e}/pages.pdf"
-            for e in ("reference", "jubarte-rust")
-        },
         metric_diagnostics={
             "jubarte-rust": MetricDiagnostics(
                 ref_pages=1, pages=1, scored_pages=1, max_break_drift=0
@@ -740,6 +737,9 @@ def test_emit_builds_cases_from_the_synthetic_stores(tmp_path: Path) -> None:
     assert len(ar) == 1
     diffs = _diff_cases(_expected_ar_case(), ar[0])
     assert not diffs, f"redline case {_AR_PAIR}: {diffs}"
+    # #149: no pages.pdf links, even though the synthetic asset trees hold one
+    assert conv[0].pdfs == {} and conv[1].pdfs == {}
+    assert ar[0].pdfs == {}
 
 
 def test_emit_index_registers_and_cross_checks_every_shard(tmp_path: Path) -> None:

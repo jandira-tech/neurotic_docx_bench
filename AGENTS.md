@@ -88,8 +88,8 @@ Key modules (`src/neurotic_docx_bench/`):
 - `aggregate.py` `gate.py` `tool_updater.py` `provenance.py` `config.py` `cli.py`.
 - `pages/render.py` — the **shown-page renderer** (plan 7.4, #131): the first
   `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI, 16-colour
-  median-cut, lossless WebP (method 4), plus the same pages as `pages.pdf`
-  (`mutool clean -gggz`'s equivalent: garbage 4, deflated). Scoring is **not**
+  median-cut, lossless WebP (method 4). The `pages.pdf` it once wrote beside the
+  images is gone (#149: the source PDF is already linked on HF). Scoring is **not**
   here: it stays in `raster.py` at 144 DPI over every page. `bench pages render`
   renders a lane of PDFs in a process pool and resumes (a per-PDF `render.json`
   manifest holds the input's sha256). The `mupdf` backend (PyMuPDF) is the

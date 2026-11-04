@@ -549,6 +549,7 @@ def test_release_texts_leave_empty_plan7_fields_out(
     for text in texts.values():
         assert '"page_scores":{}' not in text
         assert '"files":{}' not in text
+        assert '"pdfs":{}' not in text  # #149: no pages.pdf links are emitted
 
 
 def test_release_views_can_emit_and_validate_the_versioned_shards(
@@ -619,6 +620,7 @@ def test_release_pages_stages_every_lane_and_plans_exactly_the_shard_assets(
         }
     assert (out / "r2-plan.json").is_file()
     assert json.loads((out / "r2-plan.json").read_text()) == report.plan
+    assert not list(out.rglob("pages.pdf")), "#149: staging writes no pages.pdf"
     assert index.groups  # the emitter and the renderer use the same release shape
 
 

@@ -2,8 +2,9 @@
 
 The gh-pages `_build` rendering moved onto main: the first ``min(12, page count)``
 pages of a PDF, rasterised by MuPDF at 180 DPI, quantised to 16 colours (median
-cut) and stored as lossless WebP (method 4), plus a ``pages.pdf`` holding the same
-pages (``mutool clean -gggz``'s equivalent: garbage collection 4, deflated).
+cut) and stored as lossless WebP (method 4). The ``pages.pdf`` the renderer once
+wrote beside them is gone (#149): the source PDF is already linked on Hugging
+Face, so the second copy only added release size.
 
 Everything here runs on synthetic PDFs built with PyMuPDF under ``tmp_path``: no
 corpus, no Word, no network, no mutool.
@@ -12,6 +13,7 @@ corpus, no Word, no network, no mutool.
 from __future__ import annotations
 
 import csv
+import json
 import shutil
 from pathlib import Path
 
@@ -20,7 +22,7 @@ from PIL import Image
 
 from neurotic_docx_bench import cli
 from neurotic_docx_bench.pages import render as pages_render
-from neurotic_docx_bench.pages.render import RenderError, render_lane, render_pdf
+from neurotic_docx_bench.pages.render import RenderError, render_lane, render_pages
 
 LETTER = (612.0, 792.0)  # US letter in points
 
@@ -65,7 +67,7 @@ def lane_csv(path: Path, rows: list[tuple[str, str]]) -> Path:
 
 def test_render_caps_at_twelve_pages(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "fifteen.pdf", pages=15)
-    result = render_pdf(pdf, tmp_path / "out")
+    result = render_pages(pdf, tmp_path / "out")
     assert result.page_count == 15
     assert result.shown == tuple(range(1, 13))
     assert len(result.images) == 12
@@ -76,7 +78,7 @@ def test_render_caps_at_twelve_pages(tmp_path: Path) -> None:
 
 def test_render_keeps_every_page_of_a_short_pdf(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "two.pdf", pages=2)
-    result = render_pdf(pdf, tmp_path / "out")
+    result = render_pages(pdf, tmp_path / "out")
     assert result.page_count == 2
     assert result.shown == (1, 2)
     assert len(result.images) == 2
@@ -85,7 +87,7 @@ def test_render_keeps_every_page_of_a_short_pdf(tmp_path: Path) -> None:
 
 def test_render_rasterises_at_180_dpi(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "letter.pdf", pages=1)
-    result = render_pdf(pdf, tmp_path / "out")
+    result = render_pages(pdf, tmp_path / "out")
     assert result.dpi == 180
     with Image.open(tmp_path / "out" / "page-001.webp") as image:
         assert abs(image.width - 1530) <= 1  # 8.5in at 180 DPI
@@ -94,7 +96,7 @@ def test_render_rasterises_at_180_dpi(tmp_path: Path) -> None:
 
 def test_images_hold_at_most_sixteen_colours(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "colour.pdf", pages=2)
-    render_pdf(pdf, tmp_path / "out")
+    render_pages(pdf, tmp_path / "out")
     for image in sorted((tmp_path / "out").glob("page-*.webp")):
         with Image.open(image) as opened:
             colours = opened.convert("RGB").getcolors(maxcolors=4096)
@@ -104,7 +106,7 @@ def test_images_hold_at_most_sixteen_colours(tmp_path: Path) -> None:
 
 def test_images_are_lossless_webp(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "lossless.pdf", pages=1)
-    render_pdf(pdf, tmp_path / "out")
+    render_pages(pdf, tmp_path / "out")
     data = (tmp_path / "out" / "page-001.webp").read_bytes()
     assert data[:4] == b"RIFF"
     assert data[8:12] == b"WEBP"
@@ -117,34 +119,65 @@ def test_images_are_lossless_webp(tmp_path: Path) -> None:
 
 def test_render_is_deterministic(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "same.pdf", pages=3)
-    first = render_pdf(pdf, tmp_path / "a")
-    second = render_pdf(pdf, tmp_path / "b")
+    first = render_pages(pdf, tmp_path / "a")
+    second = render_pages(pdf, tmp_path / "b")
     assert [image.sha256 for image in first.images] == [image.sha256 for image in second.images]
     for image in first.images:
         assert (tmp_path / "a" / image.name).read_bytes() == (tmp_path / "b" / image.name).read_bytes()
-    assert (tmp_path / "a" / "pages.pdf").read_bytes() == (tmp_path / "b" / "pages.pdf").read_bytes()
 
 
-def test_pages_pdf_holds_the_shown_pages(tmp_path: Path) -> None:
-    import pymupdf
+def test_render_writes_no_pages_pdf(tmp_path: Path) -> None:
+    """#149: the render directory holds the page images and the manifest only."""
+    pdf = make_pdf(tmp_path / "one.pdf", pages=2)
+    result = render_pages(pdf, tmp_path / "out")
+    assert sorted(path.name for path in (tmp_path / "out").iterdir()) == [
+        "page-001.webp",
+        "page-002.webp",
+        "render.json",
+    ]
+    manifest = json.loads((tmp_path / "out" / "render.json").read_text(encoding="utf-8"))
+    assert "pages_pdf" not in manifest
+    assert not hasattr(result, "pdf_bytes"), "the report must not carry PDF fields"
 
-    pdf = make_pdf(tmp_path / "fifteen.pdf", pages=15)
-    result = render_pdf(pdf, tmp_path / "out")
-    with pymupdf.open(tmp_path / "out" / "pages.pdf") as doc:
-        assert doc.page_count == len(result.shown) == 12
+
+def test_render_removes_a_stale_pages_pdf(tmp_path: Path) -> None:
+    """A pages.pdf left by a pre-#149 render does not survive a re-render."""
+    pdf = make_pdf(tmp_path / "one.pdf", pages=1)
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "pages.pdf").write_bytes(b"stale")
+    render_pages(pdf, out)
+    assert not (out / "pages.pdf").exists()
+
+
+def test_render_resumes_from_a_manifest_that_still_lists_pages_pdf(tmp_path: Path) -> None:
+    """A pre-#149 render directory (its manifest carries ``pages_pdf``) still
+    resumes: the reuse check reads the images, never the dropped PDF."""
+    pdf = make_pdf(tmp_path / "one.pdf", pages=1)
+    out = tmp_path / "out"
+    first = render_pages(pdf, out)
+    manifest_path = out / "render.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["pages_pdf"] = {"name": "pages.pdf", "bytes": 3, "sha256": "0" * 64}
+    manifest_path.write_text(
+        json.dumps(manifest, indent=1, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    second = render_pages(pdf, out)
+    assert second.reused
+    assert [image.sha256 for image in second.images] == [
+        image.sha256 for image in first.images
+    ]
 
 
 def test_render_records_the_input_hash_and_sizes(tmp_path: Path) -> None:
     pdf = make_pdf(tmp_path / "one.pdf", pages=1)
-    result = render_pdf(pdf, tmp_path / "out")
+    result = render_pages(pdf, tmp_path / "out")
     assert result.input_sha256 == pages_render.sha256_file(pdf)
     for image in result.images:
         path = tmp_path / "out" / image.name
         assert image.bytes == path.stat().st_size
         assert image.sha256 == pages_render.sha256_file(path)
-    pages_pdf = tmp_path / "out" / "pages.pdf"
-    assert result.pdf_bytes == pages_pdf.stat().st_size
-    assert result.pdf_sha256 == pages_render.sha256_file(pages_pdf)
+    assert result.image_bytes == sum(image.bytes for image in result.images)
 
 
 # -- the lane -----------------------------------------------------------------------------
@@ -165,10 +198,10 @@ def test_render_lane_renders_a_lane(tmp_path: Path) -> None:
     assert report.pages == 6
     for name in ("a", "b", "c"):
         assert (out / name / "page-001.webp").is_file()
-        assert (out / name / "pages.pdf").is_file()
+        assert not (out / name / "pages.pdf").exists()
 
 
-def test_render_lane_accounts_the_images_and_the_pages_pdf_apart(tmp_path: Path) -> None:
+def test_render_lane_accounts_the_image_bytes(tmp_path: Path) -> None:
     root = tmp_path / "root"
     (root / "corpus").mkdir(parents=True)
     make_pdf(root / "corpus" / "a.pdf", pages=3)
@@ -176,10 +209,9 @@ def test_render_lane_accounts_the_images_and_the_pages_pdf_apart(tmp_path: Path)
     out = tmp_path / "out"
     report = render_lane(lane, "word_pdf", out, 1, root=root)
     images = sum(p.stat().st_size for p in (out / "one").glob("page-*.webp"))
-    pages_pdf = (out / "one" / "pages.pdf").stat().st_size
     assert report.image_bytes == images
-    assert report.pdf_bytes == pages_pdf
-    assert report.bytes == images + pages_pdf
+    assert report.bytes == images
+    assert not hasattr(report, "pdf_bytes"), "the lane report must not carry PDF fields"
 
 
 def test_render_lane_resumes_and_skips_unchanged_input(tmp_path: Path) -> None:
@@ -228,7 +260,7 @@ def test_missing_mutool_is_reported_clearly(tmp_path: Path, monkeypatch: pytest.
     monkeypatch.setenv("BENCH_MUTOOL", str(tmp_path / "no-such-mutool"))
     pdf = make_pdf(tmp_path / "one.pdf", pages=1)
     with pytest.raises(RenderError) as excinfo:
-        render_pdf(pdf, tmp_path / "out", backend="mutool")
+        render_pages(pdf, tmp_path / "out", backend="mutool")
     message = str(excinfo.value)
     assert "mutool" in message
     assert "no-such-mutool" in message
@@ -252,8 +284,9 @@ def test_cli_pages_render_writes_the_pages(tmp_path: Path) -> None:
     )
     assert result.exit_code == 0, result.output
     assert "rendered" in result.output
+    assert "pages.pdf" not in result.output
     assert (out / "one" / "page-001.webp").is_file()
-    assert (out / "one" / "pages.pdf").is_file()
+    assert not (out / "one" / "pages.pdf").exists()
 
 
 # -- the ledger reads both spellings -------------------------------------------------------

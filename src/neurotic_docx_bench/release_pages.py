@@ -106,33 +106,11 @@ def _render_source(task: tuple[ReleaseSource, Path]) -> dict[str, object]:
             "images": [],
         }
     try:
-        result = pages_render.render_pdf(source.pdf, lane_dir)
+        result = pages_render.render_pages(source.pdf, lane_dir)
         keep = result.shown[: source.pages]
         if len(keep) != source.pages:
             raise pages_render.RenderError(
                 f"the PDF rendered {len(result.shown)} page(s), the shard needs {source.pages}"
-            )
-        if len(keep) < len(result.shown):
-            # The reference defines the case's shown vector.  A candidate may
-            # have more pages, but the release shard (and its upload plan)
-            # carry only the reference's shown pages.
-            pages_pdf = lane_dir / pages_render.PAGES_PDF_NAME
-            pages_pdf.unlink(missing_ok=True)
-            pages_render.write_pages_pdf(
-                source.pdf,
-                pages_pdf,
-                keep,
-                result.input_sha256,
-            )
-            manifest_path = lane_dir / pages_render.MANIFEST_NAME
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            manifest["pages_pdf"] = {
-                "name": pages_render.PAGES_PDF_NAME,
-                "bytes": pages_pdf.stat().st_size,
-                "sha256": _sha256(pages_pdf),
-            }
-            manifest_path.write_text(
-                json.dumps(manifest, indent=1, sort_keys=True) + "\n", encoding="utf-8"
             )
         images = _underscore_render(lane_dir, keep)
     except Exception as exc:  # noqa: BLE001 - one bad lane must not kill the pool
