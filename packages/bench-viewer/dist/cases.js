@@ -646,6 +646,14 @@ export function renderCaseHead(opts) {
             ? ` (first ${shown} shown)`
             : "";
     const state = laneState(c, key);
+    // A lane published with pages and no score of any kind says so (#165): the
+    // legacy snapshot holds 60 such lanes whose PDF was never kept.
+    const unscored = key !== "reference" &&
+        state === "measured" &&
+        !METRICS.some((metric) => scores[metric] != null);
+    const unscoredNote = unscored
+        ? ` · <span class="lane-note" title="Published with its pages but no score; the PDF was not kept, so it cannot be scored here.">not scored</span>`
+        : "";
     const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
     const filesLink = fileUrl
         ? ` <a class="files" href="${esc(fileUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files ↗</a>`
@@ -653,13 +661,13 @@ export function renderCaseHead(opts) {
     if (opts.compact) {
         const first = METRICS.find((metric) => scores[metric] != null);
         const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}</h3>`;
+        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}${unscoredNote}</h3>`;
     }
     return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
         ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
         : ""}${filesLink}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
         ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
-        : ""}</h3>`;
+        : ""}${unscoredNote}</h3>`;
 }
 /** The whole grid. */
 export function renderCaseGrid(opts) {

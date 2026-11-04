@@ -803,6 +803,15 @@ export function renderCaseHead(opts: CaseHeadOptions): string {
       ? ` (first ${shown} shown)`
       : "";
   const state = laneState(c, key);
+  // A lane published with pages and no score of any kind says so (#165): the
+  // legacy snapshot holds 60 such lanes whose PDF was never kept.
+  const unscored =
+    key !== "reference" &&
+    state === "measured" &&
+    !METRICS.some((metric) => scores[metric] != null);
+  const unscoredNote = unscored
+    ? ` · <span class="lane-note" title="Published with its pages but no score; the PDF was not kept, so it cannot be scored here.">not scored</span>`
+    : "";
 
   const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
   const filesLink = fileUrl
@@ -814,7 +823,7 @@ export function renderCaseHead(opts: CaseHeadOptions): string {
     const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
     return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(
       pages,
-    )} p${esc(score)}</h3>`;
+    )} p${esc(score)}${unscoredNote}</h3>`;
   }
 
   return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${
@@ -825,7 +834,7 @@ export function renderCaseHead(opts: CaseHeadOptions): string {
     state === "unavailable" || state === "not-applicable" || state === "dropped"
       ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
       : ""
-  }</h3>`;
+  }${unscoredNote}</h3>`;
 }
 
 /** The whole grid: every lane's header, then every lane's column. */
