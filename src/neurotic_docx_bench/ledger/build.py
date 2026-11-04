@@ -317,7 +317,9 @@ def add_release_views(
     if release_version:
         # A versioned release replaces the historical store/legacy case bundle
         # with the two fixed-set shards.  The default (no release_version)
-        # remains the existing published data byte for byte.
+        # keeps the existing published cases, minus the case fields the viewer
+        # never reads (cases.UNREAD_CASE_FIELDS, #162): that default is the path
+        # `bench publish ndb` ships, so it is where the trim has to land.
         # The file links resolve against the hub revision the release's outputs
         # landed on (recorded in the release evidence), never a moving branch.
         files_base = files_base or hub_outputs.files_base(root, release_version)
