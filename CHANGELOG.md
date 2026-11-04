@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   build (0c74c1c2) on 2026-11-03, and the two adapter tests failed on `const DATA` (#150).
 
 ### Added
+- bench-viewer `themes/arthur-law-cases.css`: the arthur.law skin for the case browsers and
+  the speed page (#153). A `:root`-only layer loaded after `cases.css` that remaps its palette
+  and type onto arthur.law's tokens; `cases.css` and the gh-pages build are unchanged.
 - `pages/render.py` + `bench pages render`: the shown-page renderer (#131, plan 7.4).
   The first `min(12, page count)` pages of a PDF, rasterised by MuPDF at 180 DPI,
   16-colour median-cut, lossless WebP (method 4), plus the same pages as
