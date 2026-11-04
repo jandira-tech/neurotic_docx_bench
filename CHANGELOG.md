@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   build (0c74c1c2) on 2026-11-03, and the two adapter tests failed on `const DATA` (#150).
 
 ### Added
+- bench-viewer case browsers (Arthur, 2026-11-03): an "all groups" choice in the group
+  picker (every shard of the browser; a case is now identified by group and id, since one
+  id sits in several groups); the bar breaks before overlay on both browsers; the
+  "Scores table"/"Viewer" toggle moved into the About line, before the page links; the
+  "pages 1–N of N" counter is gone (each lane has its own page count).
 - bench-viewer `themes/arthur-law-cases.css`: the arthur.law skin for the case browsers and
   the speed page (#153). A `:root`-only layer loaded after `cases.css` that remaps its palette
   and type onto arthur.law's tokens; `cases.css` and the gh-pages build are unchanged.

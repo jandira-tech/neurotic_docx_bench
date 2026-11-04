@@ -293,15 +293,22 @@ export declare function renderOverlay(opts: OverlayOptions): string;
 /** The case list in the side panel. */
 export interface CaseListOptions {
     cases: Case[];
-    /** The id of the selected case. */
+    /** The selected case: its key (`caseKey`), or its bare id. */
     selected?: string;
     /** The text filter, already applied by the caller. */
     filter?: string;
 }
+/**
+ * A case's identity: its group and its id. One id can sit in several groups
+ * (the same document in two corpora), so "all groups" needs both.
+ */
+export declare function caseKey(c: Pick<Case, "group" | "case">): string;
 /** The case list. */
 export declare function renderCaseList(opts: CaseListOptions): string;
 /** The group picker: one option per group of this kind. */
 export declare function renderGroupOptions(groups: ShardRef[], selected?: string): string;
+/** The group picker's value for every group of the browser at once. */
+export declare const ALL_GROUPS = "*";
 /** The engine toggles: one per lane, the ones without data folded away. */
 export interface EngineToggleOptions {
     /** Every lane of the release — the lane colours come from its order. */
