@@ -385,6 +385,24 @@ export function laneState(c: Case, key: string): LaneState {
   return "no-pages";
 }
 
+/**
+ * A lane published with its pages but no score of any kind (#165): no metric,
+ * no per-page score, and not failed, dropped or otherwise excused. Word's own
+ * lane is the reference and is never scored.
+ */
+export function laneUnscored(c: Case, key: string): boolean {
+  if (key === "reference" || laneState(c, key) !== "measured") return false;
+  if (METRICS.some((metric) => c.scores?.[key]?.[metric] != null)) return false;
+  return !(c.page_scores?.[key] ?? []).some((score) => score != null);
+}
+
+/** What a reader is told about an unscored lane, with or without its PDF. */
+function unscoredTitle(hasPdf: boolean): string {
+  return hasPdf
+    ? "Published with its pages but no score."
+    : "Published with its pages but no score; the PDF was not kept, so it cannot be scored here.";
+}
+
 /** The lanes of one case, in the order the page draws them (Word first). */
 export function lanesForCase(c: Case, engines: Engine[]): { engine: Engine; state: LaneState }[] {
   const ordered = [...engines].sort((a, b) => {
@@ -805,12 +823,8 @@ export function renderCaseHead(opts: CaseHeadOptions): string {
   const state = laneState(c, key);
   // A lane published with pages and no score of any kind says so (#165): the
   // legacy snapshot holds 60 such lanes whose PDF was never kept.
-  const unscored =
-    key !== "reference" &&
-    state === "measured" &&
-    !METRICS.some((metric) => scores[metric] != null);
-  const unscoredNote = unscored
-    ? ` · <span class="lane-note" title="Published with its pages but no score; the PDF was not kept, so it cannot be scored here.">not scored</span>`
+  const unscoredNote = laneUnscored(c, key)
+    ? ` · <span class="lane-note" title="${esc(unscoredTitle(Boolean(pdfUrl)))}">not scored</span>`
     : "";
 
   const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
@@ -1201,6 +1215,14 @@ export function renderScoresTable(opts: ScoresTableOptions): string {
                 : cell?.column === "time"
                   ? formatTime(v)
                   : formatScore(v);
+        // An unscored lane says so once, in its first metric cell (#165).
+        if (cell && cell.column !== "time" && laneUnscored(row.c, cell.engine.key)) {
+          const first = shown.find((column) => column !== "time") === cell.column;
+          const pdf = Boolean(row.c.pdfs?.[cell.engine.key]);
+          return first
+            ? `<td class="${esc(cls)} lane-note" title="${esc(unscoredTitle(pdf))}">not scored</td>`
+            : `<td class="${esc(cls)}"></td>`;
+        }
         return `<td class="${esc(cls)}">${esc(text)}</td>`;
       })
       .join("");

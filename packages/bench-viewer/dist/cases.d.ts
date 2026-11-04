@@ -108,6 +108,12 @@ export type LaneState = "measured" | "no-pages" | "failed" | "unavailable" | "no
 export declare const LANE_LABEL: Record<LaneState, string>;
 /** What a lane holds for one case. */
 export declare function laneState(c: Case, key: string): LaneState;
+/**
+ * A lane published with its pages but no score of any kind (#165): no metric,
+ * no per-page score, and not failed, dropped or otherwise excused. Word's own
+ * lane is the reference and is never scored.
+ */
+export declare function laneUnscored(c: Case, key: string): boolean;
 /** The lanes of one case, in the order the page draws them (Word first). */
 export declare function lanesForCase(c: Case, engines: Engine[]): {
     engine: Engine;
