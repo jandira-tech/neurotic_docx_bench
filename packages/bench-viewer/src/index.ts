@@ -21,6 +21,7 @@ export type {
   ShardRef,
 } from "./cases.ts";
 export {
+  applyInlineCss,
   caseFilesUrl,
   caseHash,
   defaultComparisonLane,
@@ -39,6 +40,7 @@ export {
   mountCasesPage,
   orderLanes,
   PAGE_STEP,
+  PRELOAD_STEP,
   parseCase,
   parseCaseHash,
   parseCaseShard,

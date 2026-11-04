@@ -726,8 +726,19 @@ export function applyInlineCss(root) {
         return;
     for (const el of root.querySelectorAll("[data-css]")) {
         const css = el.dataset?.css;
-        if (css !== undefined && el.style)
-            el.style.cssText = css;
+        if (css === undefined || !el.style)
+            continue;
+        // One property at a time: a CSS string (cssText) may itself fall under a
+        // strict style-src in some engines; setProperty never does.
+        for (const decl of css.split(";")) {
+            const at = decl.indexOf(":");
+            if (at <= 0)
+                continue;
+            const name = decl.slice(0, at).trim();
+            const value = decl.slice(at + 1).trim();
+            if (name && value)
+                el.style.setProperty(name, value);
+        }
     }
 }
 /**
@@ -992,6 +1003,8 @@ mountCasesPage({ kind: ${JSON.stringify(opts.kind)}, indexUrl: "${esc(opts.index
 }
 /** At most this many pre-loaded pages are held at once. */
 const PRELOAD_MAX = 48;
+/** At most this many pages are requested ahead for one next case. */
+export const PRELOAD_STEP = 12;
 /**
  * How many pages the grid shows before "more pages". The release shows up
  * to 12 pages of a case (the producer's own cap), so the page opens on all
@@ -1213,20 +1226,33 @@ export async function mountCasesPage(opts) {
         keys.delete("");
         return [...keys];
     };
+    /** The next case last pre-loaded, with its lanes: each is fetched ahead once. */
+    let preloadedFor = "";
     const preloadNext = (shown, at) => {
         if (shown.length < 2 || at < 0)
             return;
         const next = shown[(at + 1) % shown.length];
         if (!next)
             return;
-        for (const key of lanesShownFor(next)) {
-            for (const path of (next.pages?.[key] ?? []).slice(0, PAGE_STEP)) {
-                const url = safeAssetUrl(index.assets_base, path);
+        const lanesKey = `${caseKey(next)}|${lanesShownFor(next).join(",")}`;
+        if (lanesKey === preloadedFor)
+            return;
+        preloadedFor = lanesKey;
+        // Page-major: every lane's first page before any lane's second, so the
+        // capped budget covers what the next case paints first.
+        const keys = lanesShownFor(next);
+        let budget = PRELOAD_STEP;
+        for (let page = 0; page < PAGE_STEP && budget > 0; page++) {
+            for (const key of keys) {
+                if (budget <= 0)
+                    break;
+                const url = safeAssetUrl(index.assets_base, next.pages?.[key]?.[page]);
                 if (!url || preloaded.has(url))
                     continue;
                 if (preloaded.size >= PRELOAD_MAX * 4)
                     preloaded.clear();
                 preloaded.add(url);
+                budget--;
                 preload(url);
             }
         }
@@ -1881,10 +1907,12 @@ export async function mountCasesPage(opts) {
     // All groups by default (#159); a link to a group's case opens that group.
     // One shard that fails must not blank the page: fall back to the first
     // group (whose own failure still throws, as before) and say why.
+    // A #scores link opened no group either: it gets all groups too, without
+    // the random pick (the table has no current case to choose).
     let allFailed = "";
-    if (!linked) {
+    if (!loaded) {
         try {
-            if (await openGroup(ALL_GROUPS))
+            if ((await openGroup(ALL_GROUPS)) && !linked)
                 pickRandom();
         }
         catch (err) {

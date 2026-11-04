@@ -412,6 +412,8 @@ export interface MountCasesOptions {
      */
     preload?: (url: string) => void;
 }
+/** At most this many pages are requested ahead for one next case. */
+export declare const PRELOAD_STEP = 12;
 /**
  * How many pages the grid shows before "more pages". The release shows up
  * to 12 pages of a case (the producer's own cap), so the page opens on all

@@ -19,6 +19,7 @@ import {
   lanesForCase,
   mountCasesPage,
   PAGE_STEP,
+  PRELOAD_STEP,
   parseCase,
   parseCaseShard,
   parseCasesIndex,
@@ -916,11 +917,29 @@ describe("the renderers emit no style attribute (#158)", () => {
     expect(html[0]).toMatch(/class="top"[^>]*data-css="opacity:0\.3;mix-blend-mode:difference"/);
   });
 
-  test("applyInlineCss writes each data-css through the CSSOM", () => {
-    const el = { dataset: { css: "opacity:0.3" }, style: { cssText: "" } };
+  test("applyInlineCss sets each declaration as its own CSSOM property (never cssText)", () => {
+    const set: [string, string][] = [];
+    const el = {
+      dataset: { css: "opacity:0.3;mix-blend-mode:difference; border-top: 2px solid #FFD400" },
+      style: {
+        setProperty: (name: string, value: string) => set.push([name, value]),
+        set cssText(_v: string) {
+          throw new Error("cssText is a CSS string; a strict style-src may block it");
+        },
+      },
+    };
     const root = { querySelectorAll: () => [el] };
     applyInlineCss(root as unknown as ParentNode);
-    expect(el.style.cssText).toBe("opacity:0.3");
+    expect(set).toEqual([
+      ["opacity", "0.3"],
+      ["mix-blend-mode", "difference"],
+      ["border-top", "2px solid #FFD400"],
+    ]);
+  });
+
+  test("the package entry exports applyInlineCss beside the renderers", async () => {
+    const entry = await import("../src/index.ts");
+    expect(typeof (entry as Record<string, unknown>).applyInlineCss).toBe("function");
   });
 });
 
@@ -1004,6 +1023,13 @@ describe("all groups by default (#159)", () => {
     expect(doc.element("#fxn").textContent).toMatch(/all groups did not load: 503/);
   });
 
+  test("a #scores link opens the table over all groups", async () => {
+    const { doc, fetched } = await mountTwo("#scores");
+    expect(fetched.some((u) => u.endsWith("A.json"))).toBe(true);
+    expect(fetched.some((u) => u.endsWith("B.json"))).toBe(true);
+    expect(doc.element("#fxGroup").value).toBe("*");
+  });
+
   test("a link to one group's case still opens that group", async () => {
     const { doc } = await mountTwo("#B/two");
     expect(doc.element("#fxGroup").value).toBe("B");
@@ -1031,5 +1057,44 @@ describe("the mobile overlay keeps its header current (#158)", () => {
     doc.element("#mNext").dispatch("click");
     expect(doc.element("#mCase").textContent).toBe("two");
     expect(doc.element("#mOvl").getAttribute("aria-pressed")).toBe("true");
+  });
+});
+
+describe("the pre-load is bounded per step (#159)", () => {
+  test("at most PRELOAD_STEP pages are requested for the next case, first pages first", async () => {
+    const { index, shards } = twoGroupBundle();
+    // Group A's second case gets 20 pages in two lanes: 40 candidate URLs.
+    const shard = shards["A.json"] as { cases: Case[] };
+    const many = (lane: string) =>
+      Array.from(
+        { length: 20 },
+        (_, i) => `~/cases/two/${lane}/page_${String(i + 1).padStart(3, "0")}.webp`,
+      );
+    shard.cases[1] = {
+      ...(shard.cases[1] as Case),
+      pages: { reference: many("reference"), jubarte: many("jubarte") },
+      page_counts: { reference: 20, jubarte: 20 },
+    };
+    const urls: string[] = [];
+    const doc = new FakeDocument("#A/one");
+    const original = globalThis.fetch;
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input);
+      const name = Object.keys(shards).find((k) => url.endsWith(k));
+      const body = url.includes("index.json") ? index : name ? shards[name] : undefined;
+      return { ok: true, status: 200, statusText: "OK", json: async () => body } as Response;
+    }) as typeof fetch;
+    try {
+      await mountCasesPage({
+        kind: "conversion",
+        indexUrl: "../release/cases/index.json",
+        root: doc as unknown as Document,
+        preload: (u) => urls.push(u),
+      });
+    } finally {
+      globalThis.fetch = original;
+    }
+    expect(urls.length).toBe(PRELOAD_STEP);
+    expect(urls.slice(0, 2).every((u) => /page_001/.test(u))).toBe(true);
   });
 });
