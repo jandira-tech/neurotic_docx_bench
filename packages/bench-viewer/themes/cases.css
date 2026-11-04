@@ -649,6 +649,8 @@ body.alleng #engines label.legacy {
 
 .page img {
   width: 100%;
+  /* the width/height attributes only reserve the space; the page keeps its own shape */
+  height: auto;
   display: block;
   background: var(--white);
   box-shadow: 0 0 0 1px var(--line);
@@ -707,6 +709,7 @@ body.alleng #engines label.legacy {
 
 #overlay img {
   width: 100%;
+  height: auto;
   display: block;
 }
 

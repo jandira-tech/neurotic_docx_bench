@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Hugging Face, so the second copy only added release size and upload time.
 
 ### Fixed
+- bench-viewer `cases.css`: shown pages were stretched to 1320 px tall at every zoom (the
+  `<img>`'s `height="1320"` attribute survived the CSS width), which squeezed every page
+  on the case browsers, gh-pages included. `.page img` and `#overlay img` set
+  `height: auto`.
 - The ledger adapter tests read the legacy viewers from `archive/gh-pages-2026-11-02`
   when the local gh-pages worktree no longer holds them. gh-pages became the bench-viewer
   build (0c74c1c2) on 2026-11-03, and the two adapter tests failed on `const DATA` (#150).

@@ -77,3 +77,14 @@ describe("(2) all groups", () => {
     expect(table).toContain(`data-key="${caseKey(a)}" class="sel"`);
   });
 });
+
+describe("the shown pages keep their shape", () => {
+  // The <img> carries width="1020" height="1320" (space reserved before it
+  // loads); CSS narrows the width to the zoom, so without height:auto the
+  // attribute height stays and the page is stretched (Arthur, 2026-11-03:
+  // "the documents are squeshed").
+  test.each([".page img", "#overlay img"])("%s sets height: auto", (selector) => {
+    const escaped = selector.replace(/[.#]/g, (m) => `\\${m}`);
+    expect(casesCss).toMatch(new RegExp(`(^|\\n)${escaped}\\s*\\{[^}]*height:\\s*auto`));
+  });
+});
