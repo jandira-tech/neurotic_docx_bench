@@ -1403,24 +1403,51 @@ export async function mountCasesPage(opts) {
         state.view = "viewer";
         state.shown = PAGE_STEP;
     };
+    /** Each group load's number: only the newest load may change the view. */
+    let loadGen = 0;
+    /** The group whose cases are on screen; a failed load returns to it. */
+    let shownGroup = "";
+    /**
+     * Open a group (or every group, ALL_GROUPS). Resolves true when this load
+     * now owns the view; false when a newer load superseded it, or when it failed
+     * and the picker went back to the group on screen (the error is shown in the
+     * list's status line). A failure with nothing on screen yet still throws.
+     */
     const openGroup = async (name, caseId) => {
         // "all groups" is every shard of this browser, one after the other.
         const refs = name === ALL_GROUPS ? groups : groups.filter((entry) => entry.group === name);
         if (!refs.length)
-            return;
-        group = name;
+            return false;
+        const gen = ++loadGen;
         const groupSelectNow = $("#fxGroup");
         if (groupSelectNow)
             groupSelectNow.value = name;
-        await Promise.all(refs
-            .filter((ref) => !shards.has(ref.group))
-            .map(async (ref) => {
-            const url = shardUrl(opts.indexUrl, ref.path, doc.defaultView?.location.href);
-            const response = await fetch(url);
-            if (!response.ok)
-                throw new Error(`${response.status} ${response.statusText}`);
-            shards.set(ref.group, parseCaseShard(await response.json()));
-        }));
+        try {
+            await Promise.all(refs
+                .filter((ref) => !shards.has(ref.group))
+                .map(async (ref) => {
+                const url = shardUrl(opts.indexUrl, ref.path, doc.defaultView?.location.href);
+                const response = await fetch(url);
+                if (!response.ok)
+                    throw new Error(`${response.status} ${response.statusText}`);
+                shards.set(ref.group, parseCaseShard(await response.json()));
+            }));
+        }
+        catch (err) {
+            if (gen !== loadGen)
+                return false;
+            if (!shownGroup)
+                throw err;
+            group = shownGroup;
+            if (groupSelectNow)
+                groupSelectNow.value = shownGroup;
+            render();
+            const status = $("#fxn");
+            if (status) {
+                status.textContent = `${name === ALL_GROUPS ? "all groups" : name} did not load: ${err.message}`;
+            }
+            return false;
+        }
         if (name === ALL_GROUPS && !shards.has(ALL_GROUPS)) {
             shards.set(ALL_GROUPS, {
                 kind: opts.kind,
@@ -1428,6 +1455,12 @@ export async function mountCasesPage(opts) {
                 cases: refs.flatMap((ref) => shards.get(ref.group)?.cases ?? []),
             });
         }
+        // A newer choice owns the view now; this load only counts as having loaded.
+        loaded = true;
+        if (gen !== loadGen)
+            return false;
+        group = name;
+        shownGroup = name;
         const list = cases();
         laneOrder = orderLanes(list, index.engines);
         laneData = lanesWithData(list);
@@ -1435,8 +1468,8 @@ export async function mountCasesPage(opts) {
         const at = caseId ? list.findIndex((c) => caseKey(c) === caseId || c.case === caseId) : 0;
         sel = Math.max(at, 0);
         state.shown = PAGE_STEP;
-        loaded = true;
         render();
+        return true;
     };
     const applyHash = async () => {
         const hash = doc.defaultView?.location.hash ?? "";
@@ -1767,10 +1800,8 @@ export async function mountCasesPage(opts) {
     if (fxDiffer)
         fxDiffer.checked = state.fx.differ;
     const linked = await applyHash();
-    if (!linked) {
-        await openGroup(groups[0].group);
+    if (!linked && (await openGroup(groups[0].group)))
         pickRandom();
-    }
     if (!loaded)
         await openGroup(groups[0].group);
     render();
