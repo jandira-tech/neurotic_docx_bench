@@ -97,15 +97,50 @@ ADAPTER_ONLY_FAMILIES = frozenset(
 # ---- helpers ---------------------------------------------------------------------------
 
 
-def _site_dir() -> Path | None:
-    """The published gh-pages site: NDB_SITE_DIR, <repo>/site, or the registered
-    gh-pages worktree. None when this machine has no copy (test skips)."""
+LEGACY_SITE_REF = "archive/gh-pages-2026-11-02"
+"""The frozen legacy gh-pages site the adapter reads (610bc447). gh-pages itself
+became the bench-viewer build on 2026-11-03 and carries no inline DATA (#150)."""
+LEGACY_SITE_FILES = ("index.html", "redlines/index.html", "redlines/cases.json")
+_LEGACY_CACHE: dict[str, Path | None] = {}
+
+
+def _is_legacy_site(p: Path) -> bool:
+    """A directory holding the old viewers: both pages carry the inline ``const DATA``."""
+    pages = (p / "index.html", p / "redlines" / "index.html")
+    return all(f.is_file() and "const DATA = " in f.read_text(encoding="utf-8") for f in pages)
+
+
+def _legacy_site_from_git(tmp_root: Path) -> Path | None:
+    """Materialise the legacy pages from LEGACY_SITE_REF (local, then origin/)."""
+    for ref in (LEGACY_SITE_REF, f"origin/{LEGACY_SITE_REF}"):
+        out = tmp_root / ref.replace("/", "_")
+        try:
+            for name in LEGACY_SITE_FILES:
+                blob = subprocess.run(
+                    ["git", "-C", str(REPO), "show", f"{ref}:{name}"],
+                    capture_output=True,
+                    check=True,
+                    timeout=60,
+                ).stdout
+                (out / name).parent.mkdir(parents=True, exist_ok=True)
+                (out / name).write_bytes(blob)
+        except (OSError, subprocess.SubprocessError):
+            continue
+        if _is_legacy_site(out):
+            return out
+    return None
+
+
+def _site_dir(tmp_root: Path | None = None) -> Path | None:
+    """The legacy published site: NDB_SITE_DIR, <repo>/site, or the registered
+    gh-pages worktree when it still holds the old viewers, else the pages of
+    LEGACY_SITE_REF. None when this machine has none of them (test skips)."""
     env = os.environ.get("NDB_SITE_DIR")
     if env:
         p = Path(env)
-        return p if (p / "index.html").is_file() and (p / "redlines" / "index.html").is_file() else None
+        return p if _is_legacy_site(p) else None
     cand = REPO / "site"
-    if (cand / "index.html").is_file() and (cand / "redlines" / "index.html").is_file():
+    if _is_legacy_site(cand):
         return cand
     try:
         out = subprocess.run(
@@ -116,15 +151,47 @@ def _site_dir() -> Path | None:
             timeout=30,
         ).stdout
     except (OSError, subprocess.SubprocessError):
-        return None
+        out = ""
     for block in out.split("\n\n"):
         if "refs/heads/gh-pages" in block:
             for line in block.splitlines():
                 if line.startswith("worktree "):
                     p = Path(line[len("worktree ") :])
-                    if (p / "index.html").is_file() and (p / "redlines" / "index.html").is_file():
+                    if _is_legacy_site(p):
                         return p
-    return None
+    key = str(tmp_root)
+    if key not in _LEGACY_CACHE:
+        import tempfile
+
+        root = tmp_root or Path(tempfile.mkdtemp(prefix="ndb-legacy-site-"))
+        _LEGACY_CACHE[key] = _legacy_site_from_git(root)
+    return _LEGACY_CACHE[key]
+
+
+def test_site_dir_never_returns_a_non_legacy_site(tmp_path: Path, monkeypatch) -> None:
+    """A gh-pages copy without the inline DATA (the bench-viewer build) is not the
+    adapter's source: NDB_SITE_DIR pointing at one yields None, not a crash (#150)."""
+    new = tmp_path / "new"
+    (new / "redlines").mkdir(parents=True)
+    (new / "index.html").write_text("<script type=module src=js/app.js></script>", encoding="utf-8")
+    (new / "redlines" / "index.html").write_text("<script type=module></script>", encoding="utf-8")
+    monkeypatch.setenv("NDB_SITE_DIR", str(new))
+    assert _site_dir() is None
+
+
+def test_legacy_site_comes_from_the_archive_branch(tmp_path: Path) -> None:
+    """With no legacy worktree, the pages are read from LEGACY_SITE_REF (#150)."""
+    try:
+        subprocess.run(
+            ["git", "-C", str(REPO), "rev-parse", "--verify", "-q", f"origin/{LEGACY_SITE_REF}"],
+            capture_output=True,
+            check=True,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):
+        pytest.skip(f"{LEGACY_SITE_REF} is not fetched here")
+    site = _legacy_site_from_git(tmp_path)
+    assert site is not None and _is_legacy_site(site)
 
 
 def _published_html(engines: list[list[str]], cases: list[dict]) -> str:
