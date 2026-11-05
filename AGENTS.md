@@ -277,6 +277,17 @@ reaches the pages in four steps, each of which bit someone on 2026-10-14:
    on disk when the bench version moved, here 0.7.0 to 0.8.0); leave other sessions' churn
    (`out/`, corpus files) out of the commit.
 
+**A versioned release's views from a clean checkout (#180).** `results/release/` is git-ignored and
+the versioned shards read PDFs the repo does not track: each conversion lane's candidates, each redline
+lane's Word exports with their `manifest.jsonl`, Word's fresh compares and the corpus references. They are
+on the hub, so a fresh worktree builds the release with
+`uv run scripts/release_inputs.py --release-version X` (results dataset at the revision the release
+evidence pins, fixtures at set v1's commit, hash-verified) and then
+`uv run scripts/release_views.py --release-version X`. The builder refuses a scored lane whose PDFs or
+manifest are missing instead of emitting a case with no pages or links, and a write that would only move a
+page's `Generated` stamp leaves the page alone. `bench publish ndb <tag> --version X` (bench-ops plan 8)
+runs exactly these in `.work/release-<tag>`.
+
 What the policy does with the rows (full text at the top of `ledger/policy.py`):
 
 - The headline group of a benchmark is the one holding its **newest eligible row**, skipping

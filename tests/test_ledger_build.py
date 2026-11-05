@@ -463,3 +463,13 @@ def test_redline_split_scores_reach_both_pages(repo: Path) -> None:
     bundle = bd.build(repo, now=datetime(2026, 9, 29, tzinfo=UTC))
     for page in (bundle.results_md, bundle.detailed_md):
         assert "### redlines accepted or rejected by Word" in page and "| acme | unknown | reject_all | 2/2 |" in page
+
+
+def test_a_rewrite_that_changes_only_the_stamp_leaves_the_page_alone(repo: Path) -> None:
+    """#180: bench publish refuses a tracked change left by its before commands; a views
+    write an hour later must not dirty a page whose content did not move."""
+    bd.write(repo, bd.build(repo, now=datetime(2026, 9, 27, tzinfo=UTC)))
+    first = (repo / "RESULTS.md").read_text()
+    written = bd.write(repo, bd.build(repo, now=datetime(2026, 9, 28, 5, tzinfo=UTC)))
+    assert (repo / "RESULTS.md").read_text() == first
+    assert repo / "RESULTS.md" not in written
