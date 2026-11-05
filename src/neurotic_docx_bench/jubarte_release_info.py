@@ -1083,11 +1083,21 @@ def report_scores(report: dict, tool: str, stems: Sequence[str]) -> dict[str, fl
     return {stem: per_doc.get(stem.lower(), 0.0) for stem in stems}
 
 
+#: The keys a vendor's docx_to_pdf report may file its scores under: `bench
+#: docx-to-pdf` names docxide's lane after its binary, `docxide-pdf` (#169).
+REPORT_TOOL_KEYS = {'docxide': ('docxide', 'docxide-pdf')}
+
+
 def _report_tool(report: dict, tool: str) -> dict:
+    """The report's block for ``tool``, under whichever of its known keys the report
+    uses (``REPORT_TOOL_KEYS``); refuses a report with none of them, or with two."""
     tools = report.get('tools') or {}
-    if tool not in tools:
+    found = [key for key in REPORT_TOOL_KEYS.get(tool, (tool,)) if key in tools]
+    if not found:
         raise RuntimeError(f'the report scores {sorted(tools)}, not {tool}')
-    return tools[tool]
+    if len(found) > 1:
+        raise RuntimeError(f'the report scores {tool} twice, as {found}; keep one')
+    return tools[found[0]]
 
 
 def _score_only_tool(report: dict) -> str:
