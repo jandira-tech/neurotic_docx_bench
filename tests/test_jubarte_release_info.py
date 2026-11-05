@@ -1829,3 +1829,21 @@ def test_the_engine_commit_names_the_binary_s_build_not_the_checkout_s_head(tmp_
     with pytest.raises(RuntimeError, match='nope'):
         jri.engine_commit(tmp_path, run, 'nope')
     assert jri.engine_commit(None, run, 'c551f287') is None
+
+
+def test_report_tool_reads_the_docxide_lane_filed_as_docxide_pdf() -> None:
+    """#169: `bench docx-to-pdf` files docxide's scores under `docxide-pdf`."""
+    report = {'tools': {'docxide-pdf': {'per_doc': {'clean__A': 80.0}, 'version': 'docxide-pdf 0.18.4'}}}
+    assert jri.refresh_report_scores(report, 'docxide', ['clean__a', 'clean__b']) == {'clean__a': 80.0}
+    assert jri._report_tool(report, 'docxide')['version'] == 'docxide-pdf 0.18.4'
+
+
+def test_report_tool_refuses_a_report_with_two_keys_for_one_vendor() -> None:
+    report = {'tools': {'docxide': {'per_doc': {}}, 'docxide-pdf': {'per_doc': {}}}}
+    with pytest.raises(RuntimeError, match='docxide'):
+        jri._report_tool(report, 'docxide')
+
+
+def test_report_tool_still_refuses_a_missing_vendor() -> None:
+    with pytest.raises(RuntimeError, match='not soffice'):
+        jri._report_tool({'tools': {'docxide-pdf': {}}}, 'soffice')
