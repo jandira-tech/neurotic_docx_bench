@@ -667,7 +667,7 @@ export function renderCaseHead(opts) {
     // A lane published with pages and no score of any kind says so (#165): the
     // legacy snapshot holds 60 such lanes whose PDF was never kept.
     const unscoredNote = laneUnscored(c, key)
-        ? ` · <span class="lane-note" title="${esc(unscoredTitle(Boolean(pdfUrl)))}">not scored</span>`
+        ? ` · <span class="lane-note" title="${esc(unscoredTitle(Boolean(pdf)))}">not scored</span>`
         : "";
     const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
     const filesLink = fileUrl
@@ -813,10 +813,18 @@ export function renderEngineToggles(opts) {
 export function renderScoresTable(opts) {
     const cases = opts.cases;
     const laneList = opts.lanes ?? opts.engines;
-    const engines = laneList.filter((engine) => cases.some((c) => laneState(c, engine.key) !== "dropped" && c.scores?.[engine.key]));
+    // A lane gets columns when a case on screen scores it, or when one shows its
+    // pages unscored: the table says "not scored" rather than dropping it (#165).
+    const engines = laneList.filter((engine) => cases.some((c) => (laneState(c, engine.key) !== "dropped" && c.scores?.[engine.key]) ||
+        laneUnscored(c, engine.key)));
     const columns = [...METRICS, "time"];
     const shown = columns.filter((column) => column === "time" ||
         cases.some((c) => engines.some((engine) => c.scores?.[engine.key]?.[column] != null)));
+    // With no metric on screen at all, an unscored lane still needs a cell to say so.
+    if (!shown.some((column) => column !== "time") &&
+        cases.some((c) => engines.some((engine) => laneUnscored(c, engine.key)))) {
+        shown.unshift(METRICS[0]);
+    }
     const value = (c, key, column) => {
         if (column === "time")
             return c.times?.[key] ?? null;
