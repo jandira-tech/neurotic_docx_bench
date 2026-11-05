@@ -1397,6 +1397,16 @@ def test_sets_sample_then_write_reads_the_vendor_lanes(tmp_path: Path) -> None:
     lane_doc['tools']['docxide']['version'] = 'docxide-pdf 0.18.4'
     lane_doc['scorer_backend'] = 'numpy'
     _put_json(root / 'results/docx_to_pdf_docxide_0.18.4_set-convert_860.json', lane_doc)
+    # the comparator files the sample names must be local (Codex on #174): absent,
+    # the write refuses and says how to fetch them; present, every row names one
+    with pytest.raises(RuntimeError, match=r'docxodus_pdf names 0 file\(s\), the refresh scored 5.*bench hub get'):
+        _act(steps, 'release_info')
+    for key in {r['key'] for r in jri.read_csv(root / jri.RUN_DIR / 'gen_pairs.csv')}:  # rows name first keys
+        _put(root / jri.RUN_DIR / 'docxodus-15.0.0' / 'pdf_by_word' / f'{key}_docxodus-15.0.0_byword.pdf')
+    with pytest.raises(RuntimeError, match=r'soffice_pdf names 0 file\(s\), the refresh scored'):
+        _act(steps, 'release_info')
+    for stem in stems:
+        _put(root / 'results' / 'soffice_26.8.2.2_work' / 'candidate' / f'{stem}.pdf')
     detail = _act(steps, 'release_info')
     assert f'six files of {V}' in detail
     six = _six(engine / 'release_info')
@@ -1959,3 +1969,17 @@ def test_conversion_rows_read_the_soffice_refresh_lane(tmp_path: Path):
     cols = dict(zip(jri.CONVERSION_HEADER, row, strict=True))
     assert cols['soffice_pdf'] == 'results/soffice_26.8.2.2_work/candidate/S1.pdf'
     assert cols['jubarte_pdf'] == 'jub/S1.pdf'
+
+
+def test_comparator_files_must_cover_what_the_refresh_scored():
+    """Codex on #174: on a clean checkout the refresh lanes' PDFs are not local, and
+    the comparator column would go blank again. The write refuses when the sample
+    names fewer comparator files than the refresh scored, and says how to fetch them."""
+    header = ['key', 'docxodus_pdf', 'docxodus_pdf_sha256']
+    rows = [['a', 'x.pdf', 's'], ['b', '', ''], ['c', '', '']]
+    jri.check_comparator_files(rows, header, 'docxodus_pdf', scored=1, fetch='F')  # 1 of 1: fine
+    with pytest.raises(RuntimeError) as err:
+        jri.check_comparator_files(rows, header, 'docxodus_pdf', scored=2,
+                                   fetch='uv run bench hub get --path p --dest d')
+    assert 'docxodus_pdf names 1 file(s), the refresh scored 2' in str(err.value)
+    assert 'uv run bench hub get --path p --dest d' in str(err.value)

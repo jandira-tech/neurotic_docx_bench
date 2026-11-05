@@ -1083,6 +1083,19 @@ def conversion_rows(sample: Sequence[dict], root: Path, jubarte_dir: Path,
             for r in sample]
 
 
+def check_comparator_files(rows: Sequence[Sequence[str]], header: Sequence[str], column: str,
+                           *, scored: int, fetch: str) -> None:
+    """Refuse a sample that names fewer comparator files in ``column`` than the
+    refresh lane ``scored``: on a clean checkout (the published bytes are deleted
+    locally after a publish) the lane's PDFs are absent and the column would go
+    blank (#172, Codex on #174). ``fetch`` is the command that brings them back."""
+    i = list(header).index(column)
+    named = sum(bool(row[i]) for row in rows)
+    if named < scored:
+        raise RuntimeError(f'{column} names {named} file(s), the refresh scored {scored}: '
+                           f'its files are not local. Fetch them, then write again: {fetch}')
+
+
 # ------------------------------------------------------------------ aggregates
 
 def itt_scores(rows: dict[str, dict], keys: Sequence[str]) -> dict[str, float]:
@@ -2101,16 +2114,25 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         # the sample CSVs name the comparators' files from their refresh lanes (#172)
         dx_lane = refresh_redline_lanes(root, found.redline_name).get('docxodus')
         sof_lane = refresh_convert_lanes(root, found.convert_name).get('soffice')
+        dx_dir = (RUN_DIR / f'docxodus-{dx_lane[0]}' / 'pdf_by_word') if dx_lane else None
+        sof_dir = (Path('results') / f'soffice_{sof_lane[0]}_work' / 'candidate') if sof_lane else None
+        red_data = redline_rows(read_csv(root / redline_csv), root, lane, gen_rows(), fresh,
+                                with_docxodus=False, docxodus_dir=root / dx_dir if dx_dir else None)
+        conv_data = conversion_rows(read_csv(root / conversion_csv), root,
+                                    root / ev / 'convert_work' / 'jubarte' / 'candidate',
+                                    with_soffice=False, soffice_dir=root / sof_dir if sof_dir else None)
+        get = 'uv run bench hub get --repo arthrod/neurotic_docx_bench --path {} --dest {}'
+        if dx_lane:
+            check_comparator_files(red_data, REDLINE_HEADER, 'docxodus_pdf',
+                                   scored=redline['tools']['docxodus']['n'],
+                                   fetch=get.format(f'outputs/{RUN_DIR.name}/docxodus-{dx_lane[0]}/pdf_by_word', dx_dir))
+        if sof_lane:
+            check_comparator_files(conv_data, CONVERSION_HEADER, 'soffice_pdf',
+                                   scored=conversion_doc['tools']['soffice']['n'],
+                                   fetch=get.format(f'outputs/convert_860/soffice_{sof_lane[0]}/pdf', sof_dir))
         detail = write_six(
             engine_dir, v, bench_root=root, redline=redline, conversion=conversion_doc,
-            set_version=found.set_version,
-            redline_data=redline_rows(
-                read_csv(root / redline_csv), root, lane, gen_rows(), fresh, with_docxodus=False,
-                docxodus_dir=(root / RUN_DIR / f'docxodus-{dx_lane[0]}' / 'pdf_by_word') if dx_lane else None),
-            conversion_data=conversion_rows(
-                read_csv(root / conversion_csv), root, root / ev / 'convert_work' / 'jubarte' / 'candidate',
-                with_soffice=False,
-                soffice_dir=(root / 'results' / f'soffice_{sof_lane[0]}_work' / 'candidate') if sof_lane else None))
+            set_version=found.set_version, redline_data=red_data, conversion_data=conv_data)
         return f'{detail}; binary {identity["binary_sha256"][:12]} reports "{identity["candidate_reports"]}"'
 
     def publish_action() -> str:
