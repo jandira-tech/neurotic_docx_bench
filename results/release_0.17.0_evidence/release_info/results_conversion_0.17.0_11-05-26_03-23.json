@@ -14,7 +14,7 @@
   "ties": 0,
   "wins": 797
  },
- "generated": "2026-11-05T07:53:00+00:00",
+ "generated": "2026-11-05T08:23:31+00:00",
  "provenance": {
   "measure": "bench docx-to-pdf --origin list (one --files-list per fixture), jubarte only; comparators read from the vendor refresh lanes (#129), newest version per tool",
   "scores": {
@@ -27,7 +27,7 @@
  },
  "release": "0.17.0",
  "sample": {
-  "csv": "sample_conversion_0.17.0_11-05-26_02-53.csv",
+  "csv": "sample_conversion_0.17.0_11-05-26_03-23.csv",
   "drawn": {
    "by_state": {
     "clean": 380,
@@ -43,10 +43,10 @@
   "n": 860,
   "set": "convert_860",
   "set_version": "2026-11-03.1",
-  "sha256": "615c3a1d37dc617bb4157440a975934e9bd2ca0e75b9f14833a7055383f0b1cc"
+  "sha256": "3e703c7be3d78e92968f338357bdeb8233c250593f606572b735fad257601318"
  },
  "schema": "jubarte-redlines/release_info/results_conversion/1",
- "stamp": "11-05-26_02-53",
+ "stamp": "11-05-26_03-23",
  "tools": {
   "apryse": {
    "at_least_90": 62,

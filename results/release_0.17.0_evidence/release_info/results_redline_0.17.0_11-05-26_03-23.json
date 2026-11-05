@@ -14,7 +14,7 @@
   "ties": 27,
   "wins": 308
  },
- "generated": "2026-11-05T07:53:00+00:00",
+ "generated": "2026-11-05T08:23:31+00:00",
  "provenance": {
   "measure": "results/redlines_0929_full/measure.py --fresh results/compare_regen/out --sample-csv results/release_0.17.0_evidence/sample_redline_0.17.0.csv (jubarte only); comparators read from the vendor refresh lanes (#129), newest version per tool",
   "scores": {
@@ -26,7 +26,7 @@
  },
  "release": "0.17.0",
  "sample": {
-  "csv": "sample_redline_0.17.0_11-05-26_02-53.csv",
+  "csv": "sample_redline_0.17.0_11-05-26_03-23.csv",
   "drawn": {
    "by_state": {
     "clean": 2,
@@ -44,10 +44,10 @@
   "pairs": 600,
   "set": "redline_600",
   "set_version": "2026-11-03.1",
-  "sha256": "788472b90b84d3aafe614a183ca1fef93a46eda729d6fb5569fd6d8d0a9f50cb"
+  "sha256": "72c73a404c7c4689737a0109293f2e2e2da9edb0dbc06adf013cc170d15e8e28"
  },
  "schema": "jubarte-redlines/release_info/results_redline/1",
- "stamp": "11-05-26_02-53",
+ "stamp": "11-05-26_03-23",
  "tools": {
   "apryse": {
    "at_least_90": 4,
