@@ -21,9 +21,9 @@ the local run directories; it never uploads anything.
 from __future__ import annotations
 
 import csv
-import glob
 import json
 import math
+import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -46,7 +46,7 @@ from neurotic_docx_bench.jubarte_release_info import (
 )
 from neurotic_docx_bench.ledger.scores import RESULTS_REPO_URL
 from neurotic_docx_bench.pages import render as pages_render
-from neurotic_docx_bench.word_outputs import find_output
+from neurotic_docx_bench.word_outputs import find_output, read_manifest
 
 #: The public R2 base the release's shown-page paths resolve against.
 ASSETS_BASE = "https://pub-92c80eda1059428394970066c8500eda.r2.dev/"
@@ -208,9 +208,8 @@ def _word_pdf(folder: Path, key: str, *tools: str) -> Path | None:
     ``tools`` are the names the lane's redlines may carry, most specific first
     (a refresh lane's ``<tool>-<version>``, then ``<tool>``; #177). Long names
     are trimmed before Word sees them; the manifest's ``renamed`` lines lead to
-    the trimmed name. A prefix of the key is only trusted when exactly one PDF
-    carries it: pairs that share a base document share the prefix, and a wrong
-    pair's redline is worse than none (#177)."""
+    the trimmed name. A prefix of the key is never trusted: pairs that share a
+    base document share it, and a wrong pair's redline is worse than none (#177)."""
     if not folder.is_dir():
         return None
     originals = [f"{key}_{tool}.docx" for tool in tools] + [f"{key}.docx"]
@@ -218,8 +217,39 @@ def _word_pdf(folder: Path, key: str, *tools: str) -> Path | None:
         found = find_output(folder, original, kind="pdf", ext=".pdf")
         if found is not None:
             return found
-    matches = sorted(folder.glob(f"{glob.escape(key[:35])}*_byword.pdf"))
-    return matches[0] if len(matches) == 1 else None
+    return _sibling_word_pdf(folder, key, tools)
+
+
+_REDLINE_ID = re.compile(r"^(?P<pair>.+)_redline_[0-9a-f]+$")
+
+
+def _sibling_word_pdf(folder: Path, key: str, tools: tuple[str, ...]) -> Path | None:
+    """The lane's redline of the same base/next pair under another Word comparison id.
+
+    Word compared some pairs twice, so one pair has two redline ids; a lane
+    generates the pair once, under one of them, while the set may key the case by
+    the other. The ids in ``<base>__vs__<next>`` are content hashes, so a name
+    that carries the whole pair is a redline of the same two documents. Only a
+    single such sibling is linked; two are ambiguous and give nothing."""
+    match = _REDLINE_ID.match(key)
+    if match is None:
+        return None
+    pair = re.escape(match["pair"])
+    names = {str(line.get("original_filename") or "") for line in read_manifest(folder)}
+    names |= {
+        path.name.removesuffix(".pdf").removesuffix("_byword") + ".docx"
+        for path in folder.glob("*.pdf")
+    }
+    for tool in tools:
+        pattern = re.compile(rf"^{pair}_redline_[0-9a-f]+_{re.escape(tool)}\.docx$")
+        siblings = sorted(
+            name for name in names if pattern.match(name) and name != f"{key}_{tool}.docx"
+        )
+        if len(siblings) > 1:
+            return None
+        if siblings:
+            return find_output(folder, siblings[0], kind="pdf", ext=".pdf")
+    return None
 
 
 def _redline_lane_dir(lane: _Lane) -> str:
