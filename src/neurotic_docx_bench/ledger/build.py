@@ -542,9 +542,11 @@ def run_release_views(
     from neurotic_docx_bench.ledger import cases_ref
 
     root = Path(root)
-    if not release_version:
+    if check and not release_version:
         # `bench publish`'s before-check runs with no version (#175): check the
         # release the bundle on disk is, never rebuild the legacy one over it.
+        # Only the check infers it; a write without a version stays the legacy
+        # emitter the CLI documents (Codex on #176).
         try:
             release_version = release_on_disk(root)
         except ValueError as exc:

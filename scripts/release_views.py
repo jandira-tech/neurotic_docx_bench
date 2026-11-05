@@ -77,7 +77,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="exit 1 when a published view is stale; write nothing",
+        help=(
+            "exit 1 when a published view is stale; write nothing. Without "
+            "--release-version it checks the release results/release/cases/index.json "
+            "names, if that index is a versioned release (#175)"
+        ),
     )
     parser.add_argument(
         "--allow-no-cases",
