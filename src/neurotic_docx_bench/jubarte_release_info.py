@@ -1089,6 +1089,8 @@ REPORT_TOOL_KEYS = {'docxide': ('docxide', 'docxide-pdf')}
 
 
 def _report_tool(report: dict, tool: str) -> dict:
+    """The report's block for ``tool``, under whichever of its known keys the report
+    uses (``REPORT_TOOL_KEYS``); refuses a report with none of them, or with two."""
     tools = report.get('tools') or {}
     found = [key for key in REPORT_TOOL_KEYS.get(tool, (tool,)) if key in tools]
     if not found:

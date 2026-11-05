@@ -1839,11 +1839,13 @@ def test_report_tool_reads_the_docxide_lane_filed_as_docxide_pdf() -> None:
 
 
 def test_report_tool_refuses_a_report_with_two_keys_for_one_vendor() -> None:
+    """#169: a report naming docxide under both keys is ambiguous and refused."""
     report = {'tools': {'docxide': {'per_doc': {}}, 'docxide-pdf': {'per_doc': {}}}}
     with pytest.raises(RuntimeError, match='docxide'):
         jri._report_tool(report, 'docxide')
 
 
 def test_report_tool_still_refuses_a_missing_vendor() -> None:
+    """#169: the alias map does not make an absent vendor readable."""
     with pytest.raises(RuntimeError, match='not soffice'):
         jri._report_tool({'tools': {'docxide-pdf': {}}}, 'soffice')
