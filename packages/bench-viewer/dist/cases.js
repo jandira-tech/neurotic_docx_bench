@@ -275,6 +275,24 @@ export function laneState(c, key) {
         return "measured";
     return "no-pages";
 }
+/**
+ * A lane published with its pages but no score of any kind (#165): no metric,
+ * no per-page score, and not failed, dropped or otherwise excused. Word's own
+ * lane is the reference and is never scored.
+ */
+export function laneUnscored(c, key) {
+    if (key === "reference" || laneState(c, key) !== "measured")
+        return false;
+    if (METRICS.some((metric) => c.scores?.[key]?.[metric] != null))
+        return false;
+    return !(c.page_scores?.[key] ?? []).some((score) => score != null);
+}
+/** What a reader is told about an unscored lane, with or without its PDF. */
+function unscoredTitle(hasPdf) {
+    return hasPdf
+        ? "Published with its pages but no score."
+        : "Published with its pages but no score; the PDF was not kept, so it cannot be scored here.";
+}
 /** The lanes of one case, in the order the page draws them (Word first). */
 export function lanesForCase(c, engines) {
     const ordered = [...engines].sort((a, b) => {
@@ -646,6 +664,11 @@ export function renderCaseHead(opts) {
             ? ` (first ${shown} shown)`
             : "";
     const state = laneState(c, key);
+    // A lane published with pages and no score of any kind says so (#165): the
+    // legacy snapshot holds 60 such lanes whose PDF was never kept.
+    const unscoredNote = laneUnscored(c, key)
+        ? ` · <span class="lane-note" title="${esc(unscoredTitle(Boolean(pdfUrl)))}">not scored</span>`
+        : "";
     const fileUrl = opts.filesBase ? safeFileUrl(opts.filesBase, c.files?.[key]) : "";
     const filesLink = fileUrl
         ? ` <a class="files" href="${esc(fileUrl)}" target="_blank" rel="noopener" title="The case's files on Hugging Face">files ↗</a>`
@@ -653,13 +676,13 @@ export function renderCaseHead(opts) {
     if (opts.compact) {
         const first = METRICS.find((metric) => scores[metric] != null);
         const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}</h3>`;
+        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}${unscoredNote}</h3>`;
     }
     return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
         ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
         : ""}${filesLink}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
         ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
-        : ""}</h3>`;
+        : ""}${unscoredNote}</h3>`;
 }
 /** The whole grid. */
 export function renderCaseGrid(opts) {
@@ -900,6 +923,14 @@ export function renderScoresTable(opts) {
                         : cell?.column === "time"
                             ? formatTime(v)
                             : formatScore(v);
+            // An unscored lane says so once, in its first metric cell (#165).
+            if (cell && cell.column !== "time" && laneUnscored(row.c, cell.engine.key)) {
+                const first = shown.find((column) => column !== "time") === cell.column;
+                const pdf = Boolean(row.c.pdfs?.[cell.engine.key]);
+                return first
+                    ? `<td class="${esc(cls)} lane-note" title="${esc(unscoredTitle(pdf))}">not scored</td>`
+                    : `<td class="${esc(cls)}"></td>`;
+            }
             return `<td class="${esc(cls)}">${esc(text)}</td>`;
         })
             .join("");

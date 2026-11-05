@@ -17,6 +17,7 @@ import {
   caseFilesUrl,
   formatPageScore,
   lanesForCase,
+  laneUnscored,
   mountCasesPage,
   PAGE_STEP,
   PRELOAD_STEP,
@@ -1251,5 +1252,117 @@ describe("review round 3 on #160", () => {
       [...doc.element("#list").innerHTML.matchAll(/data-key="([^/"]*)\//g)].map((m) => m[1]),
     );
     expect([...shownGroups]).toEqual(["B"]);
+  });
+});
+
+// #165: 60 legacy lanes were published with pages and no score of any kind;
+// their head said only "office2pdf 0.7.0 · 2 p", so a reader could not tell a
+// missing score from a failed or zero one.
+describe("a lane with pages and no score says so (#165)", () => {
+  const unscored = (): Case => ({
+    case: "00f467c010-342f364d46-d0866d",
+    group: "corpus/tracking_without_comments",
+    kind: "conversion",
+    pages: {
+      reference: ["~/r/page_001.webp"],
+      office2pdf: ["~/o/page_001.webp", "~/o/page_002.webp"],
+      rdocx: ["~/x/page_001.webp"],
+    },
+    page_counts: { reference: 7, office2pdf: 2, rdocx: 1 },
+    versions: { office2pdf: "0.7.0", rdocx: "0.13.1" },
+    scores: { rdocx: { jaccard: 1.5, ssim: 8.4, text_boundary: 0 } },
+    times: {},
+    dropped: [],
+    reference_app: "Microsoft Word",
+  });
+  const lanes = [
+    { key: "reference", label: "Word" },
+    { key: "office2pdf", label: "office2pdf" },
+    { key: "rdocx", label: "rdocx" },
+  ];
+  for (const compact of [false, true]) {
+    test(`the ${compact ? "compact" : "desktop"} head says "not scored"`, () => {
+      const html = renderCaseHead({
+        case: unscored(),
+        engine: lanes[1],
+        assetsBase: "https://x.example/",
+        engines: lanes,
+        compact,
+      });
+      expect(html).toContain("not scored");
+    });
+    test(`a scored lane and Word's own head do not (${compact ? "compact" : "desktop"})`, () => {
+      for (const engine of [lanes[0], lanes[2]]) {
+        const html = renderCaseHead({
+          case: unscored(),
+          engine,
+          assetsBase: "https://x.example/",
+          engines: lanes,
+          compact,
+        });
+        expect(html).not.toContain("not scored");
+      }
+    });
+  }
+  test('a failed lane keeps its own note, not "not scored"', () => {
+    const c = { ...unscored(), errors: { office2pdf: "timeout" } };
+    const html = renderCaseHead({
+      case: c,
+      engine: lanes[1],
+      assetsBase: "https://x.example/",
+      engines: lanes,
+    });
+    expect(html).not.toContain("not scored");
+    expect(html).toContain("no scored PDF");
+  });
+  test("the tooltip says the PDF was not kept only when there is none (PR #166 review)", () => {
+    const without = renderCaseHead({
+      case: unscored(),
+      engine: lanes[1],
+      assetsBase: "https://x.example/",
+      engines: lanes,
+    });
+    expect(without).toContain("not kept");
+    const c = { ...unscored(), pdfs: { office2pdf: "~/o/office2pdf.pdf" } };
+    const withPdf = renderCaseHead({
+      case: c,
+      engine: lanes[1],
+      assetsBase: "https://x.example/",
+      engines: lanes,
+    });
+    expect(withPdf).toContain("not scored");
+    expect(withPdf).not.toContain("not kept");
+  });
+  test("a lane with per-page scores is not called unscored (PR #166 review)", () => {
+    const c = { ...unscored(), page_scores: { office2pdf: [null, 71.2] } };
+    expect(laneUnscored(c, "office2pdf")).toBe(false);
+    const html = renderCaseHead({
+      case: c,
+      engine: lanes[1],
+      assetsBase: "https://x.example/",
+      engines: lanes,
+    });
+    expect(html).not.toContain("not scored");
+  });
+  test("laneUnscored: Word, scored, failed and dropped lanes are not unscored", () => {
+    const c = unscored();
+    expect(laneUnscored(c, "office2pdf")).toBe(true);
+    expect(laneUnscored(c, "reference")).toBe(false);
+    expect(laneUnscored(c, "rdocx")).toBe(false);
+    expect(laneUnscored({ ...c, errors: { office2pdf: "x" } }, "office2pdf")).toBe(false);
+    expect(laneUnscored({ ...c, dropped: ["office2pdf"] }, "office2pdf")).toBe(false);
+  });
+  test('the scores table says "not scored" in the unscored lane\'s cell (#165)', () => {
+    const scored = {
+      ...unscored(),
+      case: "other",
+      scores: { office2pdf: { jaccard: 50 }, rdocx: { jaccard: 2 } },
+    };
+    const html = renderScoresTable({ cases: [unscored(), scored], engines: lanes });
+    const row =
+      html.split("<tr").find((r) => r.includes('data-case="00f467c010-342f364d46-d0866d"')) ?? "";
+    expect(row).toContain("not scored");
+    const other = html.split("<tr").find((r) => r.includes('data-case="other"')) ?? "";
+    expect(other).not.toContain("not scored");
   });
 });
