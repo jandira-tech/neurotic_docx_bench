@@ -1,0 +1,47 @@
+{
+  "_engine": {
+    "mupdf": "1.29.0",
+    "pymupdf": "1.28.0",
+    "provenance": "Recorded by sverrejb/docxide-pdf's page-metrics binary over mutool 1.28.4 (2026-09-05). Re-frozen on MuPDF 1.29.0 (PyMuPDF 1.28.0), the engine page_metrics.py drives: only file_100_file_101_redline.text_boundary moved (0.5 = 95/190 -> 105/191) because 1.29 splits one equation line on the LibreOffice render's page 6 that 1.28.4 keeps whole. The ported algorithm over mutool 1.28.4 stext output reproduces 95/190 exactly. SSIM is not ported (pagefair-v2 carries it)."
+  },
+  "file_100_file_101_redline": {
+    "jaccard": 0.3885796949706527,
+    "max_break_drift": 42,
+    "pages": 13,
+    "ref_pages": 13,
+    "scored_pages": 13,
+    "text_boundary": 0.5497382198952879
+  },
+  "file_101_file_102_redline": {
+    "jaccard": 0.15954073490704856,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "text_boundary": null
+  },
+  "file_102_file_103_redline": {
+    "jaccard": 0.3001562263770599,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "text_boundary": 1.0
+  },
+  "file_103_file_104_redline": {
+    "jaccard": 0.22768106758116824,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "text_boundary": 1.0
+  },
+  "file_104_file_105_redline": {
+    "jaccard": 0.17411475745377636,
+    "max_break_drift": 0,
+    "pages": 1,
+    "ref_pages": 1,
+    "scored_pages": 1,
+    "text_boundary": 1.0
+  }
+}

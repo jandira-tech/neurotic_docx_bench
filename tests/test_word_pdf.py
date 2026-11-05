@@ -2351,3 +2351,86 @@ def test_preflight_records_what_it_established(monkeypatch: pytest.MonkeyPatch) 
     for fact in ("open_documents=2", "started_clean=False", "launched_by_us=False",
                  "close_documents=True"):  # fmt: skip
         assert fact in record, record
+
+
+def test_run_batch_with_resume_gives_an_ambiguous_open_one_free_retry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """An open the script could not attribute ("refusing to guess") is a lingering
+    document, not the file crashing Word, so it must not spend the crash budget:
+    the 2026-11-02 A/B lost redline pair p002 exactly this way under crash_limit 1."""
+    manifests: list[list[str]] = []
+    state = {"ambiguous": True}
+
+    def fake(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        manifests.append([r[0] for r in rows])
+        lines = []
+        for r in rows:
+            if r[0] == "1" and state["ambiguous"]:
+                state["ambiguous"] = False
+                lines.append("[retry]\t1\topen produced 2 new documents; refusing to guess")
+                break
+            lines.append(f"[ok]\t{r[0]}")
+        lines.append("[done]\t0\t0")
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f, **k: True)
+    # An ambiguous open is not a crash, so the resume loop takes the "Word returned
+    # nothing" look-for-a-modal branch; its look is stubbed, not driven.
+    monkeypatch.setattr(wp, "decline_repair_prompt", lambda: [])
+
+    rows = [(str(i), f"/in/{i}", f"/out/{i}") for i in range(3)]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1, crash_limit=1)
+
+    assert got["1"] == (True, ""), "the ambiguous open was retried once, free"
+    assert all(got[i][0] for i in ("0", "2"))
+    assert manifests == [["0", "1", "2"], ["2", "1"]]  # item 2 was never reached; item 1 moved to the back
+
+
+def test_run_batch_with_resume_charges_a_second_ambiguous_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The free retry is one, not a loophole: a file whose opens stay ambiguous
+    is charged against crash_limit like any other retry."""
+
+    def fake(script, *args, timeout=60.0):
+        manifest, log = Path(args[0]), Path(args[1])
+        rows = [ln.split("\t") for ln in manifest.read_text().splitlines() if ln]
+        lines = [
+            "[retry]\t0\topen produced 2 new documents; refusing to guess",
+            "[done]\t0\t0",
+        ]
+        log.write_text("\n".join(lines) + "\n")
+        return 0, "", ""
+
+    monkeypatch.setattr(wp, "osa", fake)
+    session = wp.WordSession()
+    monkeypatch.setattr(session, "recycle", lambda *f, **k: True)
+    monkeypatch.setattr(wp, "decline_repair_prompt", lambda: [])
+
+    rows = [("0", "/in/0", "/out/0")]
+    got = wp.run_batch_with_resume(
+        "SCRIPT", rows, tmp_path, per_item_timeout=10, session=session, max_passes=1, crash_limit=1)
+
+    assert got["0"][0] is False
+    assert "refusing to guess" in got["0"][1] and "1 passes" in got["0"][1]
+
+
+def test_batch_script_open_quiet_swaps_the_one_open_line() -> None:
+    """--open-quiet replaces exactly the open line, in both close policies, and
+    leaves the default script untouched (the 2026-11-03 A/B measured it as an
+    opt-in, not a default)."""
+    plain = wp.batch_script(close_documents=True, accept=False)
+    assert wp.OPEN_LINE in plain and wp.QUIET_OPEN_LINE not in plain
+    for quiet in (
+        wp.batch_script(close_documents=True, accept=False, open_quiet=True),
+        wp.batch_script(close_documents=False, accept=False, open_quiet=True),
+    ):
+        assert wp.OPEN_LINE not in quiet
+        assert quiet.count(wp.QUIET_OPEN_LINE) == 1

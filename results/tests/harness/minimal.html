@@ -1,0 +1,28 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>minimal render harness</title>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; }
+  .page {
+    width: 620px; min-height: 820px; box-sizing: border-box;
+    margin: 12px auto; padding: 40px; border: 1px solid #333; background: #fff;
+  }
+</style>
+<input id="fileInput" type="file" />
+<div id="out"></div>
+<script>
+  // Minimal stand-in for a real web editor: on upload, lay the file out in a `.page`
+  // container and flip a readiness flag. Exercises the PlaywrightRenderer contract
+  // (file_input → page_selector → readiness_js → page.pdf) without a heavy editor bundle.
+  window.__ready = false;
+  document.getElementById("fileInput").addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    const buf = await f.arrayBuffer();
+    const div = document.createElement("div");
+    div.className = "page";
+    div.textContent = `Rendered ${f.name} — ${buf.byteLength} bytes`;
+    document.getElementById("out").appendChild(div);
+    // simulate layout settling
+    requestAnimationFrame(() => { window.__ready = true; });
+  });
+</script>

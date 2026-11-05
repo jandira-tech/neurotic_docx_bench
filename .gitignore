@@ -245,3 +245,15 @@ src/neurotic_docx_bench/utils/docxodus-export/node_modules/
 # corpus docx/PDF bytes live on the HF fixtures dataset; `bench fixtures get` brings them back
 corpus/**/*.docx
 corpus/**/*.pdf
+.scratch/
+results/redlines_0929_full/
+results/release_0.16.0_evidence/
+results/redlines_0929_full/
+results/release_0.15.0_evidence/
+results/redlines_0929_full/
+results/release_0.15.0_evidence/
+results/hub_redlines_0929_full/
+results/release_0.17.0_evidence/
+.tmp/
+.log
+results/.log

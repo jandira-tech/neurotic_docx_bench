@@ -1,0 +1,486 @@
+"""DOCX→PDF track: SHA-pinned Word-export oracles, shipped adapters, ITT failures."""
+
+from __future__ import annotations
+
+import json
+import shutil
+import stat
+from pathlib import Path
+
+import pytest
+
+from neurotic_docx_bench import pipeline
+from neurotic_docx_bench.docx_to_pdf import (
+    PYMUPDF_PRO_CONVERTER,
+    REDLINE_TRACK,
+    REQUIRED_FEATURES,
+    WORD_PDF_TOOLS,
+    convert_command,
+    feature_coverage,
+    load_fixtures,
+    oracle_pdf_dirs,
+    resolve_tool_binary,
+    run_eval,
+    score_folder_pair,
+    load_pin_rows,
+    try_convert_fixture,
+    verify_oracle_sha_manifest,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+LIBREOFFICE_PDF_SOURCE = REPO_ROOT / "corpus" / "libreoffice"  # every LibreOffice render the bench files
+KINDS = {"accepted", "redline_randomized"}
+
+
+def _corpus_present() -> bool:
+    return all(f.docx.is_file() and f.oracle.is_file() for f in load_fixtures())
+
+
+needs_corpus = pytest.mark.skipif(
+    not _corpus_present(), reason="needs corpus/ DOCX and PDF files: uv run bench fixtures download"
+)
+
+
+def test_pin_file_rows_are_unique_word_exports_under_corpus():
+    rows = load_pin_rows(track=REDLINE_TRACK)
+    assert len(rows) == 428
+    assert len({(r.kind, r.stem) for r in rows}) == len(rows)
+    assert len({r.pdf for r in rows}) == len(rows)
+    assert {r.kind for r in rows} == KINDS
+    for r in rows:
+        assert len(r.pdf_sha256) == 64 and int(r.pdf_sha256, 16) >= 0
+        assert r.docx.endswith(".docx") and r.pdf.endswith(".pdf")
+        assert not r.pdf.startswith("libreoffice/")
+        assert r.pdf.startswith(("word/", "word_unindexed/")), r.pdf
+
+
+@needs_corpus
+def test_oracles_are_the_pinned_word_exports():
+    fixtures = load_fixtures()
+    stems = [item.stem for item in fixtures]
+    assert len(set(stems)) == len(fixtures)
+    allowed = {d.resolve() for d in oracle_pdf_dirs()}
+    lo_root = LIBREOFFICE_PDF_SOURCE.resolve()
+    for item in fixtures:
+        assert item.oracle.read_bytes()[:5] == b"%PDF-"
+        assert item.kind in KINDS
+        assert item.stem == f"{item.kind}__{item.original_stem}"
+        oracle = item.oracle.resolve()
+        assert oracle.parent in allowed
+        assert lo_root not in oracle.parents
+        head = item.oracle.read_bytes()[:65_536]
+        assert b"LibreOffice" not in head, f"{item.stem} looks like a LibreOffice PDF"
+
+
+@needs_corpus
+def test_pinned_pdfs_match_their_sha256():
+    verify_oracle_sha_manifest()
+
+
+def test_sha_pin_detects_tampered_and_missing_oracle(tmp_path):
+    root = tmp_path / "corpus"
+    (root / "word/pdf").mkdir(parents=True)
+    from neurotic_docx_bench.oracle_manifest import _sha256
+
+    rows = []
+    for name in ("a", "b"):
+        pdf = root / "word/pdf" / f"{name}.pdf"
+        pdf.write_bytes(f"%PDF-1.4 {name}".encode())
+        rows.append(f"accepted\t{name}\tword/docx/{name}.docx\tword/pdf/{name}.pdf\t{_sha256(pdf)}\t{name}")
+    pins = tmp_path / "pins.tsv"
+    pins.write_text("# test pins\nkind\tstem\tdocx\tpdf\tpdf_sha256\toriginal_stem\n" + "\n".join(rows) + "\n")
+    verify_oracle_sha_manifest(pins, root)
+    (root / "word/pdf/a.pdf").write_bytes(b"%PDF-TAMPER")
+    with pytest.raises(RuntimeError, match=r"oracle PDF drift.*1 changed"):
+        verify_oracle_sha_manifest(pins, root)
+    (root / "word/pdf/b.pdf").unlink()
+    with pytest.raises(RuntimeError, match="1 missing"):
+        verify_oracle_sha_manifest(pins, root)
+
+
+@needs_corpus
+def test_fixture_set_covers_required_document_features():
+    fixtures = load_fixtures()
+    found = feature_coverage(fixtures)
+    missing = REQUIRED_FEATURES - found
+    assert not missing, f"fixture set missing features: {sorted(missing)}"
+
+
+@needs_corpus
+def test_identity_pdf_scores_100_via_shipped_plain_stem_path(tmp_path):
+    fixtures = load_fixtures()
+    stem = fixtures[0].stem
+    oracle = fixtures[0].oracle
+    odir = tmp_path / "oracle"
+    cdir = tmp_path / "cand"
+    odir.mkdir()
+    cdir.mkdir()
+    shutil.copy(oracle, odir / f"{stem}.pdf")
+    shutil.copy(oracle, cdir / f"{stem}.pdf")
+    full = score_folder_pair(odir, cdir, tmp_path / "work", jobs=1)
+    assert list(full) == [stem]
+    score = pipeline.overall_from_result(full[stem])
+    assert score == pytest.approx(100.0, abs=1e-6)
+
+
+@needs_corpus
+def test_visibly_different_page_scores_below_100(tmp_path):
+    fixtures = load_fixtures()
+    left, right = fixtures[0].oracle, fixtures[1].oracle
+    assert left.read_bytes() != right.read_bytes()
+    odir = tmp_path / "oracle"
+    cdir = tmp_path / "cand"
+    odir.mkdir()
+    cdir.mkdir()
+    shutil.copy(left, odir / "doc.pdf")
+    shutil.copy(right, cdir / "doc.pdf")
+    full = score_folder_pair(odir, cdir, tmp_path / "work", jobs=1)
+    score = pipeline.overall_from_result(full["doc"])
+    assert score < 100.0
+
+
+def test_pairing_is_by_plain_stem_not_redline_key(tmp_path):
+    oracle = tmp_path / "oracle"
+    cand = tmp_path / "cand"
+    oracle.mkdir()
+    cand.mkdir()
+    (oracle / "alpha.pdf").write_bytes(b"%PDF-1.4\n")
+    (oracle / "pair_redline.pdf").write_bytes(b"%PDF-1.4\n")
+    (cand / "alpha.pdf").write_bytes(b"%PDF-1.4\n")
+    (cand / "pair.pdf").write_bytes(b"%PDF-1.4\n")  # must not match pair_redline
+    (cand / "pair_redline.pdf").write_bytes(b"%PDF-1.4\n")
+    pairs = pipeline.match_by_plain_stem(oracle, cand)
+    keys = [key for key, _, _ in pairs]
+    assert keys == ["alpha", "pair_redline"]
+    redline_pairs = pipeline.match_by_stem(oracle, cand)
+    assert [key for key, _, _ in redline_pairs] == ["pair"]
+
+
+def test_convert_command_rdocx_uses_native_to_pdf():
+    cmd = convert_command(
+        "rdocx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/rdocx")
+    )
+    assert cmd == ["/opt/rdocx", "convert", "in.docx", "--to", "pdf", "-o", "out.pdf"]
+
+
+def test_convert_command_office2pdf_uses_native_cli():
+    cmd = convert_command(
+        "office2pdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/office2pdf"),
+    )
+    assert cmd == ["/opt/office2pdf", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_pdfitdown_uses_native_cli():
+    cmd = convert_command(
+        "pdfitdown",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/pdfitdown"),
+    )
+    assert cmd == ["/opt/pdfitdown", "-i", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_doxx_is_native_not_markdown_pipeline():
+    cmd = convert_command(
+        "doxx", Path("in.docx"), Path("out.pdf"), binary=Path("/opt/doxx")
+    )
+    joined = " ".join(cmd).lower()
+    assert cmd[0] == "/opt/doxx"
+    assert "in.docx" in cmd
+    assert "pandoc" not in joined
+    assert "markdown" not in joined
+    assert "soffice" not in joined
+
+
+def test_convert_command_jubarte_uses_native_convert():
+    cmd = convert_command(
+        "jubarte",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/jubarte"),
+    )
+    assert cmd == [
+        "/opt/jubarte",
+        "convert",
+        "in.docx",
+        "-o",
+        "out.pdf",
+        "--force",
+        "--revisions",
+        "word",
+        "--compress",
+    ]
+    assert "soffice" not in " ".join(cmd).lower()
+
+
+def test_convert_command_libreoffice_convert_rust_uses_positional_args():
+    cmd = convert_command(
+        "libreoffice_convert_rust",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/libreoffice_convert"),
+    )
+    assert cmd == ["/opt/libreoffice_convert", "in.docx", "out.pdf", "pdf"]
+
+
+def test_convert_command_dxpdf_uses_output_flag():
+    cmd = convert_command(
+        "dxpdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/dxpdf"),
+    )
+    assert cmd == ["/opt/dxpdf", "in.docx", "-o", "out.pdf"]
+
+
+def test_convert_command_docxide_pdf_uses_positional_output():
+    cmd = convert_command(
+        "docxide-pdf",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/docxide-pdf"),
+    )
+    assert cmd == ["/opt/docxide-pdf", "in.docx", "out.pdf"]
+
+
+def test_known_tools_are_the_named_converters():
+    assert WORD_PDF_TOOLS == (
+        "rdocx",
+        "office2pdf",
+        "pdfitdown",
+        "doxx",
+        "libreoffice_convert_rust",
+        "dxpdf",
+        "docxide-pdf",
+        "pymupdf-pro",
+        "genoffice",
+        "docxodus",
+    )
+
+
+def test_convert_command_genoffice_uses_its_convert_subcommand():
+    cmd = convert_command(
+        "genoffice",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/usr/local/bin/genoffice"),
+    )
+    assert cmd == ["/usr/local/bin/genoffice", "convert", "in.docx", "--to", "pdf", "--out", "out.pdf", "--force"]
+
+
+def test_convert_command_pymupdf_pro_uses_positional_output():
+    cmd = convert_command(
+        "pymupdf-pro",
+        Path("in.docx"),
+        Path("out.pdf"),
+        binary=Path("/opt/pymupdf-pro-convert"),
+    )
+    assert cmd == ["/opt/pymupdf-pro-convert", "in.docx", "out.pdf"]
+
+
+def test_pymupdf_pro_resolves_to_the_in_repo_wrapper(monkeypatch):
+    monkeypatch.setattr(shutil, "which", lambda _name: None)
+    assert resolve_tool_binary("pymupdf-pro") == PYMUPDF_PRO_CONVERTER
+    assert PYMUPDF_PRO_CONVERTER.name == "pymupdf-pro-convert"
+
+
+def test_try_convert_records_crash_as_generate_failure(tmp_path):
+    fixture = load_fixtures()[0]
+    dest = tmp_path / f"{fixture.stem}.pdf"
+    script = tmp_path / "boom"
+    script.write_text("#!/bin/sh\necho nope >&2\nexit 7\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    fail = try_convert_fixture("rdocx", script, fixture, dest)
+    assert fail is not None
+    assert fail["doc"] == fixture.stem
+    assert fail["stage"] == "generate"
+    assert fail["error"]
+    assert fail["cmd"][0] == str(script)
+    assert not dest.is_file() or dest.read_bytes()[:5] != b"%PDF-"
+
+
+def test_try_convert_rejects_non_pdf_output(tmp_path):
+    fixture = load_fixtures()[0]
+    dest = tmp_path / f"{fixture.stem}.pdf"
+    script = tmp_path / "notpdf"
+    script.write_text(
+        '#!/bin/sh\nwhile [ $# -gt 0 ]; do\n  if [ "$1" = "-o" ]; then printf \'not-a-pdf\' > "$2"; fi\n  shift\ndone\n'
+    )
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    fail = try_convert_fixture("rdocx", script, fixture, dest)
+    assert fail is not None
+    assert fail["stage"] == "generate"
+    assert "PDF" in fail["error"] or "pdf" in fail["error"].lower()
+
+
+@needs_corpus
+def test_run_eval_itt_zero_on_convert_fail_and_does_not_abort(tmp_path):
+    items = load_fixtures()[:3]
+    script = tmp_path / "fail_all"
+    script.write_text("#!/bin/sh\nexit 1\n")
+    script.chmod(script.stat().st_mode | stat.S_IEXEC)
+    report = run_eval(
+        json_out=tmp_path / "out.json",
+        work_dir=tmp_path / "work",
+        tools=["rdocx"],
+        converter=script,
+        fixtures=items,
+        jobs=1,
+    )
+    assert report["n"] == 3
+    tool = report["tools"]["rdocx"]
+    assert tool["itt_n"] == 3
+    assert tool["n_scored"] == 0
+    assert tool["failures"] == 3
+    assert tool["mean"] == 0
+    assert tool["median"] == 0
+    assert tool["perfects"] == 0
+    assert len(tool["generate_failures"]) == 3
+    assert set(tool["per_doc"]) == {item.stem for item in items}
+    assert all(value == 0 for value in tool["per_doc"].values())
+    saved = json.loads((tmp_path / "out.json").read_text())
+    assert saved["tools"]["rdocx"]["failures"] == 3
+
+
+def test_store_lines_use_report_itt_fields_not_invented_means():
+    from neurotic_docx_bench.ledger import converters as conv
+
+    report = {
+        "n": 500,
+        "track": "docx_to_pdf",
+        "stems": [f"s{i}" for i in range(500)],
+        "tools": {
+            "rdocx": {
+                "n_scored": 499,
+                "itt_n": 500,
+                "mean": 12.3456,
+                "median": 11.0,
+                "perfects": 2,
+                "failures": 1,
+            },
+            "doxx": {
+                "n_scored": 0,
+                "itt_n": 500,
+                "mean": 0.0,
+                "median": 0.0,
+                "perfects": 0,
+                "failures": 500,
+            },
+        },
+    }
+    lines = conv.lines_from_report(report, hardware=None, report_path="r.json")
+    by_tool = {ln["tool"]: ln for ln in lines}
+    assert set(by_tool) == {"rdocx", "doxx"}
+    assert by_tool["rdocx"]["mean"] == 12.3456 and by_tool["rdocx"]["itt_n"] == 500
+    assert by_tool["rdocx"]["n_scored"] == 499 and by_tool["doxx"]["failures"] == 500
+
+
+def test_committed_artifact_is_in_the_converter_store():
+    artifact = REPO_ROOT / "results" / "docx_to_pdf_500.json"
+    store = REPO_ROOT / "results" / "converters.jsonl"
+    if not store.is_file():
+        pytest.skip("converter store not written yet")
+    report = json.loads(artifact.read_text(encoding="utf-8"))
+    # Written before the 2026-10-11 rename: its stems are the pins' legacy names.
+    assert report["n"] == len(load_fixtures())
+    assert set(report["stems"]) == {f.legacy_stem for f in load_fixtures()}
+    for name, tool in report["tools"].items():
+        assert tool["itt_n"] == report["n"], name
+        assert len(tool["per_doc"]) == report["n"], name
+    lines = [
+        json.loads(raw)
+        for raw in store.read_text(encoding="utf-8").splitlines()
+        if raw.strip()
+    ]
+    in_store = {ln["tool"]: ln for ln in lines if ln.get("track") == "docx_to_pdf"}
+    for name, tool in report["tools"].items():
+        assert name in in_store, name
+        assert in_store[name]["itt_n"] == tool["itt_n"]
+
+
+def test_every_release_evidence_report_is_in_the_converter_store():
+    # A release's DOCX→PDF evidence reports each get a store line naming them; the 0.13.0
+    # reports reached main without theirs (#73).
+    store = REPO_ROOT / "results" / "converters.jsonl"
+    reports = sorted(REPO_ROOT.glob("results/release_*_evidence/docx_to_pdf_*.json"))
+    if not store.is_file() or not reports:
+        pytest.skip("no converter store or evidence reports in this checkout")
+    named = {
+        json.loads(raw).get("report_path")
+        for raw in store.read_text(encoding="utf-8").splitlines()
+        if raw.strip()
+    }
+    rel = [p.relative_to(REPO_ROOT).as_posix() for p in reports]
+    assert [r for r in rel if r not in named] == []
+
+
+def test_append_report_writes_one_line_per_tool(tmp_path):
+    from neurotic_docx_bench.ledger import converters as conv
+
+    report = {
+        "n": 500,
+        "track": "docx_to_pdf",
+        "stems": ["a", "b"],
+        "tools": {
+            "rdocx": {
+                "n_scored": 500,
+                "itt_n": 500,
+                "mean": 10.0,
+                "median": 9.0,
+                "perfects": 0,
+                "failures": 0,
+            },
+        },
+    }
+    store = tmp_path / "converters.jsonl"
+    assert conv.append_report(store, report, hardware=None, report_path="r.json") == 1
+    (line,) = [json.loads(raw) for raw in store.read_text().splitlines()]
+    assert (
+        line["tool"] == "rdocx"
+        and line["track"] == "docx_to_pdf"
+        and line["median"] == 9.0
+    )
+
+
+@pytest.mark.parametrize("returncode", [0, 2], ids=["success", "converter-error"])
+def test_jubarte_conversion_passes_compression_and_preserves_path_arguments(tmp_path, monkeypatch, returncode):
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    from neurotic_docx_bench import docx_to_pdf
+
+    source = tmp_path / "input docs" / "résumé; draft.docx"
+    destination = tmp_path / "output pdfs" / "résumé; draft.pdf"
+    binary = tmp_path / "tool bin" / "jubarte"
+    fixture = SimpleNamespace(docx=source, stem="résumé; draft")
+    expected = [
+        str(binary), "convert", str(source), "-o", str(destination),
+        "--force", "--revisions", "word", "--compress",
+    ]
+
+    import pymupdf
+
+    real = pymupdf.open()
+    real.new_page()
+    pdf = real.tobytes()  # a readable PDF: a bare header is refused since #89
+
+    def convert(cmd, **kwargs):
+        destination.write_bytes(pdf)
+        return SimpleNamespace(returncode=returncode, stderr="conversion failed" if returncode else "", stdout="")
+
+    run = Mock(side_effect=convert)
+    monkeypatch.setattr(docx_to_pdf.subprocess, "run", run)
+    failure = try_convert_fixture("jubarte", binary, fixture, destination)
+    run.assert_called_once_with(expected, check=False, capture_output=True, text=True, timeout=180.0)
+    if returncode:
+        assert failure is not None
+        assert failure["cmd"] == expected
+        assert failure["stage"] == "generate"
+        assert "conversion failed" in failure["error"]
+        assert not destination.exists()
+    else:
+        assert failure is None
+        assert destination.read_bytes().startswith(b"%PDF-")

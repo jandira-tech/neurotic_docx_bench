@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+- Word drivers (`scripts/word_pdf.py`, `scripts/word_redline.py`): `--crash-limit` defaults to **1**,
+  from 2. The 2026-11-02/03 mixed-corpus A/B (70 good + 30 broken fixtures per mode, three rounds,
+  health-gated between variants; `out/ab/FINAL_REPORT.md`) found every crash-limit-1 conversion kept
+  the healthy-output ceiling while limit 2 once lost 29 of 100 documents to queue abandonment
+  ("never reached in 3 batch passes") and paid ~300 s elsewhere; in the redline queue limit 2 cost
+  1936 s where limit 1 took 329 s on the same 100 pairs.
+- An ambiguous open (`open produced 2 new documents; refusing to guess` — a document lingering from
+  the previous item, not the file crashing Word) no longer spends the crash budget: its first retry
+  is free in `run_batch_with_resume`. Limit 1 used to fail such an item outright (redline pair p002,
+  2026-11-02).
+- `scripts/word_ab.py` health-gates every variant (`ensure_healthy_word`): a variant can finish with
+  Word alive but answering nothing, and the next variant then died in `warm()` or recorded an
+  all-fail row (four contaminated or dead runs across the A/B's first round).
+
+### Added
+- `--open-quiet` on both Word CLIs: batch opens skip Word's conversion confirmation and recent-files
+  bookkeeping (`confirm conversions false add to recent files false`). Default off. Within run-to-run
+  variance everywhere measured; the adversarial re-investigation (2026-11-04) traced the one apparent
+  ~200 s redline win to watchdog session health, not the open line — in a redline run quiet reaches
+  only the PDF pass, never the compare pass where the variance lives. Harmless, mechanically cheaper
+  opens; no measured downside in eight runs.
+
 ## 1.0.0 - 2026-10-28
 
 ### Added

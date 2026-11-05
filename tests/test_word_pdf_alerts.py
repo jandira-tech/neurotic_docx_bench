@@ -808,8 +808,10 @@ def test_compare_batch_script_fails_a_declined_base_instead_of_retrying_it(monke
         assert '"repair prompt declined; Word could not read the base"' in src
         assert "emptyStreak ≥ 3" in src
     import inspect
-    assert inspect.signature(wr.redline_folders).parameters["crash_limit"].default == 2
+    assert inspect.signature(wr.redline_folders).parameters["crash_limit"].default == 1
+    assert inspect.signature(wr.redline_folders).parameters["open_quiet"].default is False
     assert "--crash-limit" in str(inspect.signature(wr.main).parameters["crash_limit"].annotation)
+    assert "--open-quiet" in str(inspect.signature(wr.main).parameters["open_quiet"].annotation)
 
 
 # ─── the document saved is the one `open` produced, never `document 1` ───────

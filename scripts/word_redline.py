@@ -96,8 +96,6 @@ if str(_HERE) not in sys.path:
 
 from redline_identity import matches_pair
 from word_pdf import (  # must follow the sys.path guard above
-    _EXPORT_BATCH,
-    _EXPORT_BATCH_KEEP_OPEN,
     _close_documents as pdf_close_documents,
     _focus,
     Stage,
@@ -106,6 +104,7 @@ from word_pdf import (  # must follow the sys.path guard above
     WordLock,
     WordSession,
     append_manifest,
+    batch_script,
     by_tool,
     classify_failure,
     console,
@@ -753,7 +752,8 @@ def redline_folders(
     max_passes: int = 3,
     poison_streak: int = 3,
     keep_unmatched: bool = False,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
     lock_wait: float = 900.0,
 ) -> list[PairResult]:
     """Redline every pair drawn from two folders. Serial, by necessity.
@@ -768,6 +768,13 @@ def redline_folders(
 
     `keep_unmatched` delivers a redline the identity check fails instead of dropping it, with
     the reason on `PairResult.unmatched`; the caller judges those itself.
+
+    `crash_limit` defaults to 1 (2026-11-03 mixed-corpus A/B: limit 1 kept the
+    ceiling while limit 2 paid a retry pass per crasher — each one a Word
+    recovery and a reordered queue); an ambiguous open ("refusing to guess")
+    gets one free retry off this budget in `run_batch_with_resume`.
+    `open_quiet` reaches only the PDF pass (the compare script has its own
+    open); see `word_pdf.batch_script`.
     """
     require_positive_seconds(timeout, "timeout")
     require_positive_seconds(pdf_timeout, "pdf_timeout")
@@ -872,6 +879,7 @@ def redline_folders(
                 poison_streak=poison_streak,
                 close_documents=close_documents,
                 crash_limit=crash_limit,
+                open_quiet=open_quiet,
             )
             n = append_manifest(manifest, pair_manifest_lines(results))
             logger.info(f"[manifest] appended {n} line(s) to {manifest}")
@@ -898,7 +906,8 @@ def _redline_serial(
     max_passes: int = 3,
     poison_streak: int = 3,
     close_documents: bool = True,
-    crash_limit: int = 2,  # part of the shared dispatch signature; batch-only
+    crash_limit: int = 1,  # part of the shared dispatch signature; batch-only
+    open_quiet: bool = False,  # part of the shared dispatch signature; batch-only
 ) -> list[PairResult]:
     """One `osascript` per comparison, with the malformed-document path in Python."""
     results: list[PairResult] = []
@@ -1101,7 +1110,8 @@ def _redline_batched(
     max_passes: int = 3,
     poison_streak: int = 3,  # part of the shared dispatch signature; serial-only
     close_documents: bool = True,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
 ) -> list[PairResult]:
     """Two monolithic AppleScripts: every compare, then every PDF.
 
@@ -1110,7 +1120,8 @@ def _redline_batched(
     it — the second script's input list is the first script's output list. Doing
     both in one script would mean one wedge losing both halves of the work.
 
-    The second script is `word_pdf`'s own `_EXPORT_BATCH`, unchanged: a redline
+    The second script is `word_pdf`'s own export batch script (`batch_script`),
+    unchanged except that `open_quiet` passes through to it: a redline
     .docx is a .docx, and nothing about rendering one differs.
     """
     outcomes: dict[tuple[Path, Path], PairResult] = {}
@@ -1181,7 +1192,7 @@ def _redline_batched(
     if pdf_rows:
         logger.info(f"[batch] one osascript for {len(pdf_rows)} redline PDF(s)")
         rendered = run_batch_with_resume(
-            _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN,
+            batch_script(close_documents=close_documents, accept=False, open_quiet=open_quiet),
             pdf_rows,
             stage.root or stage.inbox.parent,
             per_item_timeout=pdf_timeout,
@@ -1406,10 +1417,21 @@ def main(
             "--crash-limit",
             min=1,
             help="Passes a pair that crashes Word, or loads empty, gets before it is a final "
-            "failure; each costs a crash and a recovery. 2 (default) keeps one retry for what "
-            "is Word's and not the file's; 1 for a corpus you already know crashes Word.",
+            "failure; each costs a crash and a recovery — and, in a redline queue, a "
+            "reordered pass. 1 (default) since the 2026-11-03 mixed-corpus A/B (limit 2 "
+            "cost 1936 s where limit 1 took 329 s on the same 100 pairs); an ambiguous "
+            "open ('refusing to guess') no longer spends this budget at all.",
         ),
-    ] = 2,
+    ] = 1,
+    open_quiet: Annotated[
+        bool,
+        typer.Option(
+            "--open-quiet/--no-open-quiet",
+            help="The PDF pass's opens skip Word's conversion confirmation and recent-files "
+            "bookkeeping. Within run-to-run variance overall; measured 2026-11-03 as never "
+            "slower in six runs and once ~200 s faster per 100 redline PDFs.",
+        ),
+    ] = False,
     crash_signal: Annotated[
         bool,
         typer.Option(
@@ -1443,7 +1465,8 @@ def main(
             force=force, timeout=timeout, pdf_timeout=pdf_timeout, one_osascript=one_osascript,
             check_preset=check_preset, allow_open_docs=allow_open_docs, do_not_close=do_not_close,
             keep_unmatched=keep_unmatched, quiet=quiet, log_file=log_file,
-            crash_limit=crash_limit, lock_wait=lock_wait, crash_signal=crash_signal,
+            crash_limit=crash_limit, open_quiet=open_quiet, lock_wait=lock_wait,
+            crash_signal=crash_signal,
         )
     finally:
         _focus.reset(focus_token)
@@ -1468,7 +1491,8 @@ def _main(
     keep_unmatched: bool,
     quiet: bool,
     log_file: Path | None,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
     lock_wait: float = 900.0,
     crash_signal: bool = True,
 ) -> None:
@@ -1523,6 +1547,7 @@ def _main(
             close_documents=not do_not_close,
             keep_unmatched=keep_unmatched,
             crash_limit=crash_limit,
+            open_quiet=open_quiet,
             lock_wait=lock_wait,
         )
         session.quit_if_ours()

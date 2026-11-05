@@ -519,6 +519,40 @@ def stage(
     typer.echo(f"staged {len(broken)} broken, {len(good)} good, {len(broken) + len(good)} mixed under {root}")
 
 
+def ensure_healthy_word(patience: float = 20.0) -> None:
+    """No variant starts against a degraded Word.
+
+    2026-11-02/03 A/B lesson, twice over: a variant can finish with Word alive
+    but answering nothing, and the next variant then dies in ``warm()`` (crash1
+    and merp_kill, conversion round 1) or records an all-fail row against the
+    empty Word (redline baseline and crash1). A responsive Word passes through;
+    an unresponsive one gets the kill ladder and a fresh launch; a machine with
+    no Word is left for preflight, which launches it.
+    """
+    session = wp.WordSession()
+    if not session._alive():
+        logger.info("[gate] Word not running; preflight will launch it")
+        return
+    deadline = time.monotonic() + patience
+    while time.monotonic() < deadline:
+        if session.responsive():
+            logger.info("[gate] Word answers; carrying on")
+            return
+        time.sleep(2)
+    logger.warning(f"[gate] Word alive but not answering for {patience:.0f} s; kill ladder then relaunch")
+    for cmd in (["pkill", "-x", wp.WORD_PROC], ["pkill", "-9", "-x", wp.WORD_PROC]):
+        logger.warning(f"[gate] running: {wp.shown(cmd)}")
+        subprocess.run(cmd, capture_output=True, check=False)
+        for _ in range(6):
+            if not session._alive():
+                break
+            time.sleep(0.5)
+        if not session._alive():
+            break
+    if not session.warm():
+        raise RuntimeError("[gate] Word would not come back after the kill ladder")
+
+
 @app.command()
 def run(
     fixture_set: Annotated[str, typer.Option("--set", help="broken | good | mixed")] = "broken",
@@ -542,6 +576,7 @@ def run(
     for name in names:
         v = BY_NAME[name]
         logger.info(f"[ab] ===== {v.name} on {fixture_set}: {v.about}")
+        ensure_healthy_word()
         result = run_variant(v, src, root / "runs" / fixture_set / v.name, fixture_set=fixture_set)
         summary = result.summary()
         with results_path.open("a", encoding="utf-8") as fh:

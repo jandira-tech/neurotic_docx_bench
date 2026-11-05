@@ -204,3 +204,52 @@ def test_render_report_drops_named_runs_and_says_why() -> None:
     assert "| current |" not in text.split("## Dropped")[0]
     assert "`current` on `mixed` started t2: another driver held Word (PID 19876)" in text
     assert "`mixed`: `baseline` in 300.0 s" in text
+
+
+# ─── the inter-variant health gate (2026-11-03: crash1 and merp_kill died on a
+# ─── Word the previous variant left alive but answering nothing) ─────────────
+
+
+def test_ensure_healthy_word_passes_a_responsive_word_through(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A Word that answers needs nothing: no kill, no relaunch."""
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: True))
+    monkeypatch.setattr(wp.WordSession, "responsive", lambda self: True)
+    cmds: list[object] = []
+    monkeypatch.setattr(ab.subprocess, "run", lambda cmd, **k: cmds.append(cmd))
+    ab.ensure_healthy_word()
+    assert cmds == []
+
+
+def test_ensure_healthy_word_kills_an_unresponsive_word_then_relaunches(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Alive but silent for the patience window: the kill ladder (exact name,
+    never -f), then a warm relaunch — the preflight of the next variant must
+    not inherit a Word that returns nothing."""
+    calls = {"alive": 0, "cmds": []}
+
+    def fake_alive() -> bool:
+        calls["alive"] += 1
+        return calls["alive"] < 2  # alive at the first check, gone after the pkill
+
+    class Proc:
+        returncode = 0
+        stdout = ""
+        stderr = ""
+
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(fake_alive))
+    monkeypatch.setattr(wp.WordSession, "responsive", lambda self: False)
+    monkeypatch.setattr(wp.WordSession, "warm", lambda self: True)
+    monkeypatch.setattr(
+        ab.subprocess, "run", lambda cmd, **k: (calls["cmds"].append(cmd), Proc())[1]
+    )
+    ab.ensure_healthy_word(patience=0.0)
+    assert calls["cmds"] == [["pkill", "-x", "Microsoft Word"]]
+
+
+def test_ensure_healthy_word_leaves_a_cold_machine_to_preflight(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(wp.WordSession, "_alive", staticmethod(lambda: False))
+    cmds: list[object] = []
+    monkeypatch.setattr(ab.subprocess, "run", lambda cmd, **k: cmds.append(cmd))
+    ab.ensure_healthy_word()
+    assert cmds == []

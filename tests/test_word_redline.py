@@ -889,7 +889,8 @@ def test_redline_batched_runs_compare_then_pdf_as_two_scripts(
 
     results = wr.redline_folders(a, b, tmp_path / "out", session=session, one_osascript=True)
 
-    assert scripts == [wr._COMPARE_BATCH, wr._EXPORT_BATCH]  # exactly two, in order
+    # exactly two, in order; the PDF pass is word_pdf's export batch script as built
+    assert scripts == [wr._COMPARE_BATCH, wp.batch_script(close_documents=True, accept=False)]
     assert all(r.ok for r in results)
     assert all(r.revisions == 5 for r in results)  # read off the [ok] line
     assert all(r.timing_exact is False for r in results)

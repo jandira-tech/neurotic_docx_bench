@@ -2173,7 +2173,7 @@ def run_batch_with_resume(
     session: WordSession,
     recycle_paths: tuple[Path, ...] = (),
     max_passes: int = 3,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
     label: str = "",
     groups: dict[str, frozenset[str]] | None = None,
 ) -> dict[str, tuple[bool, str]]:
@@ -2188,10 +2188,13 @@ def run_batch_with_resume(
       case worth another pass, and it gets one after Word is recycled.
     - **`[retry]`** — Word died on it (`crashed`) or it loaded empty (poison from
       an earlier file). It is retried after Word is recycled, and after
-      `crash_limit` such passes it is a final failure. An empty load whose repair
-      prompt the watchdog declined (`[declined]`) is the file's own fault and is
-      final at once; the batch script fails it itself when the marker was there
-      in time, and this closes the gap when it was not.
+      `crash_limit` such passes it is a final failure. One `[retry]` reason is
+      not the file's fault at all — "refusing to guess", an open made ambiguous
+      by a document left over from the previous item — and its first retry is
+      free, off the crash budget (pair p002, 2026-11-02 A/B). An empty load
+      whose repair prompt the watchdog declined (`[declined]`) is the file's own
+      fault and is final at once; the batch script fails it itself when the
+      marker was there in time, and this closes the gap when it was not.
     - **the item a wedged pass stopped on** (the first one without a line when
       the run never reached `[done]`) is retried too.
 
@@ -2214,6 +2217,7 @@ def run_batch_with_resume(
     """
     final: dict[str, tuple[bool, str]] = {}
     retries: dict[str, int] = {}  # [retry] lines per item, capped by crash_limit
+    transients: dict[str, int] = {}  # free retries spent on an ambiguous open, capped at 1
     moved: dict[str, int] = {}  # times an item was sent to the back
     pending = list(rows)
     attempt = stalls = 0
@@ -2251,13 +2255,24 @@ def run_batch_with_resume(
             if rid in run.log.retried:
                 named = True
                 moved[rid] = moved.get(rid, 0) + 1
-                retries[rid] = retries.get(rid, 0) + 1
                 if groups:
                     bad_keys |= groups.get(rid, frozenset())
-                if retries[rid] >= crash_limit:
-                    what = "Word crashed on it" if rid in run.log.crashed else "Word could not load it"
-                    final[rid] = (False, f"{what} in {retries[rid]} passes: {run.log.retried[rid]}")
-                    continue
+                detail = run.log.retried[rid]
+                if "refusing to guess" in detail and not transients.get(rid):
+                    # An ambiguous open ("open produced 2 new documents; refusing to guess"):
+                    # a document from the previous item lingered, so the open could not be
+                    # attributed. That is not the file crashing Word — the 2026-11-02 A/B
+                    # lost pair p002 exactly this way under crash_limit 1 — so the first
+                    # such retry is free and does not spend the crash budget. A second one
+                    # is charged like any other retry.
+                    transients[rid] = 1
+                    logger.info(f"[batch{label}] {rid}: ambiguous open, not a crash; one free retry")
+                else:
+                    retries[rid] = retries.get(rid, 0) + 1
+                    if retries[rid] >= crash_limit:
+                        what = "Word crashed on it" if rid in run.log.crashed else "Word could not load it"
+                        final[rid] = (False, f"{what} in {retries[rid]} passes: {detail}")
+                        continue
             still.append(row)
         if run.wedged and not named and still:
             stuck = still[0][0]  # the first item without a line: where the run hung
@@ -2535,13 +2550,25 @@ _ACCEPT_EDITS = (
 )
 
 
-def batch_script(*, close_documents: bool, accept: bool, reject: bool = False) -> str:
+OPEN_LINE = "open POSIX file inP"
+QUIET_OPEN_LINE = "open (POSIX file inP) confirm conversions false add to recent files false"
+
+
+def batch_script(*, close_documents: bool, accept: bool, reject: bool = False, open_quiet: bool = False) -> str:
     """The monolithic batch AppleScript for the chosen close policy.
 
     `accept` resolves every tracked change before the docx + PDF are saved:
     Word's Accept All, or its Reject All when `reject` is set too.
+    `open_quiet` swaps the open line for one that skips Word's conversion
+    confirmation and recent-files bookkeeping — measured 2026-11-03 as never
+    slower in six runs and once ~200 s faster per 100 redline PDFs, but within
+    run-to-run variance overall, so it is an opt-in, not the default.
     """
     script = _EXPORT_BATCH if close_documents else _EXPORT_BATCH_KEEP_OPEN
+    if open_quiet:
+        if script.count(OPEN_LINE) != 1:
+            raise RuntimeError(f"batch script does not contain exactly one {OPEN_LINE!r}")
+        script = script.replace(OPEN_LINE, QUIET_OPEN_LINE)
     if not accept:
         return script
     for old, new in _ACCEPT_EDITS:
@@ -2597,7 +2624,8 @@ def convert_folder(
     accept_suffix: str = "",
     reject: bool = False,
     label: str = "",
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
     lock_wait: float = 900.0,
 ) -> list[Result]:
     """Export every real .docx in `src` to PDF. Serial, by necessity.
@@ -2623,8 +2651,13 @@ def convert_folder(
 
     `crash_limit` is how many passes a file that crashes Word (or loads empty
     without a declined repair prompt) gets before it is a final failure; each
-    one costs a Word restart. 2 tells a bad file from a bad Word; 1 is for a
-    corpus already known to crash it.
+    one costs a Word restart. The default is 1 since the 2026-11-03 mixed-corpus
+    A/B: every crash-limit-1 conversion kept all healthy outputs (nine runs)
+    while limit 2 once lost 29 of them to queue abandonment and paid ~300 s
+    elsewhere; an ambiguous open ("refusing to guess") no longer spends this
+    budget at all. Pass 2 only to re-verify a crash you believe the signal
+    misattributed. `open_quiet` reaches only the batch path; the serial
+    per-document script keeps its plain open.
 
     `lock_wait` is how long to wait for another driver that holds Word
     (`WordLock`); when it does not let go, every document is reported as not
@@ -2689,7 +2722,7 @@ def convert_folder(
     labelling = _stage_label.set(label)
     try:
         run = (
-            partial(_convert_batched, accept_suffix=accept_suffix, reject=reject)
+            partial(_convert_batched, accept_suffix=accept_suffix, reject=reject, open_quiet=open_quiet)
             if one_osascript
             else _convert_serial
         )
@@ -2866,7 +2899,8 @@ def _convert_batched(
     close_documents: bool = True,
     accept_suffix: str = "",
     reject: bool = False,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
 ) -> list[Result]:
     """One monolithic AppleScript for the whole folder, resumed if it dies.
 
@@ -2908,7 +2942,9 @@ def _convert_batched(
     logger.info(f"[batch] one osascript for {len(rows)} document(s)")
     started = time.monotonic()
     recorded = run_batch_with_resume(
-        batch_script(close_documents=close_documents, accept=bool(accept_suffix), reject=reject),
+        batch_script(
+            close_documents=close_documents, accept=bool(accept_suffix), reject=reject, open_quiet=open_quiet
+        ),
         rows,
         stage.root or stage.inbox.parent,
         per_item_timeout=timeout,
@@ -3194,12 +3230,22 @@ def main(
             "--crash-limit",
             min=1,
             help="Passes a file that crashes Word, or loads empty, gets before it is a final "
-            "failure; each costs a crash and a recovery. 2 (default) keeps one retry for the "
-            "cases that are Word's and not the file's: a degraded Word, or a crash signalled "
-            "against the wrong item. 1 for a corpus you already know crashes Word: a true "
-            "crasher crashed it again on every retry in the 2026-10-14 A/B.",
+            "failure; each costs a crash and a recovery. 1 (default) since the 2026-11-03 "
+            "mixed-corpus A/B: every limit-1 run kept all healthy outputs while limit 2 once "
+            "lost 29 documents to queue abandonment and paid ~300 s elsewhere; an ambiguous "
+            "open ('refusing to guess') no longer spends this budget at all. 2 only to "
+            "re-verify a crash you believe the signal misattributed.",
         ),
-    ] = 2,
+    ] = 1,
+    open_quiet: Annotated[
+        bool,
+        typer.Option(
+            "--open-quiet/--no-open-quiet",
+            help="Batch opens skip Word's conversion confirmation and recent-files bookkeeping. "
+            "Within run-to-run variance overall; measured 2026-11-03 as never slower in six "
+            "runs and once ~200 s faster per 100 redline PDFs. Batch mode only.",
+        ),
+    ] = False,
     crash_signal: Annotated[
         bool,
         typer.Option(
@@ -3232,7 +3278,8 @@ def main(
             check_preset=check_preset, allow_open_docs=allow_open_docs, do_not_close=do_not_close,
             accept_all=accept_all, accept_suffix=accept_suffix, reject_all=reject_all,
             reject_suffix=reject_suffix, quiet=quiet, log_file=log_file, label=label,
-            crash_limit=crash_limit, lock_wait=lock_wait, crash_signal=crash_signal,
+            crash_limit=crash_limit, open_quiet=open_quiet, lock_wait=lock_wait,
+            crash_signal=crash_signal,
         )
     finally:
         _focus.reset(focus_token)
@@ -3255,7 +3302,8 @@ def _main(
     quiet: bool,
     log_file: Path | None,
     label: str,
-    crash_limit: int = 2,
+    crash_limit: int = 1,
+    open_quiet: bool = False,
     lock_wait: float = 900.0,
     crash_signal: bool = True,
 ) -> None:
@@ -3305,6 +3353,7 @@ def _main(
             reject=reject_all,
             label=label,
             crash_limit=crash_limit,
+            open_quiet=open_quiet,
             lock_wait=lock_wait,
         )
         session.quit_if_ours()

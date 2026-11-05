@@ -666,6 +666,22 @@ the latest line to the baseline.
   (keys from the 16.115 binary) do not suppress the reporter dialog, 35 of 39 crashes still showed
   it; `open … repair false`, read-only open, 1 s polling, 5 s grace, 0.25 s watchdog poll and
   60 s AppleEvent timeout changed nothing beyond the noise band (267 to 463 s for 39 crashes);
+  measured again on the 2026-11-02/03 mixed 100 (70 good + 30 broken, seed 20261102, three
+  rounds, health-gated between variants — `out/ab/FINAL_REPORT.md` is the write-up): the crash
+  limit default flipped to **1** (limit 2 once lost 29 of 100 documents to queue abandonment
+  and paid ~300 s elsewhere; every limit-1 run kept the ceiling), an ambiguous open
+  ("open produced 2 new documents; refusing to guess" — a lingering document, pair p002) gets
+  one free retry off the crash budget, `--open-quiet` (default off: within run-to-run variance,
+  and the adversarial re-run traced its one apparent redline win to watchdog session health, not
+  the open line — quiet never reaches the compare pass) skips the conversions
+  confirmation and recent-files bookkeeping on batch opens, `keepopen` at `max_passes 8` is
+  safe but no faster than the close-all champion, and `word_ab.py` now health-gates every
+  variant (`ensure_healthy_word`) because a variant can leave Word alive but answering nothing.
+  The same re-run's decomposition: the floors are ~300 s (conversion) and ~275-300 s (redline)
+  per 100 items on these fixtures, and **System Events session health is worth 400-1400 s** —
+  more than every config knob measured (a blind watchdog turns a 330 s redline into 730-1800 s
+  while load runs; `out/r4_analysis/se_health.py` probes it in 0.2-0.6 s healthy, 4-20 s degraded).
+  Run big batches on an idle machine, or gate on that probe.
   serial mode (one osascript per document) was the slowest at 488 s. The control's own two
   good-document losses on the mixed set were the intermittent `-1708 save as` error.
 - **soffice render** requires exit 0 **and** the output file, and deletes a stale PDF before

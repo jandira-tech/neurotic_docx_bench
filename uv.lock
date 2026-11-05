@@ -122,6 +122,24 @@ wheels = [
 ]
 
 [[package]]
+name = "apryse-sdk"
+version = "12.2.1"
+source = { registry = "https://pypi.apryse.com/" }
+wheels = [
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-macosx_10_15_universal2.whl", hash = "sha256:d12b8214b8e53a7e8fe0c296d1c3aec3baa8a602d33128aa50bce7c1600b11ba", size = 59321955, upload-time = "2026-10-23T21:06:43Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux1_i686.whl", hash = "sha256:4c4a456fb86b2629a7bb5c46a15005ecbd000b37b1e5601a8d90276f9bb412a3", size = 31045297, upload-time = "2026-10-23T21:13:11Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux1_x86_64.whl", hash = "sha256:589f675075edb8e6206b1a73f56a0045d0d59de5a42a4764f8751ab739fe94bb", size = 31274397, upload-time = "2026-10-23T21:13:13Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux2010_i686.whl", hash = "sha256:9fadffb718736893aeb1bf054d5a83a108c48ddc06bfd24e48ecc01e982cc4cd", size = 31045298, upload-time = "2026-10-23T21:13:12Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux2010_x86_64.whl", hash = "sha256:af3c120fdab98199251b815cb8a4cdb9fe23c498c6822b98deb9fa279935d783", size = 31274399, upload-time = "2026-10-23T21:13:10Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux2014_aarch64.whl", hash = "sha256:e07955e6e7ad972d3d5544fe6730b00906ce76dae08982de0d698295c99bd911", size = 30005739, upload-time = "2026-10-23T21:10:31Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux2014_i686.whl", hash = "sha256:5229d16fa20bc2200815033c00c7edb6d30ccf52b38c3a564e48206fa911b294", size = 31045298, upload-time = "2026-10-23T21:13:09Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-manylinux2014_x86_64.whl", hash = "sha256:059b1e7b8881e26eca5e8bc8a76acbc45545ae69c38ec9e6fccdf5835762af01", size = 31274400, upload-time = "2026-10-23T21:13:15Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:5f32b5362738366bdc55d4ce8f775460e512360e2f1b1ce4344c9ccff5877dda", size = 33978921, upload-time = "2026-10-23T21:13:14Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-win32.whl", hash = "sha256:7c474c92daddf115b013a8a6ce3d553cc7214fc28363d1de62cf50bf3741e66a", size = 25009999, upload-time = "2026-10-23T21:11:04Z" },
+    { url = "https://pypi.apryse.com/apryse-sdk/apryse_sdk-12.2.1-cp35-abi3-win_amd64.whl", hash = "sha256:8ba284b8ea519841fd7de149ab87d6d1b0d82003c1b40eec6bc66c0b4712681e", size = 27229909, upload-time = "2026-10-23T21:11:04Z" },
+]
+
+[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -866,6 +884,7 @@ gpu = [
 [package.dev-dependencies]
 dev = [
     { name = "aiohttp" },
+    { name = "apryse-sdk" },
     { name = "loguru" },
     { name = "neurotic-docx-bench", extra = ["competitors"] },
     { name = "numpy" },
@@ -903,6 +922,7 @@ provides-extras = ["competitors", "gpu"]
 [package.metadata.requires-dev]
 dev = [
     { name = "aiohttp", specifier = ">=3.14.3" },
+    { name = "apryse-sdk", specifier = ">=12.2.1" },
     { name = "loguru", specifier = ">=0.7" },
     { name = "neurotic-docx-bench", extras = ["competitors"] },
     { name = "numpy", specifier = ">=2.5.1" },
