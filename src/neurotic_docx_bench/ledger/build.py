@@ -421,8 +421,24 @@ def render_files(root: Path, bundle: Bundle) -> dict[Path, str]:
 
 
 def write(root: Path, bundle: Bundle) -> list[Path]:
+    """Write every published view whose content moved; a file whose only change would be
+    its generation stamp (pages) or ``generated`` clock (release JSON) is left as it is
+    (#180: a publish from a clean checkout must not dirty the committed pages)."""
     written: list[Path] = []
+    release = release_root(root)
     for path, text in render_files(root, bundle).items():
+        if path.is_file():
+            current = path.read_text(encoding="utf-8")
+            # the same comparison changed_files() makes: scores.json's ``generated`` is the
+            # newest row's date (data), so it compares verbatim like any other file
+            if path.suffix == ".md":
+                same = _without_stamp(current) == _without_stamp(text)
+            elif path.is_relative_to(release):
+                same = _without_generated(current) == _without_generated(text)
+            else:
+                same = current == text
+            if same:
+                continue
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
         written.append(path)

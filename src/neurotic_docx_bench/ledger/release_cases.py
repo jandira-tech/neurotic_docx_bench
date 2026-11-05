@@ -220,6 +220,13 @@ def _word_pdf(folder: Path, key: str, *tools: str) -> Path | None:
     return _sibling_word_pdf(folder, key, tools)
 
 
+#: Word's fresh compares: local folder and its results-dataset path (hub.FRESH_COMPARES).
+COMPARE_REGEN_OUT = Path("results/compare_regen/out")
+FRESH_COMPARES = "outputs/redlines_0929_full/fresh_compares"
+
+#: word_pdf.py's trim_name: a long stem keeps 8 hex of sha1(original) before the suffix.
+_TRIMMED_EXPORT = re.compile(r"_[0-9a-f]{8}_byword\.pdf$")
+
 _REDLINE_ID = re.compile(r"^(?P<pair>.+)_redline_[0-9a-f]+$")
 
 
@@ -562,6 +569,12 @@ def _conversion_cases(
             candidate_count = _int_or_zero(lane.data.get("page_count_candidate")) or _pdf_pages(
                 candidate
             )
+            if not candidate_count and stem not in failures:
+                # #180: never a scored case with no pages and no file, silently
+                raise RuntimeError(
+                    f"{stem}: lane {lane.key} is scored but its candidate PDF is missing "
+                    f"({candidate}) and its row records no page count; {_inputs_hint(version)}"
+                )
             lane_pages = [
                 _asset_path(version, "convert", stem, lane.key, page)
                 if page <= candidate_count
@@ -642,10 +655,24 @@ def _redline_cases(
     sources: list[ReleaseSource] = []
     page_score_entries = 0
     selected = rows if limit is None else rows[:limit]
+    for lane in lanes:
+        folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
+        if lane.data and not any(folder.glob("*.pdf")):
+            # #180: without the lane's PDFs every link of the lane vanishes, silently
+            raise RuntimeError(
+                f"lane {lane.key} is scored but {folder} holds no PDF; {_inputs_hint(version)}"
+            )
+        trimmed = any(_TRIMMED_EXPORT.search(p.name) for p in folder.glob("*.pdf"))
+        if lane.data and trimmed and not (folder / "manifest.jsonl").is_file():
+            # #180: a trimmed export name resolves to its key only through the manifest;
+            # without it the lane's links vanished silently (592 of 600 in a clean tree)
+            raise RuntimeError(
+                f"lane {lane.key}: {folder} holds trimmed export names but no manifest.jsonl "
+                f"to resolve them; {_inputs_hint(version)}"
+            )
     for row in sorted(selected, key=lambda item: item["key"]):
         key = row["key"]
-        reference_rel = row.get("oracle_pdf") or row.get("pdf") or ""
-        reference_pdf = root / reference_rel
+        reference_pdf = _redline_reference(root, row)
         if not reference_pdf.is_file():
             for lane in lanes:
                 folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
@@ -655,7 +682,7 @@ def _redline_cases(
                     break
         reference_count = _redline_reference_pages(lanes, key, reference_pdf)
         if reference_count < 1:
-            raise RuntimeError(f"{key}: no Word reference PDF or page count")
+            raise RuntimeError(f"{key}: no Word reference PDF or page count; {_inputs_hint(version)}")
         shown = list(range(1, min(12, reference_count) + 1))
 
         pages: dict[str, list[str | None]] = {
@@ -677,6 +704,11 @@ def _redline_cases(
             candidate_count = _int_or_zero(row_data.get("page_count_candidate")) or _pdf_pages(
                 candidate
             )
+            if not candidate_count:
+                raise RuntimeError(
+                    f"{key}: lane {lane.key} is scored but has no page count and no PDF "
+                    f"({candidate}); {_inputs_hint(version)}"
+                )
             pages[lane.key] = [
                 _asset_path(version, "redline", key, lane.key, page)
                 if page <= candidate_count
@@ -775,6 +807,141 @@ def _index(
     )
     validate_bundle(index, shards)
     return index
+
+
+def _inputs_hint(version: str) -> str:
+    return (
+        f"fetch the release's inputs from the hub first: "
+        f"uv run scripts/release_inputs.py --release-version {version}"
+    )
+
+
+@dataclass(frozen=True)
+class ReleaseInput:
+    """One folder the release build reads, and the results-hub folder it comes from (#180)."""
+
+    hub_path: str
+    local: Path
+    repo: str = "results"  # "results" (pinned by the release evidence) or "fixtures" (set v1)
+    files: tuple[str, ...] = ()  # names inside hub_path; empty = every PDF of the folder
+
+
+def _redline_reference(root: Path, row: dict[str, str]) -> Path:
+    """Word's compare for a redline row: ``oracle_pdf``, or the corpus ``pdf`` when the set
+    records the same bytes for both (#180: the oracle_pdf/ folder is a local copy of
+    corpus PDFs, never published under that name)."""
+    oracle = root / (row.get("oracle_pdf") or row.get("pdf") or "")
+    if not row.get("pdf"):
+        return oracle
+    same = row.get("oracle_pdf_sha256") and row.get("oracle_pdf_sha256") == row.get("pdf_sha256")
+    corpus = root / row["pdf"]
+    # the same bytes: the corpus PDF, which the fetch hash-verifies, wins over a local
+    # copy that may be stale (CodeRabbit on #181)
+    if same and (corpus.is_file() or not oracle.is_file()):
+        return corpus
+    return oracle
+
+
+def missing_scored_pdfs(root: Path, version: str, *, vendor_root: Path | None = None,
+                        redline_csv: Path | None = None,
+                        convert_csv: Path | None = None) -> list[str]:
+    """`<lane> <key>` for every scored row whose own PDF is not here: a redline lane's Word
+    export, a conversion lane's candidate (unless the lane records it as a failure).
+
+    The builder emits such a row without a file link (#178: never a neighbour's PDF); after
+    a clean-tree fetch that would be a silently incomplete release, so `fetch` refuses it
+    (codex on #181). A recorded page count is not evidence the PDF was fetched."""
+    root = Path(root).resolve()
+    vendor_root = Path(vendor_root or root).resolve()
+    redline_csv = Path(redline_csv or REDLINE_SET)
+    convert_csv = Path(convert_csv or CONVERT_SET)
+    out = []
+    stems = [row["stem"] for row in
+             _read_csv(convert_csv if convert_csv.is_absolute() else root / convert_csv)]
+    for lane in _conversion_lanes(root, version, convert_csv.stem):
+        failed = {str(item.get("doc")) for item in (lane.data.get("generate_failures") or [])}
+        for stem in stems:
+            if stem in failed or _conversion_score(lane, stem)[0] is None:
+                continue
+            candidate = _conversion_candidate(root, vendor_root, lane, stem)
+            if candidate is None or not Path(candidate).is_file():
+                out.append(f"{lane.key} {stem}")
+    for lane in _redline_lanes(root, version, redline_csv.stem):
+        for key, row in lane.data.items():
+            if not isinstance(row, dict) or _redline_score(lane, key)[0] is None:
+                continue
+            candidate = _redline_candidate(root, vendor_root, lane, key)
+            if candidate is None or not Path(candidate).is_file():
+                out.append(f"{lane.key} {key}")
+    return out
+
+
+def release_inputs(
+    root: Path,
+    version: str,
+    *,
+    convert_csv: Path | None = None,
+    redline_csv: Path | None = None,
+    vendor_root: Path | None = None,
+) -> list[ReleaseInput]:
+    """Every local folder of PDFs the versioned build reads, with its hub folder (#180).
+
+    The PDFs are not tracked: the conversion candidates and the redline lanes' Word
+    exports live on the results dataset (``outputs/``), pinned by the release evidence.
+    ``scripts/release_inputs.py`` downloads exactly these, so a clean checkout builds the
+    same release as the machine that ran the bench.
+    """
+    root = Path(root).resolve()
+    vendor_root = Path(vendor_root or root).resolve()
+    convert_csv = Path(convert_csv or CONVERT_SET)
+    redline_csv = Path(redline_csv or REDLINE_SET)
+    out: list[ReleaseInput] = []
+    for lane in _conversion_lanes(root, version, convert_csv.stem):
+        if not lane.data.get("n_scored"):
+            # every conversion of this lane failed: no PDF exists on the hub, and its cases
+            # are emitted without pages (codex on #181). Not per_doc: _tool_report scores a
+            # failed stem 0.0, so an all-failed lane still has one entry per document.
+            continue
+        if lane.key.startswith("jubarte-"):
+            local = root / "results" / f"release_{version}_evidence" / "convert_work" / "jubarte"
+        else:
+            local = vendor_root / "results" / f"{lane.work_tool}_{lane.version}_work"
+        out.append(ReleaseInput(f"outputs/convert_860/{lane.upload_lane}/pdf", local / "candidate"))
+    # Word's own compare PDFs, the redline references: Word's fresh compares on the
+    # results dataset, or corpus PDFs on the fixtures dataset (what _redline_reference reads)
+    redline_rows = _read_csv(redline_csv if redline_csv.is_absolute() else root / redline_csv)
+    wanted: dict[tuple[str, str, Path], set[str]] = {}
+    # Word's conversion PDFs, the conversion references (`bench release-pages` renders them):
+    # corpus PDFs on the fixtures dataset, by exact name (codex on #181)
+    convert_rows = _read_csv(convert_csv if convert_csv.is_absolute() else root / convert_csv)
+    for row in convert_rows:
+        corpus = Path(row.get("word_pdf") or "")
+        if corpus.is_relative_to("corpus"):
+            folder = corpus.parent.relative_to("corpus").as_posix()
+            wanted.setdefault(("fixtures", folder, root / corpus.parent), set()).add(corpus.name)
+    for row in redline_rows:
+        oracle = Path(row.get("oracle_pdf") or "")
+        same = row.get("oracle_pdf_sha256") and row.get("oracle_pdf_sha256") == row.get("pdf_sha256")
+        if oracle.is_relative_to(COMPARE_REGEN_OUT):
+            where = ("results", FRESH_COMPARES, root / COMPARE_REGEN_OUT)
+            wanted.setdefault(where, set()).add(oracle.name)
+        elif row.get("pdf") and (same or not row.get("oracle_pdf")):
+            corpus = Path(row["pdf"])  # corpus/word/<state>/pdf/<name>
+            if corpus.is_relative_to("corpus"):
+                folder = corpus.parent.relative_to("corpus").as_posix()
+                where = ("fixtures", folder, root / corpus.parent)
+                wanted.setdefault(where, set()).add(corpus.name)
+    for (repo, hub_path, local), names in sorted(wanted.items(), key=lambda kv: kv[0][1]):
+        out.append(ReleaseInput(hub_path, local, repo=repo, files=tuple(sorted(names))))
+    for lane in _redline_lanes(root, version, redline_csv.stem):
+        lane_dir = _redline_lane_dir(lane)
+        out.append(
+            ReleaseInput(
+                f"outputs/redlines_0929_full/{lane_dir}/pdf_by_word",
+                vendor_root / RUN_DIR / lane_dir / "pdf_by_word",
+            )
+        )
+    return out
 
 
 def build_release(
