@@ -23,6 +23,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import re
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -45,7 +46,7 @@ from neurotic_docx_bench.jubarte_release_info import (
 )
 from neurotic_docx_bench.ledger.scores import RESULTS_REPO_URL
 from neurotic_docx_bench.pages import render as pages_render
-from neurotic_docx_bench.word_outputs import find_output
+from neurotic_docx_bench.word_outputs import find_output, read_manifest
 
 #: The public R2 base the release's shown-page paths resolve against.
 ASSETS_BASE = "https://pub-92c80eda1059428394970066c8500eda.r2.dev/"
@@ -201,19 +202,56 @@ def _conversion_candidate(root: Path, vendor_root: Path, lane: _Lane, stem: str)
     return _first_existing(candidates) or candidates[0]
 
 
-def _word_pdf(folder: Path, key: str, tool: str) -> Path | None:
-    """The PDF Word exported for one redline, following the driver's manifest."""
+def _word_pdf(folder: Path, key: str, *tools: str) -> Path | None:
+    """The PDF Word exported for one redline, following the driver's manifest.
+
+    ``tools`` are the names the lane's redlines may carry, most specific first
+    (a refresh lane's ``<tool>-<version>``, then ``<tool>``; #177). Long names
+    are trimmed before Word sees them; the manifest's ``renamed`` lines lead to
+    the trimmed name. A prefix of the key is never trusted: pairs that share a
+    base document share it, and a wrong pair's redline is worse than none (#177)."""
     if not folder.is_dir():
         return None
-    originals = (f"{key}_{tool}.docx", f"{key}.docx")
+    originals = [f"{key}_{tool}.docx" for tool in tools] + [f"{key}.docx"]
     for original in originals:
         found = find_output(folder, original, kind="pdf", ext=".pdf")
         if found is not None:
             return found
-    # Long names are trimmed before Word sees them (35 characters for a
-    # redline); the hash suffix makes the trimmed name unique.
-    matches = sorted(folder.glob(f"{key[:35]}*_byword.pdf"))
-    return matches[0] if matches else None
+    return _sibling_word_pdf(folder, key, tools)
+
+
+_REDLINE_ID = re.compile(r"^(?P<pair>.+)_redline_[0-9a-f]+$")
+
+
+def _sibling_word_pdf(folder: Path, key: str, tools: tuple[str, ...]) -> Path | None:
+    """The lane's redline of the same base/next pair under another Word comparison id.
+
+    Word compared some pairs twice, so one pair has two redline ids; a lane
+    generates the pair once, under one of them, while the set may key the case by
+    the other. The ids in ``<base>__vs__<next>`` are content hashes, so a name
+    that carries the whole pair is a redline of the same two documents. Only a
+    single such sibling is linked; two are ambiguous and give nothing."""
+    match = _REDLINE_ID.match(key)
+    if match is None:
+        return None
+    pair = re.escape(match["pair"])
+    names = {str(line.get("original_filename") or "") for line in read_manifest(folder)}
+    names |= {
+        path.name.removesuffix(".pdf").removesuffix("_byword") + ".docx"
+        for path in folder.glob("*.pdf")
+    }
+    for tool in tools:
+        pattern = re.compile(rf"^{pair}_redline_[0-9a-f]+_{re.escape(tool)}\.docx$")
+        siblings = sorted(
+            name for name in names if pattern.match(name) and name != f"{key}_{tool}.docx"
+        )
+        if len(siblings) > 1:
+            return None
+        if siblings:
+            found = find_output(folder, siblings[0], kind="pdf", ext=".pdf")
+            if found is not None:
+                return found
+    return None
 
 
 def _redline_lane_dir(lane: _Lane) -> str:
@@ -225,14 +263,18 @@ def _redline_lane_dir(lane: _Lane) -> str:
     return lane.key if lane.key.startswith("jubarte-") else f"{lane.tool}-{lane.version}"
 
 
-def _redline_tool(lane: _Lane) -> str:
-    """The name the lane's redlines carry (``<key>_<tool>.docx``)."""
-    return lane.key if lane.key.startswith("jubarte-") else lane.tool
+def _redline_tools(lane: _Lane) -> tuple[str, ...]:
+    """The names the lane's redlines may carry (``<key>_<name>.docx``), most specific
+    first: the release's own lane is ``jubarte-<v>``; a refresh lane's Word manifest
+    names ``<tool>-<version>``, older lanes ``<tool>`` (#177)."""
+    if lane.key.startswith("jubarte-"):
+        return (lane.key,)
+    return (f"{lane.tool}-{lane.version}", lane.tool)
 
 
 def _redline_candidate(root: Path, vendor_root: Path, lane: _Lane, key: str) -> Path | None:
     folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
-    return _word_pdf(folder, key, _redline_tool(lane))
+    return _word_pdf(folder, key, *_redline_tools(lane))
 
 
 def _redline_file(lane: _Lane, pdf: Path) -> str:
@@ -606,8 +648,8 @@ def _redline_cases(
         reference_pdf = root / reference_rel
         if not reference_pdf.is_file():
             for lane in lanes:
-                folder = vendor_root / RUN_DIR / f"{lane.tool}-{lane.version}" / "pdf_by_word"
-                candidate = _word_pdf(folder, key, lane.tool)
+                folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
+                candidate = _word_pdf(folder, key, *_redline_tools(lane))
                 if candidate is not None:
                     reference_pdf = candidate
                     break
