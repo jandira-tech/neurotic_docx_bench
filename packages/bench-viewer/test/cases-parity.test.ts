@@ -1352,6 +1352,24 @@ describe("a lane with pages and no score says so (#165)", () => {
     expect(laneUnscored({ ...c, errors: { office2pdf: "x" } }, "office2pdf")).toBe(false);
     expect(laneUnscored({ ...c, dropped: ["office2pdf"] }, "office2pdf")).toBe(false);
   });
+  test("the tooltip follows the recorded PDF path, not the link (PR #166 review 2)", () => {
+    const c = { ...unscored(), pdfs: { office2pdf: "../escape.pdf" } };
+    const html = renderCaseHead({
+      case: c,
+      engine: lanes[1],
+      assetsBase: "https://x.example/",
+      engines: lanes,
+    });
+    expect(html).toContain("not scored");
+    expect(html).not.toContain("not kept");
+  });
+  test("an unscored lane keeps its scores-table column when no case on screen is scored (PR #166 review 2)", () => {
+    const html = renderScoresTable({ cases: [unscored()], engines: lanes });
+    expect(html).toContain(">office2pdf</th>");
+    const row =
+      html.split("<tr").find((r) => r.includes('data-case="00f467c010-342f364d46-d0866d"')) ?? "";
+    expect(row).toContain("not scored");
+  });
   test('the scores table says "not scored" in the unscored lane\'s cell (#165)', () => {
     const scored = {
       ...unscored(),
