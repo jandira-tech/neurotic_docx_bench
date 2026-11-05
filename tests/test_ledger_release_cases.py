@@ -738,7 +738,9 @@ def test_release_texts_drop_the_case_fields_the_viewer_never_reads(
 
 def _no_pages(monkeypatch: pytest.MonkeyPatch) -> None:
     """The release fixture has no stores; these tests are about the case bundle."""
-    empty = ledger_build.Bundle(results_md="", detailed_md="", readme_vendor_table="", scores_json="")
+    empty = ledger_build.Bundle(
+        results_md="", detailed_md="", readme_vendor_table="", scores_json=""
+    )
     monkeypatch.setattr(ledger_build, "build", lambda root, now=None: empty)
 
 
@@ -757,9 +759,13 @@ def test_check_without_a_version_reads_the_release_on_disk(
         release_root, "1.2.3", {"revision": "c0ffee" * 5, "paths": [], "verified": True}
     )
     said: list[str] = []
-    assert ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 0, said
+    assert (
+        ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 0
+    ), said
     checked: list[str] = []
-    assert ledger_build.run_release_views(release_root, check=True, echo=checked.append) == 0, checked
+    assert ledger_build.run_release_views(release_root, check=True, echo=checked.append) == 0, (
+        checked
+    )
     assert "published views are current" in checked
     assert any("release 1.2.3" in line and "index.json" in line for line in checked), checked
 
@@ -771,10 +777,26 @@ def test_an_index_naming_two_release_versions_is_refused(
     _no_pages(monkeypatch)
     index = release_root / "results/release/cases/index.json"
     index.parent.mkdir(parents=True, exist_ok=True)
-    index.write_text(json.dumps({"groups": [
-        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
-        {"group": "redlines/release-1.2.4", "kind": "redline", "path": "b.json", "count": 1},
-    ]}))
+    index.write_text(
+        json.dumps(
+            {
+                "groups": [
+                    {
+                        "group": "cases/release-1.2.3",
+                        "kind": "conversion",
+                        "path": "a.json",
+                        "count": 1,
+                    },
+                    {
+                        "group": "redlines/release-1.2.4",
+                        "kind": "redline",
+                        "path": "b.json",
+                        "count": 1,
+                    },
+                ]
+            }
+        )
+    )
     said: list[str] = []
     assert ledger_build.run_release_views(release_root, check=True, echo=said.append) == 1
     assert any("1.2.3" in line and "1.2.4" in line for line in said), said
@@ -789,9 +811,20 @@ def test_a_write_without_a_version_keeps_the_legacy_flow(
     _no_pages(monkeypatch)
     index = release_root / "results/release/cases/index.json"
     index.parent.mkdir(parents=True, exist_ok=True)
-    index.write_text(json.dumps({"groups": [
-        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
-    ]}))
+    index.write_text(
+        json.dumps(
+            {
+                "groups": [
+                    {
+                        "group": "cases/release-1.2.3",
+                        "kind": "conversion",
+                        "path": "a.json",
+                        "count": 1,
+                    },
+                ]
+            }
+        )
+    )
     said: list[str] = []
     ledger_build.run_release_views(release_root, echo=said.append)
     assert not any(line.startswith("release 1.2.3") for line in said), said
