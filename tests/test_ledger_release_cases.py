@@ -734,3 +734,64 @@ def test_release_texts_drop_the_case_fields_the_viewer_never_reads(
         index.validate_shard(CaseShard.model_validate_json(texts[ref.path]))
     # The source models keep their fields.
     assert filled[0].cases[0].stem == "s"
+
+
+def _no_pages(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The release fixture has no stores; these tests are about the case bundle."""
+    empty = ledger_build.Bundle(results_md="", detailed_md="", readme_vendor_table="", scores_json="")
+    monkeypatch.setattr(ledger_build, "build", lambda root, now=None: empty)
+
+
+def test_check_without_a_version_reads_the_release_on_disk(
+    release_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#175: `bench publish`'s before-check runs `release_views.py --check` with no
+    version. After a versioned release is written, that check must check the same
+    release (the version its index names), not rebuild the legacy bundle and call
+    every shard stale."""
+    _no_pages(monkeypatch)
+    (release_root / "README.md").write_text(
+        f"{ledger_build.VENDORS_START}\n{ledger_build.VENDORS_END}\n", encoding="utf-8"
+    )
+    hub_outputs.write_evidence(
+        release_root, "1.2.3", {"revision": "c0ffee" * 5, "paths": [], "verified": True}
+    )
+    said: list[str] = []
+    assert ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 0, said
+    checked: list[str] = []
+    assert ledger_build.run_release_views(release_root, check=True, echo=checked.append) == 0, checked
+    assert "published views are current" in checked
+    assert any("release 1.2.3" in line and "index.json" in line for line in checked), checked
+
+
+def test_an_index_naming_two_release_versions_is_refused(
+    release_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The version is inferred only when every release group names one version."""
+    _no_pages(monkeypatch)
+    index = release_root / "results/release/cases/index.json"
+    index.parent.mkdir(parents=True, exist_ok=True)
+    index.write_text(json.dumps({"groups": [
+        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
+        {"group": "redlines/release-1.2.4", "kind": "redline", "path": "b.json", "count": 1},
+    ]}))
+    said: list[str] = []
+    assert ledger_build.run_release_views(release_root, check=True, echo=said.append) == 1
+    assert any("1.2.3" in line and "1.2.4" in line for line in said), said
+
+
+def test_a_write_without_a_version_keeps_the_legacy_flow(
+    release_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Codex on #176: only the check infers the release on disk; a write without
+    --release-version is the legacy emitter, as the CLI documents, so a versioned
+    bundle can still be replaced by the historical one."""
+    _no_pages(monkeypatch)
+    index = release_root / "results/release/cases/index.json"
+    index.parent.mkdir(parents=True, exist_ok=True)
+    index.write_text(json.dumps({"groups": [
+        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
+    ]}))
+    said: list[str] = []
+    ledger_build.run_release_views(release_root, echo=said.append)
+    assert not any(line.startswith("release 1.2.3") for line in said), said
