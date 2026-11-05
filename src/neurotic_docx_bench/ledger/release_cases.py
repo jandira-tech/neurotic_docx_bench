@@ -616,7 +616,7 @@ def _redline_cases(
         reference_pdf = root / reference_rel
         if not reference_pdf.is_file():
             for lane in lanes:
-                folder = vendor_root / RUN_DIR / f"{lane.tool}-{lane.version}" / "pdf_by_word"
+                folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
                 candidate = _word_pdf(folder, key, *_redline_tools(lane))
                 if candidate is not None:
                     reference_pdf = candidate
