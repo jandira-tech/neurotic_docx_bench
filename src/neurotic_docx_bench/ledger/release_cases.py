@@ -837,6 +837,27 @@ def _redline_reference(root: Path, row: dict[str, str]) -> Path:
     return root / row["pdf"] if same else oracle
 
 
+def missing_scored_pdfs(root: Path, version: str, *, vendor_root: Path | None = None,
+                        redline_csv: Path | None = None) -> list[str]:
+    """`<lane> <key>` for every scored redline row whose own Word-rendered PDF is not here.
+
+    The builder emits such a row without a file link (#178: never a neighbour's PDF); after
+    a clean-tree fetch that would be a silently incomplete release, so `fetch` refuses it
+    (codex on #181). A recorded page count is not evidence the PDF was fetched."""
+    root = Path(root).resolve()
+    vendor_root = Path(vendor_root or root).resolve()
+    redline_csv = Path(redline_csv or REDLINE_SET)
+    out = []
+    for lane in _redline_lanes(root, version, redline_csv.stem):
+        for key, row in lane.data.items():
+            if not isinstance(row, dict) or _redline_score(lane, key)[0] is None:
+                continue
+            candidate = _redline_candidate(root, vendor_root, lane, key)
+            if candidate is None or not Path(candidate).is_file():
+                out.append(f"{lane.key} {key}")
+    return out
+
+
 def release_inputs(
     root: Path,
     version: str,
@@ -858,6 +879,10 @@ def release_inputs(
     redline_csv = Path(redline_csv or REDLINE_SET)
     out: list[ReleaseInput] = []
     for lane in _conversion_lanes(root, version, convert_csv.stem):
+        if not lane.data.get("per_doc"):
+            # every conversion of this lane failed: no PDF exists on the hub, and its cases
+            # are emitted without pages (codex on #181)
+            continue
         if lane.key.startswith("jubarte-"):
             local = root / "results" / f"release_{version}_evidence" / "convert_work" / "jubarte"
         else:
@@ -867,6 +892,14 @@ def release_inputs(
     # results dataset, or corpus PDFs on the fixtures dataset (what _redline_reference reads)
     redline_rows = _read_csv(redline_csv if redline_csv.is_absolute() else root / redline_csv)
     wanted: dict[tuple[str, str, Path], set[str]] = {}
+    # Word's conversion PDFs, the conversion references (`bench release-pages` renders them):
+    # corpus PDFs on the fixtures dataset, by exact name (codex on #181)
+    convert_rows = _read_csv(convert_csv if convert_csv.is_absolute() else root / convert_csv)
+    for row in convert_rows:
+        corpus = Path(row.get("word_pdf") or "")
+        if corpus.is_relative_to("corpus"):
+            folder = corpus.parent.relative_to("corpus").as_posix()
+            wanted.setdefault(("fixtures", folder, root / corpus.parent), set()).add(corpus.name)
     for row in redline_rows:
         oracle = Path(row.get("oracle_pdf") or "")
         same = row.get("oracle_pdf_sha256") and row.get("oracle_pdf_sha256") == row.get("pdf_sha256")

@@ -1021,6 +1021,11 @@ def test_fetch_downloads_each_input_folder_pdfs_only_at_the_pinned_revision(
         calls.append((preset.path, dest, revision, tuple(include)))
 
     rev = "f" * 40
+    _pdf(  # the one scored row the fixture leaves without its PDF
+        release_root / "results" / "redlines_0929_full" / "jubarte-1.2.3" / "pdf_by_word"
+        / f"{REDLINE_B}_jubarte-1.2.3_byword.pdf",
+        pages=3,
+    )
     inputs = release_inputs.fetch(release_root, "1.2.3", api=object(), get=get, revision=rev)
     assert [(c[0], c[1]) for c in calls] == [(i.hub_path, i.local) for i in inputs]
     lanes = [c for c, i in zip(calls, inputs, strict=True) if i.repo == "results"]
@@ -1075,3 +1080,43 @@ def test_a_redline_lane_folder_without_its_manifest_refuses_the_build(
     _pdf(folder / f"{REDLINE_B[:20]}_0123abcd_byword.pdf", pages=2)  # a trimmed export name
     with pytest.raises(RuntimeError, match="manifest.jsonl"):
         cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+
+
+def test_a_conversion_lane_with_no_scored_document_needs_no_pdf_input(
+    release_root: Path,
+) -> None:
+    """codex on #181: a lane whose every conversion failed has no PDFs on the hub; asking
+    for its folder would abort the fetch for every other lane."""
+    from neurotic_docx_bench.ledger import release_cases
+
+    path = release_root / "results" / "docx_to_pdf_docxide_0.18.4_set-convert_860.json"
+    report = json.loads(path.read_text())
+    report["tools"]["docxide-pdf"].update(per_doc={}, per_page={}, n_scored=0)
+    path.write_text(json.dumps(report))
+    hubs = {item.hub_path for item in release_cases.release_inputs(release_root, "1.2.3")}
+    assert not any("docxide" in hub for hub in hubs)
+    assert "outputs/convert_860/docxodus_15.0.0/pdf" in hubs
+
+
+def test_release_inputs_include_the_conversion_reference_pdfs(release_root: Path) -> None:
+    """Codex on #181: `bench release-pages` renders Word's conversion PDFs too; a clean tree
+    gets them from the fixtures dataset, by exact name, like the redline references."""
+    from neurotic_docx_bench.ledger import release_cases
+
+    refs = [item for item in release_cases.release_inputs(release_root, "1.2.3")
+            if item.repo == "fixtures" and item.hub_path == "word/clean/pdf"]
+    assert len(refs) == 1
+    assert refs[0].local == release_root / "corpus" / "word" / "clean" / "pdf"
+    assert {f"{CONVERT_A}.pdf", f"{CONVERT_B}.pdf"} <= set(refs[0].files)
+
+
+
+def test_fetch_refuses_a_scored_redline_row_whose_pdf_did_not_arrive(release_root: Path) -> None:
+    """Codex on #181: another PDF in the lane's folder keeps the folder check satisfied and
+    the recorded page count hides the gap; the builder would emit the row with no file link.
+    After a fetch, every scored row must have its own Word export."""
+    from neurotic_docx_bench.ledger import release_inputs
+
+    with pytest.raises(RuntimeError, match=f"jubarte-1.2.3 {REDLINE_B}"):
+        release_inputs.fetch(release_root, "1.2.3", api=object(),
+                             get=lambda *a, **k: None, revision="f" * 40)

@@ -13,7 +13,11 @@ from collections.abc import Callable
 from pathlib import Path
 
 from neurotic_docx_bench import fixture_sets, hub, hub_get, hub_outputs
-from neurotic_docx_bench.ledger.release_cases import ReleaseInput, release_inputs
+from neurotic_docx_bench.ledger.release_cases import (
+    ReleaseInput,
+    missing_scored_pdfs,
+    release_inputs,
+)
 
 Get = Callable[..., object]
 
@@ -50,4 +54,12 @@ def fetch(root: Path, version: str, *, api: object | None = None, get: Get | Non
             get(preset, api=api, revision=rev, dest=item.local, exact=item.files)
         else:
             get(preset, api=api, revision=rev, dest=item.local, include=("*.pdf", "manifest.jsonl"))
+    missing = missing_scored_pdfs(root, version)
+    if missing:
+        more = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
+        raise RuntimeError(
+            f"release {version}: {len(missing)} scored redline row(s) have no Word-rendered PDF "
+            f"after the fetch ({'; '.join(missing[:5])}{more}); the release would link nothing "
+            "for them"
+        )
     return inputs

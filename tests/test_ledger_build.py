@@ -473,3 +473,17 @@ def test_a_rewrite_that_changes_only_the_stamp_leaves_the_page_alone(repo: Path)
     written = bd.write(repo, bd.build(repo, now=datetime(2026, 9, 28, 5, tzinfo=UTC)))
     assert (repo / "RESULTS.md").read_text() == first
     assert repo / "RESULTS.md" not in written
+
+
+def test_write_corrects_a_scores_json_whose_generated_date_is_wrong(repo: Path) -> None:
+    """codex on #181: scores.json's ``generated`` is the newest row's date (data, not a
+    clock); write() must rewrite it, or --check stays stale after bench report."""
+    bundle = bd.build(repo, now=datetime(2026, 9, 27, tzinfo=UTC))
+    bd.write(repo, bundle)
+    path = repo / "results" / "scores.json"
+    obj = json.loads(path.read_text())
+    obj["generated"] = "1999-01-01"
+    path.write_text(json.dumps(obj))
+    assert path in bd.changed_files(repo, bundle)
+    assert path in bd.write(repo, bundle)
+    assert bd.changed_files(repo, bundle) == []
