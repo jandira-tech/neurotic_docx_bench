@@ -424,7 +424,6 @@ def test_a_per_page_list_is_sliced_to_the_shown_pages_and_null_where_absent(
     assert redline_a.page_scores["docxodus"] == [70.0, 69.0, None]
 
 
-
 def test_files_use_the_real_hub_layout_and_the_pinned_files_base(release_root: Path) -> None:
     index, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
     conversion = next(shard for shard in shards if shard.kind == "conversion").cases[0]
@@ -513,8 +512,7 @@ def test_the_release_views_pin_the_files_base_to_the_recorded_revision(
     bundle = ledger_build.add_release_views(release_root, empty, release_version="1.2.3")
     index = CasesIndex.model_validate_json(bundle.release_cases["cases/index.json"])
     assert index.files_base == (
-        "https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/"
-        f"{revision}/"
+        f"https://huggingface.co/datasets/arthrod/neurotic_docx_bench/resolve/{revision}/"
     )
     assert "/main/" not in index.files_base
 
@@ -534,7 +532,9 @@ def test_the_release_views_say_which_revision_is_missing(
     release_root: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     said: list[str] = []
-    assert ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 1
+    assert (
+        ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 1
+    )
     assert any("pinned" in line for line in said), said
     assert not any("main" in line for line in said), said
 
@@ -738,7 +738,9 @@ def test_release_texts_drop_the_case_fields_the_viewer_never_reads(
 
 def _no_pages(monkeypatch: pytest.MonkeyPatch) -> None:
     """The release fixture has no stores; these tests are about the case bundle."""
-    empty = ledger_build.Bundle(results_md="", detailed_md="", readme_vendor_table="", scores_json="")
+    empty = ledger_build.Bundle(
+        results_md="", detailed_md="", readme_vendor_table="", scores_json=""
+    )
     monkeypatch.setattr(ledger_build, "build", lambda root, now=None: empty)
 
 
@@ -757,9 +759,13 @@ def test_check_without_a_version_reads_the_release_on_disk(
         release_root, "1.2.3", {"revision": "c0ffee" * 5, "paths": [], "verified": True}
     )
     said: list[str] = []
-    assert ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 0, said
+    assert (
+        ledger_build.run_release_views(release_root, release_version="1.2.3", echo=said.append) == 0
+    ), said
     checked: list[str] = []
-    assert ledger_build.run_release_views(release_root, check=True, echo=checked.append) == 0, checked
+    assert ledger_build.run_release_views(release_root, check=True, echo=checked.append) == 0, (
+        checked
+    )
     assert "published views are current" in checked
     assert any("release 1.2.3" in line and "index.json" in line for line in checked), checked
 
@@ -771,10 +777,26 @@ def test_an_index_naming_two_release_versions_is_refused(
     _no_pages(monkeypatch)
     index = release_root / "results/release/cases/index.json"
     index.parent.mkdir(parents=True, exist_ok=True)
-    index.write_text(json.dumps({"groups": [
-        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
-        {"group": "redlines/release-1.2.4", "kind": "redline", "path": "b.json", "count": 1},
-    ]}))
+    index.write_text(
+        json.dumps(
+            {
+                "groups": [
+                    {
+                        "group": "cases/release-1.2.3",
+                        "kind": "conversion",
+                        "path": "a.json",
+                        "count": 1,
+                    },
+                    {
+                        "group": "redlines/release-1.2.4",
+                        "kind": "redline",
+                        "path": "b.json",
+                        "count": 1,
+                    },
+                ]
+            }
+        )
+    )
     said: list[str] = []
     assert ledger_build.run_release_views(release_root, check=True, echo=said.append) == 1
     assert any("1.2.3" in line and "1.2.4" in line for line in said), said
@@ -789,9 +811,152 @@ def test_a_write_without_a_version_keeps_the_legacy_flow(
     _no_pages(monkeypatch)
     index = release_root / "results/release/cases/index.json"
     index.parent.mkdir(parents=True, exist_ok=True)
-    index.write_text(json.dumps({"groups": [
-        {"group": "cases/release-1.2.3", "kind": "conversion", "path": "a.json", "count": 1},
-    ]}))
+    index.write_text(
+        json.dumps(
+            {
+                "groups": [
+                    {
+                        "group": "cases/release-1.2.3",
+                        "kind": "conversion",
+                        "path": "a.json",
+                        "count": 1,
+                    },
+                ]
+            }
+        )
+    )
     said: list[str] = []
     ledger_build.run_release_views(release_root, echo=said.append)
     assert not any(line.startswith("release 1.2.3") for line in said), said
+
+
+def test_a_vendor_lane_links_its_own_trimmed_word_pdf_not_a_prefix_neighbour(
+    release_root: Path,
+) -> None:
+    """#177: the refresh lanes' Word manifests name `<key>_<tool>-<version>.docx`,
+    trimmed on disk; a lookup of `<key>_<tool>.docx` missed and a 35-character
+    prefix glob took another pair's PDF sorted first. The lane must link its own."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    trimmed = f"{REDLINE_A[:20]}_a1b2c3d4"
+    _pdf(folder / f"{trimmed}_byword.pdf", pages=3)
+    _pdf(folder / f"{REDLINE_A[:35]}0_decoy_byword.pdf", pages=1)  # another pair, sorted first
+    (folder / "manifest.jsonl").write_text(
+        json.dumps(
+            {
+                "original_filename": f"{REDLINE_A}_docxodus-15.0.0.docx",
+                "converted_filename": f"{trimmed}.docx",
+                "status": "renamed",
+                "kind": "rename",
+            }
+        )
+        + "\n"
+        + json.dumps(
+            {
+                "original_filename": f"{trimmed}.docx",
+                "converted_filename": f"{trimmed}_byword.pdf",
+                "path_out": f"results/redlines_0929_full/docxodus-15.0.0/pdf_by_word/{trimmed}_byword.pdf",
+                "status": "ok",
+                "kind": "pdf",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert redline.files["docxodus"].endswith(f"/{trimmed}_byword.pdf"), redline.files
+
+
+def test_an_ambiguous_prefix_never_picks_a_pdf(release_root: Path) -> None:
+    """#177: with no manifest entry and two PDFs sharing the key's prefix, no file is
+    linked — a wrong pair's redline is worse than none."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    _pdf(folder / f"{REDLINE_A[:35]}0_one_byword.pdf", pages=3)
+    _pdf(folder / f"{REDLINE_A[:35]}1_two_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert "docxodus" not in redline.files, redline.files
+
+
+def test_a_lone_prefix_neighbour_is_never_linked(release_root: Path) -> None:
+    """Adversarial review of #178: one PDF sharing the key's first 35 characters
+    may still be another pair's; with no manifest entry and no exact name, nothing
+    is linked."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    _pdf(folder / f"{REDLINE_A[:35]}_other_pair_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert "docxodus" not in redline.files, redline.files
+
+
+def test_a_sibling_comparison_of_the_same_pair_is_linked(release_root: Path) -> None:
+    """Real 0.17.0 data: Word compared one base/next pair twice (two redline ids).
+    The set keys the case by one id; the vendor lane generated the pair once, under
+    the other. Same base and next bytes (the ids are content hashes), so that
+    redline is this case's, found through the full pair, never a prefix."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    sibling = REDLINE_A.replace("aaaaaaaa", "bbbbbbbb")
+    trimmed = f"{sibling[:20]}_c0ffee00"
+    _pdf(folder / f"{trimmed}_byword.pdf", pages=3)
+    (folder / "manifest.jsonl").write_text(
+        json.dumps(
+            {
+                "original_filename": f"{sibling}_docxodus-15.0.0.docx",
+                "converted_filename": f"{trimmed}.docx",
+                "status": "renamed",
+                "kind": "rename",
+            }
+        )
+        + "\n"
+        + json.dumps(
+            {
+                "original_filename": f"{trimmed}.docx",
+                "converted_filename": f"{trimmed}_byword.pdf",
+                "path_out": "nowhere",
+                "status": "ok",
+                "kind": "pdf",
+            }
+        )
+        + "\n"
+    )
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert redline.files["docxodus"].endswith(f"/{trimmed}_byword.pdf"), redline.files
+
+
+def test_two_sibling_comparisons_with_redlines_are_ambiguous(release_root: Path) -> None:
+    """When the lane holds redlines under two other ids of the pair, neither is chosen."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    for other in ("bbbbbbbb", "cccccccc"):
+        _pdf(folder / f"{REDLINE_A.replace('aaaaaaaa', other)}_docxodus-15.0.0_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert "docxodus" not in redline.files, redline.files
+
+
+def test_a_sibling_without_a_pdf_falls_through_to_the_next_tool_name(release_root: Path) -> None:
+    """Jules on #178: a sibling named under ``<tool>-<version>`` whose PDF never came
+    out must not stop the search; the lane's ``<tool>`` sibling is still tried."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    sibling = REDLINE_A.replace("aaaaaaaa", "bbbbbbbb")
+    (folder / "manifest.jsonl").write_text(
+        json.dumps(
+            {
+                "original_filename": f"{sibling}_docxodus-15.0.0.docx",
+                "converted_filename": "",
+                "status": "failed",
+                "kind": "pdf",
+            }
+        )
+        + "\n"
+    )
+    _pdf(folder / f"{sibling}_docxodus_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert redline.files["docxodus"].endswith(f"/{sibling}_docxodus_byword.pdf"), redline.files
