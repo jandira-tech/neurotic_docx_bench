@@ -1101,6 +1101,24 @@ def test_a_conversion_lane_with_no_scored_document_needs_no_pdf_input(
     assert "outputs/convert_860/docxodus_15.0.0/pdf" in hubs
 
 
+def test_a_conversion_lane_whose_every_document_failed_needs_no_pdf_input(
+    release_root: Path,
+) -> None:
+    """codex on #181 (second pass): `_tool_report` scores every failed stem 0.0, so a lane
+    whose conversions all failed has a nonempty per_doc but n_scored 0; the uploader
+    published no PDF for it, so the fetch must not ask for its folder."""
+    from neurotic_docx_bench.ledger import release_cases
+
+    path = release_root / "results" / "docx_to_pdf_docxide_0.18.4_set-convert_860.json"
+    report = json.loads(path.read_text())
+    tool = report["tools"]["docxide-pdf"]
+    tool.update(per_doc=dict.fromkeys(tool["per_doc"], 0.0), n_scored=0)
+    path.write_text(json.dumps(report))
+    hubs = {item.hub_path for item in release_cases.release_inputs(release_root, "1.2.3")}
+    assert not any("docxide" in hub for hub in hubs)
+    assert "outputs/convert_860/docxodus_15.0.0/pdf" in hubs
+
+
 def test_release_inputs_include_the_conversion_reference_pdfs(release_root: Path) -> None:
     """Codex on #181: `bench release-pages` renders Word's conversion PDFs too; a clean tree
     gets them from the fixtures dataset, by exact name, like the redline references."""

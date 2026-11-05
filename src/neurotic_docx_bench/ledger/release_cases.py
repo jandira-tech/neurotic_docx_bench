@@ -897,9 +897,10 @@ def release_inputs(
     redline_csv = Path(redline_csv or REDLINE_SET)
     out: list[ReleaseInput] = []
     for lane in _conversion_lanes(root, version, convert_csv.stem):
-        if not lane.data.get("per_doc"):
+        if not lane.data.get("n_scored"):
             # every conversion of this lane failed: no PDF exists on the hub, and its cases
-            # are emitted without pages (codex on #181)
+            # are emitted without pages (codex on #181). Not per_doc: _tool_report scores a
+            # failed stem 0.0, so an all-failed lane still has one entry per document.
             continue
         if lane.key.startswith("jubarte-"):
             local = root / "results" / f"release_{version}_evidence" / "convert_work" / "jubarte"
