@@ -108,7 +108,7 @@ from typing import Any
 
 import typer
 
-from neurotic_docx_bench import hub_outputs, jubarte_release, pipeline, release
+from neurotic_docx_bench import hub_outputs, jubarte_release, pipeline, release, word_outputs
 from neurotic_docx_bench.jubarte_bench_release import (
     COMPARE_REGEN,
     RUN_DIR,
@@ -1014,47 +1014,86 @@ def fetch_docxodus(sample_csv: Path, root: Path, gen_pairs: Sequence[dict], ev: 
 
 # ------------------------------------------------------------------ release_info rows
 
+def _word_pdf_of(folder: Path, original: str) -> Path | None:
+    """The PDF Word exported in ``folder`` for the docx named ``original``, following
+    the driver's manifest through a trimmed name (#172; ``word_outputs.find_output``)."""
+    if not folder.is_dir():
+        return None
+    return word_outputs.find_output(folder, original, kind='pdf', ext='.pdf')
+
+
+def _renamed_docx(docx_dir: Path, manifest_dir: Path, original: str) -> Path:
+    """The docx named ``original`` under the name Word's driver gave it on disk: a long
+    name is trimmed in place, and the rename is a ``renamed`` line in the manifest of
+    the folder the PDFs went to (#172)."""
+    return docx_dir / word_outputs.current_name(word_outputs.read_manifest(manifest_dir), original)
+
+
 def redline_rows(sample: Sequence[dict], root: Path, lane: str, gen_pairs: Sequence[dict],
-                 fresh: Path, *, with_docxodus: bool = True) -> list[list[str]]:
+                 fresh: Path, *, with_docxodus: bool = True,
+                 docxodus_dir: Path | None = None) -> list[list[str]]:
     """The release_info redline CSV's data rows, from the files on disk now.
 
     One row per sampled pool key with its own oracle and compare docx/pdf;
-    the docxodus and jubarte columns name the pair's first-key files.
-    ``with_docxodus=False`` (the fixed-set flow, #130) leaves the docxodus
-    columns empty: the comparator's numbers come from the vendor refresh
-    lanes, not from files this run made.
+    the docxodus and jubarte columns name the pair's first-key files, under
+    the names Word's driver gave them (trimmed, ``_byword``; #172).
+    ``docxodus_dir`` (the fixed-set flow: the docxodus refresh lane's
+    ``pdf_by_word``) names the docxodus PDFs; without it, ``with_docxodus``
+    reads the drawn flow's ``docxodus/pdf_by_word`` and ``False`` leaves the
+    docxodus columns empty.
     """
     first = first_keys(gen_pairs)
     word = root / 'corpus/word'
     lane_dir = root / RUN_DIR / lane
-    dx = (root / RUN_DIR / 'docxodus' / 'pdf_by_word') if with_docxodus else None
+    if docxodus_dir is not None:
+        dx, dx_tool = docxodus_dir, docxodus_dir.parent.name
+    else:
+        dx, dx_tool = (root / RUN_DIR / 'docxodus' / 'pdf_by_word') if with_docxodus else None, 'docxodus'
     cell = _Cells(root)
     rows = []
     for r in sample:
         kind, oracle = oracle_for(r, fresh, root)
         key = first[r['base'], r['next']]
+        original = f'{key}_{lane}.docx'
         rows.append([
             r['key'], *cell(word / f'{r["base"]}.docx'), *cell(word / f'{r["next"]}.docx'),
             *cell(word / r['docx']), *cell(word / r['pdf']),
             r['state'], r['id'], r['sets'], kind,
-            *cell(oracle), *cell((dx / f'{key}_docxodus.pdf') if dx else None),
-            *cell(lane_dir / 'docx' / f'{key}_{lane}.docx'),
-            *cell(lane_dir / 'pdf_by_word' / f'{key}_{lane}.pdf'),
+            *cell(oracle), *cell(_word_pdf_of(dx, f'{key}_{dx_tool}.docx') if dx else None),
+            *cell(_renamed_docx(lane_dir / 'docx', lane_dir / 'pdf_by_word', original)),
+            *cell(_word_pdf_of(lane_dir / 'pdf_by_word', original)),
         ])
     return rows
 
 
 def conversion_rows(sample: Sequence[dict], root: Path, jubarte_dir: Path,
-                    *, with_soffice: bool = True) -> list[list[str]]:
+                    *, with_soffice: bool = True, soffice_dir: Path | None = None) -> list[list[str]]:
     """The release_info conversion CSV's data rows, from the files on disk now.
-    ``with_soffice=False`` (the fixed-set flow, #130) leaves the soffice column
-    empty: LibreOffice's numbers come from the vendor refresh lanes."""
+    ``soffice_dir`` (the fixed-set flow: the soffice refresh lane's ``candidate``
+    folder, #172) names LibreOffice's PDFs; without it ``with_soffice`` reads
+    ``SOFFICE_WORK`` and ``False`` leaves the soffice column empty."""
     cell = _Cells(root)
     jubarte = _by_lower(jubarte_dir)
-    soffice = _by_lower(root / SOFFICE_WORK / 'candidate') if with_soffice else {}
+    if soffice_dir is not None:
+        soffice = _by_lower(soffice_dir)
+    else:
+        soffice = _by_lower(root / SOFFICE_WORK / 'candidate') if with_soffice else {}
     return [[r['state'], r['stem'], *cell(root / r['docx']), *cell(root / r['word_pdf']),
              *cell(jubarte.get(f'{r["stem"]}.pdf'.lower())), *cell(soffice.get(f'{r["stem"]}.pdf'.lower()))]
             for r in sample]
+
+
+def check_comparator_files(rows: Sequence[Sequence[str]], header: Sequence[str], column: str,
+                           *, scored: int, fetch: str) -> None:
+    """Refuse a sample that names fewer comparator files in ``column`` than the
+    refresh lane ``scored``: on a clean checkout (the published bytes are deleted
+    locally after a publish) the lane's PDFs are absent and the column would go
+    blank (#172, Codex on #174). ``fetch`` is the command that brings them back."""
+    i = list(header).index(column)
+    named = sum(bool(row[i]) for row in rows)
+    if named < scored:
+        raise RuntimeError(f'{column} names {named} file(s), the refresh scored {scored}: '
+                           f'its files are not local. Fetch them, then write again: {fetch}')
 
 
 # ------------------------------------------------------------------ aggregates
@@ -1179,20 +1218,47 @@ def _span(ci: Sequence[float] | None) -> str:
     return f'[{ci[0]}, {ci[1]}]' if ci else 'not computed'
 
 
-def _ranked(result: dict, rows: list[dict]) -> list[dict]:
-    """``rows`` (ours, then the comparator) sorted by ITT median and ranked.
+def _document_scores(block: dict) -> dict[str, float]:
+    """A tool block's per-document scores as floats: the redline results file each as
+    ``{'overall': x}``, the conversion results as a bare number."""
+    out: dict[str, float] = {}
+    for key, value in (block.get('per_document') or {}).items():
+        score = value.get('overall') if isinstance(value, dict) else value
+        if isinstance(score, (int, float)) and not isinstance(score, bool):
+            out[key] = float(score)
+    return out
 
-    The method note's rule: the two rank ``1=`` when the paired bootstrap
-    interval of the median difference includes 0. A tool that was not run
-    (``median`` None, #130) sorts last and carries ``—``: it has no median to
-    rank.
+
+def _ranked(result: dict, rows: list[dict]) -> list[dict]:
+    """``rows`` sorted by ITT median and ranked.
+
+    The method note's rule, applied pair by pair (#172): two tools next to each
+    other in the order share a rank (``k=``) when the paired bootstrap interval of
+    their median difference, over the documents both scored, includes 0; ties chain
+    down the order. A pair sharing fewer than ``stats.MIN_PAIRED_DOCS`` documents has
+    no interval and never ties. Rows without per-document scores (the drawn-sample
+    flow's two rows) fall back to the result's own ``comparison`` interval. A tool
+    that was not run (``median`` None, #130) sorts last and carries ``—``.
     """
     rows = sorted(rows, key=lambda row: (row['median'] is None, -(row['median'] or 0.0)))
+    scores = [row.pop('_scores', None) or {} for row in rows]
     ci = (result.get('comparison') or {}).get('ci95')
-    tie = bool(ci and ci[0] <= 0 <= ci[1])
-    numbers = iter(range(1, sum(row['median'] is not None for row in rows) + 1))
-    return [{'rank': '—' if row['median'] is None else ('1=' if tie else str(next(numbers)))} | row
-            for row in rows]
+    fallback = bool(ci and ci[0] <= 0 <= ci[1])
+
+    def tied(i: int) -> bool:
+        """Whether row ``i`` ties the row ranked just above it."""
+        if not scores[i - 1] and not scores[i]:
+            return fallback and sum(row['median'] is not None for row in rows) == 2
+        pair = paired_interval(scores[i - 1], scores[i])
+        return bool(pair and pair['ci95'][0] <= 0 <= pair['ci95'][1])
+
+    ranked = sum(row['median'] is not None for row in rows)
+    groups: list[int] = []  # each ranked row's group start
+    for i in range(ranked):
+        groups.append(groups[i - 1] if i and tied(i) else i)
+    sizes = {start: groups.count(start) for start in groups}
+    labels = [f'{start + 1}=' if sizes[start] > 1 else str(start + 1) for start in groups]
+    return [{'rank': labels[i] if i < ranked else '—'} | row for i, row in enumerate(rows)]
 
 
 def website_records(version: str, generated: str, redline: dict, conversion: dict,
@@ -1237,7 +1303,8 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
         if block.get('not_run'):
             note += f" · not run: {block['not_run']}"
         return {'tool': tool, 'pin': block['version'], 'median': block['median'], 'mean': block['mean'],
-                'docs': block['n'], 'failed': block['failures'], 'note': note, 'ours': ours}
+                'docs': block['n'], 'failed': block['failures'], 'note': note, 'ours': ours,
+                '_scores': _document_scores(block)}  # read and dropped by _ranked
 
     if fixed:
         conv_rows = [row('jubarte †', jub_c, ours=True, ci_note=True)] \
@@ -2040,17 +2107,32 @@ def plan(rel: Release, *, binary: Path | None = None, seed: int = DEFAULT_SEED,
         exe = binary_path()
         identity = {'candidate_reports': binary_reports(exe, run), 'binary_sha256': _sha(exe),
                     'commit': engine_commit(engine_dir, run, engine_ref)}
+        found = facts()
         redline, conversion_doc = collect_set_results(
-            root, v, lane, jubarte=identity, facts=facts(), fresh=fresh,
+            root, v, lane, jubarte=identity, facts=found, fresh=fresh,
             word_version=release.word_version(run or release.default_runner()))
+        # the sample CSVs name the comparators' files from their refresh lanes (#172)
+        dx_lane = refresh_redline_lanes(root, found.redline_name).get('docxodus')
+        sof_lane = refresh_convert_lanes(root, found.convert_name).get('soffice')
+        dx_dir = (RUN_DIR / f'docxodus-{dx_lane[0]}' / 'pdf_by_word') if dx_lane else None
+        sof_dir = (Path('results') / f'soffice_{sof_lane[0]}_work' / 'candidate') if sof_lane else None
+        red_data = redline_rows(read_csv(root / redline_csv), root, lane, gen_rows(), fresh,
+                                with_docxodus=False, docxodus_dir=root / dx_dir if dx_dir else None)
+        conv_data = conversion_rows(read_csv(root / conversion_csv), root,
+                                    root / ev / 'convert_work' / 'jubarte' / 'candidate',
+                                    with_soffice=False, soffice_dir=root / sof_dir if sof_dir else None)
+        get = 'uv run bench hub get --repo arthrod/neurotic_docx_bench --path {} --dest {}'
+        if dx_lane:
+            check_comparator_files(red_data, REDLINE_HEADER, 'docxodus_pdf',
+                                   scored=redline['tools']['docxodus']['n'],
+                                   fetch=get.format(f'outputs/{RUN_DIR.name}/docxodus-{dx_lane[0]}/pdf_by_word', dx_dir))
+        if sof_lane:
+            check_comparator_files(conv_data, CONVERSION_HEADER, 'soffice_pdf',
+                                   scored=conversion_doc['tools']['soffice']['n'],
+                                   fetch=get.format(f'outputs/convert_860/soffice_{sof_lane[0]}/pdf', sof_dir))
         detail = write_six(
             engine_dir, v, bench_root=root, redline=redline, conversion=conversion_doc,
-            set_version=facts().set_version,
-            redline_data=redline_rows(read_csv(root / redline_csv), root, lane, gen_rows(), fresh,
-                                      with_docxodus=False),
-            conversion_data=conversion_rows(read_csv(root / conversion_csv), root,
-                                            root / ev / 'convert_work' / 'jubarte' / 'candidate',
-                                            with_soffice=False))
+            set_version=found.set_version, redline_data=red_data, conversion_data=conv_data)
         return f'{detail}; binary {identity["binary_sha256"][:12]} reports "{identity["candidate_reports"]}"'
 
     def publish_action() -> str:

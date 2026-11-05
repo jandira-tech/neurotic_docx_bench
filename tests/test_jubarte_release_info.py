@@ -1397,6 +1397,16 @@ def test_sets_sample_then_write_reads_the_vendor_lanes(tmp_path: Path) -> None:
     lane_doc['tools']['docxide']['version'] = 'docxide-pdf 0.18.4'
     lane_doc['scorer_backend'] = 'numpy'
     _put_json(root / 'results/docx_to_pdf_docxide_0.18.4_set-convert_860.json', lane_doc)
+    # the comparator files the sample names must be local (Codex on #174): absent,
+    # the write refuses and says how to fetch them; present, every row names one
+    with pytest.raises(RuntimeError, match=r'docxodus_pdf names 0 file\(s\), the refresh scored 5.*bench hub get'):
+        _act(steps, 'release_info')
+    for key in {r['key'] for r in jri.read_csv(root / jri.RUN_DIR / 'gen_pairs.csv')}:  # rows name first keys
+        _put(root / jri.RUN_DIR / 'docxodus-15.0.0' / 'pdf_by_word' / f'{key}_docxodus-15.0.0_byword.pdf')
+    with pytest.raises(RuntimeError, match=r'soffice_pdf names 0 file\(s\), the refresh scored'):
+        _act(steps, 'release_info')
+    for stem in stems:
+        _put(root / 'results' / 'soffice_26.8.2.2_work' / 'candidate' / f'{stem}.pdf')
     detail = _act(steps, 'release_info')
     assert f'six files of {V}' in detail
     six = _six(engine / 'release_info')
@@ -1849,3 +1859,127 @@ def test_report_tool_still_refuses_a_missing_vendor() -> None:
     """#169: the alias map does not make an absent vendor readable."""
     with pytest.raises(RuntimeError, match='not soffice'):
         jri._report_tool({'tools': {'docxide-pdf': {}}}, 'soffice')
+
+
+def _ranked_tool(version: str, scores: dict[str, float], *, nested: bool) -> dict:
+    """A tool block carrying its per-document scores, nested ``{'overall': x}`` as
+    the redline results file them or bare floats as the conversion results do."""
+    values = sorted(scores.values())
+    median = values[len(values) // 2]
+    return {'version': version, 'median': median, 'mean': median, 'n': len(scores), 'failures': 0,
+            'exact_100': 0, 'at_least_90': 0, 'median_ci95': [1.0, 2.0],
+            'by_state': {'clean': {'n': len(scores), 'median': median}},
+            'per_document': {k: ({'overall': v} if nested else v) for k, v in scores.items()}}
+
+
+def test_fixed_set_ranks_tie_only_adjacent_tools_whose_own_paired_interval_holds_zero():
+    """#172: the jubarte-vs-docxodus interval held 0, and every redline row was
+    ranked ``1=`` — superdoc and apryse, 20 and 35 points behind, included. Each
+    adjacent pair ties only on its own paired interval over the documents both
+    scored; a pair sharing fewer than MIN_PAIRED_DOCS documents never ties."""
+    keys = [f'k{i:03d}' for i in range(60)]
+    jub = {k: 80.0 + (i % 7) * 0.1 for i, k in enumerate(keys)}
+    doc = {k: v + (0.05 if i % 2 else -0.05) for i, (k, v) in enumerate(jub.items())}  # a coin flip
+    sup = {k: 60.0 + (i % 5) for i, k in enumerate(keys[:40])}                     # well behind
+    apr = {k: 59.5 + (i % 5) for i, k in enumerate(keys[45:])}                     # shares 0 docs with superdoc
+    redline = {'tools': {'jubarte': _ranked_tool('jubarte 9.9.9', jub, nested=True),
+                         'docxodus': _ranked_tool('docxodus 15.0.0', doc, nested=True),
+                         'superdoc': _ranked_tool('superdoc 2.25.0', sup, nested=True),
+                         'apryse': _ranked_tool('apryse 12.2.1', apr, nested=True)},
+               'sample': {'pairs': 60},
+               'comparison': {'comparator': 'docxodus', 'ci95': [-0.1, 0.1]}}
+    conv = {k: 70.0 + (i % 3) for i, k in enumerate(keys)}
+    conversion = {'tools': {'jubarte': _ranked_tool('jubarte 9.9.9', conv, nested=False),
+                            'soffice': _ranked_tool('LibreOffice 26.8.2.2', {k: v - 10 for k, v in conv.items()}, nested=False),
+                            'docxide': _ranked_tool('docxide 0.18.4', {k: v - 10.01 for k, v in conv.items()}, nested=False),
+                            'docxodus': _ranked_tool('docxodus 15.0.0', {k: v - 30 for k, v in conv.items()}, nested=False),
+                            'apryse': _ranked_tool('apryse 12.2.1', {k: v - 5 for k, v in conv.items()}, nested=False)},
+                  'versions': {'scorer': 's'},
+                  'comparison': {'comparator': 'soffice', 'ci95': [9.0, 11.0]}}
+    recs = jri.website_records('9.9.9', 'g', redline, conversion, 'r', 'c', set_version='2026-11-03.1')
+    tables = {t['id']: t['rows'] for t in next(r['value'] for r in recs if r['key'] == 'bench.tables')}
+    assert [(r['rank'], r['tool']) for r in tables['redlines-sample']] == [
+        ('1=', 'jubarte-9.9.9 †'), ('1=', 'docxodus'), ('3', 'superdoc'), ('4', 'apryse')]
+    # soffice and docxide differ by 0.01 on every document: a sure difference, not a tie
+    assert [(r['rank'], r['tool']) for r in tables['conversion-sample']] == [
+        ('1', 'jubarte †'), ('2', 'apryse'), ('3', 'soffice'), ('4', 'docxide'), ('5', 'docxodus')]
+    assert not any(set(r) & {'scores', '_scores', 'key'} for t in tables.values() for r in t)
+
+
+def _manifest(folder: Path, *lines: dict) -> None:
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / 'manifest.jsonl').write_text(''.join(json.dumps(line) + '\n' for line in lines))
+
+
+def test_redline_rows_follow_word_trimmed_names_and_read_the_docxodus_refresh_lane(tmp_path: Path):
+    """#172: the 0.17.0 sample named 5/600 jubarte docx and 0/600 jubarte PDFs.
+    Word's driver renames a long docx in place (manifest ``renamed`` line) and
+    exports ``<trimmed>_byword.pdf``; the row must follow the manifest. In the
+    fixed-set flow the docxodus column comes from the refresh lane's folder."""
+    root, lane, key = tmp_path, 'jubarte-9.9.9', 'a' * 70 + '__vs__' + 'b' * 70
+    run = root / jri.RUN_DIR
+    word = root / 'corpus/word'
+    for name in ('base.docx', 'next.docx', 'cmp.docx', 'cmp.pdf'):
+        (word / name).parent.mkdir(parents=True, exist_ok=True)
+        (word / name).write_bytes(name.encode())
+    (run / 'oracle_pdf').mkdir(parents=True)
+    (run / 'oracle_pdf' / f'{key}.pdf').write_bytes(b'oracle')
+    trimmed = 'a' * 27 + '_1234abcd'
+    (run / lane / 'docx').mkdir(parents=True)
+    (run / lane / 'docx' / f'{trimmed}.docx').write_bytes(b'jubarte docx')
+    _manifest(run / lane / 'pdf_by_word',
+              {'original_filename': f'{key}_{lane}.docx', 'converted_filename': f'{trimmed}.docx',
+               'status': 'renamed', 'kind': 'rename'},
+              {'original_filename': f'{trimmed}.docx', 'converted_filename': f'{trimmed}_byword.pdf',
+               'path_out': f'{jri.RUN_DIR}/{lane}/pdf_by_word/{trimmed}_byword.pdf',  # bench-root relative
+               'status': 'ok', 'kind': 'pdf'})
+    (run / lane / 'pdf_by_word' / f'{trimmed}_byword.pdf').write_bytes(b'jubarte pdf')
+    dx = run / 'docxodus-15.0.0' / 'pdf_by_word'
+    dtrim = 'a' * 27 + '_9876fedc'
+    _manifest(dx, {'original_filename': f'{key}_docxodus-15.0.0.docx', 'converted_filename': f'{dtrim}.docx',
+                   'status': 'renamed', 'kind': 'rename'})
+    (dx / f'{dtrim}_byword.pdf').write_bytes(b'docxodus pdf')
+    sample = [{'key': key, 'base': 'base', 'next': 'next', 'docx': 'cmp.docx', 'pdf': 'cmp.pdf',
+               'state': 'clean', 'id': 'x', 'sets': 's'}]
+    gen = [{'key': key, 'base': 'base', 'next': 'next'}]
+    row = jri.redline_rows(sample, root, lane, gen, tmp_path / 'fresh', with_docxodus=False, docxodus_dir=dx)[0]
+    cols = dict(zip(jri.REDLINE_HEADER, row, strict=True))
+    assert cols['jubarte_docx'] == f'{jri.RUN_DIR}/{lane}/docx/{trimmed}.docx'
+    assert cols['jubarte_pdf'] == f'{jri.RUN_DIR}/{lane}/pdf_by_word/{trimmed}_byword.pdf'
+    assert cols['docxodus_pdf'] == f'{jri.RUN_DIR}/docxodus-15.0.0/pdf_by_word/{dtrim}_byword.pdf'
+    assert cols['jubarte_pdf_sha256'] == hashlib.sha256(b'jubarte pdf').hexdigest()
+    # the drawn flow without a docxodus folder still leaves the column empty
+    row = jri.redline_rows(sample, root, lane, gen, tmp_path / 'fresh', with_docxodus=False)[0]
+    assert dict(zip(jri.REDLINE_HEADER, row, strict=True))['docxodus_pdf'] == ''
+
+
+def test_conversion_rows_read_the_soffice_refresh_lane(tmp_path: Path):
+    """#172: the fixed-set conversion sample left soffice_pdf empty on all 860 rows;
+    the refresh lane's candidate folder fills it."""
+    root = tmp_path
+    for name in ('d.docx', 'w.pdf'):
+        (root / name).write_bytes(name.encode())
+    jub, sof = root / 'jub', root / 'results/soffice_26.8.2.2_work/candidate'
+    jub.mkdir()
+    sof.mkdir(parents=True)
+    (jub / 'S1.pdf').write_bytes(b'j')
+    (sof / 'S1.pdf').write_bytes(b's')
+    sample = [{'state': 'clean', 'stem': 'S1', 'docx': 'd.docx', 'word_pdf': 'w.pdf'}]
+    row = jri.conversion_rows(sample, root, jub, with_soffice=False, soffice_dir=sof)[0]
+    cols = dict(zip(jri.CONVERSION_HEADER, row, strict=True))
+    assert cols['soffice_pdf'] == 'results/soffice_26.8.2.2_work/candidate/S1.pdf'
+    assert cols['jubarte_pdf'] == 'jub/S1.pdf'
+
+
+def test_comparator_files_must_cover_what_the_refresh_scored():
+    """Codex on #174: on a clean checkout the refresh lanes' PDFs are not local, and
+    the comparator column would go blank again. The write refuses when the sample
+    names fewer comparator files than the refresh scored, and says how to fetch them."""
+    header = ['key', 'docxodus_pdf', 'docxodus_pdf_sha256']
+    rows = [['a', 'x.pdf', 's'], ['b', '', ''], ['c', '', '']]
+    jri.check_comparator_files(rows, header, 'docxodus_pdf', scored=1, fetch='F')  # 1 of 1: fine
+    with pytest.raises(RuntimeError) as err:
+        jri.check_comparator_files(rows, header, 'docxodus_pdf', scored=2,
+                                   fetch='uv run bench hub get --path p --dest d')
+    assert 'docxodus_pdf names 1 file(s), the refresh scored 2' in str(err.value)
+    assert 'uv run bench hub get --path p --dest d' in str(err.value)
