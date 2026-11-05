@@ -1019,6 +1019,9 @@ def test_fetch_downloads_each_input_folder_pdfs_only_at_the_pinned_revision(
 
     def get(preset, *, api, revision, dest, include=(), exact=()):
         calls.append((preset.path, dest, revision, tuple(include)))
+        for name in exact:  # a real fetch lands every named file
+            (dest / name).parent.mkdir(parents=True, exist_ok=True)
+            (dest / name).write_bytes(b"%PDF")
 
     rev = "f" * 40
     _pdf(  # the one scored row the fixture leaves without its PDF
@@ -1120,3 +1123,60 @@ def test_fetch_refuses_a_scored_redline_row_whose_pdf_did_not_arrive(release_roo
     with pytest.raises(RuntimeError, match=f"jubarte-1.2.3 {REDLINE_B}"):
         release_inputs.fetch(release_root, "1.2.3", api=object(),
                              get=lambda *a, **k: None, revision="f" * 40)
+
+
+def _landing_get(skip: str = ""):
+    """A fake hub_get.get that lands every named file except `skip`."""
+    def get(preset, *, api, revision, dest, include=(), exact=()):
+        for name in exact:
+            if name != skip:
+                (dest / name).parent.mkdir(parents=True, exist_ok=True)
+                (dest / name).write_bytes(b"%PDF")
+    return get
+
+
+def _complete_redlines(release_root: Path) -> None:
+    _pdf(release_root / "results" / "redlines_0929_full" / "jubarte-1.2.3" / "pdf_by_word"
+         / f"{REDLINE_B}_jubarte-1.2.3_byword.pdf", pages=3)
+
+
+def test_fetch_refuses_a_named_reference_the_hub_did_not_have(release_root: Path) -> None:
+    """CodeRabbit on #181: hub_get skips an exact name the hub lacks and fails only when
+    nothing matches, so a partial fetch exits 0; fetch checks every named file landed."""
+    from neurotic_docx_bench.ledger import release_inputs
+
+    _complete_redlines(release_root)
+    (release_root / "corpus" / "word" / "clean" / "pdf" / f"{CONVERT_B}.pdf").unlink(missing_ok=True)
+    with pytest.raises(RuntimeError, match=f"{CONVERT_B}.pdf"):
+        release_inputs.fetch(release_root, "1.2.3", api=object(),
+                             get=_landing_get(skip=f"{CONVERT_B}.pdf"), revision="f" * 40)
+
+
+def test_fetch_refuses_a_scored_conversion_whose_pdf_did_not_arrive(release_root: Path) -> None:
+    """CodeRabbit on #181: a recorded page count is not evidence the candidate was fetched."""
+    from neurotic_docx_bench.ledger import release_inputs
+
+    _complete_redlines(release_root)
+    (release_root / "results" / "docxodus_15.0.0_work" / "docxodus" / "candidate"
+     / f"{CONVERT_A}.pdf").unlink()
+    with pytest.raises(RuntimeError, match=f"docxodus.* {CONVERT_A}"):
+        release_inputs.fetch(release_root, "1.2.3", api=object(),
+                             get=_landing_get(), revision="f" * 40)
+
+
+def test_a_redline_reference_prefers_the_verified_corpus_pdf_when_the_hashes_match(
+    tmp_path: Path,
+) -> None:
+    """CodeRabbit on #181: with equal recorded hashes, the corpus PDF (hash-verified by the
+    fetch) wins over a local oracle_pdf copy that may be stale."""
+    from neurotic_docx_bench.ledger import release_cases
+
+    for rel in ("results/redlines_0929_full/oracle_pdf/k.pdf", "corpus/word/clean/pdf/k.pdf"):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / rel).write_bytes(b"%PDF")
+    row = {"oracle_pdf": "results/redlines_0929_full/oracle_pdf/k.pdf",
+           "pdf": "corpus/word/clean/pdf/k.pdf",
+           "oracle_pdf_sha256": "a" * 64, "pdf_sha256": "a" * 64}
+    assert release_cases._redline_reference(tmp_path, row) == tmp_path / row["pdf"]
+    row["pdf_sha256"] = "b" * 64  # different bytes: the oracle copy is the reference
+    assert release_cases._redline_reference(tmp_path, row) == tmp_path / row["oracle_pdf"]

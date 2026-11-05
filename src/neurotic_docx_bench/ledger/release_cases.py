@@ -831,15 +831,22 @@ def _redline_reference(root: Path, row: dict[str, str]) -> Path:
     records the same bytes for both (#180: the oracle_pdf/ folder is a local copy of
     corpus PDFs, never published under that name)."""
     oracle = root / (row.get("oracle_pdf") or row.get("pdf") or "")
-    if oracle.is_file() or not row.get("pdf"):
+    if not row.get("pdf"):
         return oracle
     same = row.get("oracle_pdf_sha256") and row.get("oracle_pdf_sha256") == row.get("pdf_sha256")
-    return root / row["pdf"] if same else oracle
+    corpus = root / row["pdf"]
+    # the same bytes: the corpus PDF, which the fetch hash-verifies, wins over a local
+    # copy that may be stale (CodeRabbit on #181)
+    if same and (corpus.is_file() or not oracle.is_file()):
+        return corpus
+    return oracle
 
 
 def missing_scored_pdfs(root: Path, version: str, *, vendor_root: Path | None = None,
-                        redline_csv: Path | None = None) -> list[str]:
-    """`<lane> <key>` for every scored redline row whose own Word-rendered PDF is not here.
+                        redline_csv: Path | None = None,
+                        convert_csv: Path | None = None) -> list[str]:
+    """`<lane> <key>` for every scored row whose own PDF is not here: a redline lane's Word
+    export, a conversion lane's candidate (unless the lane records it as a failure).
 
     The builder emits such a row without a file link (#178: never a neighbour's PDF); after
     a clean-tree fetch that would be a silently incomplete release, so `fetch` refuses it
@@ -847,7 +854,18 @@ def missing_scored_pdfs(root: Path, version: str, *, vendor_root: Path | None = 
     root = Path(root).resolve()
     vendor_root = Path(vendor_root or root).resolve()
     redline_csv = Path(redline_csv or REDLINE_SET)
+    convert_csv = Path(convert_csv or CONVERT_SET)
     out = []
+    stems = [row["stem"] for row in
+             _read_csv(convert_csv if convert_csv.is_absolute() else root / convert_csv)]
+    for lane in _conversion_lanes(root, version, convert_csv.stem):
+        failed = {str(item.get("doc")) for item in (lane.data.get("generate_failures") or [])}
+        for stem in stems:
+            if stem in failed or _conversion_score(lane, stem)[0] is None:
+                continue
+            candidate = _conversion_candidate(root, vendor_root, lane, stem)
+            if candidate is None or not Path(candidate).is_file():
+                out.append(f"{lane.key} {stem}")
     for lane in _redline_lanes(root, version, redline_csv.stem):
         for key, row in lane.data.items():
             if not isinstance(row, dict) or _redline_score(lane, key)[0] is None:

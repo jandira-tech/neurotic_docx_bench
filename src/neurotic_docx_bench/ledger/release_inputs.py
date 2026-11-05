@@ -52,13 +52,21 @@ def fetch(root: Path, version: str, *, api: object | None = None, get: Get | Non
         print(f"{repo_id}:{item.hub_path} @ {rev[:12]} ({what}) -> {item.local.relative_to(root)}")
         if item.files:
             get(preset, api=api, revision=rev, dest=item.local, exact=item.files)
+            # hub_get skips a named file the hub lacks and fails only when none matches
+            # (CodeRabbit on #181): every named file must be here now
+            absent = [name for name in item.files if not (item.local / name).is_file()]
+            if absent:
+                raise RuntimeError(
+                    f"{repo_id}:{item.hub_path} @ {rev[:12]} lacks {len(absent)} of "
+                    f"{len(item.files)} named files ({', '.join(absent[:5])})"
+                )
         else:
             get(preset, api=api, revision=rev, dest=item.local, include=("*.pdf", "manifest.jsonl"))
     missing = missing_scored_pdfs(root, version)
     if missing:
         more = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
         raise RuntimeError(
-            f"release {version}: {len(missing)} scored redline row(s) have no Word-rendered PDF "
+            f"release {version}: {len(missing)} scored row(s) have no PDF of their own "
             f"after the fetch ({'; '.join(missing[:5])}{more}); the release would link nothing "
             "for them"
         )
