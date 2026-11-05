@@ -1,0 +1,60 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-05 00:18:40.876 | INFO     | __main__:warm:1482 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-11-05 00:18:45.583 | INFO     | __main__:warm:1489 - [word] Word answered after 5 s; alerts off
+2026-11-05 00:18:45.809 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=19094 open_documents=0 started_clean=True launched_by_us=True close_documents=False
+2026-11-05 00:18:45.836 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=False documents=600 accept_all=False reject_all=False
+2026-11-05 00:18:51.068 | ERROR    | __main__:_convert_serial:2789 - [188/600] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_bf332c67.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:02.670 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_bf332c67.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_bf332c67.docx
+2026-11-05 00:19:04.762 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-05 00:19:04.764 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-05 00:19:04.765 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-05 00:19:04.766 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-05 00:19:05.571 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:19:10.877 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 8.2 s, no output
+2026-11-05 00:19:13.488 | ERROR    | __main__:_convert_serial:2789 - [227/600] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_91f781be.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:19.428 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_91f781be.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_91f781be.docx
+2026-11-05 00:19:23.680 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:19:24.580 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 5.1 s, no output
+2026-11-05 00:19:29.741 | ERROR    | __main__:_convert_serial:2789 - [348/600] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_4be3a46e.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:34.481 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_4be3a46e.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_4be3a46e.docx
+2026-11-05 00:19:38.888 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:19:42.180 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 7.7 s, no output
+2026-11-05 00:19:42.184 | WARNING  | __main__:_convert_serial:2798 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-05 00:19:42.251 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 19908); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-05 00:19:42.455 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')
+2026-11-05 00:19:42.635 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-05 00:19:45.006 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_bf332c67.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:49.177 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:19:51.175 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_91f781be.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:54.895 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:19:59.697 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_4be3a46e.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-05 00:19:59.742 | INFO     | __main__:convert_folder:2726 - [manifest] appended 600 line(s) to results/redlines_0929_full/jubarte-0.17.0/pdf_by_word/manifest.jsonl
+2026-11-05 00:20:04.102 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-05 00:20:04.688 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=6 granted=0 forwarded=0 alerts_seen=1
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.17.0/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   597 │
+│ failed           │     3 │
+└──────────────────┴───────┘
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_bf332c67.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_91f781be.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_4be3a46e.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
