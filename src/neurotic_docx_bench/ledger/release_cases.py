@@ -248,7 +248,9 @@ def _sibling_word_pdf(folder: Path, key: str, tools: tuple[str, ...]) -> Path | 
         if len(siblings) > 1:
             return None
         if siblings:
-            return find_output(folder, siblings[0], kind="pdf", ext=".pdf")
+            found = find_output(folder, siblings[0], kind="pdf", ext=".pdf")
+            if found is not None:
+                return found
     return None
 
 

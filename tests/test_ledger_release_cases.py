@@ -904,3 +904,26 @@ def test_two_sibling_comparisons_with_redlines_are_ambiguous(release_root: Path)
     _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
     redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
     assert "docxodus" not in redline.files, redline.files
+
+
+def test_a_sibling_without_a_pdf_falls_through_to_the_next_tool_name(release_root: Path) -> None:
+    """Jules on #178: a sibling named under ``<tool>-<version>`` whose PDF never came
+    out must not stop the search; the lane's ``<tool>`` sibling is still tried."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    sibling = REDLINE_A.replace("aaaaaaaa", "bbbbbbbb")
+    (folder / "manifest.jsonl").write_text(
+        json.dumps(
+            {
+                "original_filename": f"{sibling}_docxodus-15.0.0.docx",
+                "converted_filename": "",
+                "status": "failed",
+                "kind": "pdf",
+            }
+        )
+        + "\n"
+    )
+    _pdf(folder / f"{sibling}_docxodus_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert redline.files["docxodus"].endswith(f"/{sibling}_docxodus_byword.pdf"), redline.files
