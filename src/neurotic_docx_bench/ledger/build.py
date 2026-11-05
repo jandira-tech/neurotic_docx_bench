@@ -497,6 +497,34 @@ def run_page_views(
     return 0
 
 
+RELEASE_INDEX = "results/release/cases/index.json"
+_RELEASE_GROUP = re.compile(r"^[^/]+/release-(?P<version>\d+(?:\.\d+)*)$")
+
+
+def release_on_disk(root: Path) -> str | None:
+    """The version of the versioned release whose bundle is on disk, or None.
+
+    A versioned release's ``cases/index.json`` names only fixed-set groups
+    ``<kind>/release-<version>``; any other group means the legacy bundle (None).
+    An index naming two versions is refused (ValueError): no version is right."""
+    path = Path(root) / RELEASE_INDEX
+    if not path.is_file():
+        return None
+    try:
+        groups = json.loads(path.read_text(encoding="utf-8")).get("groups") or []
+    except (ValueError, AttributeError):
+        return None
+    names = [str(g.get("group", "")) for g in groups if isinstance(g, dict)]
+    found = [_RELEASE_GROUP.match(name) for name in names]
+    if not names or not all(found):
+        return None
+    versions = sorted({m.group("version") for m in found if m})
+    if len(versions) > 1:
+        raise ValueError(f"{RELEASE_INDEX} names releases {', '.join(versions)}; "
+                         "pass --release-version to say which one to check")
+    return versions[0]
+
+
 def run_release_views(
     root: Path,
     *,
@@ -514,6 +542,18 @@ def run_release_views(
     from neurotic_docx_bench.ledger import cases_ref
 
     root = Path(root)
+    if check and not release_version:
+        # `bench publish`'s before-check runs with no version (#175): check the
+        # release the bundle on disk is, never rebuild the legacy one over it.
+        # Only the check infers it; a write without a version stays the legacy
+        # emitter the CLI documents (Codex on #176).
+        try:
+            release_version = release_on_disk(root)
+        except ValueError as exc:
+            echo(f"error: {exc}")
+            return 1
+        if release_version:
+            echo(f"release {release_version} (read from {RELEASE_INDEX})")
     if not release_version:
         try:
             cases_ref.ensure_legacy(root)
