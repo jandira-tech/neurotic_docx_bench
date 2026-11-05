@@ -795,3 +795,41 @@ def test_a_write_without_a_version_keeps_the_legacy_flow(
     said: list[str] = []
     ledger_build.run_release_views(release_root, echo=said.append)
     assert not any(line.startswith("release 1.2.3") for line in said), said
+
+
+def test_a_vendor_lane_links_its_own_trimmed_word_pdf_not_a_prefix_neighbour(
+    release_root: Path,
+) -> None:
+    """#177: the refresh lanes' Word manifests name `<key>_<tool>-<version>.docx`,
+    trimmed on disk; a lookup of `<key>_<tool>.docx` missed and a 35-character
+    prefix glob took another pair's PDF sorted first. The lane must link its own."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    trimmed = f"{REDLINE_A[:20]}_a1b2c3d4"
+    _pdf(folder / f"{trimmed}_byword.pdf", pages=3)
+    _pdf(folder / f"{REDLINE_A[:35]}0_decoy_byword.pdf", pages=1)  # another pair, sorted first
+    (folder / "manifest.jsonl").write_text(
+        json.dumps({"original_filename": f"{REDLINE_A}_docxodus-15.0.0.docx",
+                    "converted_filename": f"{trimmed}.docx", "status": "renamed", "kind": "rename"})
+        + "\n"
+        + json.dumps({"original_filename": f"{trimmed}.docx", "converted_filename": f"{trimmed}_byword.pdf",
+                      "path_out": f"results/redlines_0929_full/docxodus-15.0.0/pdf_by_word/{trimmed}_byword.pdf",
+                      "status": "ok", "kind": "pdf"})
+        + "\n",
+        encoding="utf-8",
+    )
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert redline.files["docxodus"].endswith(f"/{trimmed}_byword.pdf"), redline.files
+
+
+def test_an_ambiguous_prefix_never_picks_a_pdf(release_root: Path) -> None:
+    """#177: with no manifest entry and two PDFs sharing the key's prefix, no file is
+    linked — a wrong pair's redline is worse than none."""
+    folder = release_root / "results" / "redlines_0929_full" / "docxodus-15.0.0" / "pdf_by_word"
+    (folder / f"{REDLINE_A}_docxodus_byword.pdf").unlink()
+    _pdf(folder / f"{REDLINE_A[:35]}0_one_byword.pdf", pages=3)
+    _pdf(folder / f"{REDLINE_A[:35]}1_two_byword.pdf", pages=3)
+    _, shards = cases_emit.emit_release(release_root, "1.2.3", files_base=FILES_BASE)
+    redline = next(shard for shard in shards if shard.kind == "redline").cases[0]
+    assert "docxodus" not in redline.files, redline.files

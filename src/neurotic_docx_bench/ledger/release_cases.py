@@ -21,6 +21,7 @@ the local run directories; it never uploads anything.
 from __future__ import annotations
 
 import csv
+import glob
 import json
 import math
 from dataclasses import dataclass
@@ -201,19 +202,24 @@ def _conversion_candidate(root: Path, vendor_root: Path, lane: _Lane, stem: str)
     return _first_existing(candidates) or candidates[0]
 
 
-def _word_pdf(folder: Path, key: str, tool: str) -> Path | None:
-    """The PDF Word exported for one redline, following the driver's manifest."""
+def _word_pdf(folder: Path, key: str, *tools: str) -> Path | None:
+    """The PDF Word exported for one redline, following the driver's manifest.
+
+    ``tools`` are the names the lane's redlines may carry, most specific first
+    (a refresh lane's ``<tool>-<version>``, then ``<tool>``; #177). Long names
+    are trimmed before Word sees them; the manifest's ``renamed`` lines lead to
+    the trimmed name. A prefix of the key is only trusted when exactly one PDF
+    carries it: pairs that share a base document share the prefix, and a wrong
+    pair's redline is worse than none (#177)."""
     if not folder.is_dir():
         return None
-    originals = (f"{key}_{tool}.docx", f"{key}.docx")
+    originals = [f"{key}_{tool}.docx" for tool in tools] + [f"{key}.docx"]
     for original in originals:
         found = find_output(folder, original, kind="pdf", ext=".pdf")
         if found is not None:
             return found
-    # Long names are trimmed before Word sees them (35 characters for a
-    # redline); the hash suffix makes the trimmed name unique.
-    matches = sorted(folder.glob(f"{key[:35]}*_byword.pdf"))
-    return matches[0] if matches else None
+    matches = sorted(folder.glob(f"{glob.escape(key[:35])}*_byword.pdf"))
+    return matches[0] if len(matches) == 1 else None
 
 
 def _redline_lane_dir(lane: _Lane) -> str:
@@ -225,14 +231,18 @@ def _redline_lane_dir(lane: _Lane) -> str:
     return lane.key if lane.key.startswith("jubarte-") else f"{lane.tool}-{lane.version}"
 
 
-def _redline_tool(lane: _Lane) -> str:
-    """The name the lane's redlines carry (``<key>_<tool>.docx``)."""
-    return lane.key if lane.key.startswith("jubarte-") else lane.tool
+def _redline_tools(lane: _Lane) -> tuple[str, ...]:
+    """The names the lane's redlines may carry (``<key>_<name>.docx``), most specific
+    first: the release's own lane is ``jubarte-<v>``; a refresh lane's Word manifest
+    names ``<tool>-<version>``, older lanes ``<tool>`` (#177)."""
+    if lane.key.startswith("jubarte-"):
+        return (lane.key,)
+    return (f"{lane.tool}-{lane.version}", lane.tool)
 
 
 def _redline_candidate(root: Path, vendor_root: Path, lane: _Lane, key: str) -> Path | None:
     folder = vendor_root / RUN_DIR / _redline_lane_dir(lane) / "pdf_by_word"
-    return _word_pdf(folder, key, _redline_tool(lane))
+    return _word_pdf(folder, key, *_redline_tools(lane))
 
 
 def _redline_file(lane: _Lane, pdf: Path) -> str:
@@ -607,7 +617,7 @@ def _redline_cases(
         if not reference_pdf.is_file():
             for lane in lanes:
                 folder = vendor_root / RUN_DIR / f"{lane.tool}-{lane.version}" / "pdf_by_word"
-                candidate = _word_pdf(folder, key, lane.tool)
+                candidate = _word_pdf(folder, key, *_redline_tools(lane))
                 if candidate is not None:
                     reference_pdf = candidate
                     break
