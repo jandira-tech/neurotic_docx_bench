@@ -1,49 +1,48 @@
 {
-  "generated": "2026-11-03",
+  "generated": "2026-11-05",
   "headlines": [
     {
-      "label": "DOCX → PDF · median, 600-doc sample",
-      "sub": "600 documents, state-balanced; 0 jubarte failures. Sample list and shas: release_info/sample_conversion_0.17.0_11-01-26_01-06.csv.",
-      "value": "81.09",
-      "vs": "LibreOffice 26.8.0.3 47.88"
+      "label": "DOCX → PDF · median, the 860-document set",
+      "sub": "860 documents of the fixed conversion set (set 2026-11-03.1); 0 jubarte failures. Set list and shas: release_info/sample_conversion_0.17.0_11-05-26_03-23.csv.",
+      "value": "81.88",
+      "vs": "LibreOffice 26.8.2.2 9dea406ab7695df6325b11b0e19fdca8db4b7276 55.39"
     },
     {
-      "label": "Redline vs Word compare · median, 600-pair sample",
-      "sub": "600 document pairs, one Word compare each; paired 95% CI of the difference [0.7108, 1.8946]. Sample list and shas: release_info/sample_redline_0.17.0_11-01-26_01-06.csv.",
-      "value": "83.76",
-      "vs": "Docxodus 70.27"
+      "label": "Redline vs Word compare · median, the 600-pair set",
+      "sub": "600 pairs of the fixed redline set (set 2026-11-03.1), one Word compare each; paired 95% CI of the difference [0.0, 0.3019]. Set list and shas: release_info/sample_redline_0.17.0_11-05-26_03-23.csv.",
+      "value": "82.99",
+      "vs": "docxodus 15.0.0 80.37"
     }
   ],
   "home_groups": [
     {
-      "meta": "600-doc sample · median · 2026-11-01",
+      "meta": "860-doc set · median · 2026-11-05",
       "rows": [
         {
           "name": "jubarte 0.17.0",
           "ours": true,
-          "v": 81.0931
+          "v": 81.8829
         },
         {
-          "name": "LibreOffice 26.8.0.3",
+          "name": "LibreOffice 26.8.2.2 9dea406ab7695df6325b11b0e19fdca8db4b7276",
           "ours": false,
-          "v": 47.8822
+          "v": 55.3892
         }
       ],
       "title": "DOCX → PDF vs Word's own export"
     },
     {
-      "meta": "600-pair sample · median · 2026-11-01",
-      "note": "Both groups are the release's samples, state-balanced; the full-corpus tables live in the bench's RESULTS.md.",
+      "meta": "600-pair set · median · 2026-11-05",
       "rows": [
         {
           "name": "jubarte 0.17.0",
           "ours": true,
-          "v": 83.7553
+          "v": 82.9938
         },
         {
-          "name": "Docxodus 12.6.5 (C#)",
+          "name": "docxodus 15.0.0",
           "ours": false,
-          "v": 70.2748
+          "v": 80.3672
         }
       ],
       "title": "Redlines vs Word's compare, opened in Word"
@@ -63,8 +62,8 @@
       "t": "Paired bootstrap"
     },
     {
-      "d": "From 0.17.0 the tables on this page are the release's two samples — state-balanced, every file sha256-listed in the engine's release_info/. Full-corpus runs remain in the bench's RESULTS.md.",
-      "t": "Release samples"
+      "d": "From 0.17.0 the tables on this page are the bench's fixed evaluation sets (set version 2026-11-03.1), the same documents for every release; every row's inputs are sha256-listed in the engine's release_info/. The comparators are the vendor refresh's runs on the same sets, newest version per tool — a tool the refresh did not run shows as not run, never 0. Full-corpus runs remain in the bench's RESULTS.md.",
+      "t": "Fixed sets"
     },
     {
       "d": "jubarte is marked † everywhere. Pins, run dates and sample lists are published so any row can be re-run; the harness is public.",
@@ -89,16 +88,16 @@
   "repo": "https://github.com/jandira-tech/neurotic_docx_bench",
   "states": [
     {
-      "n": "150",
+      "n": "380",
       "name": "clean",
       "rows": [
         {
-          "median": 90.7695,
+          "median": 87.2986,
           "ours": true,
           "tool": "jubarte"
         },
         {
-          "median": 68.8332,
+          "median": 62.26,
           "ours": false,
           "tool": "soffice"
         }
@@ -106,16 +105,16 @@
       "table": "conversion-sample"
     },
     {
-      "n": "150",
+      "n": "375",
       "name": "tracking_without_comments",
       "rows": [
         {
-          "median": 81.5365,
+          "median": 81.1142,
           "ours": true,
           "tool": "jubarte"
         },
         {
-          "median": 64.3983,
+          "median": 57.8516,
           "ours": false,
           "tool": "soffice"
         }
@@ -123,16 +122,16 @@
       "table": "conversion-sample"
     },
     {
-      "n": "117",
+      "n": "22",
       "name": "with_comments_clean",
       "rows": [
         {
-          "median": 81.2207,
+          "median": 80.0131,
           "ours": true,
           "tool": "jubarte"
         },
         {
-          "median": 46.3338,
+          "median": 40.7859,
           "ours": false,
           "tool": "soffice"
         }
@@ -140,16 +139,16 @@
       "table": "conversion-sample"
     },
     {
-      "n": "183",
+      "n": "83",
       "name": "with_comments_tracking",
       "rows": [
         {
-          "median": 78.6001,
+          "median": 79.736,
           "ours": true,
           "tool": "jubarte"
         },
         {
-          "median": 42.8504,
+          "median": 43.2123,
           "ours": false,
           "tool": "soffice"
         }
@@ -699,64 +698,119 @@
   ],
   "tables": [
     {
-      "desc": "A state-balanced 600-document sample of corpus/word (every path and sha256 in release_info/sample_conversion_0.17.0_11-01-26_01-06.csv), each converter's PDF scored against Word's own export of the same file. Sorted by ITT median; a failed document scores 0. 95% CI is a percentile bootstrap of the ITT median (2,000 resamples, seed 42).",
+      "desc": "The fixed 860-document conversion set (every path and sha256 in release_info/sample_conversion_0.17.0_11-05-26_03-23.csv): each converter turns the same DOCX into PDF, scored pixel-wise against Word's own export of the same file. jubarte converts and is scored by this run, intent-to-treat — a document it fails scores 0; the comparators are the vendor refresh's runs on the same set, the newest version per tool, and a document a converter did not run is not run, never 0. Sorted by median; 95% CI is a percentile bootstrap of the median (2,000 resamples, seed 42).",
       "id": "conversion-sample",
-      "meta": "600 docs · 150/150/117/183 by state · scorer numpy · 2026-11-01",
+      "meta": "860 docs · 380/375/22/83 by state · set 2026-11-03.1 · scorer numpy · 2026-11-05",
       "rows": [
         {
-          "docs": 600,
+          "docs": 860,
           "failed": 0,
-          "mean": 79.2446,
-          "median": 81.0931,
-          "note": "[80.42, 81.7]",
+          "mean": 78.2522,
+          "median": 81.8829,
+          "note": "[81.2, 82.44]",
           "ours": true,
           "pin": "jubarte 0.17.0",
           "rank": "1",
           "tool": "jubarte"
         },
         {
-          "docs": 600,
-          "failed": 2,
-          "mean": 54.6071,
-          "median": 47.8822,
-          "note": "[47.53, 48.47]",
+          "docs": 860,
+          "failed": 0,
+          "mean": 69.2628,
+          "median": 75.5487,
+          "note": "[74.79, 76.42]",
           "ours": false,
-          "pin": "LibreOffice 26.8.0.3",
+          "pin": "apryse-sdk 12.2.1 (PDFNet 12.2.0-079a1c0268, demo key: output watermarked)",
           "rank": "2",
-          "tool": "soffice"
-        }
-      ],
-      "title": "DOCX → PDF vs Word's own PDF — 600-document sample"
-    },
-    {
-      "desc": "A sample of 600 document pairs of redlines_0929_full, one Word compare each: every pair of the scarce states, the rest spread over the document families (every path and sha256 in release_info/sample_redline_0.17.0_11-01-26_01-06.csv). Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. A pair with no scored PDF counts 0.",
-      "id": "redlines-sample",
-      "meta": "600 pairs · one Word compare each · pixel scorer · opened in Word · 2026-11-01",
-      "rows": [
-        {
-          "docs": 600,
-          "failed": 7,
-          "mean": 74.3589,
-          "median": 83.7553,
-          "note": "= 100: 47 · ≥ 90: 109",
-          "ours": true,
-          "pin": "jubarte 0.17.0",
-          "rank": "1",
-          "tool": "jubarte-0.17.0"
+          "tool": "apryse"
         },
         {
-          "docs": 600,
-          "failed": 25,
-          "mean": 64.917,
-          "median": 70.2748,
-          "note": "= 100: 38 · ≥ 90: 76",
+          "docs": 860,
+          "failed": 0,
+          "mean": 61.0109,
+          "median": 58.5749,
+          "note": "[56.51, 61.21]",
           "ours": false,
-          "pin": "Docxodus 12.6.5 (C#)",
-          "rank": "2",
+          "pin": "docxide-pdf v0.18.4",
+          "rank": "3",
+          "tool": "docxide"
+        },
+        {
+          "docs": 860,
+          "failed": 0,
+          "mean": 58.0667,
+          "median": 55.3892,
+          "note": "[53.3, 57.76]",
+          "ours": false,
+          "pin": "LibreOffice 26.8.2.2 9dea406ab7695df6325b11b0e19fdca8db4b7276",
+          "rank": "4",
+          "tool": "soffice"
+        },
+        {
+          "docs": 860,
+          "failed": 38,
+          "mean": 46.1165,
+          "median": 43.0357,
+          "note": "[42.19, 43.91]",
+          "ours": false,
+          "pin": "@docxodus/export 15.0.0 (docxodus 15.0.0)",
+          "rank": "5",
           "tool": "docxodus"
         }
       ],
-      "title": "Redlines vs Word's compare — 600-pair sample"
+      "title": "DOCX → PDF vs Word's own PDF — the 860-document set"
+    },
+    {
+      "desc": "The fixed 600-pair redline set (every path and sha256 in release_info/sample_redline_0.17.0_11-05-26_03-23.csv): every jubarte.pro case pair plus pairs drawn from the release sample, state-balanced, one Word compare each. Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. jubarte is scored by this run, intent-to-treat — a pair without a scored PDF counts 0; the comparators are the vendor refresh's runs on the same set, the newest version per tool, and a pair a comparator did not run is not run, never 0.",
+      "id": "redlines-sample",
+      "meta": "600 pairs · one Word compare each · pixel scorer · opened in Word · set 2026-11-03.1 · 2026-11-05",
+      "rows": [
+        {
+          "docs": 600,
+          "failed": 3,
+          "mean": 74.0553,
+          "median": 82.9938,
+          "note": "= 100: 41 · ≥ 90: 96",
+          "ours": true,
+          "pin": "jubarte 0.17.0",
+          "rank": "1=",
+          "tool": "jubarte-0.17.0"
+        },
+        {
+          "docs": 543,
+          "failed": 0,
+          "mean": 71.673,
+          "median": 80.3672,
+          "note": "= 100: 46 · ≥ 90: 98 · not run: 57",
+          "ours": false,
+          "pin": "docxodus 15.0.0",
+          "rank": "1=",
+          "tool": "docxodus"
+        },
+        {
+          "docs": 67,
+          "failed": 0,
+          "mean": 61.9785,
+          "median": 61.8858,
+          "note": "= 100: 1 · ≥ 90: 1 · not run: 533",
+          "ours": false,
+          "pin": "superdoc 2.25.0",
+          "rank": "3",
+          "tool": "superdoc"
+        },
+        {
+          "docs": 336,
+          "failed": 0,
+          "mean": 50.7584,
+          "median": 47.4992,
+          "note": "= 100: 0 · ≥ 90: 4 · not run: 264",
+          "ours": false,
+          "pin": "apryse 12.2.1",
+          "rank": "4",
+          "tool": "apryse"
+        }
+      ],
+      "title": "Redlines vs Word's compare — the 600-pair set"
     },
     {
       "desc": "Each converter turns accepted and randomized-redline DOCX documents into PDF; its PDF is scored pixel-wise against the SHA-pinned PDF Word itself exported from the same file. A failed conversion scores 0 for that document (intent-to-treat).",
