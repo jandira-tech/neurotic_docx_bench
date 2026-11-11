@@ -1,0 +1,417 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-10 15:18:31.782 | WARNING  | __main__:warm:1473 - [word] Word is running but not answering Apple events; waiting for it
+2026-11-10 15:18:44.263 | INFO     | __main__:warm:1483 - [word] Word answered after 12 s; alerts off
+2026-11-10 15:18:44.477 | INFO     | __main__:preflight:3078 - [word] preflight: word_pid=23533 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-10 15:18:44.505 | INFO     | __main__:convert_folder:2729 - [word] export: one_osascript=False documents=600 accept_all=False reject_all=False
+2026-11-10 15:18:47.632 | ERROR    | __main__:_convert_serial:2811 - [116/600] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:19:05.713 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+2026-11-10 15:19:10.502 | INFO     | __main__:_note_dialogs:1074 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-10 15:19:10.503 | INFO     | __main__:_note_dialogs:1074 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-10 15:19:10.504 | INFO     | __main__:_note_dialogs:1074 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-10 15:19:10.504 | INFO     | __main__:_note_dialogs:1077 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-10 15:19:10.870 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 5.2 s, no output
+2026-11-10 15:19:11.244 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:19:13.118 | ERROR    | __main__:_convert_serial:2811 - [117/600] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:19:16.363 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+2026-11-10 15:19:20.400 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 4.0 s, no output
+2026-11-10 15:19:21.911 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:19:25.215 | ERROR    | __main__:_convert_serial:2811 - [211/600] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:19:43.856 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+2026-11-10 15:19:48.768 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:19:53.064 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 9.2 s, no output
+2026-11-10 15:19:53.067 | WARNING  | __main__:_convert_serial:2820 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-10 15:19:53.178 | WARNING  | __main__:recycle:1583 - [word] recovery 1: Word is running (pid 24147); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-10 15:19:53.471 | INFO     | __main__:_run_logged:1646 - [word] recovery 1: returned rc=0 in 0.3 s, no value came back (AppleScript 'missing value')
+2026-11-10 15:19:53.664 | INFO     | __main__:recycle:1588 - [word] recovery 1: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-10 15:19:56.833 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:20:00.324 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:20:03.483 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:20:09.668 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:20:12.312 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:20:16.597 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:20:20.229 | ERROR    | __main__:_convert_serial:2811 - [213/600] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:20:31.905 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+2026-11-10 15:20:36.184 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:20:39.493 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 7.6 s, no output
+2026-11-10 15:20:41.747 | ERROR    | __main__:_convert_serial:2811 - [258/600] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:20:52.179 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+2026-11-10 15:20:56.054 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 3.9 s, no output
+2026-11-10 15:20:56.328 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:21:00.307 | ERROR    | __main__:_convert_serial:2811 - [376/600] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:21:12.005 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+2026-11-10 15:21:16.067 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:21:20.006 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 8.0 s, no output
+2026-11-10 15:21:20.007 | WARNING  | __main__:_convert_serial:2820 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-10 15:21:20.057 | WARNING  | __main__:recycle:1583 - [word] recovery 2: Word is running (pid 25626); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-10 15:21:20.214 | INFO     | __main__:_run_logged:1646 - [word] recovery 2: returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')
+2026-11-10 15:21:20.367 | INFO     | __main__:recycle:1588 - [word] recovery 2: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-10 15:21:22.637 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:21:23.661 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:21:28.649 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:21:32.749 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:21:36.191 | INFO     | __main__:_replay:2874 - [replay] still failing, so it is the file: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:21:44.720 | WARNING  | __main__:_loop_merp:1190 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 15:21:48.247 | ERROR    | __main__:_convert_serial:2811 - [484/600] FAIL: b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 15:22:04.321 | WARNING  | __main__:recover_after_failure:1839 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+2026-11-10 15:22:08.075 | INFO     | __main__:_run_logged:1646 - [word] after the failure: returned rc=0 in 3.8 s, no output
+2026-11-10 15:22:08.085 | INFO     | __main__:convert_folder:2748 - [manifest] appended 600 line(s) to results/redlines_0929_full/jubarte-0.18.0/pdf_by_word/manifest.jsonl
+2026-11-10 15:22:11.091 | INFO     | __main__:stop:1274 - [watchdog] tally: declined=0 dismissed=12 granted=0 forwarded=0 alerts_seen=1
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.18.0/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   593 │
+│ failed           │     7 │
+└──────────────────┴───────┘
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-10 17:17:33.636 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=44499 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-10 17:17:33.649 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=False documents=785 accept_all=False reject_all=False
+2026-11-10 17:17:35.690 | ERROR    | __main__:_convert_serial:2789 - [141/785] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:17:54.462 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+2026-11-10 17:17:58.415 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 4.0 s, no output
+2026-11-10 17:17:59.233 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-10 17:17:59.234 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-10 17:17:59.234 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-10 17:17:59.235 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-10 17:17:59.855 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:18:06.835 | ERROR    | __main__:_convert_serial:2789 - [142/785] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:18:27.762 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+2026-11-10 17:18:34.799 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 7.0 s, no output
+2026-11-10 17:18:39.162 | ERROR    | __main__:_convert_serial:2789 - [267/785] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:18:58.703 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+2026-11-10 17:19:02.773 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:19:04.799 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 6.1 s, no output
+2026-11-10 17:19:04.801 | WARNING  | __main__:_convert_serial:2798 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-10 17:19:04.855 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 50917); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-10 17:19:05.010 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')
+2026-11-10 17:19:05.154 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-10 17:19:07.656 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:19:11.752 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:19:13.074 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:19:16.794 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:19:20.656 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:19:24.749 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:19:28.264 | ERROR    | __main__:_convert_serial:2789 - [269/785] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:19:38.795 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+2026-11-10 17:19:42.852 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:19:44.394 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 5.6 s, no output
+2026-11-10 17:19:46.111 | INFO     | __main__:_convert_serial:2785 - [275/785] ok (1.7s): 531cf3d312_00ce789bc3226c2a68967cc29792927c80b7f55d9b5267ad__vs__a_4d3f7cd4.docx
+2026-11-10 17:19:46.862 | INFO     | __main__:_convert_serial:2785 - [280/785] ok (0.7s): 53de8de92b_file_183__vs__abd0b75d88_file_184_redline_22702d4c54_ju_4d1f0f3a.docx
+2026-11-10 17:19:47.496 | INFO     | __main__:_convert_serial:2785 - [300/785] ok (0.6s): 5cffc4ccab_center_bold_demo_id_paraid_overflow__vs__2b6b459ed7_cle_13652221.docx
+2026-11-10 17:19:48.713 | INFO     | __main__:_convert_serial:2785 - [304/785] ok (1.2s): 5d185fb0dd_006ab612b3ae2e0b1915746c660d9ea64842d89c434e0a09__vs__a_ffec975b.docx
+2026-11-10 17:19:49.546 | INFO     | __main__:_convert_serial:2785 - [306/785] ok (0.8s): 5efd1fcd25_doc_api_stories__diff_doc1_835f4535__vs__ad00cf90d7_doc_c7c283df.docx
+2026-11-10 17:19:50.345 | INFO     | __main__:_convert_serial:2785 - [311/785] ok (0.8s): 5fe95eef15_ef8fe9466d7bdfcbb305b135138e8fb395ceceb10148015b__vs__6_5ce3efe5.docx
+2026-11-10 17:19:51.218 | INFO     | __main__:_convert_serial:2785 - [315/785] ok (0.9s): 60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__2_6049fd09.docx
+2026-11-10 17:19:52.198 | INFO     | __main__:_convert_serial:2785 - [316/785] ok (1.0s): 60dfd517a9_00f0e7f365a34acc5911a38c89776a4bdd2ba1685edcd0cc__vs__3_23747093.docx
+2026-11-10 17:19:53.052 | INFO     | __main__:_convert_serial:2785 - [320/785] ok (0.9s): 617c1284c9_00feb732c2ef2b643a132e4305e16833fd047b46ca44b65b__vs__3_e28c5eb4.docx
+2026-11-10 17:19:54.957 | INFO     | __main__:_convert_serial:2785 - [322/785] ok (1.9s): 61e3967518_0011e415331e3b2d8031efcfcfecbb68df0f0b73b26350ce__vs__a_bfc68ed3.docx
+2026-11-10 17:19:56.689 | ERROR    | __main__:_convert_serial:2789 - [324/785] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:20:06.182 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+2026-11-10 17:20:10.062 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 3.9 s, no output
+2026-11-10 17:20:10.325 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 17:20:13.433 | INFO     | __main__:_convert_serial:2785 - [325/785] ok (3.4s): 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__a_c819de28.docx
+2026-11-10 17:20:15.114 | INFO     | __main__:_convert_serial:2785 - [337/785] ok (1.7s): 6519f4775c_441c987c442115b1a8bc359967972df76603557cbe2c51c4__vs__6_5af0a089.docx
+2026-11-10 17:20:15.891 | INFO     | __main__:_convert_serial:2785 - [341/785] ok (0.8s): 66cfa52b0c_fe09ce606b20a9bbd10d61a87218cb0a70e980d2bb3639e7__vs__c_3e55f3af.docx
+2026-11-10 17:20:16.909 | INFO     | __main__:_convert_serial:2785 - [346/785] ok (1.0s): 671ff91b1d_behavior__sd_2750_borderbox_7cd3768d__vs__9322444a3f_be_7c7826af.docx
+2026-11-10 17:20:17.709 | INFO     | __main__:_convert_serial:2785 - [350/785] ok (0.8s): 6867e05e76_00b0d42bbea3b9bac7bc95466cf416f6c89a8cda62bbf3d7__vs__2_fb996c55.docx
+2026-11-10 17:20:19.735 | INFO     | __main__:_convert_serial:2785 - [354/785] ok (2.0s): 689072d58f_590e77a9f5c0a2a019cfa2e1b21d0197fb139d0f9883f948__vs__b_8f69a43d.docx
+2026-11-10 17:20:20.583 | INFO     | __main__:_convert_serial:2785 - [361/785] ok (0.8s): 6b2515b2e1_c0be5f1c808dfc28139ea2d7bbf34d3bf7e15237a63f7474__vs__3_47c73198.docx
+2026-11-10 17:20:21.310 | INFO     | __main__:_convert_serial:2785 - [372/785] ok (0.7s): 7066506689_7797a34a609833467f2373a30b2189278822712591b5923b__vs__3_d6df4eb0.docx
+2026-11-10 17:20:22.259 | INFO     | __main__:_convert_serial:2785 - [380/785] ok (0.9s): 72c4f191ff_a59554eb84b008eb3386b08ba3ea8bc91dcf242645478bcb__vs__1_79ed6a2a.docx
+2026-11-10 17:20:22.934 | INFO     | __main__:_convert_serial:2785 - [384/785] ok (0.7s): 7367931dbf_super_editor__sdt_test_60079f08__vs__89b44c96a7_super_e_37bf9517.docx
+2026-11-10 17:20:23.844 | INFO     | __main__:_convert_serial:2785 - [393/785] ok (0.9s): 75b13139d1_01424129e67ac16566c504bbb091d985cb6316a08abf5730__vs__3_b5987bc4.docx
+2026-11-10 17:20:24.468 | INFO     | __main__:_convert_serial:2785 - [398/785] ok (0.6s): 7692b33045_super_editor__list_with_break_exported_broken_45__vs__d_0e1aa469.docx
+2026-11-10 17:20:25.357 | INFO     | __main__:_convert_serial:2785 - [402/785] ok (0.9s): 76a40d9ffd_000e618d79bf03ff1783da81e6c34b7ad651896dd56e75a4__vs__a_0a650aff.docx
+2026-11-10 17:20:26.211 | INFO     | __main__:_convert_serial:2785 - [403/785] ok (0.9s): 76a40d9ffd_000e618d79bf03ff1783da81e6c34b7ad651896dd56e75a4__vs__a_d5c6a8c6.docx
+2026-11-10 17:20:26.884 | INFO     | __main__:_convert_serial:2785 - [406/785] ok (0.7s): 77f30dfc2e_file_83__vs__afdd3ca64f_file_84_redline_43288980b4_juba_c5f06e21.docx
+2026-11-10 17:20:27.940 | INFO     | __main__:_convert_serial:2785 - [421/785] ok (1.1s): 7e4c9416aa_00803e70c3646e42abab322238df606c847686168795a703__vs__a_f8dbad53.docx
+2026-11-10 17:20:28.573 | INFO     | __main__:_convert_serial:2785 - [422/785] ok (0.6s): 7e77c2f888_file_120__vs__525c779243_file_121_redline_0e99767f9f_ju_09c8cbbe.docx
+2026-11-10 17:20:29.239 | INFO     | __main__:_convert_serial:2785 - [423/785] ok (0.7s): 7f37d78481_18f71536ddf978252ed48b459630b9fe2e7cb17f45595202__vs__4_e7dd6e16.docx
+2026-11-10 17:20:30.268 | INFO     | __main__:_convert_serial:2785 - [429/785] ok (1.0s): 81f7cad226_009fa3f6b717df4d0e9371d67f305110d5096bc9178134b0__vs__1_711e5035.docx
+2026-11-10 17:20:30.902 | INFO     | __main__:_convert_serial:2785 - [432/785] ok (0.6s): 82b365789e_file_117__vs__cd54518381_file_118_redline_1c7fc8dc88_ju_57f92845.docx
+2026-11-10 17:20:31.980 | INFO     | __main__:_convert_serial:2785 - [444/785] ok (1.1s): 849eefdb7e_7429fdae0db732bd2f2dbd382964e22d8200733591aa421d__vs__6_be8f1d4d.docx
+2026-11-10 17:20:32.592 | INFO     | __main__:_convert_serial:2785 - [448/785] ok (0.6s): 8775f4c82d_font_size_24_demo_id_paraid_overflow__vs__145c9e6761_fo_b0215ed3.docx
+2026-11-10 17:20:33.461 | INFO     | __main__:_convert_serial:2785 - [450/785] ok (0.9s): 88e20c1bd0_file_68__vs__12e6e39286_file_69_redline_10c43b4911_juba_366e6492.docx
+2026-11-10 17:20:34.659 | INFO     | __main__:_convert_serial:2785 - [451/785] ok (1.2s): 899ef4306e_0017891576e438292c35db3155e97d16ec0d68144e21bfc3__vs__2_b7cb772e.docx
+2026-11-10 17:20:35.573 | INFO     | __main__:_convert_serial:2785 - [452/785] ok (0.9s): 899ef4306e_0017891576e438292c35db3155e97d16ec0d68144e21bfc3__vs__3_3905a4df.docx
+2026-11-10 17:20:36.234 | INFO     | __main__:_convert_serial:2785 - [456/785] ok (0.7s): 8c3cb2e7dd_file_60__vs__bdf199d4af_file_61_redline_613c950c41_juba_91145830.docx
+2026-11-10 17:20:37.242 | INFO     | __main__:_convert_serial:2785 - [458/785] ok (1.0s): 8c6f0ec73d_d54e7e995ac552e60bbf555c16f1f014c729f43736688e51__vs__c_e93faca2.docx
+2026-11-10 17:20:37.893 | INFO     | __main__:_convert_serial:2785 - [459/785] ok (0.6s): 8c7f16e573_super_editor__basic_tracked_change_5a9ff724__vs__d678cb_10bb5d55.docx
+2026-11-10 17:20:38.661 | INFO     | __main__:_convert_serial:2785 - [463/785] ok (0.8s): 8cd372b814_0193e5015be906eb45df5f7b3ceb682c7ff53cb52f15a0bf__vs__d_b0019206.docx
+2026-11-10 17:20:39.310 | INFO     | __main__:_convert_serial:2785 - [464/785] ok (0.6s): 8cecb6c042_project_proposal_id_paraid_overflow__vs__2bc7b14af7_pro_9c9b6a7f.docx
+2026-11-10 17:20:39.924 | INFO     | __main__:_convert_serial:2785 - [468/785] ok (0.6s): 8ded82ffec_file_132__vs__433cdffcb3_file_133_redline_1bdf2f6771_ju_673ccb09.docx
+2026-11-10 17:20:41.209 | INFO     | __main__:_convert_serial:2785 - [470/785] ok (1.3s): 8e362f619c_001a1c8e7a7ce5a802479fb58bf4affd239449ecb33b64ec__vs__a_399c113d.docx
+2026-11-10 17:20:42.942 | INFO     | __main__:_convert_serial:2785 - [471/785] ok (1.7s): 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__2_75142de2.docx
+2026-11-10 17:20:44.464 | INFO     | __main__:_convert_serial:2785 - [472/785] ok (1.5s): 8e534b49f0_00a9b37342f07e6b9bd5b8fffbe4dd777d31053171e69da2__vs__3_0edeb7c0.docx
+2026-11-10 17:20:45.093 | INFO     | __main__:_convert_serial:2785 - [474/785] ok (0.6s): 8e6f55ed7e_strikethrough_text_formatting_demo_id_paraid_ove__vs__b_8351139c.docx
+2026-11-10 17:20:46.214 | INFO     | __main__:_convert_serial:2785 - [475/785] ok (1.1s): 8e8d328cb4_4f0e4693e69502c6d92893ba330618a8e50711e4760e48d9__vs__d_d6e2ae37.docx
+2026-11-10 17:20:47.116 | INFO     | __main__:_convert_serial:2785 - [478/785] ok (0.9s): 8f05cb9991_993974b1b002c578bf35a3ded864a397a20d2e562360114e__vs__4_e6512dc1.docx
+2026-11-10 17:20:48.776 | ERROR    | __main__:_convert_serial:2789 - [479/785] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:21:03.777 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+2026-11-10 17:21:07.894 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 4.1 s, no output
+2026-11-10 17:21:08.515 | INFO     | __main__:_convert_serial:2785 - [480/785] ok (0.6s): 8fb278cb36_word_tolerated_duplicate_ppr__vs__a04e2d2749_ooxml_styl_4ae9be10.docx
+2026-11-10 17:21:09.429 | INFO     | __main__:_convert_serial:2785 - [493/785] ok (0.9s): 9482ffdc82_060638586497752e8ed47e36862b219e50ada92f80b592db__vs__8_6069bc47.docx
+2026-11-10 17:21:09.964 | INFO     | __main__:_convert_serial:2785 - [505/785] ok (0.5s): 96ac5cd9ed_file_193__vs__5d0e112e2c_file_194_redline_d480845e5f_ju_87b5310d.docx
+2026-11-10 17:21:10.695 | INFO     | __main__:_convert_serial:2785 - [515/785] ok (0.7s): 98bc895b4b_super_editor__listwithspacernodes_cf53e890__vs__36c5050_cced2db8.docx
+2026-11-10 17:21:11.389 | INFO     | __main__:_convert_serial:2785 - [516/785] ok (0.7s): 98c8b73841_0041d3944715c2fffc5929695f968e5f399e85b139fba063__vs__d_b13f0a69.docx
+2026-11-10 17:21:11.872 | INFO     | __main__:_convert_serial:2785 - [517/785] ok (0.5s): 991f6468eb_bold_italic_combined_demo_id_paraid_overflow__vs__5d5ca_c8c1bde5.docx
+2026-11-10 17:21:12.605 | INFO     | __main__:_convert_serial:2785 - [518/785] ok (0.7s): 99ef71ea03_542e3ea40461fc38266dadcfd11cd70e7e73056bfbfe20ba__vs__a_9cf9d208.docx
+2026-11-10 17:21:13.089 | INFO     | __main__:_convert_serial:2785 - [520/785] ok (0.5s): 9b9fce74d9_super_editor__basic_list_0fcfe705__vs__f4e1903ff3_super_f4aa47a4.docx
+2026-11-10 17:21:13.691 | INFO     | __main__:_convert_serial:2785 - [521/785] ok (0.6s): 9be7e36de4_00c3fd2d23e8acf016f9b2fb44f4ee84789abc39c820e7ab__vs__2_9e5859f9.docx
+2026-11-10 17:21:29.558 | INFO     | __main__:_convert_serial:2785 - [536/785] ok (15.9s): 9f6f60f1db_d0a7c31f8535690716639fce8eb4081cb831a0b1c893af9f__vs__8_8508e41b.docx
+2026-11-10 17:21:30.022 | INFO     | __main__:_convert_serial:2785 - [547/785] ok (0.5s): a3586d71f8_file_177__vs__421f2efe62_file_178_redline_868594fcae_ju_6ea39bc8.docx
+2026-11-10 17:21:30.646 | INFO     | __main__:_convert_serial:2785 - [549/785] ok (0.6s): a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d0848d7__vs__3_159eac58.docx
+2026-11-10 17:21:31.290 | INFO     | __main__:_convert_serial:2785 - [550/785] ok (0.6s): a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d0848d7__vs__3_1c8cba37.docx
+2026-11-10 17:21:31.915 | INFO     | __main__:_convert_serial:2785 - [552/785] ok (0.6s): a3df367231_001a6655d72fbecf6a1d10e479eee052a779d6ba1d0848d7__vs__b_859b114a.docx
+2026-11-10 17:21:32.798 | INFO     | __main__:_convert_serial:2785 - [560/785] ok (0.9s): a5c5107d45_0f7fe6d73dc418024d632068da59a4370f871a3adb0fba52__vs__0_cf634ed0.docx
+2026-11-10 17:21:33.364 | INFO     | __main__:_convert_serial:2785 - [567/785] ok (0.6s): a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__5_8ab204c6.docx
+2026-11-10 17:21:33.994 | INFO     | __main__:_convert_serial:2785 - [568/785] ok (0.6s): a6bdad436b_00e1eabab4f0fdde08a033b7d3af988ce75f7e80207c9918__vs__a_b6d52e9c.docx
+2026-11-10 17:21:34.474 | INFO     | __main__:_convert_serial:2785 - [570/785] ok (0.5s): a83d3922a8_file_104__vs__36223881e1_file_105_redline_3a4b48cd02_ju_97495dac.docx
+2026-11-10 17:21:35.316 | INFO     | __main__:_convert_serial:2785 - [571/785] ok (0.8s): a88f2ae357_0095a6095a0f74201c196f4944b3d93f4cf5cc20e4982903__vs__a_0ea561fd.docx
+2026-11-10 17:21:35.961 | INFO     | __main__:_convert_serial:2785 - [576/785] ok (0.6s): aa58aada65_00160046fb2516a560a9681d7ae3e6f4659af57d19555d4e__vs__a_14bfc6c1.docx
+2026-11-10 17:21:36.474 | INFO     | __main__:_convert_serial:2785 - [585/785] ok (0.5s): accec0538a_anchor_images__vs__6d773ca294_super_editor__annot2_03ae_32f211f3.docx
+2026-11-10 17:21:37.799 | INFO     | __main__:_convert_serial:2785 - [592/785] ok (1.3s): ae086861ee_39a887f5b1bab1cf142553ab31f2bbdcf6ff51b14218f14c__vs__a_468d99a9.docx
+2026-11-10 17:21:38.782 | INFO     | __main__:_convert_serial:2785 - [593/785] ok (1.0s): ae7ee72233_cb17d2d61a361074ba2688314d1e8ea44059899c5f74a347__vs__d_fd896eb2.docx
+2026-11-10 17:21:39.379 | INFO     | __main__:_convert_serial:2785 - [594/785] ok (0.6s): ae9360e096_behavior__sd_2672_merged_table_821b922c__vs__a5903a7c15_fe001a47.docx
+2026-11-10 17:21:40.579 | INFO     | __main__:_convert_serial:2785 - [598/785] ok (1.2s): af540c50e4_00edeec4b73ab68a9a4e2b0281464f067656d89fc9969ab4__vs__2_c77b884d.docx
+2026-11-10 17:21:41.490 | INFO     | __main__:_convert_serial:2785 - [599/785] ok (0.9s): af540c50e4_00edeec4b73ab68a9a4e2b0281464f067656d89fc9969ab4__vs__2_ff812098.docx
+2026-11-10 17:21:42.532 | INFO     | __main__:_convert_serial:2785 - [600/785] ok (1.0s): af540c50e4_00edeec4b73ab68a9a4e2b0281464f067656d89fc9969ab4__vs__a_4be2c966.docx
+2026-11-10 17:21:43.224 | INFO     | __main__:_convert_serial:2785 - [606/785] ok (0.7s): b27bda87ed_0023f7c421a05af9c44fb4ff9ef1bce46c53a081779b1e72__vs__3_b5e5712b.docx
+2026-11-10 17:21:44.761 | ERROR    | __main__:_convert_serial:2789 - [615/785] FAIL: b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 17:21:47.954 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+2026-11-10 17:21:51.108 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 3.2 s, no output
+2026-11-10 17:21:52.516 | INFO     | __main__:_convert_serial:2785 - [630/785] ok (1.4s): b8783e46c5_file_6__vs__84617b8b4d_file_7_redline_703530e684_jubarte-0.18.0.docx
+2026-11-10 17:21:53.588 | INFO     | __main__:_convert_serial:2785 - [643/785] ok (1.1s): bcae83f080_docx_lots_of_comments_addition_removal__vs__07fce8e954_60a6f217.docx
+2026-11-10 17:21:54.223 | INFO     | __main__:_convert_serial:2785 - [656/785] ok (0.6s): c20e9b2d21_font_size_24_demo_id_paraid_overflow__vs__f8ecf81d8b_fo_20a1c495.docx
+2026-11-10 17:21:54.689 | INFO     | __main__:_convert_serial:2785 - [657/785] ok (0.5s): c21d15c9e9_track_changes_suggesting_center_id_paraid_overfl__vs__e_f298ff43.docx
+2026-11-10 17:21:56.757 | INFO     | __main__:_convert_serial:2785 - [658/785] ok (2.1s): c280ce0f40_019d92d986c5ba33a57df54db0056f3731e3254fcbe8ac65__vs__1_11c99ffc.docx
+2026-11-10 17:21:57.256 | INFO     | __main__:_convert_serial:2785 - [660/785] ok (0.5s): c40c88e402_project_tasks_suggesting_insertions__vs__d0a21b7c3c_q1_c108e4d7.docx
+2026-11-10 17:21:58.240 | INFO     | __main__:_convert_serial:2785 - [661/785] ok (1.0s): c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__3_921e37ae.docx
+2026-11-10 17:22:00.548 | INFO     | __main__:_convert_serial:2785 - [662/785] ok (2.3s): c417943be1_002b4f4d8976804c283e6f90cc51f02c7fa5ca9027ffe491__vs__a_e0c7b29c.docx
+2026-11-10 17:22:01.024 | INFO     | __main__:_convert_serial:2785 - [665/785] ok (0.5s): c5c92e4f32_file_127__vs__af613a9921_file_128_redline_f04e60fd3d_ju_e143f48a.docx
+2026-11-10 17:22:01.540 | INFO     | __main__:_convert_serial:2785 - [666/785] ok (0.5s): c63bc323ce_bullet_list_bold_demo_id_paraid_overflow__vs__555f3bce3_2067fe37.docx
+2026-11-10 17:22:02.012 | INFO     | __main__:_convert_serial:2785 - [667/785] ok (0.5s): c7dbacb26a_file_37__vs__fdaf71bd6b_file_38_redline_135dfbf65a_juba_407d4eee.docx
+2026-11-10 17:22:02.912 | INFO     | __main__:_convert_serial:2785 - [668/785] ok (0.9s): c8a9a6e711_62caeb83a2234e23b2b174c85c0168e0375fb9afba53987b__vs__d_8ce9ea35.docx
+2026-11-10 17:22:03.390 | INFO     | __main__:_convert_serial:2785 - [670/785] ok (0.5s): ca44eef662_super_editor__list_spacer1_06383c66__vs__9322444a3f_beh_ff0c49dc.docx
+2026-11-10 17:22:03.979 | INFO     | __main__:_convert_serial:2785 - [674/785] ok (0.6s): cc5f989c56_0090ba7896cba5f43500e77e151ddab12f16b20e3ddf5822__vs__3_58a05a6a.docx
+2026-11-10 17:22:04.539 | INFO     | __main__:_convert_serial:2785 - [676/785] ok (0.6s): ce4c9d3b3d_7fa69790846ae2093b15137a907a6d257ba30150baeba42b__vs__3_9bb69a7b.docx
+2026-11-10 17:22:07.492 | INFO     | __main__:_convert_serial:2785 - [682/785] ok (3.0s): d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d01f80a__vs__2_b8186e60.docx
+2026-11-10 17:22:12.366 | INFO     | __main__:_convert_serial:2785 - [683/785] ok (4.9s): d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d01f80a__vs__2_ddc6f854.docx
+2026-11-10 17:22:14.907 | INFO     | __main__:_convert_serial:2785 - [684/785] ok (2.5s): d09a2f8509_00b5aa69a6c33b2725953348488d62605dc209411d01f80a__vs__3_c9893e04.docx
+2026-11-10 17:22:15.550 | INFO     | __main__:_convert_serial:2785 - [686/785] ok (0.6s): d1fc42d1b4_72dcf4dc5db35b70823754848e1137a2dca51c616061bea3__vs__a_de9d57f3.docx
+2026-11-10 17:22:16.540 | INFO     | __main__:_convert_serial:2785 - [687/785] ok (1.0s): d2f322d733_document_100_ultimate_demo_id_paraid_overflow__vs__f901_ee4fde53.docx
+2026-11-10 17:22:17.250 | INFO     | __main__:_convert_serial:2785 - [688/785] ok (0.7s): d3b73b5ecf_534f02b4ceb3be8720d64c2c9de45e7b41f6f232c07177fa__vs__b_1b33031e.docx
+2026-11-10 17:22:17.775 | INFO     | __main__:_convert_serial:2785 - [689/785] ok (0.5s): d435c8d66c_file_104__vs__0f0620ff98_file_105_redline_0c90ac520a_ju_09d9c9be.docx
+2026-11-10 17:22:18.705 | INFO     | __main__:_convert_serial:2785 - [693/785] ok (0.9s): d6229441a5_0022208cff905cd74261067032c22afa148e0f63496c7f66__vs__3_887da3ab.docx
+2026-11-10 17:22:19.464 | INFO     | __main__:_convert_serial:2785 - [694/785] ok (0.8s): d6229441a5_0022208cff905cd74261067032c22afa148e0f63496c7f66__vs__a_007793b4.docx
+2026-11-10 17:22:20.515 | INFO     | __main__:_convert_serial:2785 - [696/785] ok (1.0s): d7458be405_ac850c4ad0ef9f18aaf445fab4b43d7459ab021b787e9cad__vs__4_abca8c9f.docx
+2026-11-10 17:22:21.007 | INFO     | __main__:_convert_serial:2785 - [698/785] ok (0.5s): d7c6d7eb36_green_underline_bullet_list_id_paraid_overflow__vs__c57_45c3d73f.docx
+2026-11-10 17:22:21.539 | INFO     | __main__:_convert_serial:2785 - [699/785] ok (0.5s): d87d0dd9a8_file_76__vs__68526de79b_file_77_redline_133a1a1e42_juba_cba1c6f6.docx
+2026-11-10 17:22:22.040 | INFO     | __main__:_convert_serial:2785 - [702/785] ok (0.5s): dccd86b590_bold_text_formatting_demo_id_paraid_overflow_2__vs__546_9f118455.docx
+2026-11-10 17:22:22.874 | INFO     | __main__:_convert_serial:2785 - [712/785] ok (0.8s): e124592dd0_e8735707c6583763f32f7f53c7c73aaa1e555ea8afae61dc__vs__2_3625fc2a.docx
+2026-11-10 17:22:23.416 | INFO     | __main__:_convert_serial:2785 - [717/785] ok (0.5s): e29df71807_bold_underline_highlight_demo_id_paraid_overflow__vs__4_080945f0.docx
+2026-11-10 17:22:23.983 | INFO     | __main__:_convert_serial:2785 - [719/785] ok (0.6s): e3d152989b_behavior__math_eqarr_tests_40a1adb0__vs__89b44c96a7_sup_e86f08c7.docx
+2026-11-10 17:23:30.082 | INFO     | __main__:_convert_serial:2785 - [721/785] ok (66.1s): e54c9bd21f_aee15f6eb7a052860e1a38eeb505d1d72c95850f4d5a85c2__vs__0_b4c98e7d.docx
+2026-11-10 17:23:30.672 | INFO     | __main__:_convert_serial:2785 - [725/785] ok (0.6s): e6fdfb6f2f_behavior__math_phantom_tests_263131a8__vs__0b1d0278ce_b_007acb06.docx
+2026-11-10 17:23:31.155 | INFO     | __main__:_convert_serial:2785 - [732/785] ok (0.5s): e886422c26_times_new_roman_font_id_paraid_overflow__vs__54c0b3ed3d_14f317d2.docx
+2026-11-10 17:23:31.942 | INFO     | __main__:_convert_serial:2785 - [735/785] ok (0.8s): eb6c0a6b3d_6e887b917bd3d9b6517240ec5fff92e2e80df2355f0b2c0d__vs__d_6b8da545.docx
+2026-11-10 17:23:33.305 | INFO     | __main__:_convert_serial:2785 - [737/785] ok (1.4s): ec19540e2c_d6ef382e948b98e757f3fd2067de5daf1a944935d8906ebc__vs__0_ca46bb6c.docx
+2026-11-10 17:23:34.850 | INFO     | __main__:_convert_serial:2785 - [740/785] ok (1.5s): ece10bd712_4a0f8a0058e714d958dba0708b5a74c40cc30a1ee1b46e5a__vs__4_788dd762.docx
+2026-11-10 17:23:35.666 | INFO     | __main__:_convert_serial:2785 - [748/785] ok (0.8s): ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f3e1a4d__vs__2_e72a96ec.docx
+2026-11-10 17:23:36.431 | INFO     | __main__:_convert_serial:2785 - [750/785] ok (0.8s): ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f3e1a4d__vs__5_12c99e76.docx
+2026-11-10 17:23:37.255 | INFO     | __main__:_convert_serial:2785 - [751/785] ok (0.8s): ef7218d9e8_001893584bf94ff30c98db48cb8a0ea0ea5abc048f3e1a4d__vs__b_155bd240.docx
+2026-11-10 17:23:37.798 | INFO     | __main__:_convert_serial:2785 - [752/785] ok (0.5s): f05b2b13ee_file_103__vs__d435c8d66c_file_104_redline_ed3701fb29_ju_58d856a2.docx
+2026-11-10 17:23:38.346 | INFO     | __main__:_convert_serial:2785 - [753/785] ok (0.5s): f0f0b3f93f_file_65__vs__fa5b1dd76a_file_66_redline_1da254cb8d_juba_55f8cfd3.docx
+2026-11-10 17:23:38.843 | INFO     | __main__:_convert_serial:2785 - [755/785] ok (0.5s): f2a8197531_file_72__vs__266b027513_file_73_redline_13de303626_juba_3afda57a.docx
+2026-11-10 17:23:39.375 | INFO     | __main__:_convert_serial:2785 - [756/785] ok (0.5s): f32428a03a_file_28__vs__5900cc12ca_file_29_redline_4e02f507c8_juba_3eb4550f.docx
+2026-11-10 17:23:39.875 | INFO     | __main__:_convert_serial:2785 - [768/785] ok (0.5s): f601de1855_file_152__vs__746ad2b7f6_file_153_redline_49ed3281ea_ju_9705c46c.docx
+2026-11-10 17:23:41.283 | INFO     | __main__:_convert_serial:2785 - [771/785] ok (1.4s): f786f1da65_001921017566904561ee8ce26ec591c5fb4cd1655b295518__vs__2_8ffd728e.docx
+2026-11-10 17:23:42.075 | INFO     | __main__:_convert_serial:2785 - [774/785] ok (0.8s): f795b96ac4_behavior__math_delimiter_tests_c9d034dc__vs__e3d152989b_db5a0e5d.docx
+2026-11-10 17:23:42.874 | INFO     | __main__:_convert_serial:2785 - [775/785] ok (0.8s): f94aeed5f5_001f4e98e9744f89b6f26b3741cb6439f8131bf89659230e__vs__3_3141a8d9.docx
+2026-11-10 17:23:43.847 | INFO     | __main__:_convert_serial:2785 - [776/785] ok (1.0s): f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__1_0fe3b150.docx
+2026-11-10 17:23:44.704 | INFO     | __main__:_convert_serial:2785 - [778/785] ok (0.9s): f9b9dbd790_0017bce9abd08007241b106f0fcf1d64e45c05cd82a05a1d__vs__d_8b19bbf8.docx
+2026-11-10 17:23:45.654 | INFO     | __main__:_convert_serial:2785 - [781/785] ok (0.9s): fbe14959b0_000f5278175aa01c2b9517b07e8a087014e4a05ab3e24f41__vs__3_5e0de471.docx
+2026-11-10 17:23:46.170 | INFO     | __main__:_convert_serial:2785 - [783/785] ok (0.5s): fd1d891f44_file_98__vs__c0723c2916_file_99_redline_0d06710c45_juba_e6043318.docx
+2026-11-10 17:23:46.799 | INFO     | __main__:_convert_serial:2785 - [784/785] ok (0.6s): fdb2976d19_01415d08f6d1a428e6949533adcd6249cf25676d98d0b78c__vs__b_be147e6e.docx
+2026-11-10 17:24:08.578 | INFO     | __main__:_convert_serial:2785 - [785/785] ok (21.8s): fe11d14f44_behavior__sd_2447_toc_tab_alignment_8319c14c__vs__8441c_975d932c.docx
+2026-11-10 17:24:08.583 | INFO     | __main__:convert_folder:2726 - [manifest] appended 785 line(s) to results/redlines_0929_full/jubarte-0.18.0/pdf_by_word/manifest.jsonl
+2026-11-10 17:24:10.922 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=7 granted=0 forwarded=0 alerts_seen=1
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.18.0/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │   129 │
+│ skipped (exists) │   649 │
+│ failed           │     7 │
+│ median seconds   │   0.8 │
+└──────────────────┴───────┘
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-10 18:45:01.681 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=64564 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-10 18:45:01.694 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=False documents=785 accept_all=False reject_all=False
+2026-11-10 18:45:03.585 | ERROR    | __main__:_convert_serial:2789 - [141/785] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:45:06.833 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+2026-11-10 18:45:10.799 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 4.0 s, no output
+2026-11-10 18:45:11.780 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-10 18:45:11.781 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-10 18:45:11.782 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-10 18:45:11.783 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-10 18:45:12.411 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:45:19.173 | ERROR    | __main__:_convert_serial:2789 - [142/785] FAIL: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:45:40.179 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+2026-11-10 18:45:43.868 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 3.7 s, no output
+2026-11-10 18:45:47.843 | ERROR    | __main__:_convert_serial:2789 - [267/785] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:02.685 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+2026-11-10 18:46:07.710 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:46:07.894 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 5.2 s, no output
+2026-11-10 18:46:07.895 | WARNING  | __main__:_convert_serial:2798 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-10 18:46:07.939 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 65197); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-10 18:46:08.085 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.1 s, no value came back (AppleScript 'missing value')
+2026-11-10 18:46:08.234 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-10 18:46:10.178 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:14.445 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:46:15.635 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:19.134 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:46:23.332 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:27.428 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:46:31.016 | ERROR    | __main__:_convert_serial:2789 - [269/785] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:41.531 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+2026-11-10 18:46:45.630 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:46:47.296 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 5.8 s, no output
+2026-11-10 18:46:49.434 | ERROR    | __main__:_convert_serial:2789 - [324/785] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:46:59.712 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+2026-11-10 18:47:03.638 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 3.9 s, no output
+2026-11-10 18:47:03.787 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:07.473 | ERROR    | __main__:_convert_serial:2789 - [479/785] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:47:17.992 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+2026-11-10 18:47:22.062 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:23.864 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 5.9 s, no output
+2026-11-10 18:47:23.865 | WARNING  | __main__:_convert_serial:2798 - [word] 3 failures in a row — recycling rather than trusting Word to still be reading documents
+2026-11-10 18:47:23.912 | WARNING  | __main__:recycle:1589 - [word] recovery 2: Word is running (pid 66419); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-10 18:47:24.084 | INFO     | __main__:_run_logged:1652 - [word] recovery 2: returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')
+2026-11-10 18:47:24.247 | INFO     | __main__:recycle:1594 - [word] recovery 2: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-10 18:47:26.458 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:47:30.158 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:31.999 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:47:35.541 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:39.235 | INFO     | __main__:_replay:2852 - [replay] still failing, so it is the file: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:47:43.406 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:44.845 | ERROR    | __main__:_convert_serial:2789 - [615/785] FAIL: b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx — 2123:2178: execution error: Microsoft Word got an error: Connection is invalid. (-609)
+2026-11-10 18:47:48.103 | WARNING  | __main__:recover_after_failure:1845 - [word] after the failure: --do-not-close keeps the other documents, so closing only 'jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx', running: osascript -e 'on run argv tell application "Microsoft Word" repeat with i from (count documents) to 1 by -1 if name of document i is (item 1 of argv) then close document i saving no end repeat end tell end run' jubarte__b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+2026-11-10 18:47:51.828 | INFO     | __main__:_run_logged:1652 - [word] after the failure: returned rc=0 in 3.7 s, no output
+2026-11-10 18:47:51.843 | INFO     | __main__:convert_folder:2726 - [manifest] appended 785 line(s) to results/redlines_0929_full/jubarte-0.18.0/pdf_by_word/manifest.jsonl
+2026-11-10 18:47:53.779 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-10 18:47:53.780 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=12 granted=0 forwarded=0 alerts_seen=1
+        DOCX → PDF:         
+results/redlines_0929_full/j
+     ubarte-0.18.0/docx     
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted        │     0 │
+│ skipped (exists) │   778 │
+│ failed           │     7 │
+└──────────────────┴───────┘
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_3a7c25ee.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+2b4475cba6_0021f639e5dbf6c217c8d81a7ac3374624ff9901a5d4b200__vs__2_b0a17588.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__2_fc3ece24.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_a39423f6.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_6537f750.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_86fe3e7d.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
+  FAIL 
+b4294a7edd_ddff881efc732399286b36322055752e7287a255646f24a3__vs__c_d2ef1acf.docx
+: 2123:2178: execution error: Microsoft Word got an error: Connection is 
+invalid. (-609)
