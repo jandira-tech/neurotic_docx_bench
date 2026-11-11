@@ -1,0 +1,13 @@
+{
+ "n_files": 2428,
+ "paths": [
+  "outputs/convert_860/jubarte_0.18.0",
+  "outputs/redlines_0929_full/jubarte-0.18.0/docx",
+  "outputs/redlines_0929_full/jubarte-0.18.0/pdf_by_word",
+  "outputs/redlines_0929_full/jubarte-0.18.0/meta"
+ ],
+ "repo": "arthrod/neurotic_docx_bench",
+ "revision": "a5e539353a576051f8dd3be85ebf867ddac64ae4",
+ "uploaded_at": "2026-11-11T02:53:02+00:00",
+ "verified": true
+}

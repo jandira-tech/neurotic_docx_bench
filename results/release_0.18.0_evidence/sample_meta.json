@@ -1,0 +1,27 @@
+{
+ "conversion": {
+  "by_state": {
+   "clean": 380,
+   "tracking_without_comments": 375,
+   "with_comments_clean": 22,
+   "with_comments_tracking": 83
+  },
+  "date": "2026-11-10",
+  "n": 860,
+  "rule": "the fixed set results/sets/convert_860.csv (set version 2026-11-03.1), not drawn",
+  "set_version": "2026-11-03.1"
+ },
+ "redline": {
+  "by_state": {
+   "clean": 2,
+   "tracking_without_comments": 422,
+   "with_comments_clean": 3,
+   "with_comments_tracking": 173
+  },
+  "date": "2026-11-10",
+  "n": 600,
+  "pairs": 600,
+  "rule": "the fixed set results/sets/redline_600.csv (set version 2026-11-03.1), not drawn",
+  "set_version": "2026-11-03.1"
+ }
+}
