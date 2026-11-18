@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "07-comments-edit-and-reply",
+  "family": "comments",
+  "source": {
+    "path": "fixtures/f4-original.docx",
+    "sha256": "90cef57bacad1fe785071de94874f42072ad72e66e811935cd9b6e7c4386aa5b"
+  },
+  "prompt": "Open input.docx with the current jubarte CLI at {binary}. The document already has comment c4 (\"Just like that!\"). In a single command invocation:\n\n1. Edit the text of c4 to \"Updated: please revise.\" (rewrite the original comment body).\n2. Reply to c4 with \"Acknowledged, will revise.\".\n\nUse --author {author} for the new reply. Write the result to {output}. End your reply with exactly one line:\n\nJUBARTE_RESULT: success\n\nwhen the artifact at {output} has c4 with the rewritten text and a new reply comment by {author}; otherwise:\n\nJUBARTE_RESULT: failed\n\nDo not print anything after that line.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "comment_present",
+      "text": "Updated: please revise.",
+      "ref": "c4",
+      "paragraph": "p31",
+      "anchor_text": "add a comment anchored to that selection         "
+    },
+    {
+      "kind": "comment_present",
+      "text": "Acknowledged, will revise.",
+      "author": "PilotBot",
+      "parent_ref": "c4",
+      "paragraph": "p31",
+      "anchor_text": "add a comment anchored to that selection         "
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.thread-order",
+      "description": "Edit then reply applied in that order; thread structure preserved; both new texts visible."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "{input}",
+          "-p",
+          "c4",
+          "--content",
+          "Updated: please revise.",
+          "-p",
+          "c4",
+          "--reply",
+          "Acknowledged, will revise.",
+          "--rewrite-others-comments",
+          "--author",
+          "{author}",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}",
+        "expect_rc": 0
+      }
+    ]
+  },
+  "comment_updates": {
+    "c4": {
+      "text": "Updated: please revise."
+    }
+  }
+}

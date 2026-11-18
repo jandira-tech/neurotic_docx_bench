@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "id": "05-received-redline-with-edit",
+  "family": "received_redline",
+  "source": {
+    "path": "fixtures/f4-original.docx",
+    "sha256": "90cef57bacad1fe785071de94874f42072ad72e66e811935cd9b6e7c4386aa5b"
+  },
+  "prompt": "Open input.docx with the current jubarte CLI at {binary}. The document has pending tracked changes from prior reviewers; you must accept one explicitly and add your own edit. In a single command invocation:\n\n1. Accept revision r0 (sara.k's deletion of \"zero backend required\" in p6).\n2. In paragraph p6, replace \"open-source WYSIWYG\" with \"open-source RTF\".\n3. Reply \"Looks good.\" to comment c4.\n\nUse --author {author} for the new edit and your reply (the accept decision does not change authorship). Write the result to {output}. End your reply with exactly one line:\n\nJUBARTE_RESULT: success\n\nwhen the artifact at {output} contains the accept effect on r0, your new edit in p6, and your reply in c4; otherwise:\n\nJUBARTE_RESULT: failed\n\nDo not print anything after that line.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": true,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "text_absent",
+      "text": "zero backend required"
+    },
+    {
+      "kind": "text_contains",
+      "text": "open-source RTF"
+    },
+    {
+      "kind": "revision_present",
+      "text": "RTF",
+      "author": "PilotBot"
+    },
+    {
+      "kind": "comment_present",
+      "text": "Looks good.",
+      "author": "PilotBot",
+      "parent_ref": "c4",
+      "paragraph": "p31",
+      "anchor_text": "add a comment anchored to that selection         "
+    },
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "An open-source"
+      },
+      "text": "An open-source RTF         .docx         editor for React. Drop in         <DocxEditor documentBuffer={file} />         and your users can open, edit, and save Word documents entirely in the browser —         no backend required           , no document data leaving the client.         "
+    },
+    {
+      "kind": "revision_absent",
+      "ref": "r0"
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.explicit-decision",
+      "description": "r0 was accepted by an explicit --accept flag, not silently dropped; the chosen decision is documented in the receipt."
+    },
+    {
+      "id": "rubric.composed-rewrite",
+      "description": "Body edit, accept decision, and comment reply landed in one transaction."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "{input}",
+          "-p",
+          "r0",
+          "--accept",
+          "-p",
+          "p6",
+          "--anchor",
+          "open-source WYSIWYG",
+          "--content",
+          "open-source RTF",
+          "-p",
+          "c4",
+          "--reply",
+          "Looks good.",
+          "--author",
+          "{author}",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}",
+        "expect_rc": 0
+      }
+    ]
+  },
+  "expected_paragraphs": {
+    "p6": "An open-source RTF         .docx         editor for React. Drop in         <DocxEditor documentBuffer={file} />         and your users can open, edit, and save Word documents entirely in the browser —         no backend required           , no document data leaving the client.         "
+  },
+  "settled_revisions": [
+    "r0"
+  ]
+}

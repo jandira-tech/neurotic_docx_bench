@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "id": "10-template-flow-multi-rewrite",
+  "family": "template_flow",
+  "source": {
+    "path": "fixtures/multi_section.docx",
+    "sha256": "d776ad9be7aa0ec6633c208e512fd6fe5b1b3608159a42c6be01804217ba7e6b"
+  },
+  "prompt": "Open input.docx with {binary}. Generate a source-bound plan with `{binary} edit template input.docx --select p1,p7 --author {author} -o edits.json`. Edit only the generated rows' text to these exact desired strings: {{\"p1\": \"This is the rewritten first section. It still uses the default single-column layout.\", \"p7\": \"We have switched back to a single column layout for detailed explanations.\"}}. Preserve the generated source binding, target identities, before hashes, and policy. Apply with `{binary} edit apply input.docx --plan edits.json -o {output}`. End with JUBARTE_RESULT: success if the exact changes are delivered; otherwise JUBARTE_RESULT: failed.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "This is the rewritten first se"
+      },
+      "text": "This is the rewritten first section. It still uses the default single-column layout."
+    },
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "We have switched back to a sin"
+      },
+      "text": "We have switched back to a single column layout for detailed explanations."
+    },
+    {
+      "kind": "revision_present",
+      "text": "rewritten",
+      "author": "PilotBot"
+    },
+    {
+      "kind": "revision_present",
+      "text": " and data",
+      "author": "PilotBot"
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.coherent-multi-rewrite",
+      "description": "A generated source-bound PlanV2 was modified only in the requested row text and applied with edit apply; source/target/before hashes retained."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "template",
+          "{input}",
+          "--select",
+          "p1,p7",
+          "--author",
+          "{author}",
+          "-o",
+          "edits.json"
+        ],
+        "out": "edits.json"
+      },
+      {
+        "argv": [
+          "stub-edit-generated",
+          "edits.json"
+        ],
+        "out": "edits.json"
+      },
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "apply",
+          "{input}",
+          "--plan",
+          "edits.json",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}"
+      }
+    ]
+  },
+  "expected_paragraphs": {
+    "p1": "This is the rewritten first section. It still uses the default single-column layout.",
+    "p7": "We have switched back to a single column layout for detailed explanations."
+  }
+}
