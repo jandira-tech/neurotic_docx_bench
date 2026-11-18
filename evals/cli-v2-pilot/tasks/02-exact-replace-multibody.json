@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "id": "02-exact-replace-multibody",
+  "family": "exact_replace",
+  "source": {
+    "path": "fixtures/clean-paragraph.docx",
+    "sha256": "eaa2865cb0c8bc6d63969a1901b84be8e1e8670f469957d755d246c06586b520"
+  },
+  "prompt": "Open input.docx with the current jubarte CLI at {binary}. Paragraph p0 reads \"START BODY 1 The quick, brown fox jumps over a lazy dog. END BODY 1.\". Replace the word \"brown\" with \"red\". Write the result to {output}. Use --author {author} for the new edit. End your reply with exactly one line:\n\nJUBARTE_RESULT: success\n\nwhen the artifact at {output} now reads \"START BODY 1 The quick, red fox jumps over a lazy dog. END BODY 1.\"; otherwise:\n\nJUBARTE_RESULT: failed\n\nDo not print anything after that line.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "text_contains",
+      "text": "red fox",
+      "selector": {
+        "contains": "START BODY 1"
+      }
+    },
+    {
+      "kind": "text_absent",
+      "text": "brown fox",
+      "selector": {
+        "contains": "START BODY 1"
+      }
+    },
+    {
+      "kind": "revision_present",
+      "text": "red",
+      "author": "PilotBot"
+    },
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "START BODY 1"
+      },
+      "text": "START BODY 1 The quick, red fox jumps over a lazy dog. END BODY 1."
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.no-other-paragraph-touched",
+      "description": "Only the requested replacement happened; p0 still contains the START/END markers and ends with a period."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "{input}",
+          "-p",
+          "p0",
+          "--anchor",
+          "brown",
+          "--content",
+          "red",
+          "--author",
+          "{author}",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}",
+        "expect_rc": 0
+      }
+    ]
+  },
+  "expected_paragraphs": {
+    "p0": "START BODY 1 The quick, red fox jumps over a lazy dog. END BODY 1."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "stub-agent",
+  "argv": [
+    "{agent_root}/.venv/bin/python",
+    "{agent_root}/stub_agent.py",
+    "{task_file}",
+    "{binary}",
+    "{run_dir}"
+  ],
+  "model": "stub",
+  "provider": "stub",
+  "version": "0.1.0",
+  "stub": true
+}

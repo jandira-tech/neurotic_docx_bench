@@ -1,0 +1,16 @@
+{
+  "name": "crush-run",
+  "argv": [
+    "crush",
+    "run",
+    "--model",
+    "{provider}/{model}",
+    "{prompt}"
+  ],
+  "model": "gpt-5.1-codex",
+  "provider": "openai",
+  "version_argv": [
+    "crush",
+    "--version"
+  ]
+}

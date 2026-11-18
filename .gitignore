@@ -257,3 +257,6 @@ results/**/lo_profiles/
 # Not committed — the release manifest lists them and HF is their record. The
 # adapter-produced legacy_cases.jsonl input lives here too when it exceeds 2 MB.
 results/release/
+
+# Agent scratch work (probes, worktrees, staged inputs); never committed.
+.scratch/
