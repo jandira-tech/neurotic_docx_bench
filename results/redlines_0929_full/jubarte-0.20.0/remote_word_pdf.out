@@ -1,0 +1,27 @@
+600 to convert via https://docx.rodrigues.ai
+25/600 {'ok': 24, 'refused': 1}
+50/600 {'ok': 48, 'refused': 2}
+75/600 {'ok': 72, 'refused': 3}
+100/600 {'ok': 96, 'refused': 4}
+125/600 {'ok': 121, 'refused': 4}
+150/600 {'ok': 146, 'refused': 4}
+175/600 {'ok': 171, 'refused': 4}
+200/600 {'ok': 194, 'refused': 6}
+225/600 {'ok': 219, 'refused': 6}
+250/600 {'ok': 244, 'refused': 6}
+275/600 {'ok': 268, 'refused': 7}
+300/600 {'ok': 293, 'refused': 7}
+325/600 {'ok': 318, 'refused': 7}
+350/600 {'ok': 342, 'refused': 8}
+375/600 {'ok': 367, 'refused': 8}
+400/600 {'ok': 392, 'refused': 8}
+425/600 {'ok': 417, 'refused': 8}
+450/600 {'ok': 441, 'refused': 8, 'failed': 1}
+475/600 {'ok': 466, 'refused': 8, 'failed': 1}
+500/600 {'ok': 491, 'refused': 8, 'failed': 1}
+525/600 {'ok': 516, 'refused': 8, 'failed': 1}
+550/600 {'ok': 541, 'refused': 8, 'failed': 1}
+575/600 {'ok': 566, 'refused': 8, 'failed': 1}
+600/600 {'ok': 591, 'refused': 8, 'failed': 1}
+{"ok": 591, "refused": 8, "failed": 1}
+exit=0

@@ -1044,9 +1044,9 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
     obj = json.loads(bundle.scores_json)
     assert set(obj) == TOP_KEYS
     assert obj["version"] == bundle.provenance.bench_version
-    # The newest row in the stores (a converter line of 2026-11-10, the
-    # jubarte 0.18.0 candidate on the convert_860 set), never now().
-    assert obj["generated"] == "2026-11-10"
+    # The newest row in the stores (a converter line of 2026-11-23, the
+    # jubarte 0.20.0 candidate on the convert_860 set), never now().
+    assert obj["generated"] == "2026-11-23"
     assert obj["repo"] == REPO_URL and obj["viewer"] == VIEWER_URL
     assert obj["provenance"] == {
         "docsets": list(bundle.provenance.docsets),
