@@ -1,0 +1,48 @@
+2026-11-23 14:55:38.304 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=12442 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 14:55:38.308 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 14:55:38.369 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 14:55:43.374 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 3/100
+2026-11-23 14:55:48.380 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 9/100
+2026-11-23 14:55:53.386 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 14/100
+2026-11-23 14:55:58.390 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 20/100
+2026-11-23 14:56:01.122 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 1 ended at item 16: open produced 0 new documents, none named 00016__jubarte__0800162a66_000799b53487acb327ccf0c0ab87fb14b9e8636346719296__vs__5_fa136a43.docx; refusing to guess (loaded empty); item 20: open produced 0 new documents, none named 00020__jubarte__08286ffbfb_super_editor__basic_resolved_comment_cac5a1b0__vs__5fa0_104c065b.docx; refusing to guess (loaded empty); item 24: Microsoft Word got an error: Connection is invalid. (Word crashed); 75 item(s) not reached, 5 to retry. Recovering Word (see the [word] line), then pass 2 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 14:56:01.205 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 14691); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 14:56:01.647 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows button 'Cancel'
+2026-11-23 14:56:01.648 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows button 'Create'
+2026-11-23 14:56:01.648 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 14:56:01.790 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.6 s, no value came back (AppleScript 'missing value')
+2026-11-23 14:56:01.918 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-23 14:56:06.925 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 8/80
+2026-11-23 14:56:11.932 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 14/80
+2026-11-23 14:56:16.938 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 22/80
+2026-11-23 14:56:21.941 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 29/80
+2026-11-23 14:56:26.947 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 39/80
+2026-11-23 14:56:31.952 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 45/80
+2026-11-23 14:56:36.959 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 46/80
+2026-11-23 14:56:41.966 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 47/80
+2026-11-23 14:56:46.971 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 55/80
+2026-11-23 14:56:51.979 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 62/80
+2026-11-23 14:56:56.987 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 71/80
+2026-11-23 14:56:59.571 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 2 ended at item 67: open produced 0 new documents, none named 00067__jubarte__23536e24d2_5ddba7ca1e7abc522e338baa1f7afc84bf0051381d8dd6e8__vs__6_0de2ed58.docx; refusing to guess (loaded empty); item 74: open produced 0 new documents, none named 00074__jubarte__25ed848ec0_75044418ff56083d58cd273fa0dd2272f8add205d2f52f9f__vs__f_927d7561.docx; refusing to guess (loaded empty); item 84: open produced 0 new documents, none named 00084__jubarte__29379c07bf_002adf0715eed4d213774c26c60c78624c2a3cbb3d0397d2__vs__a_465523f9.docx; refusing to guess (loaded empty); 0 item(s) not reached, 4 to retry. Recovering Word (see the [word] line), then pass 3 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 14:56:59.572 -05:00 | WARNING  | __main__:run_batch_with_resume:2326 - [batch pdf] Word returned nothing for 4 document(s) in a row; bringing it forward once to look for a modal, then restarting it
+2026-11-23 14:57:03.730 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows button 'Yes'
+2026-11-23 14:57:03.731 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows button 'No'
+2026-11-23 14:57:03.731 -05:00 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Word says: 'Microsoft Word'
+2026-11-23 14:57:03.868 -05:00 | WARNING  | __main__:decline_repair_prompt:1816 - [word] after the failure, pressed 'No'; Word said: "Word found unreadable content in wt_docen_as_is.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-11-23 14:57:03.870 -05:00 | WARNING  | __main__:decline_repair_prompt:1816 - [word] after the failure, pressed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(wt_docen_as_is.docx)"
+2026-11-23 14:57:03.872 -05:00 | WARNING  | __main__:run_batch_with_resume:2332 - [batch pdf] found and answered: [('No', 'Word found unreadable content in wt_docen_as_is.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'), ('OK', 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(wt_docen_as_is.docx)')]
+2026-11-23 14:57:03.893 -05:00 | WARNING  | __main__:recycle:1600 - [word] recovery 2: because Word returned nothing for 4 document(s) in a row (it answers, but opens nothing); asking Word to quit, running: osascript -e 'tell application "Microsoft Word" to quit saving no'
+2026-11-23 14:57:04.005 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 2: returned rc=0 in 0.1 s, no output
+2026-11-23 14:57:13.203 -05:00 | WARNING  | __main__:_decline_repair:1107 - [watchdog] repair prompt seen but no button could be pressed; Word said: "Microsoft Word"
+2026-11-23 14:57:24.617 -05:00 | INFO     | __main__:recycle:1603 - [word] recovery 2: Word quit on request
+2026-11-23 14:57:24.644 -05:00 | INFO     | __main__:warm:1482 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-11-23 14:57:27.284 -05:00 | INFO     | __main__:warm:1489 - [word] Word answered after 3 s; alerts off
+2026-11-23 14:57:31.567 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 1ed8b01b55_file_13__vs__a2ae20465c_file_14_redline_5dbefac63c_juba_58c476d0.docx — osascript exit 0, no output file
+2026-11-23 14:57:31.593 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 2af2b80ea6_1d32058e44fafd7813e18fb8e09fe26a502cd10fe215311c__vs__9_42fcf920.docx — osascript exit 0, no output file
+2026-11-23 14:57:31.599 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 14:57:34.645 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=1

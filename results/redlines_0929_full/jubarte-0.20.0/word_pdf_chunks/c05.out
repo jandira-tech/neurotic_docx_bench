@@ -1,0 +1,37 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-23 15:02:47.848 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=22116 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 15:02:47.860 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 15:02:48.021 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 15:02:53.027 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 7/100
+2026-11-23 15:02:58.035 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 14/100
+2026-11-23 15:03:03.041 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 23/100
+2026-11-23 15:03:08.044 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 32/100
+2026-11-23 15:03:13.050 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 38/100
+2026-11-23 15:03:18.060 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 44/100
+2026-11-23 15:03:23.066 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 52/100
+2026-11-23 15:03:23.375 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:03:28.072 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 56/100
+2026-11-23 15:03:33.074 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 61/100
+2026-11-23 15:03:38.079 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 69/100
+2026-11-23 15:03:43.085 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 75/100
+2026-11-23 15:03:48.091 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 78/100
+2026-11-23 15:03:53.098 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 79/100
+2026-11-23 15:03:58.102 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 84/100
+2026-11-23 15:04:03.110 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 94/100
+2026-11-23 15:04:06.790 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 15:04:07.608 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
+                DOCX → PDF:                 
+   .scratch/rescore-0.20.0-mac/chunks/c05   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   100 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   0.8 │
+└──────────────────────────────────┴───────┘
