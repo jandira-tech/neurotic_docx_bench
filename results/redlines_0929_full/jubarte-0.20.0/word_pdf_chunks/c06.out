@@ -1,0 +1,86 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-23 15:04:08.179 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=22116 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 15:04:08.184 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 15:04:08.255 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 15:04:13.263 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 8/100
+2026-11-23 15:04:18.268 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 9/100
+2026-11-23 15:04:23.276 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 10/100
+2026-11-23 15:04:28.280 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 17/100
+2026-11-23 15:04:29.672 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:04:33.286 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 26/100
+2026-11-23 15:04:38.291 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 32/100
+2026-11-23 15:04:43.309 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 40/100
+2026-11-23 15:04:53.315 -05:00 | INFO     | __main__:_nudge:2070 - [focus] item 41/100 not finished after 10 s; bringing Word forward to look for an alert
+2026-11-23 15:05:23.344 -05:00 | INFO     | __main__:_nudge:2070 - [focus] item 41/100 not finished after 40 s; bringing Word forward to look for an alert
+2026-11-23 15:05:36.856 -05:00 | WARNING  | __main__:_report:2059 - [batch pdf 1] item 41/100 open for more than 30 s:
+-- Word windows {name, subrole}: osascript timed out
+-- Word window text: 
+-- crash reporters: 
+-- batch-pdf-1.log:
+[ok]    0
+[ok]    1
+[ok]    2
+[ok]    3
+[ok]    4
+[ok]    5
+[ok]    6
+[ok]    7
+[ok]    8
+[ok]    9
+[ok]    10
+[ok]    11
+[ok]    12
+[ok]    13
+[ok]    14
+[ok]    15
+[ok]    16
+[ok]    17
+[ok]    18
+[ok]    19
+[ok]    20
+[ok]    21
+[ok]    22
+[ok]    23
+[ok]    24
+[ok]    25
+[ok]    26
+[ok]    27
+[ok]    28
+[ok]    29
+[ok]    30
+[ok]    31
+[ok]    32
+[ok]    33
+[ok]    34
+[ok]    35
+[ok]    36
+[ok]    37
+[ok]    38
+[ok]    39
+-- newest diagnostic reports: forge-2026-11-16-182643.ips, forge-2026-11-23-150130.ips, forge-2026-11-22-173327.ips, forge-2026-11-23-133140.ips, forge-2026-11-23-124149.ips
+2026-11-23 15:05:53.371 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 46/100
+2026-11-23 15:05:58.378 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 55/100
+2026-11-23 15:06:03.384 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 60/100
+2026-11-23 15:06:08.389 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 66/100
+2026-11-23 15:06:13.394 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 75/100
+2026-11-23 15:06:18.400 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 83/100
+2026-11-23 15:06:23.408 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 88/100
+2026-11-23 15:06:28.416 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 95/100
+2026-11-23 15:06:33.425 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 99/100
+2026-11-23 15:06:35.806 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 15:06:38.767 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=0 granted=0 forwarded=0 alerts_seen=0
+                DOCX → PDF:                 
+   .scratch/rescore-0.20.0-mac/chunks/c06   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │   100 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     0 │
+│ seconds per document (batch avg) │   1.5 │
+└──────────────────────────────────┴───────┘

@@ -1,0 +1,34 @@
+2026-11-23 14:59:27.036 -05:00 | WARNING  | __main__:warm:1479 - [word] Word is running but not answering Apple events; waiting for it
+2026-11-23 14:59:38.855 -05:00 | INFO     | __main__:warm:1489 - [word] Word answered after 12 s; alerts off
+2026-11-23 14:59:39.006 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=18478 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 14:59:39.010 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 14:59:39.071 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 14:59:44.076 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 8/100
+2026-11-23 14:59:49.078 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 16/100
+2026-11-23 14:59:54.083 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 22/100
+2026-11-23 14:59:59.090 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 26/100
+2026-11-23 15:00:02.784 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 1 ended at item 26: Microsoft Word got an error: Connection is invalid. (Word crashed); 73 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 2 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 15:00:02.826 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 19093); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:00:02.962 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.1 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:00:03.075 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-23 15:00:06.270 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-23 15:00:06.271 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-23 15:00:06.271 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:00:06.271 -05:00 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-23 15:00:06.297 -05:00 | INFO     | __main__:_crash_signal:1238 - [watchdog] the error reporter is older than this pass (7 s vs 3 s): it reports the previous crash, not item 29; ignoring it
+2026-11-23 15:00:06.899 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:00:08.081 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 6/74
+2026-11-23 15:00:13.088 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 15/74
+2026-11-23 15:00:13.490 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:00:18.097 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 24/74
+2026-11-23 15:00:23.102 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 26/74
+2026-11-23 15:00:28.107 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 30/74
+2026-11-23 15:00:33.114 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 35/74
+2026-11-23 15:00:38.123 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 45/74
+2026-11-23 15:00:43.129 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 55/74
+2026-11-23 15:00:48.134 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 63/74
+2026-11-23 15:00:53.141 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 70/74
+2026-11-23 15:00:58.147 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 73/74
+2026-11-23 15:00:58.435 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_dc5dd980.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-11-23 15:00:58.492 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 15:00:58.764 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=1 granted=0 forwarded=0 alerts_seen=1

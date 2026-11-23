@@ -1,0 +1,57 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-23 15:00:59.273 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=19841 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 15:00:59.279 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 15:00:59.336 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 15:01:03.556 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:01:03.684 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-23 15:01:03.685 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-23 15:01:03.685 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:01:03.685 -05:00 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-23 15:01:03.711 -05:00 | INFO     | __main__:_crash_signal:1238 - [watchdog] the error reporter is older than this pass (9 s vs 4 s): it reports the previous crash, not item 4; ignoring it
+2026-11-23 15:01:04.338 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 5/100
+2026-11-23 15:01:06.802 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:01:09.344 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 14/100
+2026-11-23 15:01:19.354 -05:00 | INFO     | __main__:_nudge:2070 - [focus] item 15/100 not finished after 10 s; bringing Word forward to look for an alert
+2026-11-23 15:01:29.360 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 19/100
+2026-11-23 15:01:34.367 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 28/100
+2026-11-23 15:01:39.373 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 38/100
+2026-11-23 15:01:44.390 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 44/100
+2026-11-23 15:01:49.397 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 47/100
+2026-11-23 15:01:50.511 -05:00 | WARNING  | __main__:_crash_signal:1249 - [watchdog] Word crashed on item 47 (error reporter up; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"); ending the pass now rather than waiting for the AppleEvent to fail, running: pkill -f '/Users/arthrod/Library/Containers/com\.microsoft\.Word/Data/tmp/wordpdf\.sn10nl2f/batch-pdf-1\.tsv'
+2026-11-23 15:01:50.534 -05:00 | INFO     | __main__:_crash_signal:1258 - [watchdog] returned rc=0, the pass is ending
+2026-11-23 15:01:50.537 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 1 ended at item 47: Connection is invalid (the error reporter appeared: Word crashed on this item) (Word crashed); 52 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 2 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 15:01:50.577 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 20905); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:01:51.105 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:01:51.148 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.6 s, no output
+2026-11-23 15:01:51.312 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-23 15:01:56.318 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 10/53
+2026-11-23 15:02:01.327 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 20/53
+2026-11-23 15:02:06.337 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 22/53
+2026-11-23 15:02:11.344 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 31/53
+2026-11-23 15:02:16.350 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 39/53
+2026-11-23 15:02:21.356 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 45/53
+2026-11-23 15:02:31.364 -05:00 | INFO     | __main__:_nudge:2070 - [focus] item 46/53 not finished after 10 s; bringing Word forward to look for an alert
+2026-11-23 15:02:41.375 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 52/53
+2026-11-23 15:02:46.213 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_98507d91.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-11-23 15:02:46.267 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 15:02:47.151 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:02:47.152 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=3 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+   .scratch/rescore-0.20.0-mac/chunks/c04   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    99 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     1 │
+│ seconds per document (batch avg) │   1.1 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_98507d91.docx
+: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.

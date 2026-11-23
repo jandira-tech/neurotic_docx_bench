@@ -1,0 +1,83 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-23 15:06:39.880 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=22116 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 15:06:39.897 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=600 accept_all=False reject_all=False
+2026-11-23 15:06:39.907 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 5 document(s)
+2026-11-23 15:06:44.913 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 1] 2/5
+2026-11-23 15:06:47.928 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-23 15:06:47.929 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-23 15:06:47.929 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-23 15:06:47.929 -05:00 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-23 15:06:47.970 -05:00 | WARNING  | __main__:_crash_signal:1249 - [watchdog] Word crashed on item 2 (error reporter up; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"); ending the pass now rather than waiting for the AppleEvent to fail, running: pkill -f '/Users/arthrod/Library/Containers/com\.microsoft\.Word/Data/tmp/wordpdf\.2n1fatre/batch-pdf-1\.tsv'
+2026-11-23 15:06:48.000 -05:00 | INFO     | __main__:_crash_signal:1258 - [watchdog] returned rc=0, the pass is ending
+2026-11-23 15:06:48.003 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 1 ended at item 2: Connection is invalid (the error reporter appeared: Word crashed on this item) (Word crashed); 2 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 2 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 15:06:48.064 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 1: Word is running (pid 26828); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:06:48.577 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 0.5 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:06:48.685 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:06:48.797 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 1: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-23 15:06:51.312 -05:00 | WARNING  | __main__:_crash_signal:1249 - [watchdog] Word crashed on item 3 (error reporter up; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"); ending the pass now rather than waiting for the AppleEvent to fail, running: pkill -f '/Users/arthrod/Library/Containers/com\.microsoft\.Word/Data/tmp/wordpdf\.2n1fatre/batch-pdf-2\.tsv'
+2026-11-23 15:06:51.335 -05:00 | INFO     | __main__:_crash_signal:1258 - [watchdog] returned rc=0, the pass is ending
+2026-11-23 15:06:51.336 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 2 wedged before [done] (osascript rc=-15, no stderr); 3 item(s) not reached, 0 to retry. Recovering Word (see the [word] line), then pass 3 runs them, retried items last (1 of 3 stalled passes used)
+2026-11-23 15:06:51.376 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 2: Word is running (pid 28138); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:06:53.387 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 2: returned rc=0 in 2.0 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:06:53.406 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:06:53.534 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 2: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-23 15:06:58.540 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 3] 0/3
+2026-11-23 15:07:00.204 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 3 ended at item 4: Microsoft Word got an error: Connection is invalid. (Word crashed); 2 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 4 runs them, retried items last (1 of 3 stalled passes used)
+2026-11-23 15:07:00.246 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 3: Word is running (pid 28291); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:07:00.375 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 3: returned rc=0 in 0.1 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:07:00.529 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 3: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-23 15:07:03.800 -05:00 | INFO     | __main__:_crash_signal:1238 - [watchdog] the error reporter is older than this pass (8 s vs 3 s): it reports the previous crash, not item 4; ignoring it
+2026-11-23 15:07:04.389 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:07:05.534 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 4] 0/3
+2026-11-23 15:07:13.740 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 4 ended at item 4: Microsoft Word got an error: Connection is invalid. (Word crashed); 2 item(s) not reached, 0 to retry. Recovering Word (see the [word] line), then pass 5 runs them, retried items last (1 of 3 stalled passes used)
+2026-11-23 15:07:13.786 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 4: Word is running (pid 28410); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:07:13.947 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 4: returned rc=0 in 0.2 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:07:14.080 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 4: Word answers (0.1 s after the close-all); carrying on with the same Word
+2026-11-23 15:07:18.456 -05:00 | WARNING  | __main__:_crash_signal:1249 - [watchdog] Word crashed on item 3 (error reporter up; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"); ending the pass now rather than waiting for the AppleEvent to fail, running: pkill -f '/Users/arthrod/Library/Containers/com\.microsoft\.Word/Data/tmp/wordpdf\.2n1fatre/batch-pdf-5\.tsv'
+2026-11-23 15:07:18.486 -05:00 | INFO     | __main__:_crash_signal:1258 - [watchdog] returned rc=0, the pass is ending
+2026-11-23 15:07:18.489 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 5 ended at item 3: Connection is invalid (the error reporter appeared: Word crashed on this item) (Word crashed); 1 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 6 runs them, retried items last (1 of 3 stalled passes used)
+2026-11-23 15:07:18.546 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 5: Word is running (pid 28702); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:07:19.093 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:07:19.146 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 5: returned rc=0 in 0.6 s, no output
+2026-11-23 15:07:19.315 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 5: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-23 15:07:24.321 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 6] 0/2
+2026-11-23 15:07:26.121 -05:00 | WARNING  | __main__:_crash_signal:1249 - [watchdog] Word crashed on item 2 (error reporter up; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"); ending the pass now rather than waiting for the AppleEvent to fail, running: pkill -f '/Users/arthrod/Library/Containers/com\.microsoft\.Word/Data/tmp/wordpdf\.2n1fatre/batch-pdf-6\.tsv'
+2026-11-23 15:07:26.144 -05:00 | INFO     | __main__:_crash_signal:1258 - [watchdog] returned rc=0, the pass is ending
+2026-11-23 15:07:26.147 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 6 ended at item 2: Connection is invalid (the error reporter appeared: Word crashed on this item) (Word crashed); 1 item(s) not reached, 0 to retry. Recovering Word (see the [word] line), then pass 7 runs them, retried items last (1 of 3 stalled passes used)
+2026-11-23 15:07:26.215 -05:00 | WARNING  | __main__:recycle:1589 - [word] recovery 6: Word is running (pid 28919); closing every document, running: osascript -e 'tell application "Microsoft Word" to close every document saving no'
+2026-11-23 15:07:26.838 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 15:07:27.165 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 6: returned rc=0 in 0.9 s, no value came back (AppleScript 'missing value')
+2026-11-23 15:07:27.325 -05:00 | INFO     | __main__:recycle:1594 - [word] recovery 6: Word answers (0.2 s after the close-all); carrying on with the same Word
+2026-11-23 15:07:32.127 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_3e85ba20.docx — Word crashed on it in 2 passes: Connection is invalid (the error reporter appeared: Word crashed on this item)
+2026-11-23 15:07:32.128 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_dc5dd980.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-11-23 15:07:32.130 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_98507d91.docx — Word crashed on it in 2 passes: Microsoft Word got an error: Connection is invalid.
+2026-11-23 15:07:32.134 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 600 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 15:07:32.136 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=5 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+results/redlines_0929_full/jubarte-0.20.0/do
+                     cx                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │     2 │
+│ skipped (exists)                 │   595 │
+│ failed                           │     3 │
+│ seconds per document (batch avg) │  10.4 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_3e85ba20.docx
+: Word crashed on it in 2 passes: Connection is invalid (the error reporter 
+appeared: Word crashed on this item)
+  FAIL 
+628ec1cb76_00a9d81709806bc220522f9b062f226e19ba256e436493b1__vs__2_dc5dd980.docx
+: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.
+  FAIL 
+8f47b1dc90_file_176__vs__a3586d71f8_file_177_redline_5f0fed8e2a_ju_98507d91.docx
+: Word crashed on it in 2 passes: Microsoft Word got an error: Connection is 
+invalid.

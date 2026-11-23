@@ -1,0 +1,68 @@
+▸ PDF quality is sticky: `save as … file format format PDF` inherits whatever 
+'Optimize for' you last chose in Word's own Save As dialog.
+  Open any document in Word once, File > Save As > PDF, and pick the SECOND 
+option, Best for printing.
+  That choice persists; this script cannot set it. Pass --no-check-preset to 
+stop seeing this.
+2026-11-23 14:57:35.982 -05:00 | INFO     | __main__:preflight:3053 - [word] preflight: word_pid=16295 open_documents=0 started_clean=True launched_by_us=False close_documents=False
+2026-11-23 14:57:35.986 -05:00 | INFO     | __main__:convert_folder:2707 - [word] export: one_osascript=True documents=100 accept_all=False reject_all=False
+2026-11-23 14:57:36.049 -05:00 | INFO     | __main__:_convert_batched:2919 - [batch] one osascript for 100 document(s)
+2026-11-23 14:57:36.353 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 1 ended at item 0: open produced 0 new documents, none named 00000__jubarte__2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__671ff91b1d_4dd99e3e.docx; refusing to guess (loaded empty); item 1: open produced 0 new documents, none named 00001__jubarte__2b6c7be6bd_super_editor__nested_comments_84f214bb__vs__6c0ad6c8ef_c175240e.docx; refusing to guess (loaded empty); item 2: open produced 0 new documents, none named 00002__jubarte__2ba392cdd2_super_editor__broken_list_missing_items_36b4199e__vs__1_ecc21202.docx; refusing to guess (loaded empty); 97 item(s) not reached, 3 to retry. Recovering Word (see the [word] line), then pass 2 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 14:57:36.354 -05:00 | WARNING  | __main__:run_batch_with_resume:2326 - [batch pdf] Word returned nothing for 3 document(s) in a row; bringing it forward once to look for a modal, then restarting it
+2026-11-23 14:57:36.878 -05:00 | WARNING  | __main__:decline_repair_prompt:1816 - [word] after the failure, pressed 'No'; Word said: "Word found unreadable content in wt_docen_rels_fixed.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes."
+2026-11-23 14:57:36.887 -05:00 | WARNING  | __main__:decline_repair_prompt:1816 - [word] after the failure, pressed 'OK'; Word said: "Word experienced an error trying to open the file.
+Try these suggestions.
+* Check the file permissions for the document or drive.
+* Make sure there is sufficient free memory and disk space.
+* Open the file with the Text Recovery converter.
+(wt_docen_rels_fixed.docx)"
+2026-11-23 14:57:36.892 -05:00 | WARNING  | __main__:run_batch_with_resume:2332 - [batch pdf] found and answered: [('No', 'Word found unreadable content in wt_docen_rels_fixed.docx. Do you want to recover the contents of this document? If you trust the source of this document, click Yes.'), ('OK', 'Word experienced an error trying to open the file.\nTry these suggestions.\n* Check the file permissions for the document or drive.\n* Make sure there is sufficient free memory and disk space.\n* Open the file with the Text Recovery converter.\n(wt_docen_rels_fixed.docx)')]
+2026-11-23 14:57:36.931 -05:00 | WARNING  | __main__:recycle:1600 - [word] recovery 1: because Word returned nothing for 3 document(s) in a row (it answers, but opens nothing); asking Word to quit, running: osascript -e 'tell application "Microsoft Word" to quit saving no'
+2026-11-23 14:57:37.956 -05:00 | INFO     | __main__:_run_logged:1652 - [word] recovery 1: returned rc=0 in 1.0 s, no output
+2026-11-23 14:57:38.557 -05:00 | INFO     | __main__:recycle:1603 - [word] recovery 1: Word quit on request
+2026-11-23 14:57:38.586 -05:00 | INFO     | __main__:warm:1482 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-11-23 14:57:41.031 -05:00 | INFO     | __main__:warm:1489 - [word] Word answered after 2 s; alerts off
+2026-11-23 14:57:46.038 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 5/100
+2026-11-23 14:57:51.044 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 13/100
+2026-11-23 14:57:56.050 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 21/100
+2026-11-23 14:58:01.057 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 31/100
+2026-11-23 14:58:04.922 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Word shows a button with no name (AppleScript 'missing value')
+2026-11-23 14:58:06.061 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 40/100
+2026-11-23 14:58:11.066 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 47/100
+2026-11-23 14:58:16.070 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 57/100
+2026-11-23 14:58:21.077 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 66/100
+2026-11-23 14:58:31.088 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 72/100
+2026-11-23 14:58:41.092 -05:00 | INFO     | __main__:_nudge:2070 - [focus] item 73/100 not finished after 10 s; bringing Word forward to look for an alert
+2026-11-23 14:58:46.095 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 74/100
+2026-11-23 14:58:51.101 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 2] 83/100
+2026-11-23 14:58:53.821 -05:00 | WARNING  | __main__:run_batch_with_resume:2314 - [batch pdf] pass 2 ended at item 87: Microsoft Word got an error: Connection is invalid. (Word crashed); 15 item(s) not reached, 1 to retry. Recovering Word (see the [word] line), then pass 3 runs them, retried items last (0 of 3 stalled passes used)
+2026-11-23 14:58:53.853 -05:00 | WARNING  | __main__:recycle:1577 - [word] recovery 2: Word's process is gone (it crashed); relaunching it
+2026-11-23 14:58:53.876 -05:00 | INFO     | __main__:warm:1482 - [word] launching Word in the background, running: open -g -a '/Applications/Microsoft Word.app'
+2026-11-23 14:58:57.710 -05:00 | INFO     | __main__:warm:1489 - [word] Word answered after 4 s; alerts off
+2026-11-23 14:59:02.716 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 3] 7/16
+2026-11-23 14:59:03.451 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'OK'
+2026-11-23 14:59:03.452 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows button 'More Information'
+2026-11-23 14:59:03.452 -05:00 | INFO     | __main__:_note_dialogs:1080 - [watchdog] Microsoft Error Reporting shows a button with no name (AppleScript 'missing value')
+2026-11-23 14:59:03.452 -05:00 | INFO     | __main__:_note_dialogs:1083 - [watchdog] Microsoft Error Reporting says: 'There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting'
+2026-11-23 14:59:03.478 -05:00 | INFO     | __main__:_crash_signal:1238 - [watchdog] the error reporter is older than this pass (11 s vs 6 s): it reports the previous crash, not item 97; ignoring it
+2026-11-23 14:59:07.722 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 3] 11/16
+2026-11-23 14:59:11.897 -05:00 | WARNING  | __main__:_loop_merp:1196 - [watchdog] error report declined via 'OK'; Word said: "There was a problem with Microsoft Word and we apologize for the inconvenience. | Microsoft Error Reporting"
+2026-11-23 14:59:12.728 -05:00 | INFO     | __main__:_loop:2101 - [batch pdf 3] 13/16
+2026-11-23 14:59:13.512 -05:00 | ERROR    | __main__:_convert_batched:2970 - [batch] FAIL: 52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_3e85ba20.docx — Word could not load it in 2 passes: open produced 0 new documents, none named 00087__jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_3e85ba20.docx; refusing to guess
+2026-11-23 14:59:13.521 -05:00 | INFO     | __main__:convert_folder:2726 - [manifest] appended 100 line(s) to results/redlines_0929_full/jubarte-0.20.0/pdf_by_word/manifest.jsonl
+2026-11-23 14:59:16.758 -05:00 | INFO     | __main__:stop:1280 - [watchdog] tally: declined=0 dismissed=1 granted=0 forwarded=0 alerts_seen=1
+                DOCX → PDF:                 
+   .scratch/rescore-0.20.0-mac/chunks/c02   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
+┃ outcome                          ┃ count ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
+│ converted                        │    99 │
+│ skipped (exists)                 │     0 │
+│ failed                           │     1 │
+│ seconds per document (batch avg) │   1.0 │
+└──────────────────────────────────┴───────┘
+  FAIL 
+52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs__5_3e85ba20.docx
+: Word could not load it in 2 passes: open produced 0 new documents, none named 
+00087__jubarte__52220b20c3_00a54bff7e15af78fe7cfc20219c28cb208fde807bd28d44__vs_
+_5_3e85ba20.docx; refusing to guess
