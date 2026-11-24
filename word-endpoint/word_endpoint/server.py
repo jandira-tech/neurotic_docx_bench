@@ -449,7 +449,11 @@ class Handler(BaseHTTPRequestHandler):
                 if not chunk:
                     break
                 budget -= len(chunk)
-        except (ConnectionError, TimeoutError, socket.timeout):
+        except OSError:
+            # The client left, or (after the upload deadline) the socket timed
+            # out, which makes every later read raise a plain OSError
+            # ("cannot read from timed out object"). The response is out
+            # either way, so there is nothing left to do.
             return
 
 

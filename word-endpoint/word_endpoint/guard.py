@@ -48,19 +48,20 @@ _FORBIDDEN_FIELD = re.compile(
 _ATTR = re.compile(r"""([A-Za-z0-9:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
 _ENTITY = re.compile(r"&([^;]{1,16});")
 _TAG_ATTRIBUTES = r'''(?:[^'">]|"[^"]*"|'[^']*')*'''
-_EMPTY_CONTENT = r"(?:\s|<!--.*?-->|<\?.*?\?>)*"
 # w:attachedTemplate, w:linkStyles and Relationship have no children in the
-# schema, so the paired form may hold only whitespace, comments and processing
-# instructions. A pattern that could span other markup would delete whatever
-# sits between two such tags.
+# schema, so the paired form may hold only whitespace. These patterns search a
+# copy of the part in which every comment, CDATA section and processing
+# instruction is blanked out (_outside_non_markup), so "only whitespace" there
+# also admits those, and \s* stays linear. A pattern that could span other
+# markup would delete whatever sits between two such tags.
 _TEMPLATE_TAG = re.compile(
     rf"<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>{_EMPTY_CONTENT}</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
+    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
     re.I | re.S,
 )
 _TEMPLATE_REL = re.compile(
     rf"<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>{_EMPTY_CONTENT}</(?:[\w.-]+:)?Relationship\s*>",
+    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?Relationship\s*>",
     re.I | re.S,
 )
 # Comments, CDATA sections and processing instructions. In well-formed XML a
@@ -560,25 +561,28 @@ def _scrub_paths(text: str) -> str:
 
 
 def _outside_non_markup(text: str, pattern: re.Pattern[str], repl) -> str:
-    """pattern.sub(repl, text) for the matches that start in markup. A match
-    that starts inside a comment, CDATA section or processing instruction is
-    left alone, and the search resumes after that span, so tag-shaped text in
-    a comment can neither be edited nor hide a live element after it."""
-    spans = _non_markup_spans(text)
-    pieces: list[str] = []
-    position = index = 0
-    while (match := pattern.search(text, position)) is not None:
-        while index < len(spans) and spans[index][1] <= match.start():
-            index += 1
-        if index < len(spans) and spans[index][0] <= match.start():
-            pieces.append(text[position:spans[index][1]])
-            position = spans[index][1]
-            continue
-        pieces.append(text[position:match.start()])
-        pieces.append(repl(match) if callable(repl) else repl)
+    """pattern.sub(repl, text), matched against a copy of text in which every
+    comment, CDATA section and processing instruction is spaces of the same
+    length. Tag-shaped text inside one can neither be edited nor hide a live
+    element after it, a match never starts or ends inside one, and the
+    pattern never searches inside one (a lazy "<!--.*?-->" did, from every
+    tag-shaped candidate in a CDATA section, which made stripping quadratic).
+    repl is a string, or a function of the matched original text."""
+    pieces, last = [], 0
+    for start, end in _non_markup_spans(text):
+        pieces.append(text[last:start])
+        pieces.append(" " * (end - start))
+        last = end
+    pieces.append(text[last:])
+    blanked = "".join(pieces)
+    out, position = [], 0
+    for match in pattern.finditer(blanked):
+        out.append(text[position:match.start()])
+        original = text[match.start():match.end()]
+        out.append(repl(original) if callable(repl) else repl)
         position = match.end()
-    pieces.append(text[position:])
-    return "".join(pieces)
+    out.append(text[position:])
+    return "".join(out)
 
 
 def _strip_markup(text: str) -> str:
@@ -587,13 +591,13 @@ def _strip_markup(text: str) -> str:
     # report the file as damaged.
     text = _outside_non_markup(text, _TEMPLATE_TAG, "")
 
-    def drop_template(match: re.Match[str]) -> str:
-        for attr in _ATTR.finditer(match.group(0)):
+    def drop_template(element: str) -> str:
+        for attr in _ATTR.finditer(element):
             if attr.group(1).lower() == "type":
                 value = attr.group(2) if attr.group(2) is not None else attr.group(3)
                 if decode_entities(value, allow_markup=True).lower().endswith("/attachedtemplate"):
                     return ""
-        return match.group(0)
+        return element
 
     return _outside_non_markup(text, _TEMPLATE_REL, drop_template)
 

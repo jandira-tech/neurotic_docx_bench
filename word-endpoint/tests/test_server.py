@@ -417,6 +417,30 @@ class ServerTests(unittest.TestCase):
         self.assertIn(b'"code": "timeout"', reply)
         self.assertLess(elapsed, 4.0)
 
+    def test_a_timed_out_upload_is_not_logged_as_an_internal_failure(self):
+        # After the deadline the drain read a socket that had timed out, which
+        # raises a plain OSError; it escaped to _dispatch as "request failed"
+        # with a traceback (MiniMax review).
+        import socket
+        import time
+        content_type, body = encode_form([("document", "a.docx", make_docx("A"))])
+        head = (f"POST /v1/convert HTTP/1.1\r\nHost: x\r\nAuthorization: Bearer {self.token}\r\n"
+                f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
+        with self.assertLogs(level="INFO") as logs, \
+                patch("word_endpoint.server.UPLOAD_DEADLINE_S", 0.5), \
+                socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+            sock.sendall(head + body[:10])
+            sock.settimeout(3)
+            reply = b""
+            while chunk := sock.recv(4096):
+                reply += chunk
+            deadline = time.monotonic() + 3
+            while time.monotonic() < deadline and not any(" POST /v1/convert " in line for line in logs.output):
+                time.sleep(0.05)
+        self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
+        self.assertTrue(any(" POST /v1/convert " in line for line in logs.output), logs.output)
+        self.assertEqual([line for line in logs.output if line.startswith("ERROR")], [])
+
     def test_compare_and_convert_overlap_on_separate_words(self):
         base = self.settings(10)
         runner = WordRunner(

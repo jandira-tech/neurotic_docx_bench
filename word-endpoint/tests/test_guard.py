@@ -161,6 +161,36 @@ class GuardTests(unittest.TestCase):
         self.assertEqual(caught.exception.code, "unsafe_package")
         self.assertLess(time.perf_counter() - started, 1.0)
 
+    def test_template_stripping_is_linear_in_tag_shaped_cdata(self):
+        # The paired form allowed comments between the tags, and a lazy
+        # "<!--.*?-->" searched to the end of the part from every
+        # "<w:attachedTemplate>" + "<!--" inside a CDATA section: 3.4 KB took
+        # 4.3 s (MiniMax review). Non-markup spans now read as blank space.
+        import time
+        w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        r = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        files = standard_files(["Hello"])
+        files["word/settings.xml"] = (
+            f'<?xml version="1.0"?><w:settings xmlns:w="{w}" xmlns:r="{r}">'
+            '<w:attachedTemplate r:id="rId1"/><w:t><![CDATA['
+            + ("<w:attachedTemplate>" + "<!--" * 20) * 4000
+            + "]]></w:t></w:settings>"
+        )
+        files["word/_rels/settings.xml.rels"] = (
+            '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate" '
+            'Target="file:///C:/templates/evil.dotm" TargetMode="External"/></Relationships>'
+        )
+        started = time.perf_counter()
+        cleaned = prepare_docx(pack(files))
+        self.assertLess(time.perf_counter() - started, 1.0)
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            settings = archive.read("word/settings.xml").decode()
+            rels = archive.read("word/_rels/settings.xml.rels").decode()
+        self.assertNotIn('<w:attachedTemplate r:id="rId1"/>', settings)
+        self.assertIn("<![CDATA[<w:attachedTemplate><!--", settings)
+        self.assertNotIn("evil.dotm", rels)
+
     def test_percent_encoded_member_names_get_the_plain_name_checks(self):
         # Relationship targets and ZIP names are compared decoded, so a name
         # check on the raw spelling alone misses word/media/payload%2Eexe.
@@ -185,6 +215,19 @@ class GuardTests(unittest.TestCase):
                     with self.assertRaises(GuardError) as caught:
                         validate_docx(pack(files))
                     self.assertEqual(caught.exception.code, code)
+
+    def test_a_relationship_part_with_an_encoded_extension_is_checked(self):
+        # word/_rels/document%2Erels is a .rels part once decoded; the suffix
+        # check read the raw name, so its external target was never looked at.
+        files = standard_files(["Hello"])
+        files["word/_rels/document%2Erels"] = (
+            '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/oleObject" '
+            'Target="file:///C:/Windows/System32/evil.dll" TargetMode="External"/></Relationships>'
+        )
+        with self.assertRaises(GuardError) as caught:
+            validate_docx(pack(files))
+        self.assertEqual(caught.exception.code, "external_content")
 
     def test_relationships_resolve_from_a_percent_encoded_source_folder(self):
         rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
