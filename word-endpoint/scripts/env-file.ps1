@@ -24,6 +24,9 @@ function New-RestrictedEnvFile([string] $Path, [string[]] $Lines, [string] $Acco
     Move-Item -LiteralPath $staged -Destination $Path -ErrorAction Stop
 }
 
+# A PowerShell single-quoted string that reads back as $Text.
+function Format-Literal([string] $Text) { return "'" + $Text.Replace("'", "''") + "'" }
+
 # Refuses a .env other accounts can read: it must not inherit its folder's
 # rules, and may grant access only to SYSTEM, Administrators and the account
 # running this. start.ps1 checks it on every start, not only when it creates it.
@@ -41,14 +44,16 @@ function Assert-RestrictedEnvFile([string] $Path) {
             $others += $rule.IdentityReference.Value
             # Inherited rules go with /inheritance:r; explicit ones need /remove:g,
             # since /grant:r replaces only the grants of the accounts it names.
-            if (-not $rule.IsInherited) { $remove += $(if ($sid -like 'S-1-*') { "*$sid" } else { "`"$sid`"" }) }
+            if (-not $rule.IsInherited) { $remove += $(if ($sid -like 'S-1-*') { "*$sid" } else { Format-Literal $sid }) }
         }
     }
     if (-not $acl.AreAccessRulesProtected -or $others) {
         $why = if (-not $acl.AreAccessRulesProtected) { "it inherits its folder's rules" } else { "it grants $(@($others | Select-Object -Unique) -join ', ')" }
         $removal = if ($remove) { " /remove:g $(@($remove | Select-Object -Unique) -join ' ')" } else { "" }
+        # Single-quoted, so the command can be pasted into PowerShell whatever
+        # the path holds ("$" included).
         throw ("$Path holds the API token, but $why. Restrict it with: " +
-            "icacls `"$Path`" /inheritance:r$removal /grant:r `"*${me}:(R,W)`" /grant:r `"*${SystemSid}:(R)`"")
+            "icacls $(Format-Literal $Path) /inheritance:r$removal /grant:r $(Format-Literal "*${me}:(R,W)") /grant:r $(Format-Literal "*${SystemSid}:(R)")")
     }
 }
 
@@ -85,7 +90,9 @@ function Read-DotEnv([string] $Path) {
 # Sets one key in .env so that Read-DotEnv and load_dotenv read the new value:
 # the first line for that key (however it is spaced or quoted) becomes
 # KEY=value, later lines for it are dropped, and a missing key is appended.
-# The file is rewritten in place, so it keeps its access rules.
+# The file is rewritten in place, so it keeps its access rules, as UTF-8
+# without a byte-order mark: load_dotenv reads strict UTF-8, which would make a
+# BOM part of the first key, and ASCII would turn other lines' accents into "?".
 function Set-DotEnvValue([string] $Path, [string] $Key, [string] $Value) {
     $lines = @()
     if (Test-Path -LiteralPath $Path) { $lines = @(Get-Content -LiteralPath $Path -Encoding UTF8) }
@@ -97,5 +104,6 @@ function Set-DotEnvValue([string] $Path, [string] $Key, [string] $Value) {
         elseif (-not $found) { $found = $true; $updated.Add("$Key=$Value") }
     }
     if (-not $found) { $updated.Add("$Key=$Value") }
-    Set-Content -LiteralPath $Path -Value $updated.ToArray() -Encoding ascii -ErrorAction Stop
+    $full = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+    [System.IO.File]::WriteAllLines($full, $updated.ToArray(), (New-Object System.Text.UTF8Encoding $false))
 }

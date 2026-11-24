@@ -45,10 +45,12 @@ _DANGEROUS_EXTENSIONS = {
 _FORBIDDEN_FIELD = re.compile(
     r"(?i)\b(DDEAUTO|DDE|INCLUDETEXT|INCLUDEPICTURE|INCLUDEHTML|MACROBUTTON|DATABASE|IMPORT|LINK|RD)\b"
 )
-# The lookbehind starts a name only where the previous character cannot be
-# part of one, so a long run of name characters with no "=" is tried once,
-# not once per position.
-_ATTR = re.compile(r"""(?<![A-Za-z0-9:])([A-Za-z0-9:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
+# One attribute: whitespace, a name (whatever an XML name may hold, "_", "-"
+# and "." included), "=" and a quoted value. _attributes matches them one
+# after another from the element name, each where the last one ended, so
+# text inside a value is never read as a name and every match is anchored.
+_ATTR = re.compile(r"""\s+([^\s=/>"']+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
+_ELEMENT_NAME = re.compile(r"<[^\s/>]+")
 _ENTITY = re.compile(r"&([^;]{1,16});")
 _TAG_ATTRIBUTES = r'''(?:[^'">]|"[^"]*"|'[^']*')*'''
 _OPENING_TAG = re.compile(rf"<[^\s/>]+{_TAG_ATTRIBUTES}")
@@ -564,6 +566,15 @@ def _scrub_paths(text: str) -> str:
     return text
 
 
+def _attributes(tag: str):
+    """The attributes of an opening tag, in order, as _ATTR matches."""
+    name = _ELEMENT_NAME.match(tag)
+    position = name.end() if name else len(tag)
+    while attr := _ATTR.match(tag, position):
+        yield attr
+        position = attr.end()
+
+
 def _outside_non_markup(text: str, pattern: re.Pattern[str], repl) -> str:
     """pattern.sub(repl, text), matched against a copy of text in which every
     comment, CDATA section and processing instruction is spaces of the same
@@ -600,7 +611,7 @@ def _strip_markup(text: str) -> str:
         # comment or CDATA section (it matched them as blank space), whose
         # text is not attributes and must not be scanned as such.
         opening = _OPENING_TAG.match(element)
-        for attr in _ATTR.finditer(opening.group(0) if opening else ""):
+        for attr in _attributes(opening.group(0) if opening else ""):
             if attr.group(1).lower() == "type":
                 value = attr.group(2) if attr.group(2) is not None else attr.group(3)
                 if decode_entities(value, allow_markup=True).lower().endswith("/attachedtemplate"):

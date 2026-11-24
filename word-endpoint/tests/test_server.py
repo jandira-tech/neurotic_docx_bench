@@ -423,6 +423,8 @@ class ServerTests(unittest.TestCase):
                 pass
         self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
         self.assertIn(b'"code": "timeout"', reply)
+        # Not before the 1 s deadline, and not long after it.
+        self.assertGreater(elapsed, 0.8)
         self.assertLess(elapsed, 4.0)
 
     def test_a_timed_out_upload_is_not_logged_as_an_internal_failure(self):

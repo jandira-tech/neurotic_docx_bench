@@ -229,6 +229,27 @@ class GuardTests(unittest.TestCase):
         self.assertIn('Id="safe"', rels)
         self.assertNotIn("evil.dotm", rels)
 
+    def test_only_an_attribute_named_type_gives_a_relationship_its_type(self):
+        # Attribute names may hold "_", "-" and "."; a scan that skipped such a
+        # name read "Type" out of its quoted value, or out of "X-Type", and
+        # deleted the relationship (codex review of 02c2a796).
+        hyperlink = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"
+        files = standard_files(["Hello"])
+        files["word/_rels/settings.xml.rels"] = (
+            '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            f'<Relationship Id="under" _=" Type=\'/attachedTemplate\' " Type="{hyperlink}" Target="https://example.com/a" TargetMode="External"/>'
+            f'<Relationship Id="dashed" X-Type="/attachedTemplate" Type="{hyperlink}" Target="https://example.com/b" TargetMode="External"/>'
+            f'<Relationship Id="dotted" a.b="x" Type="{hyperlink}" Target="https://example.com/c" TargetMode="External"/>'
+            '<Relationship Id="tpl" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate" '
+            'Target="file:///C:/templates/evil.dotm" TargetMode="External"/></Relationships>'
+        )
+        cleaned = prepare_docx(pack(files))
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            rels = archive.read("word/_rels/settings.xml.rels").decode()
+        for kept in ('Id="under"', 'Id="dashed"', 'Id="dotted"'):
+            self.assertIn(kept, rels)
+        self.assertNotIn("evil.dotm", rels)
+
     def test_percent_encoded_member_names_get_the_plain_name_checks(self):
         # Relationship targets and ZIP names are compared decoded, so a name
         # check on the raw spelling alone misses word/media/payload%2Eexe.

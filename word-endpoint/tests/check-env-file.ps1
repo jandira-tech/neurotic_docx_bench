@@ -60,6 +60,19 @@ try {
     try { Assert-RestrictedEnvFile $plain } catch { $failures += "3b: its printed fix did not fix it: $($_.Exception.Message)" }
     Remove-Item -LiteralPath $plain -Force
 
+    # 3c. The printed fix works for a path PowerShell would otherwise expand.
+    $odd = Join-Path $dir 'a$b''c'
+    New-Item -ItemType Directory -Path $odd | Out-Null
+    $oddFile = Join-Path $odd 'plain.env'
+    Set-Content -LiteralPath $oddFile -Value 'WORD_API_TOKEN=x' -Encoding ascii
+    & icacls.exe $oddFile /grant '*S-1-1-0:(R)' | Out-Null
+    $message = ''
+    try { Assert-RestrictedEnvFile $oddFile } catch { $message = $_.Exception.Message }
+    $fix = ($message -split 'Restrict it with: ', 2)[1]
+    try { Invoke-Expression $fix | Out-Null } catch { }
+    try { Assert-RestrictedEnvFile $oddFile } catch { $failures += "3c: its printed fix did not fix $oddFile`: $fix" }
+    Remove-Item -LiteralPath $odd -Recurse -Force
+
     # 4. Read-DotEnv reads what word_endpoint\config.py's load_dotenv reads.
     $sample = Join-Path $dir 'sample.env'
     @('# comment', '  WORD_API_TOKEN = "abc=def"  ', 'PORT=8787', 'PORT=9999', 'lower=x',
@@ -84,10 +97,20 @@ try {
     try { Assert-RestrictedEnvFile $urls } catch { $failures += "5: the rewrite lost the access rules: $($_.Exception.Message)" }
     Set-DotEnvValue $urls 'RATE_LIMIT_PER_MINUTE' '300'
     if ((Read-DotEnv $urls)['RATE_LIMIT_PER_MINUTE'] -ne '300') { $failures += "5: a missing key was not appended" }
+    # Other lines keep their accents, and no byte-order mark is added (the
+    # service would read it as part of the first key).
+    $accented = "# Jos$([char]0x00E9)'s endpoint"
+    [System.IO.File]::WriteAllLines($urls, [string[]]@($accented, 'WORD_API_TOKEN=x', 'WORD_PUBLIC_URL=https://old'), (New-Object System.Text.UTF8Encoding $false))
+    Set-DotEnvValue $urls 'WORD_PUBLIC_URL' 'https://new'
+    $bytes = [System.IO.File]::ReadAllBytes($urls)
+    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) { $failures += "5: a byte-order mark was written" }
+    $back = [System.IO.File]::ReadAllLines($urls, (New-Object System.Text.UTF8Encoding $false))
+    if ($back[0] -cne $accented) { $failures += "5: the accented line came back as $($back[0])" }
+    try { Assert-RestrictedEnvFile $urls } catch { $failures += "5: the UTF-8 rewrite lost the access rules: $($_.Exception.Message)" }
     Remove-Item -LiteralPath $urls -Force
 
 } finally {
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'env file checks passed (6 cases)'
+Write-Output 'env file checks passed (7 cases)'
