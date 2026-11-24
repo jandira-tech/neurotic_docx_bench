@@ -1,0 +1,799 @@
+{
+  "info": {
+    "description": "Loopback Microsoft Word automation API. Listens on 127.0.0.1 only; callers authenticate with a bearer token sent in the Authorization header. Query strings are rejected so the token never reaches tunnel logs.",
+    "title": "Word endpoint",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8787"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "jobs",
+      "description": "Word compare and convert jobs."
+    },
+    {
+      "name": "health",
+      "description": "Liveness and readiness probes."
+    }
+  ],
+  "paths": {
+    "/live": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "HTTP liveness probe.",
+        "description": "Returns 200 whenever the HTTP listener answers.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service is alive.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Live"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "HTTP liveness with worker detail.",
+        "description": "Preserved for existing supervisors; includes a ready flag and both worker states.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service state.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Word readiness probe.",
+        "description": "Returns 503 during worker startup or recovery.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Both Word workers are serving.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Workers are starting or recovering.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/compare": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Compare two .docx files.",
+        "description": "Returns a blackline .docx with tracked changes. Exactly two form fields are accepted.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "original",
+                  "revised"
+                ],
+                "properties": {
+                  "original": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Original .docx (max 20 MB)."
+                  },
+                  "revised": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Revised .docx (max 20 MB)."
+                  }
+                }
+              },
+              "encoding": {
+                "original": {
+                  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                },
+                "revised": {
+                  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comparison document with tracked changes.",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request identifier echoed by the server."
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string",
+                  "const": "attachment; filename=\"comparison.docx\""
+                },
+                "description": "Download filename."
+              }
+            },
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error body. code is one of: query_rejected, bad_multipart, too_many_parts, unexpected_field, missing_compare_files, not_docx, encrypted, macros, active_content, external_content, unsafe_package, password_protected, corrupt.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error body. code is one of: unauthorized.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error body. code is one of: not_found.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Error body. code is one of: method_not_allowed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "411": {
+            "description": "Error body. code is one of: length_required.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error body. code is one of: too_large.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Error body. code is one of: unsupported_encoding.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error body. code is one of: rate_limited.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "500": {
+            "description": "Error body. code is one of: compare_failed, no_output, word_failed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error body. code is one of: busy.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "504": {
+            "description": "Error body. code is one of: timeout.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/compare-pdf": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Compare two .docx files and export the markup as PDF.",
+        "description": "Word exports its live comparison result directly; markup is preserved in the PDF.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "original",
+                  "revised"
+                ],
+                "properties": {
+                  "original": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Original .docx (max 20 MB)."
+                  },
+                  "revised": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Revised .docx (max 20 MB)."
+                  }
+                }
+              },
+              "encoding": {
+                "original": {
+                  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                },
+                "revised": {
+                  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comparison PDF including tracked-change and comment markup.",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request identifier echoed by the server."
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string",
+                  "const": "attachment; filename=\"comparison.pdf\""
+                },
+                "description": "Download filename."
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error body. code is one of: query_rejected, bad_multipart, too_many_parts, unexpected_field, missing_compare_files, not_docx, encrypted, macros, active_content, external_content, unsafe_package, password_protected, corrupt.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error body. code is one of: unauthorized.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error body. code is one of: not_found.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Error body. code is one of: method_not_allowed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "411": {
+            "description": "Error body. code is one of: length_required.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error body. code is one of: too_large.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Error body. code is one of: unsupported_encoding.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error body. code is one of: rate_limited.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "500": {
+            "description": "Error body. code is one of: compare_failed, no_output, word_failed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error body. code is one of: busy.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "504": {
+            "description": "Error body. code is one of: timeout.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/convert": {
+      "post": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Convert one .docx file to PDF.",
+        "description": "PDF export omits document properties and always includes markup when present.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "document"
+                ],
+                "properties": {
+                  "document": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Source .docx (max 20 MB)."
+                  }
+                }
+              },
+              "encoding": {
+                "document": {
+                  "contentType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "PDF rendered from the uploaded document.",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request identifier echoed by the server."
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string",
+                  "const": "attachment; filename=\"document.pdf\""
+                },
+                "description": "Download filename."
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error body. code is one of: query_rejected, bad_multipart, too_many_parts, unexpected_field, missing_document, not_docx, encrypted, macros, active_content, external_content, unsafe_package, password_protected, corrupt.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error body. code is one of: unauthorized.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error body. code is one of: not_found.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Error body. code is one of: method_not_allowed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "411": {
+            "description": "Error body. code is one of: length_required.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error body. code is one of: too_large.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Error body. code is one of: unsupported_encoding.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error body. code is one of: rate_limited.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "500": {
+            "description": "Error body. code is one of: convert_failed, no_output, word_failed.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error body. code is one of: busy.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "const": 5
+                },
+                "description": "Seconds to wait before retrying."
+              }
+            }
+          },
+          "504": {
+            "description": "Error body. code is one of: timeout.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "openapi": "3.1.0",
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error",
+          "code",
+          "request_id"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable failure description."
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "active_content",
+              "bad_multipart",
+              "busy",
+              "compare_failed",
+              "convert_failed",
+              "corrupt",
+              "encrypted",
+              "external_content",
+              "length_required",
+              "macros",
+              "method_not_allowed",
+              "missing_compare_files",
+              "missing_document",
+              "no_output",
+              "not_docx",
+              "not_found",
+              "password_protected",
+              "query_rejected",
+              "rate_limited",
+              "timeout",
+              "too_large",
+              "too_many_parts",
+              "unauthorized",
+              "unexpected_field",
+              "unsafe_package",
+              "unsupported_encoding",
+              "word_failed"
+            ],
+            "description": "Machine-readable status code."
+          },
+          "request_id": {
+            "type": "string",
+            "description": "Identifier to correlate with server logs."
+          }
+        }
+      },
+      "Live": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok"
+          }
+        }
+      },
+      "Health": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "ready",
+          "workers"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Overall HTTP status."
+          },
+          "ready": {
+            "type": "boolean",
+            "description": "True when both Word workers are serving."
+          },
+          "workers": {
+            "type": "object",
+            "description": "Per-lane worker state, keyed by lane name.",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Token created in .env on first start (WORD_API_TOKEN)."
+      }
+    }
+  }
+}

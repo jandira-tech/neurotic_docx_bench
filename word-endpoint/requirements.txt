@@ -1,0 +1,2 @@
+pywin32>=308
+./vendor/purexml-1.0.1-py3-none-any.whl

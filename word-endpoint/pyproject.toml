@@ -1,0 +1,21 @@
+[project]
+name = "word-endpoint"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.15"
+dependencies = []
+
+[project.scripts]
+word-endpoint = "word_endpoint:main"
+
+[build-system]
+requires = ["uv_build>=0.13.0,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "apispec>=6.10.1",
+    "openapi-spec-validator>=0.9.0",
+    "pyrefly>=1.4.1",
+]
