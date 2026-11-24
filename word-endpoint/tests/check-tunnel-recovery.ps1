@@ -90,6 +90,19 @@ try {
     if ("$($script:killedPid)" -ne '4242') { $failures += "2c: the unrecorded tunnel was left running: $($lines -join ' | ')" }
     if ($lines -match 'started tunnel') { $failures += "2c: an unrecorded launch was logged as started: $($lines -join ' | ')" }
     if (-not ($lines -match 'could not start')) { $failures += "2c: the failure was not reported: $($lines -join ' | ')" }
+    if (-not ($lines -match 'stopped it')) { $failures += "2c: the rollback did not say it stopped the tunnel: $($lines -join ' | ')" }
+
+    # 2d. As 2c, but cloudflared exited by itself (a bad token) before the
+    #     rollback: taskkill finds nothing, and the message says so instead of
+    #     claiming the rollback stopped it.
+    Reset -KillExit 128
+    Set-Content -Path $pidFile -Value '1' -Encoding ascii
+    Set-ItemProperty -LiteralPath $pidFile -Name IsReadOnly -Value $true
+    $lines = Recover 'tok'
+    if ($lines -match 'stopped it') { $failures += "2d: a tunnel that had exited by itself was reported as stopped: $($lines -join ' | ')" }
+    if (-not ($lines -match 'already exited')) { $failures += "2d: the tunnel's own exit was not reported: $($lines -join ' | ')" }
+    if ($lines -match 'started tunnel') { $failures += "2d: an unrecorded launch was logged as started: $($lines -join ' | ')" }
+    Set-ItemProperty -LiteralPath $pidFile -Name IsReadOnly -Value $false
 
     # 3. A recorded tunnel still running: replaced.
     Reset -Running $tunnel
@@ -132,4 +145,4 @@ try {
     Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'tunnel recovery checks passed (12 cases)'
+Write-Output 'tunnel recovery checks passed (13 cases)'

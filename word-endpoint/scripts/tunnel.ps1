@@ -54,10 +54,13 @@ function Start-Tunnel([string] $Root, [string] $Port, [string] $Token) {
             $reason = $_.Exception.Message
             & taskkill.exe /F /T /PID $proc.Id | Out-Null
             $code = $LASTEXITCODE
-            if ($code -ne 0 -and (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)) {
+            if ($code -eq 0) { throw "Could not record tunnel process $($proc.Id) ($reason); stopped it." }
+            if (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue) {
                 throw "Could not record tunnel process $($proc.Id) ($reason), and could not stop it (taskkill exit $code): stop it by hand."
             }
-            throw "Could not record tunnel process $($proc.Id) ($reason); stopped it."
+            # taskkill found nothing to stop: cloudflared exited by itself, so
+            # its own failure (tunnel.err.log) is the one to look at.
+            throw "Could not record tunnel process $($proc.Id) ($reason); it had already exited (see logs\tunnel.err.log)."
         }
         return $proc
     } finally {
