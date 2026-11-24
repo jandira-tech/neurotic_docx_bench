@@ -67,7 +67,14 @@ function Stop-OurWord($pidFile) {
     if ($word -and $word.Foreign) {
         Write-Host "Left pid $($word.ProcessId) ($($word.Name)) running: $($word.Reason)"
     } elseif ($word) {
-        try { Stop-Process -Id $word.ProcessId -Force } finally { Close-ProcessHold $word.Hold }
+        try {
+            Stop-Process -Id $word.ProcessId -Force
+            # Stop-Process only starts the termination; the job folder is
+            # deleted next, so wait until Word has let go of it.
+            if (-not (Wait-ProcessHoldExit $word.Hold 10)) {
+                throw "Could not stop WINWORD $($word.ProcessId): still running 10 s after Stop-Process; kept $pidFile"
+            }
+        } finally { Close-ProcessHold $word.Hold }
         Write-Host "Stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
