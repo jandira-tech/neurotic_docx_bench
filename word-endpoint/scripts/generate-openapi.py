@@ -168,8 +168,10 @@ def build_spec() -> APISpec:
         openapi_version="3.1.0",
         info={"description": (
             "Loopback Microsoft Word automation API. Listens on 127.0.0.1 only; callers "
-            "authenticate with a bearer token sent in the Authorization header. Query "
-            "strings are rejected so the token never reaches tunnel logs."
+            "authenticate with a bearer token sent in the Authorization header. Send the "
+            "token only in that header and never in a URL: the server rejects query "
+            "strings, but a proxy or tunnel in front of it may log a URL before the "
+            "server sees it."
         )},
         servers=[{"url": "http://127.0.0.1:8787"}],
         security=[{"bearerAuth": []}],
@@ -284,9 +286,18 @@ def write_errors_markdown(path: Path) -> None:
     lines = [
         "# Error messages",
         "",
-        "Every failure is JSON with `error` (message), `code` and `request_id`.",
+        "A failed request to a job endpoint (`/v1/compare`, `/v1/compare-pdf`, `/v1/convert`),",
+        "and any request the server refuses (unknown path, wrong method, query string), is JSON",
+        "with `error` (message), `code` and `request_id`.",
         "`code` never leaks internal details; unknown failures surface as `word_failed`.",
         "`busy` and `rate_limited` also carry `Retry-After: 5`.",
+        "",
+        "Two responses are not in that shape:",
+        "",
+        "- `GET /ready` answers 503 while a Word worker is starting or recovering, with the same",
+        "  `Health` body as its 200 (`status`, `ready`, `workers`), not an error body.",
+        "- When every connection slot is taken, the server answers 503 `busy` with `Retry-After: 5`",
+        "  before reading the request, so the body has `code` and `error` but no `request_id`.",
         "",
         "| Code | HTTP | Message |",
         "| --- | --- | --- |",
