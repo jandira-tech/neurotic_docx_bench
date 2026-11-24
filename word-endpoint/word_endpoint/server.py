@@ -360,10 +360,12 @@ class Handler(BaseHTTPRequestHandler):
         health = getattr(self.server.app.runner, "health", None)
         status = health() if health else {"status": "ok"}
         ready = status["status"] == "ok"
-        if not readiness and health:
-            # Existing deployed supervisors use /health for HTTP liveness.
-            # Preserve that contract and expose Word readiness independently.
-            status = {"status": "ok", "ready": ready, "workers": status["workers"]}
+        if health:
+            # Both answer with the Health body. Existing deployed supervisors
+            # use /health for HTTP liveness, so its status stays "ok" and Word
+            # readiness is in "ready"; /ready reports the workers' status.
+            status = {"status": status["status"] if readiness else "ok", "ready": ready,
+                      "workers": status["workers"]}
         body = json.dumps(status, separators=(",", ":")).encode("utf-8")
         self._send(200 if not readiness or ready else 503,
                    "application/json; charset=utf-8", body, status["status"], include_body)

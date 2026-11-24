@@ -348,6 +348,14 @@ class ServerTests(unittest.TestCase):
         status, body = request(self.base, "GET", "/ready")
         self.assertEqual(status, 503)
         self.assertEqual(json.loads(body)["status"], "degraded")
+        # /ready and /health share the Health body (docs/openapi.json).
+        self.assertEqual(set(json.loads(body)), {"status", "ready", "workers"})
+        self.assertIs(json.loads(body)["ready"], False)
+        self.runner.health = lambda: {"status": "ok", "workers": {"compare": {"state": "ready"}}}
+        status, body = request(self.base, "GET", "/ready")
+        self.assertEqual(status, 200)
+        self.assertIs(json.loads(body)["ready"], True)
+        self.runner.health = lambda: {"status": "degraded", "workers": {"compare": {"state": "stopped"}}}
         status, body = request(self.base, "GET", "/health")
         self.assertEqual(status, 200)
         self.assertFalse(json.loads(body)["ready"])
