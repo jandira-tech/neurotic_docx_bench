@@ -628,7 +628,8 @@ def _strip_template_stamp(data: bytes, *, scrub: bool = True,
     with zipfile.ZipFile(io.BytesIO(data)) as source:
         for info in source.infolist():
             _check_entry_name(info.filename)
-            lowered = info.filename.lower()
+            # The name validation used: percent-decoded and lowercased.
+            lowered = _part_key(info.filename)
             candidate = info.filename in template_parts
             candidate = candidate or (scrub and lowered in {"word/settings.xml", "word/_rels/settings.xml.rels"})
             if candidate or (scrub and lowered.startswith("docprops/") and lowered.endswith(".xml")):

@@ -92,6 +92,27 @@ class GuardTests(unittest.TestCase):
         self.assertNotIn(b"Administrator", cleaned)
         self.assertNotIn(b"attachedTemplate", cleaned)
 
+    def test_a_percent_encoded_part_name_is_scrubbed_like_the_plain_one(self):
+        # Validation reads word/%73ettings.xml as word/settings.xml, so the
+        # path scrub must select parts by that decoded name too.
+        from pathlib import Path
+        from xml.sax.saxutils import escape
+        home = escape(str(Path.home()))
+        for name in ("word/settings.xml", "word/%73ettings.xml", "%64ocProps/app.xml", "docProps/app.%78ml"):
+            with self.subTest(name):
+                files = standard_files(["Hello"])
+                if name.endswith("ettings.xml"):
+                    settings = files.pop("word/settings.xml")
+                    files[name] = settings.replace("</w:settings>", f"<!-- {home}/Normal.dotm --></w:settings>")
+                else:
+                    files[name] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                                   f"<Properties><Template>{home}/Normal.dotm</Template></Properties>")
+                cleaned = sanitize_output_docx(pack(files))
+                with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+                    text = archive.read(name).decode("utf-8")
+                self.assertIn("Normal.dotm", text)
+                self.assertNotIn(home.lower(), text.lower())
+
     def test_template_strip_leaves_markup_between_comments_alone(self):
         # A non-Word writer can put tag-shaped text in comments. A pattern that
         # ran over comments would match <w:linkStyles> in the first comment and
