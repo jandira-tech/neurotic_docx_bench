@@ -74,7 +74,7 @@ class ServerTests(unittest.TestCase):
             self.runner.health = lambda: {'status': state, 'workers': {}}
             for path in ('/live', '/health', '/ready', '/missing', '/health?token=secret'):
                 with self.subTest(state=state, path=path):
-                    status, _ = request(self.base, 'GET', path)
+                    status, get_body = request(self.base, 'GET', path)
                     req = urllib.request.Request(self.base + path, method='HEAD')
                     try:
                         response = urllib.request.urlopen(req, timeout=5)
@@ -83,7 +83,8 @@ class ServerTests(unittest.TestCase):
                     with response:
                         self.assertEqual(response.code, status)
                         self.assertEqual(response.read(), b'')
-                        self.assertEqual(response.headers['Content-Length'], '0')
+                        # RFC 9110 9.3.2: the length a GET would send, or nothing.
+                        self.assertEqual(response.headers['Content-Length'], str(len(get_body)))
                         self.assertTrue(response.headers['X-Request-Id'])
 
     def test_requires_bearer_token(self):
@@ -217,8 +218,17 @@ class ServerTests(unittest.TestCase):
             create_server(Settings(token="t" * 40, host="0.0.0.0", port=0), FakeRunner())
         with self.assertRaises(RuntimeError):
             create_server(Settings(token="short", host="127.0.0.1", port=0), FakeRunner())
+        # Long enough, but no client can send it as a bearer credential.
+        with self.assertRaises(RuntimeError):
+            create_server(Settings(token="\u0436" * 40, host="127.0.0.1", port=0), FakeRunner())
 
-    def test_rate_limit_counts_unauthorized_posts(self):
+    def test_load_settings_rejects_a_token_outside_the_bearer_grammar(self):
+        for token in ("\u0436" * 40, "a" * 39 + "!", "=" + "a" * 39):
+            with self.subTest(token=token), patch.dict(os.environ, {"WORD_API_TOKEN": token}), \
+                    patch("word_endpoint.config.load_dotenv"), self.assertRaises(SystemExit):
+                load_settings()
+
+    def test_unauthorized_posts_cannot_spend_the_job_quota(self):
         httpd = create_server(self.settings(2), FakeRunner())
         self.addCleanup(httpd.server_close)
         self.addCleanup(httpd.shutdown)
@@ -237,6 +247,11 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(json.loads(body)["code"], "rate_limited")
         health, _ = request(base, "GET", "/health")
         self.assertEqual(health, 200)
+        # The failed attempts had their own budget: authorized jobs still get
+        # the whole quota, and only they spend it.
+        authorized = dict(headers, Authorization=f"Bearer {self.token}")
+        statuses = [request(base, "POST", "/v1/convert", payload, authorized)[0] for _ in range(3)]
+        self.assertEqual(statuses, [200, 200, 429])
 
     def test_placeholder_token_is_rejected(self):
         previous = os.environ.get("WORD_API_TOKEN")
@@ -297,8 +312,35 @@ class ServerTests(unittest.TestCase):
                 self.httpd.app.admission.release()
         status, _ = request(self.base, "POST", "/v1/convert", b"invalid", self.auth({"Content-Type": "bad"}))
         self.assertEqual(status, 400)
+        # Every permit must come back, not just one of them: with four
+        # permits, one leaked by the error path would still let a POST through.
+        self.assertTrue(self._all_admission_permits_free())
         content_type, payload = encode_form([("document", "a.docx", make_docx(["Hello"]))])
         status, _ = request(self.base, "POST", "/v1/convert", payload, self.auth({"Content-Type": content_type}))
+        self.assertEqual(status, 200)
+
+    def _all_admission_permits_free(self, timeout: float = 2.0) -> bool:
+        import time
+        admission, total = self.httpd.app.admission, self.httpd.app.settings.max_concurrent
+        deadline = time.monotonic() + timeout
+        while True:
+            taken = 0
+            while taken < total and admission.acquire(blocking=False):
+                taken += 1
+            for _ in range(taken):
+                admission.release()
+            # The handler releases its permit just after the response is sent.
+            if taken == total or time.monotonic() > deadline:
+                return taken == total
+            time.sleep(0.01)
+
+    def test_malformed_request_target_gets_a_controlled_rejection(self):
+        import socket
+        with socket.create_connection(self.httpd.server_address, timeout=2) as sock:
+            sock.sendall(b"GET http://[::1/live HTTP/1.1\r\nHost: localhost\r\n\r\n")
+            status_line = sock.recv(4096).split(b"\r\n")[0]
+        self.assertIn(b"404", status_line)
+        status, _ = request(self.base, "GET", "/live")
         self.assertEqual(status, 200)
 
     def test_readiness_can_fail_while_http_liveness_stays_up(self):
@@ -364,18 +406,19 @@ class ServerTests(unittest.TestCase):
             return b"%PDF-1.4\n" + b"x" * 80
 
         runner._execute = hold
-        threads = [
-            threading.Thread(target=lambda: runner("compare", {"original": b"a", "revised": b"b"})),
-            threading.Thread(target=lambda: runner("convert", {"document": b"a"})),
-        ]
-        for thread in threads:
-            thread.start()
-        self.assertTrue(started.acquire(timeout=2))
-        self.assertTrue(started.acquire(timeout=2))
-        release.set()
-        for thread in threads:
-            thread.join(2)
-            self.assertFalse(thread.is_alive())
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(2) as pool:
+            try:
+                compare = pool.submit(runner, "compare", {"original": b"a", "revised": b"b"})
+                convert = pool.submit(runner, "convert", {"document": b"a"})
+                # Both jobs are inside Word at the same time before either is let go.
+                self.assertTrue(started.acquire(timeout=2))
+                self.assertTrue(started.acquire(timeout=2))
+            finally:
+                release.set()
+            # result() re-raises a failed assertion or JobError from either job.
+            self.assertTrue(compare.result(timeout=2).startswith(b"PK"))
+            self.assertTrue(convert.result(timeout=2).startswith(b"%PDF-"))
 
 
 class ClientIdentityTests(unittest.TestCase):
