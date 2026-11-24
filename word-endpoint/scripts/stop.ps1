@@ -33,8 +33,10 @@ function Stop-Recorded($pidFile, $match, $name) {
             return
         }
         if (-not $hold) {
-            Write-Host "Refusing to stop pid $procId because it could not be opened to keep its number until it is stopped"
-            return
+            # It is the recorded process and it is still running: as with a
+            # failed taskkill, keep the record and leave Word and the job
+            # folders alone.
+            throw "Could not stop $match ($procId): it could not be opened to keep its number until it is stopped"
         }
         & taskkill.exe /F /T /PID $procId | Out-Null
         if ($LASTEXITCODE -ne 0 -and (Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue)) {
@@ -58,6 +60,10 @@ $Work = Join-Path $Root "work"
 
 function Stop-OurWord($pidFile) {
     $word = Get-RecordedWord $pidFile
+    if ($word -and $word.Unheld) {
+        # Our Word, still running: keep its record (and its job folder) for the next stop.
+        throw "Could not stop WINWORD $($word.ProcessId): $($word.Reason); kept $pidFile"
+    }
     if ($word -and $word.Foreign) {
         Write-Host "Left pid $($word.ProcessId) ($($word.Name)) running: $($word.Reason)"
     } elseif ($word) {

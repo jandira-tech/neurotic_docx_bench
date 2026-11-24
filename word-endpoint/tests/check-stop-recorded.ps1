@@ -22,10 +22,14 @@ function Close-ProcessHold { param($Handle) if ($Handle) { $script:events += 're
 function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:events += 'check'; $script:proc }
 function taskkill.exe { $script:events += "kill $($args[-1])"; $script:killed += "$($args[-1])"; $global:LASTEXITCODE = 0 }
 function Write-Host { }
-function Check([string] $Case, $Proc, [string] $Match, [string] $Name, [bool] $Stopped, [bool] $HoldOpens = $true) {
+function Check([string] $Case, $Proc, [string] $Match, [string] $Name, [bool] $Stopped, [bool] $HoldOpens = $true, [bool] $Throws = $false) {
     Set-Content -Path $pidFile -Value '777' -Encoding ascii
     $script:proc = $Proc; $script:killed = @(); $script:events = @(); $script:holdOpens = $HoldOpens
-    Stop-Recorded $pidFile $Match $Name
+    $threw = $false
+    try { Stop-Recorded $pidFile $Match $Name } catch { $threw = $true }
+    if ($Throws -and -not $threw) { $script:failures += "${Case}: returned normally, so stop.ps1 would go on to clean up under a process still running" }
+    if (-not $Throws -and $threw) { $script:failures += "${Case}: threw" }
+    if ($Throws -and -not (Test-Path -LiteralPath $pidFile)) { $script:failures += "${Case}: the record of a process still running was deleted" }
     if ($Stopped -and $script:killed -notcontains '777') { $script:failures += "${Case}: the recorded process was not stopped" }
     if (-not $Stopped -and $script:killed) { $script:failures += "${Case}: stopped pid $($script:killed -join ',') that is not the recorded process" }
     # The pid is held from before the identity check until after the stop.
@@ -46,8 +50,9 @@ try {
     # 5. The server that wrote its own record: stopped.
     Check '5' ([pscustomobject]@{ ProcessId = 777; Name = 'python.exe'; CreationDate = $before; CommandLine = 'python.exe serve.py' }) 'serve.py' $null $true
     # 6. The recorded tunnel, but its pid cannot be held (opening it is
-    #    refused): not stopped, since nothing would keep the number on it.
-    Check '6' ([pscustomobject]@{ ProcessId = 777; Name = 'cloudflared.exe'; CreationDate = $before; CommandLine = 'cloudflared.exe tunnel run' }) 'cloudflared' 'cloudflared.exe' $false $false
+    #    refused): not stopped, since nothing would keep the number on it, and
+    #    stop.ps1 stops there with the record kept, as for a failed taskkill.
+    Check '6' ([pscustomobject]@{ ProcessId = 777; Name = 'cloudflared.exe'; CreationDate = $before; CommandLine = 'cloudflared.exe tunnel run' }) 'cloudflared' 'cloudflared.exe' $false $false $true
 } finally {
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }

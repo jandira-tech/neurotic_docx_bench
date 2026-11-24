@@ -68,8 +68,14 @@ function Get-ServerPid {
 
 . (Join-Path $PSScriptRoot "word-pid.ps1")
 
+# $false when the record names our Word, still running, which could not be
+# held to stop it: the record (and the job folder holding it) stays.
 function Stop-OurWord([string] $Path) {
     $word = Get-RecordedWord $Path
+    if ($word -and $word.Unheld) {
+        Write-Log "could not stop WINWORD $($word.ProcessId): $($word.Reason); kept $Path"
+        return $false
+    }
     if ($word -and $word.Foreign) {
         Write-Log "left pid $($word.ProcessId) ($($word.Name), started $($word.CreationDate.ToString('o'))) running: $($word.Reason) (recorded at $($word.Written.ToString('o')))"
     } elseif ($word) {
@@ -77,25 +83,40 @@ function Stop-OurWord([string] $Path) {
         Write-Log "stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $Path -Force -ErrorAction SilentlyContinue
+    return $true
 }
 
 function Stop-AllServers {
     $procs = Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue |
         Where-Object { $_.CommandLine -like "*$Serve*" }
     foreach ($proc in $procs) {
-        & taskkill.exe /F /T /PID $proc.ProcessId | Out-Null
-        Write-Log "stopped serve.py $($proc.ProcessId)"
+        # The list was read before the hold (process-hold.ps1), so the pid is
+        # this server only if, held, it still names the process listed.
+        $hold = Open-ProcessHold "$($proc.ProcessId)"
+        try {
+            $now = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.ProcessId)" -ErrorAction SilentlyContinue
+            if (-not $now -or $now.CreationDate -ne $proc.CreationDate -or $now.CommandLine -ne $proc.CommandLine) { continue }
+            if (-not $hold) {
+                Write-Log "could not stop serve.py $($proc.ProcessId): it could not be opened to keep its number until it is stopped"
+                continue
+            }
+            & taskkill.exe /F /T /PID $proc.ProcessId | Out-Null
+            Write-Log "stopped serve.py $($proc.ProcessId)"
+        } finally {
+            Close-ProcessHold $hold
+        }
     }
     Remove-Item $PidFile -Force -ErrorAction SilentlyContinue
     $work = Join-Path $Root "work"
     foreach ($name in @("compare.word.pid", "convert.word.pid")) {
-        Stop-OurWord (Join-Path $work $name)
+        [void](Stop-OurWord (Join-Path $work $name))
     }
     Get-ChildItem $work -Directory -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -match '^[0-9a-f]{32}$' } |
         ForEach-Object {
-            Stop-OurWord (Join-Path $_.FullName "word.pid")
-            Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+            if (Stop-OurWord (Join-Path $_.FullName "word.pid")) {
+                Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+            }
         }
     Start-Sleep -Seconds 1
 }

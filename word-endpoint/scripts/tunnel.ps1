@@ -19,10 +19,16 @@ function Get-RecordedTunnel([string] $Root, [switch] $Hold) {
     $old = "$(Get-Content -LiteralPath $pidFile | Select-Object -First 1)".Trim()
     if ($old -notmatch '^\d+$') { return $null }
     $handle = if ($Hold) { Open-ProcessHold $old } else { $null }
-    $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
-    if ($proc -and $proc.Name -eq "cloudflared.exe" -and $proc.CreationDate -and $proc.CreationDate -le $written) {
-        if ($Hold) { $proc | Add-Member -NotePropertyName Hold -NotePropertyValue $handle -Force }
-        return $proc
+    try {
+        $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
+        if ($proc -and $proc.Name -eq "cloudflared.exe" -and $proc.CreationDate -and $proc.CreationDate -le $written) {
+            if ($Hold) { $proc | Add-Member -NotePropertyName Hold -NotePropertyValue $handle -Force }
+            return $proc
+        }
+    } catch {
+        # The caller never got the handle, so it is closed here.
+        Close-ProcessHold $handle
+        throw
     }
     Close-ProcessHold $handle
     return $null

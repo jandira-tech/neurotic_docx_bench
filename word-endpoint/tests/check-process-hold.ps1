@@ -1,7 +1,9 @@
 # Checks with real processes that the stops acting on a pid record keep the
 # recorded pid from going to another process between their identity check and
 # the stop: stop.ps1's Stop-Recorded, tunnel.ps1's Restore-Tunnel and
-# word-pid.ps1's Get-RecordedWord (whose callers stop the Word it returns).
+# word-pid.ps1's Get-RecordedWord (whose callers stop the Word it returns), and
+# keep-alive.ps1's Stop-AllServers. Cases 5 to 7 stub the hold to check the
+# paths where it is refused or the check throws.
 # Windows frees a pid only when the process has exited and the last handle to
 # it is closed. Each stand-in process is started through WMI, so this script
 # holds no handle to it, and taskkill is replaced by a function that stops the
@@ -35,8 +37,8 @@ $dir = Join-Path ([IO.Path]::GetTempPath()) ("hold-check-" + [guid]::NewGuid().T
 New-Item -ItemType Directory -Path (Join-Path $dir 'logs') -Force | Out-Null
 $standIn = Join-Path $dir 'cloudflared.exe'
 Copy-Item -LiteralPath (Join-Path $env:SystemRoot 'System32\PING.EXE') -Destination $standIn
-function Start-StandIn {
-    $result = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "`"$standIn`" -n 120 127.0.0.1" }
+function Start-StandIn([string] $Exe = $standIn) {
+    $result = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "`"$Exe`" -n 120 127.0.0.1" }
     if ($result.ReturnValue -ne 0) { throw "could not start the stand-in (Win32_Process.Create returned $($result.ReturnValue))" }
     Start-Sleep -Milliseconds 300
     return [uint32]$result.ProcessId
@@ -51,6 +53,17 @@ function taskkill.exe {
     $global:LASTEXITCODE = 0
 }
 function Write-Host { }
+
+# A function from a script that acts as soon as it runs, loaded on its own
+# (through the PowerShell parser), under $As when given.
+function Get-FunctionText([string] $File, [string] $Name, [string] $As = $Name) {
+    $parseErrors = $null
+    $tree = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $Scripts $File), [ref]$null, [ref]$parseErrors)
+    if ($parseErrors) { throw "Could not parse ${File}: $($parseErrors[0].Message)" }
+    $found = $tree.Find({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $Name }, $true)
+    if (-not $found) { throw "$Name is not defined in $File" }
+    return $found.Extent.Text -replace "^function $Name", "function $As"
+}
 
 $failures = @()
 $started = @()
@@ -101,14 +114,89 @@ try {
         Start-Sleep -Milliseconds 500
         if (Test-Pinned $procId) { $script:failures += "3: closing .Hold did not let pid $procId go" }
     }
+
+    # 4. keep-alive.ps1's Stop-AllServers, which lists every python.exe running
+    #    serve.py and stops each. The stand-in is a python.exe whose path holds
+    #    this run's serve.py path, so the list can only find it, never the real
+    #    server.
+    $Root = $dir
+    $Serve = Join-Path $dir 'serve.py'
+    $PidFile = Join-Path $dir 'logs\server.pid'
+    $fakeServer = Join-Path $dir 'serve.py-stand-in\python.exe'
+    New-Item -ItemType Directory -Path (Split-Path -Parent $fakeServer) -Force | Out-Null
+    Copy-Item -LiteralPath $standIn -Destination $fakeServer
+    function Write-Log { }
+    . ([scriptblock]::Create((Get-FunctionText 'keep-alive.ps1' 'Stop-OurWord')))
+    . ([scriptblock]::Create((Get-FunctionText 'keep-alive.ps1' 'Stop-AllServers')))
+    $procId = Start-StandIn $fakeServer; $started += $procId
+    $listed = @(Get-CimInstance Win32_Process -Filter "Name='python.exe'" | Where-Object { $_.CommandLine -like "*$Serve*" })
+    if ($listed.Count -ne 1 -or $listed[0].ProcessId -ne $procId) {
+        $failures += "4: the server list would hold $($listed.ProcessId -join ',') and not only the stand-in $procId; not run"
+    } else {
+        $script:pinned = $null
+        Stop-AllServers
+        if ($null -eq $script:pinned) { $failures += "4: Stop-AllServers did not stop the listed server" }
+        elseif (-not $script:pinned) { $failures += "4: Stop-AllServers let pid $procId go while it stopped the server it listed" }
+    }
+
+    # 5. A check that throws after the hold was taken: the getter closes the
+    #    hold itself, since its caller never received it.
+    & {
+        $script:closed = @()
+        function Open-ProcessHold { param($ProcId) [IntPtr]77 }
+        function Close-ProcessHold { param($Handle) if ($Handle) { $script:closed += [int64]$Handle } }
+        function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) throw 'WMI is not answering' }
+        Set-Content -Path $wordFile -Value 4321 -Encoding ascii
+        Set-Content -Path $pidFile -Value 4321 -Encoding ascii
+        foreach ($getter in @({ Get-RecordedWord $wordFile }, { Get-RecordedTunnel $dir -Hold })) {
+            $script:closed = @()
+            $threw = $false
+            try { [void](& $getter) } catch { $threw = $true }
+            if (-not $threw) { $script:failures += "5: $getter did not pass the check's error on" }
+            if ($script:closed -notcontains 77) { $script:failures += "5: $getter left its hold open when the check threw" }
+        }
+    }
+
+    # 6. Our Word, still running, whose pid cannot be held: not stopped, and
+    #    its record stays. stop.ps1 stops there (as for a failed stop);
+    #    keep-alive.ps1 keeps the record and the job folder holding it.
+    & {
+        function Open-ProcessHold { param($ProcId) $null }
+        function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter)
+            [pscustomobject]@{ ProcessId = 4321; Name = 'WINWORD.EXE'; CommandLine = 'WINWORD.EXE -Embedding'; CreationDate = (Get-Date).AddMinutes(-5) } }
+        function Stop-Process { $script:failures += "6: Stop-Process ran on a Word whose pid was not held" }
+        $job = Join-Path $dir ('work\' + ('a' * 32))
+        New-Item -ItemType Directory -Path $job -Force | Out-Null
+        $jobWord = Join-Path $job 'word.pid'
+        Set-Content -Path $jobWord -Value 4321 -Encoding ascii
+        $word = Get-RecordedWord $jobWord
+        if (-not $word.Unheld -or $word.Foreign) { $script:failures += "6: Get-RecordedWord did not report our Word as unheld" }
+        . ([scriptblock]::Create((Get-FunctionText 'stop.ps1' 'Stop-OurWord' 'Stop-OurWordAtStop')))
+        $threw = $false
+        try { Stop-OurWordAtStop $jobWord } catch { $threw = $true }
+        if (-not $threw) { $script:failures += "6: stop.ps1 went on past a Word it could not stop" }
+        if (-not (Test-Path -LiteralPath $jobWord)) { $script:failures += "6: stop.ps1 deleted the record of a Word still running" }
+        Stop-AllServers
+        if (-not (Test-Path -LiteralPath $jobWord)) { $script:failures += "6: keep-alive.ps1 deleted the record (or the job folder) of a Word still running" }
+    }
+
+    # 7. keep-alive.ps1's Stop-AllServers with a server whose pid cannot be
+    #    held: not stopped.
+    $procId = Start-StandIn $fakeServer; $started += $procId
+    & {
+        function Open-ProcessHold { param($ProcId) $null }
+        $script:pinned = $null
+        Stop-AllServers
+        if ($null -ne $script:pinned) { $script:failures += "7: Stop-AllServers stopped a server whose pid it could not hold" }
+    }
 } finally {
     $ErrorActionPreference = 'Continue'
     foreach ($procId in $started) {
         $left = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
-        if ($left -and $left.ExecutablePath -eq $standIn) { & $realTaskkill /F /PID $procId | Out-Null }
+        if ($left -and $left.ExecutablePath -like "$dir\*") { & $realTaskkill /F /PID $procId | Out-Null }
     }
     Start-Sleep -Milliseconds 300
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'process hold checks passed (3 cases)'
+Write-Output 'process hold checks passed (7 cases)'
