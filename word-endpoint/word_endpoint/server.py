@@ -37,6 +37,9 @@ _LENGTH = re.compile(r"\d{1,12}")
 # RFC 6750 b64token: what a client can send after "Bearer ".
 TOKEN68 = re.compile(r"[A-Za-z0-9\-._~+/]+=*")
 
+# Seconds a client has to send a whole request body, however it paces it.
+UPLOAD_DEADLINE_S = 120.0
+
 
 class RateLimiter:
     def __init__(self, limit: int):
@@ -329,7 +332,7 @@ class Handler(BaseHTTPRequestHandler):
     def _read_exact(self, length: int) -> bytes | None:
         chunks = []
         remaining = length
-        deadline = time.monotonic() + 120
+        deadline = time.monotonic() + UPLOAD_DEADLINE_S
         while remaining:
             try:
                 time_left = deadline - time.monotonic()

@@ -385,6 +385,38 @@ class ServerTests(unittest.TestCase):
             for _ in range(count):
                 self.httpd.connections.release()
 
+    def test_a_body_dripped_slowly_still_times_out_at_the_upload_deadline(self):
+        # Each byte comes well inside the per-read timeout, so only a deadline
+        # checked around every socket read can end the upload.
+        import socket
+        import time
+        content_type, body = encode_form([("document", "a.docx", make_docx("A"))])
+        head = (f"POST /v1/convert HTTP/1.1\r\nHost: x\r\nAuthorization: Bearer {self.token}\r\n"
+                f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
+        with patch("word_endpoint.server.UPLOAD_DEADLINE_S", 1.0), \
+                socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+            sock.sendall(head)
+            sock.settimeout(0.2)
+            started = time.monotonic()
+            reply = b""
+            for byte in body[:40]:
+                try:
+                    sock.sendall(bytes([byte]))
+                except OSError:
+                    break
+                try:
+                    reply = sock.recv(4096)
+                except TimeoutError:
+                    continue
+                break
+            elapsed = time.monotonic() - started
+            sock.settimeout(2)
+            while chunk := sock.recv(4096):
+                reply += chunk
+        self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
+        self.assertIn(b'"code": "timeout"', reply)
+        self.assertLess(elapsed, 4.0)
+
     def test_compare_and_convert_overlap_on_separate_words(self):
         base = self.settings(10)
         runner = WordRunner(
