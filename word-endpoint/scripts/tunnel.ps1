@@ -2,13 +2,19 @@
 # (a quick tunnel, or a named tunnel from CLOUDFLARE_TUNNEL_TOKEN). The public
 # watchdog uses the same functions to replace a tunnel process that went dark.
 
+# Windows reuses a pid once its process is gone, and the record outlives its
+# tunnel, so the number alone does not say which process it is. Start-Tunnel
+# writes the record just after cloudflared started: ours is a cloudflared.exe
+# created before the record was written. Anything with that pid created later
+# took the number over.
 function Get-RecordedTunnel([string] $Root) {
     $pidFile = Join-Path $Root "logs\tunnel.pid"
-    if (-not (Test-Path $pidFile)) { return $null }
-    $old = (Get-Content $pidFile | Select-Object -First 1).Trim()
+    if (-not (Test-Path -LiteralPath $pidFile -PathType Leaf)) { return $null }
+    $written = (Get-Item -LiteralPath $pidFile).LastWriteTime
+    $old = "$(Get-Content -LiteralPath $pidFile | Select-Object -First 1)".Trim()
     if ($old -notmatch '^\d+$') { return $null }
     $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
-    if ($proc -and $proc.CommandLine -like "*cloudflared*") { return $proc }
+    if ($proc -and $proc.Name -eq "cloudflared.exe" -and $proc.CreationDate -and $proc.CreationDate -le $written) { return $proc }
     return $null
 }
 

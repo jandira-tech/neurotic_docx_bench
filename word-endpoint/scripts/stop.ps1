@@ -6,17 +6,24 @@ schtasks.exe /Change /TN "WordEndpoint" /DISABLE 2>$null | Out-Null
 schtasks.exe /End /TN "WordEndpoint" 2>$null | Out-Null
 Start-Sleep -Seconds 2
 
-function Stop-Recorded($pidFile, $match) {
-    if (-not (Test-Path $pidFile)) { return }
-    $procId = (Get-Content $pidFile | Select-Object -First 1).Trim()
+# Windows reuses a pid once its process is gone, so the recorded process is
+# one matching $match ($name, when given, is its executable's name) that
+# already existed when the record was written: the server writes server.pid
+# when it starts, and Start-Tunnel writes tunnel.pid just after cloudflared
+# started. A process with that pid created later took the number over.
+function Stop-Recorded($pidFile, $match, $name) {
+    if (-not (Test-Path -LiteralPath $pidFile -PathType Leaf)) { return }
+    $written = (Get-Item -LiteralPath $pidFile).LastWriteTime
+    $procId = "$(Get-Content -LiteralPath $pidFile | Select-Object -First 1)".Trim()
     if ($procId -notmatch '^\d+$') { return }
     $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
     if ($null -eq $proc) {
         Remove-Item $pidFile -ErrorAction SilentlyContinue
         return
     }
-    if ($proc.CommandLine -notlike "*$match*") {
-        Write-Host "Refusing to stop pid $procId because it is not $match"
+    if ($proc.CommandLine -notlike "*$match*" -or ($name -and $proc.Name -ne $name) -or
+            -not $proc.CreationDate -or $proc.CreationDate -gt $written) {
+        Write-Host "Refusing to stop pid $procId because it is not the $match that was recorded"
         return
     }
     & taskkill.exe /F /T /PID $procId | Out-Null
@@ -30,7 +37,7 @@ function Stop-Recorded($pidFile, $match) {
 }
 
 Stop-Recorded (Join-Path $Root "logs\server.pid") "serve.py"
-Stop-Recorded (Join-Path $Root "logs\tunnel.pid") "cloudflared"
+Stop-Recorded (Join-Path $Root "logs\tunnel.pid") "cloudflared" "cloudflared.exe"
 
 $Work = Join-Path $Root "work"
 

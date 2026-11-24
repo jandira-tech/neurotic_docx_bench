@@ -15,7 +15,7 @@ function Get-Service { [CmdletBinding()] param($Name) if ($script:service) { [ps
 function Restart-Service { [CmdletBinding()] param($Name, [switch]$Force) $script:restarted++ }
 function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:running }
 function Get-Process { [CmdletBinding()] param($Id) if ($script:aliveAfterKill) { [pscustomobject]@{ Id = $Id } } }
-function taskkill.exe { $script:killed++; $global:LASTEXITCODE = $script:killExit }
+function taskkill.exe { $script:killed++; $script:killedPid = $args[-1]; $global:LASTEXITCODE = $script:killExit }
 function Start-Process {
     [CmdletBinding()]
     param($FilePath, $ArgumentList, $WorkingDirectory, $WindowStyle, $RedirectStandardOutput, $RedirectStandardError, [switch]$PassThru)
@@ -27,15 +27,16 @@ function Start-Process {
 function Reset { param([switch]$Service, $Running, [switch]$LaunchFails, [int]$KillExit = 0, [switch]$AliveAfterKill)
     $script:service = [bool]$Service; $script:running = $Running; $script:launchFails = [bool]$LaunchFails
     $script:killExit = $KillExit; $script:aliveAfterKill = [bool]$AliveAfterKill
-    $script:launched = 0; $script:killed = 0; $script:restarted = 0; $script:launchArgs = @(); $script:launchEnv = $null
-    Remove-Item $pidFile -ErrorAction SilentlyContinue
+    $script:launched = 0; $script:killed = 0; $script:killedPid = $null; $script:restarted = 0; $script:launchArgs = @(); $script:launchEnv = $null
+    Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
     if ($Running) { Set-Content -Path $pidFile -Value $Running.ProcessId -Encoding ascii }
 }
 # The watchdog runs with "Continue", so a launch error is not terminating unless the code makes it so.
 function Recover { $ErrorActionPreference = 'Continue'; @(Restore-Tunnel $root '8787' $args[0] 2>$null) }
 $failures = @()
 try {
-    $tunnel = [pscustomobject]@{ ProcessId = 777; CommandLine = 'cloudflared.exe tunnel --no-autoupdate run --token x' }
+    # Created before Reset writes its record, as Start-Tunnel's own tunnel is.
+    $tunnel = [pscustomobject]@{ ProcessId = 777; Name = 'cloudflared.exe'; CreationDate = (Get-Date).AddMinutes(-5); CommandLine = 'cloudflared.exe tunnel --no-autoupdate run' }
 
     # 1. Token tunnel, no service, nothing running (a replacement died): start one.
     #    The token reaches cloudflared through TUNNEL_TOKEN, never its command
@@ -94,6 +95,22 @@ try {
     $lines = Recover 'tok'
     if ($script:restarted -ne 1 -or $script:launched -ne 0) { $failures += "5: service not restarted alone (restarted $($script:restarted), launched $($script:launched))" }
 
+    # 7. The recorded pid now belongs to another program whose command line
+    #    happens to say cloudflared: Windows reused the number. It is not
+    #    killed; the tunnel is gone, so a new one is started.
+    Reset -Running $tunnel
+    $script:running = [pscustomobject]@{ ProcessId = 777; Name = 'notepad.exe'; CreationDate = (Get-Date).AddMinutes(-5); CommandLine = 'notepad.exe C:\notes\cloudflared.txt' }
+    $lines = Recover 'tok'
+    if ($script:killed -ne 0) { $failures += "7: killed another program that took the tunnel's pid" }
+    if ($script:launched -ne 1) { $failures += "7: no tunnel started in place of the gone one: $($lines -join ' | ')" }
+
+    # 7b. A cloudflared.exe created after the record was written is a later
+    #     process with the same pid, not the recorded tunnel.
+    Reset -Running $tunnel
+    $script:running = [pscustomobject]@{ ProcessId = 777; Name = 'cloudflared.exe'; CreationDate = (Get-Date).AddMinutes(5); CommandLine = 'cloudflared.exe tunnel run' }
+    $lines = Recover 'tok'
+    if ($script:killed -ne 0) { $failures += "7b: killed a cloudflared started after the record was written" }
+
     # 6. Quick tunnel (no token): never replaced here, since a new one gets a new URL.
     Reset -Running $tunnel
     $lines = Recover ''
@@ -103,4 +120,4 @@ try {
     Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'tunnel recovery checks passed (9 cases)'
+Write-Output 'tunnel recovery checks passed (11 cases)'
