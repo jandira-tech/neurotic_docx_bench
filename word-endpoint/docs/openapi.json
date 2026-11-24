@@ -714,12 +714,15 @@
             "enum": [
               "active_content",
               "bad_multipart",
+              "bad_request",
               "busy",
               "compare_failed",
               "convert_failed",
               "corrupt",
               "encrypted",
               "external_content",
+              "headers_too_large",
+              "http_version",
               "length_required",
               "macros",
               "method_not_allowed",
@@ -728,6 +731,7 @@
               "no_output",
               "not_docx",
               "not_found",
+              "not_implemented",
               "password_protected",
               "query_rejected",
               "rate_limited",
@@ -738,6 +742,7 @@
               "unexpected_field",
               "unsafe_package",
               "unsupported_encoding",
+              "uri_too_long",
               "word_failed"
             ],
             "description": "Machine-readable status code."

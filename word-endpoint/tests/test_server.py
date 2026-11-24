@@ -343,6 +343,37 @@ class ServerTests(unittest.TestCase):
         status, _ = request(self.base, "GET", "/live")
         self.assertEqual(status, 200)
 
+    def test_requests_the_http_parser_refuses_get_the_json_error_body(self):
+        # Each request ends where the parser stops reading, so no unread bytes
+        # make the server's close reset the connection before the reply arrives.
+        import socket
+        cases = [
+            ("bad request line", b"GARBAGE\r\n", 400, "bad_request"),
+            ("request line too long", b"GET /" + b"a" * 65532, 414, "uri_too_long"),
+            ("header line too long", b"GET /live HTTP/1.1\r\nX-Long: " + b"a" * (65537 - 8), 431, "headers_too_large"),
+            ("too many headers", b"GET /live HTTP/1.1\r\n" + b"".join(b"X-%d: y\r\n" % i for i in range(101)), 431, "headers_too_large"),
+            ("method without a handler", b"TRACE /live HTTP/1.1\r\nHost: x\r\n\r\n", 501, "not_implemented"),
+            ("HTTP/2 request line", b"GET /live HTTP/2.0\r\n", 505, "http_version"),
+        ]
+        for name, data, status, code in cases:
+            with self.subTest(name), socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+                sock.sendall(data)
+                chunks = []
+                while chunk := sock.recv(65536):
+                    chunks.append(chunk)
+                head, _, body = b"".join(chunks).partition(b"\r\n\r\n")
+                lines = head.decode("latin-1").split("\r\n")
+                headers = {key.strip().lower(): value.strip() for key, _, value in (line.partition(":") for line in lines[1:])}
+                self.assertEqual(lines[0].split(" ")[1], str(status))
+                self.assertEqual(headers.get("content-type"), "application/json; charset=utf-8")
+                self.assertEqual(headers.get("connection"), "close")
+                payload = json.loads(body)
+                self.assertEqual(set(payload), {"error", "code", "request_id"})
+                self.assertEqual(payload["code"], code)
+                self.assertEqual(payload["request_id"], headers.get("x-request-id"))
+        status, _ = request(self.base, "GET", "/live")
+        self.assertEqual(status, 200)
+
     def test_readiness_can_fail_while_http_liveness_stays_up(self):
         self.runner.health = lambda: {"status": "degraded", "workers": {"compare": {"state": "stopped"}}}
         status, body = request(self.base, "GET", "/ready")

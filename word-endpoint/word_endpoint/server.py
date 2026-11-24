@@ -121,6 +121,23 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args) -> None:
         return
 
+    # http.server refuses some requests itself, before any do_* method runs: a
+    # request line or headers it cannot read, or a method with no do_*
+    # handler. Its send_error answers with an HTML page; these get the same
+    # JSON error body as every other refusal.
+    _PARSER_REFUSALS = {400: "bad_request", 414: "uri_too_long", 431: "headers_too_large",
+                        501: "not_implemented", 505: "http_version"}
+
+    def send_error(self, code: int, message: str | None = None, explain: str | None = None) -> None:
+        # message can quote the request line, query string included, so it is
+        # not logged.
+        status = int(code)
+        name = self._PARSER_REFUSALS.get(status, "bad_request" if status < 500 else "word_failed")
+        self.close_connection = True
+        logging.info("%s refused by the HTTP parser: %d %s peer=%s", self.request_id, status, name,
+                     _client_identity(self.client_address[0], getattr(self, "headers", None) or {}))
+        self._fail(name)
+
     def do_GET(self) -> None:
         self._dispatch(self._get)
 
@@ -282,7 +299,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def _target(self) -> urllib.parse.SplitResult | None:
         try:
-            return urllib.parse.urlsplit(self.path)
+            # A request the parser refused can lack a path.
+            return urllib.parse.urlsplit(getattr(self, "path", ""))
         except ValueError:
             return None
 
