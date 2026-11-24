@@ -24,8 +24,39 @@ class MultipartTests(unittest.TestCase):
         with self.assertRaises(MultipartError) as caught:
             parse_multipart(content_type, mutated, 1000)
         self.assertEqual(caught.exception.code, "bad_multipart")
+        for boundary in ("x" * 71, "ends-in-space ", ""):
+            with self.subTest(boundary=boundary), self.assertRaises(MultipartError):
+                parse_multipart(f'multipart/form-data; boundary="{boundary}"', body, 1000)
+
+    def test_accepts_any_rfc_2046_boundary_length(self):
+        # RFC 2046 allows 1 to 70 characters; boundary=docx is a valid upload.
+        for boundary in ("d", "docx", "x" * 70, "with space-inside"):
+            with self.subTest(boundary=boundary):
+                body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"document\"\r\n\r\n"
+                        f"hello\r\n--{boundary}--\r\n").encode()
+                files = parse_multipart(f'multipart/form-data; boundary="{boundary}"', body, 1000)
+                self.assertEqual(files, {"document": b"hello"})
+
+    def test_accepts_transport_padding_after_delimiters(self):
+        content_type, body = encode_form([("original", "a.docx", b"aaa \t"), ("revised", "b.docx", b"bbb")])
+        boundary = content_type.split("boundary=", 1)[1].encode()
+        padded = body.replace(b"--" + boundary + b"\r\n", b"--" + boundary + b" \t \r\n")
+        self.assertNotEqual(padded, body)
+        # The file bytes keep their own trailing spaces and tab.
+        self.assertEqual(parse_multipart(content_type, padded, 1000), {"original": b"aaa \t", "revised": b"bbb"})
         with self.assertRaises(MultipartError):
-            parse_multipart("multipart/form-data; boundary=short", body, 1000)
+            parse_multipart(content_type, body.replace(b"--" + boundary + b"\r\n", b"--" + boundary + b" x\r\n", 1), 1000)
+
+    def test_quoted_filename_cannot_change_the_field_name(self):
+        content_type, body = encode_form([("document", "budget;name=Q4.docx", b"abc")])
+        self.assertEqual(parse_multipart(content_type, body, 1000), {"document": b"abc"})
+        escaped = body.replace(b'filename="budget;name=Q4.docx"', b'filename="a\\";name=\\"x.docx"')
+        self.assertEqual(parse_multipart(content_type, escaped, 1000), {"document": b"abc"})
+        # Two name parameters are ambiguous, so neither is used.
+        doubled = body.replace(b'name="document";', b'name="document"; name="other";')
+        with self.assertRaises(MultipartError) as caught:
+            parse_multipart(content_type, doubled, 1000)
+        self.assertEqual(caught.exception.code, "unexpected_field")
 
     def test_rejects_too_many_parts_and_oversize_parts(self):
         content_type, body = encode_form(

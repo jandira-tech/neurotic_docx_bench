@@ -8,7 +8,13 @@ from __future__ import annotations
 
 import re
 
-_BOUNDARY = re.compile(r"[A-Za-z0-9'()+_,\-./:=? ]{8,70}")
+# RFC 2046 5.1.1: 1 to 70 bchars, the last one not a space.
+_BOUNDARY = re.compile(r"[A-Za-z0-9'()+_,\-./:=? ]{0,69}[A-Za-z0-9'()+_,\-./:=?]")
+# One ";" parameter: a token name, "=", then a quoted-string or a token-ish value.
+_PARAMETER = re.compile(
+    r"""[ \t]*;[ \t]*([!#$%&'*+.^_`|~0-9A-Za-z-]+)[ \t]*=[ \t]*("(?:[^"\\\r\n]|\\[^\r\n])*"|[^;"\s]*)"""
+)
+_QUOTED_PAIR = re.compile(r"\\(.)")
 _NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{0,31}$")
 _ALLOWED_HEADERS = {"content-disposition", "content-type", "content-transfer-encoding"}
 _ALLOWED_ENCODINGS = {"binary", "7bit", "8bit", "identity"}
@@ -43,20 +49,10 @@ def _boundary(content_type: str) -> bytes:
         or "\r" in content_type
     ):
         raise MultipartError("bad_multipart")
-    pieces = [piece.strip() for piece in content_type.split(";")]
-    if not pieces or pieces[0].lower() != "multipart/form-data":
+    parsed = _parameters(content_type)
+    if parsed is None or parsed[0] != "multipart/form-data":
         raise MultipartError("bad_multipart")
-    boundary = None
-    for piece in pieces[1:]:
-        if "=" not in piece:
-            continue
-        key, value = piece.split("=", 1)
-        if key.strip().lower() != "boundary":
-            continue
-        value = value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
-            value = value[1:-1]
-        boundary = value
+    boundary = parsed[1].get("boundary")
     if boundary is None or _BOUNDARY.fullmatch(boundary) is None:
         raise MultipartError("bad_multipart")
     return boundary.encode("ascii")
@@ -79,9 +75,13 @@ def _split_parts(body: bytes, boundary: bytes) -> list[bytes]:
         body = body[len(delimiter) :]
         if body.startswith(b"--"):
             return parts
-        if not body.startswith(b"\r\n"):
+        # RFC 2046 transport-padding: spaces or tabs may follow a delimiter.
+        pad = 0
+        while pad < len(body) and pad < 1024 and body[pad] in b" \t":
+            pad += 1
+        if body[pad : pad + 2] != b"\r\n":
             raise MultipartError("bad_multipart")
-        body = body[2:]
+        body = body[pad + 2 :]
         next_at = body.find(b"\r\n" + delimiter)
         if next_at < 0:
             raise MultipartError("bad_multipart")
@@ -127,18 +127,31 @@ def _parse_part(part: bytes, max_file_bytes: int) -> tuple[str, bytes]:
 def _disposition_name(value: str) -> str | None:
     if len(value) > 512:
         return None
-    pieces = [piece.strip() for piece in value.split(";")]
-    if not pieces or pieces[0].lower() != "form-data":
+    parsed = _parameters(value)
+    if parsed is None or parsed[0] != "form-data":
         return None
-    name = None
-    for piece in pieces[1:]:
-        if "=" not in piece:
-            continue
-        key, raw = piece.split("=", 1)
-        if key.strip().lower() != "name":
-            continue
-        raw = raw.strip()
-        if len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in {'"', "'"}:
+    return parsed[1].get("name")
+
+
+def _parameters(value: str) -> tuple[str, dict[str, str | None]] | None:
+    """A header value's type and its parameters, honouring quoted-strings, so
+    a ";" or "name=" inside a quoted filename stays part of the filename.
+    None when the value does not parse; a parameter given twice maps to None,
+    so a caller that reads it treats it as missing."""
+    kind, _, _ = value.partition(";")
+    position = len(kind)
+    params: dict[str, str | None] = {}
+    while position < len(value):
+        match = _PARAMETER.match(value, position)
+        if match is None:
+            if value[position:].strip(" \t;"):
+                return None
+            break
+        key, raw = match.group(1).lower(), match.group(2)
+        if raw.startswith('"'):
+            raw = _QUOTED_PAIR.sub(r"\1", raw[1:-1])
+        elif len(raw) >= 2 and raw[0] == raw[-1] == "'":
             raw = raw[1:-1]
-        name = raw
-    return name
+        params[key] = None if key in params else raw
+        position = match.end()
+    return kind.strip().lower(), params
