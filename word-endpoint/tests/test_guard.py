@@ -123,6 +123,87 @@ class GuardTests(unittest.TestCase):
         self.assertIn('Id="rId2"', rels)
         self.assertNotIn('Id="rId1"', rels)
 
+    def test_template_elements_holding_only_comments_are_still_detached(self):
+        # The schema gives these elements no content, but a comment or a
+        # processing instruction between the tags is still well-formed.
+        rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        files = standard_files(["Hello"])
+        files["word/settings.xml"] = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="{rel}">
+  <w:attachedTemplate r:id="rId1"><!--note--></w:attachedTemplate>
+  <w:linkStyles> <!--note--> <?pi x?> </w:linkStyles>
+  <w:trackRevisions/>
+</w:settings>
+"""
+        files["word/_rels/settings.xml.rels"] = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="{rel}/attachedTemplate" Target="file:///C:/Normal.dotm" TargetMode="External"><!--x--></Relationship>
+</Relationships>
+"""
+        cleaned = prepare_docx(pack(files))
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            settings = archive.read("word/settings.xml").decode("utf-8")
+            rels = archive.read("word/_rels/settings.xml.rels").decode("utf-8")
+        self.assertNotIn("attachedTemplate", settings)
+        self.assertNotIn("linkStyles", settings)
+        self.assertIn("<w:trackRevisions/>", settings)
+        self.assertNotIn('Id="rId1"', rels)
+
+    def test_unterminated_comments_are_refused_in_linear_time(self):
+        # Each "<!--" without a terminator made the comment-skipping regex
+        # search to the end of the part again: 64 KB took 2.6 s, 128 KB ~10 s.
+        import time
+        files = standard_files(["Hello"])
+        files["customXml/item1.xml"] = "<root>" + "<!--" * (128 * 256)
+        started = time.perf_counter()
+        with self.assertRaises(GuardError) as caught:
+            validate_docx(pack(files))
+        self.assertEqual(caught.exception.code, "unsafe_package")
+        self.assertLess(time.perf_counter() - started, 1.0)
+
+    def test_percent_encoded_member_names_get_the_plain_name_checks(self):
+        # Relationship targets and ZIP names are compared decoded, so a name
+        # check on the raw spelling alone misses word/media/payload%2Eexe.
+        rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        cases = {
+            "word/media/payload%2Eexe": "active_content",
+            "word/vba%50roject.bin": "macros",
+            "word/media/%2E%2E/escape.png": "unsafe_package",
+            "word/media/a%5Cb.png": "unsafe_package",
+            "word/media/nul%00.png": "unsafe_package",
+        }
+        for name, code in cases.items():
+            for referenced in (False, True):
+                with self.subTest(name=name, referenced=referenced):
+                    files = standard_files(["Hello"])
+                    files[name] = b"MZ" + bytes(100)
+                    if referenced:
+                        target = name.removeprefix("word/")
+                        files["word/_rels/document.xml.rels"] = files["word/_rels/document.xml.rels"].replace(
+                            "</Relationships>",
+                            f'<Relationship Id="rId99" Type="{rel}/image" Target="{target}"/></Relationships>')
+                    with self.assertRaises(GuardError) as caught:
+                        validate_docx(pack(files))
+                    self.assertEqual(caught.exception.code, code)
+
+    def test_relationships_resolve_from_a_percent_encoded_source_folder(self):
+        rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+                f'<Relationship Id="rId1" Type="{rel}/customXmlProps" Target="{{}}"/></Relationships>')
+        for target, ok in (("other.xml", True), ("missing.xml", False)):
+            with self.subTest(target=target):
+                files = standard_files(["Hello"])
+                files["customXml/caf%C3%A9/item.xml"] = "<a/>"
+                files["customXml/caf%C3%A9/other.xml"] = "<b/>"
+                files["customXml/caf%C3%A9/_rels/item.xml.rels"] = rels.format(target)
+                if ok:
+                    validate_docx(pack(files))
+                else:
+                    with self.assertRaises(GuardError) as caught:
+                        validate_docx(pack(files))
+                    self.assertEqual(caught.exception.reason, "missing_relationship_target")
+
     def test_doctype_text_inside_cdata_or_a_comment_is_not_a_declaration(self):
         files = standard_files(["Hello"])
         files["customXml/item1.xml"] = (

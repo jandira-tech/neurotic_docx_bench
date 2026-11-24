@@ -62,7 +62,10 @@ class CompatibilityTests(unittest.TestCase):
             self.assertEqual(prepare_docx(blob), blob)
         self.assertEqual(opened.call_count, 1)
 
-    def test_template_stripping_rejects_comment_hidden_dde(self):
+    def test_template_stripping_never_exposes_comment_hidden_dde(self):
+        # One w:attachedTemplate whose only content is a comment holding a DDE
+        # field. The field is not live: the stripper removes the element with
+        # its comment, and the field text goes with it.
         payload = ('<w:attachedTemplate><!-- </w:attachedTemplate>'
                    '<w:p><w:r><w:instrText>DDEAUTO synthetic</w:instrText></w:r></w:p>'
                    '<w:attachedTemplate> --></w:attachedTemplate>')
@@ -70,10 +73,31 @@ class CompatibilityTests(unittest.TestCase):
         # The original XML comment hides the field from structural scanning.
         self.assertEqual(validate_docx(blob, allow_attached_template=True), {'word/document.xml'})
         for sanitize in (prepare_docx, sanitize_output_docx):
-            with self.subTest(sanitize=sanitize.__name__), self.assertRaises(GuardError) as caught:
-                sanitize(blob)
-            self.assertEqual(caught.exception.code, 'active_content')
-            self.assertEqual(caught.exception.reason, 'forbidden_field_command')
+            with self.subTest(sanitize=sanitize.__name__):
+                cleaned = bytes(sanitize(blob))
+                with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+                    document = archive.read('word/document.xml').decode('utf-8')
+                self.assertNotIn('attachedTemplate', document)
+                self.assertNotIn('DDEAUTO', document)
+                self.assertEqual(validate_docx(cleaned), set())
+
+    def test_revalidation_refuses_a_strip_that_exposes_comment_hidden_dde(self):
+        # The safety net behind the stripper: a text edit that pairs tags
+        # across the comment (as a lazy <tag>.*?</tag> pattern would) exposes
+        # the field, and the copy is validated again before anyone uses it.
+        import re
+        payload = ('<w:attachedTemplate><!-- </w:attachedTemplate>'
+                   '<w:p><w:r><w:instrText>DDEAUTO synthetic</w:instrText></w:r></w:p>'
+                   '<w:attachedTemplate> --></w:attachedTemplate>')
+        blob = pack(standard_files(['Harmless regression fixture'], payload))
+        naive = lambda text: re.sub(r'<w:attachedTemplate\b[^>]*>.*?</w:attachedTemplate>', '', text, flags=re.S)
+        with patch('word_endpoint.guard._strip_markup', side_effect=naive):
+            for sanitize in (prepare_docx, sanitize_output_docx):
+                with self.subTest(sanitize=sanitize.__name__):
+                    with self.assertRaises(GuardError) as caught:
+                        sanitize(blob)
+                    self.assertEqual(caught.exception.code, 'active_content')
+                    self.assertEqual(caught.exception.reason, 'forbidden_field_command')
 
     def test_prepared_copy_rejects_leftover_template_markup(self):
         blob = pack(standard_files(['Hello'], '<w:attachedTemplate/>'))

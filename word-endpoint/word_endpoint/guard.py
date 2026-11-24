@@ -48,23 +48,26 @@ _FORBIDDEN_FIELD = re.compile(
 _ATTR = re.compile(r"""([A-Za-z0-9:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
 _ENTITY = re.compile(r"&([^;]{1,16});")
 _TAG_ATTRIBUTES = r'''(?:[^'">]|"[^"]*"|'[^']*')*'''
+_EMPTY_CONTENT = r"(?:\s|<!--.*?-->|<\?.*?\?>)*"
 # w:attachedTemplate, w:linkStyles and Relationship have no children in the
-# schema, so the paired form may hold only whitespace. A pattern that could
-# span other markup would delete whatever sits between two such tags.
+# schema, so the paired form may hold only whitespace, comments and processing
+# instructions. A pattern that could span other markup would delete whatever
+# sits between two such tags.
 _TEMPLATE_TAG = re.compile(
     rf"<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
-    re.I,
+    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>{_EMPTY_CONTENT}</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
+    re.I | re.S,
 )
 _TEMPLATE_REL = re.compile(
     rf"<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?Relationship\s*>",
-    re.I,
+    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>{_EMPTY_CONTENT}</(?:[\w.-]+:)?Relationship\s*>",
+    re.I | re.S,
 )
 # Comments, CDATA sections and processing instructions. In well-formed XML a
 # "<" outside them always starts markup, and each ends at its first terminator,
 # so a left-to-right scan finds exactly the spans whose text is not markup.
-_NOT_MARKUP = re.compile(r"<!--.*?-->|<!\[CDATA\[.*?\]\]>|<\?.*?\?>", re.S)
+_NOT_MARKUP_OPEN = re.compile(r"<!--|<!\[CDATA\[|<\?")
+_NOT_MARKUP_CLOSE = {"<!--": "-->", "<![CDATA[": "]]>", "<?": "?>"}
 _NAMED = {"amp": "&", "lt": "<", "gt": ">", "quot": '"', "apos": "'"}
 
 
@@ -150,7 +153,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
                     has_template = _scan_part(
                         _read_text(archive, info),
                         allow_attached_template=allow_attached_template,
-                        part_name=info.filename, members=members,
+                        part_name=name, members=members,
                         word_content=name.startswith("word/") or "wordprocessingml" in mime or "vmldrawing" in mime,
                     )
                     if has_template:
@@ -176,6 +179,11 @@ def _check_infos(infos: list[zipfile.ZipInfo]) -> None:
     for info in infos:
         name = info.filename
         _check_entry_name(name)
+        decoded = urllib.parse.unquote(name)
+        if decoded != name:
+            # Relationships and content types address the part by its decoded
+            # name, so word/media/payload%2Eexe must be checked as payload.exe.
+            _check_entry_name(decoded)
         key = _part_key(name)
         if key in seen:
             raise GuardError("unsafe_package", "duplicate_member")
@@ -409,12 +417,37 @@ def _check_relationship(item: dict[str, str], allow_attached_template: bool,
         raise GuardError("unsafe_package", "missing_relationship_target")
 
 
+def _non_markup_spans(text: str) -> list[tuple[int, int]]:
+    """(start, end) of each comment, CDATA section and processing instruction,
+    found in one left-to-right pass. One left open runs to the end of the text,
+    where the XML parser refuses it. (A lazy regex searched to the end again
+    from every unterminated "<!--", which made malformed parts quadratic.)"""
+    spans: list[tuple[int, int]] = []
+    position = 0
+    while (opener := _NOT_MARKUP_OPEN.search(text, position)) is not None:
+        closer = _NOT_MARKUP_CLOSE[opener.group(0)]
+        end = text.find(closer, opener.end())
+        end = len(text) if end < 0 else end + len(closer)
+        spans.append((opener.start(), end))
+        position = end
+    return spans
+
+
+def _markup_only(text: str) -> str:
+    pieces, last = [], 0
+    for start, end in _non_markup_spans(text):
+        pieces.append(text[last:start])
+        last = end
+    pieces.append(text[last:])
+    return "".join(pieces)
+
+
 def _parse_xml(text: str, *, code: str = "unsafe_package",
                reason: str = "xml_dtd_or_entity") -> ET.Element:
     # Text inside comments and CDATA is not a declaration ("<!DOCTYPE html>"
     # in a CDATA section of a custom XML part); the parser below is the real
     # check, this one only refuses early.
-    lowered = _NOT_MARKUP.sub("", text).lower()
+    lowered = _markup_only(text).lower()
     if "<!doctype" in lowered or "<!entity" in lowered:
         raise GuardError(code, reason)
     try:
@@ -527,13 +560,24 @@ def _scrub_paths(text: str) -> str:
 
 
 def _outside_non_markup(text: str, pattern: re.Pattern[str], repl) -> str:
+    """pattern.sub(repl, text) for the matches that start in markup. A match
+    that starts inside a comment, CDATA section or processing instruction is
+    left alone, and the search resumes after that span, so tag-shaped text in
+    a comment can neither be edited nor hide a live element after it."""
+    spans = _non_markup_spans(text)
     pieces: list[str] = []
-    last = 0
-    for skipped in _NOT_MARKUP.finditer(text):
-        pieces.append(pattern.sub(repl, text[last:skipped.start()]))
-        pieces.append(skipped.group(0))
-        last = skipped.end()
-    pieces.append(pattern.sub(repl, text[last:]))
+    position = index = 0
+    while (match := pattern.search(text, position)) is not None:
+        while index < len(spans) and spans[index][1] <= match.start():
+            index += 1
+        if index < len(spans) and spans[index][0] <= match.start():
+            pieces.append(text[position:spans[index][1]])
+            position = spans[index][1]
+            continue
+        pieces.append(text[position:match.start()])
+        pieces.append(repl(match) if callable(repl) else repl)
+        position = match.end()
+    pieces.append(text[position:])
     return "".join(pieces)
 
 
