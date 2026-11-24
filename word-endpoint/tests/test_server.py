@@ -374,6 +374,37 @@ class ServerTests(unittest.TestCase):
         status, _ = request(self.base, "GET", "/live")
         self.assertEqual(status, 200)
 
+    def test_a_parser_refusal_still_arrives_when_request_bytes_are_left_unread(self):
+        # The parser stops reading a header line after 65,537 bytes. Here the
+        # rest of the line arrives a moment later, as it can through the
+        # tunnel. (Sent in one piece it would sit in the reader's 128 KiB
+        # buffer, and nothing would be left unread.) Bytes that reach a closed
+        # socket draw a reset, and on Windows the reset can destroy the answer
+        # before the client reads it. Repeated, like the upload case.
+        import socket
+        import time
+        first = b"GET /live HTTP/1.1\r\nX-Long: " + b"a" * 70_000
+        rest = b"a" * 30_000 + b"\r\n\r\n"
+        for attempt in range(10):
+            with self.subTest(attempt=attempt), socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+                try:
+                    sock.sendall(first)
+                    time.sleep(0.02)
+                    sock.sendall(rest)
+                except OSError:
+                    pass  # a reset while the rest goes out is judged by the reply below
+                reply = b""
+                try:
+                    while chunk := sock.recv(65536):
+                        reply += chunk
+                except (ConnectionResetError, ConnectionAbortedError):
+                    pass  # a reset ends the stream; the answer must be in hand by then
+                head, _, body = reply.partition(b"\r\n\r\n")
+                self.assertIn(b" 431 ", head.split(b"\r\n")[0] + b" ")
+                self.assertEqual(json.loads(body)["code"], "headers_too_large")
+        status, _ = request(self.base, "GET", "/live")
+        self.assertEqual(status, 200)
+
     def test_readiness_can_fail_while_http_liveness_stays_up(self):
         self.runner.health = lambda: {"status": "degraded", "workers": {"compare": {"state": "stopped"}}}
         status, body = request(self.base, "GET", "/ready")

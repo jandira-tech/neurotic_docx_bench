@@ -136,6 +136,10 @@ class Handler(BaseHTTPRequestHandler):
         self.close_connection = True
         logging.info("%s refused by the HTTP parser: %d %s peer=%s", self.request_id, status, name,
                      _client_identity(self.client_address[0], getattr(self, "headers", None) or {}))
+        # The parser stopped partway through the request, so how much of it is
+        # still arriving is unknown. Drain under the same byte and time budget
+        # as a refused upload, so a reset does not destroy this answer.
+        self._unread_body = 65536
         self._fail(name)
 
     def do_GET(self) -> None:
