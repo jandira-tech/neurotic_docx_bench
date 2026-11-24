@@ -395,9 +395,12 @@ class ServerTests(unittest.TestCase):
                 f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
         with patch("word_endpoint.server.UPLOAD_DEADLINE_S", 1.0), \
                 socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+            # Taken before the head goes out: the server starts its deadline
+            # only once it has read the head, so the lower bound below cannot
+            # fail on a server that answers on time.
+            started = time.monotonic()
             sock.sendall(head)
             sock.settimeout(0.2)
-            started = time.monotonic()
             reply = b""
             for byte in body[:40]:
                 try:

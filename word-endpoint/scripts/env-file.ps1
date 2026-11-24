@@ -24,8 +24,10 @@ function New-RestrictedEnvFile([string] $Path, [string[]] $Lines, [string] $Acco
     Move-Item -LiteralPath $staged -Destination $Path -ErrorAction Stop
 }
 
-# A PowerShell single-quoted string that reads back as $Text.
-function Format-Literal([string] $Text) { return "'" + $Text.Replace("'", "''") + "'" }
+# A PowerShell single-quoted string that reads back as $Text. PowerShell also
+# takes the typographic single quotes (U+2018 to U+201B) as quote marks, so
+# each of them is doubled too.
+function Format-Literal([string] $Text) { return "'" + ($Text -replace "(['\u2018\u2019\u201A\u201B])", '$1$1') + "'" }
 
 # Refuses a .env other accounts can read: it must not inherit its folder's
 # rules, and may grant access only to SYSTEM, Administrators and the account

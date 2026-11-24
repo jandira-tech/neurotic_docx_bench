@@ -60,8 +60,9 @@ try {
     try { Assert-RestrictedEnvFile $plain } catch { $failures += "3b: its printed fix did not fix it: $($_.Exception.Message)" }
     Remove-Item -LiteralPath $plain -Force
 
-    # 3c. The printed fix works for a path PowerShell would otherwise expand.
-    $odd = Join-Path $dir 'a$b''c'
+    # 3c. The printed fix works for a path PowerShell would otherwise expand
+    #     or end early ("$", an apostrophe, a typographic one).
+    $odd = Join-Path $dir ('a$b''c' + [char]0x2019 + 'd')
     New-Item -ItemType Directory -Path $odd | Out-Null
     $oddFile = Join-Path $odd 'plain.env'
     Set-Content -LiteralPath $oddFile -Value 'WORD_API_TOKEN=x' -Encoding ascii
