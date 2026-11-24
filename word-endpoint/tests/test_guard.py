@@ -191,6 +191,44 @@ class GuardTests(unittest.TestCase):
         self.assertIn("<![CDATA[<w:attachedTemplate><!--", settings)
         self.assertNotIn("evil.dotm", rels)
 
+    def _settings_rels_with_cdata(self, cdata):
+        # A hyperlink relationship holding a CDATA section, beside a template
+        # relationship. The schema gives Relationship no content, but the
+        # guard must not read the CDATA as attributes either way.
+        files = standard_files(["Hello"])
+        files["word/_rels/settings.xml.rels"] = (
+            '<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="safe" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
+            f'Target="https://example.com" TargetMode="External"><![CDATA[{cdata}]]></Relationship>'
+            '<Relationship Id="tpl" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/attachedTemplate" '
+            'Target="file:///C:/templates/evil.dotm" TargetMode="External"/></Relationships>'
+        )
+        return files
+
+    def test_template_relationship_check_is_linear_in_cdata_content(self):
+        # Blanking non-markup spans let the paired Relationship form match an
+        # element holding CDATA, and the Type lookup then ran an unanchored
+        # attribute regex over the CDATA: 16,000 "A"s took 1.3 s (codex
+        # review of 782c8b3f). Only the opening tag holds attributes.
+        import time
+        files = self._settings_rels_with_cdata("A" * 32000)
+        started = time.perf_counter()
+        cleaned = prepare_docx(pack(files))
+        self.assertLess(time.perf_counter() - started, 0.5)
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            rels = archive.read("word/_rels/settings.xml.rels").decode()
+        self.assertNotIn("evil.dotm", rels)
+        self.assertIn('Id="safe"', rels)
+        self.assertIn("A" * 32000, rels)
+
+    def test_cdata_inside_a_relationship_is_not_read_as_its_type(self):
+        files = self._settings_rels_with_cdata(' Type="/attachedTemplate" ')
+        cleaned = prepare_docx(pack(files))
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            rels = archive.read("word/_rels/settings.xml.rels").decode()
+        self.assertIn('Id="safe"', rels)
+        self.assertNotIn("evil.dotm", rels)
+
     def test_percent_encoded_member_names_get_the_plain_name_checks(self):
         # Relationship targets and ZIP names are compared decoded, so a name
         # check on the raw spelling alone misses word/media/payload%2Eexe.

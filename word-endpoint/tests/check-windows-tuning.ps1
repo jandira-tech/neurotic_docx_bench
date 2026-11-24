@@ -24,9 +24,10 @@ $command = $ast.Find({
     param($node)
     $node -is [System.Management.Automation.Language.CommandAst] -and $node.GetCommandName() -eq 'Set-MpPreference'
 }, $false)
-# The stub below takes any name and value, so first hold the command to the
-# real cmdlet's metadata: every parameter it names must exist there and take
-# what the script passes. Reading the metadata does not touch Defender's settings.
+# The stub below takes any value, so hold the command to the real cmdlet's
+# metadata too: every parameter it names must exist there, and every value
+# the stub receives must convert to that parameter's type. Reading the
+# metadata does not touch Defender's settings.
 $real = Get-Command -Name Set-MpPreference -Module Defender -ErrorAction SilentlyContinue
 if ($real) {
     $named = @($command.CommandElements | Where-Object { $_ -is [System.Management.Automation.Language.CommandParameterAst] } | ForEach-Object ParameterName)
@@ -34,23 +35,26 @@ if ($real) {
     foreach ($name in $named) {
         if (-not $real.Parameters.ContainsKey($name)) { throw "Set-MpPreference has no -$name on this machine." }
     }
-    $expected = @{ ScanScheduleOffset = 0; ScanScheduleTime = [datetime]::Today; ScanScheduleQuickScanTime = [datetime]::Today }
-    foreach ($name in $named) {
-        $type = $real.Parameters[$name].ParameterType
-        if (-not $expected.ContainsKey($name)) { throw "No sample value for -$name; add one." }
-        try { [System.Management.Automation.LanguagePrimitives]::ConvertTo($expected[$name], $type) | Out-Null }
-        catch { throw "-$name takes $($type.FullName), which the script's value does not convert to." }
-    }
-    $metadata = "parameter names and types checked against Defender's Set-MpPreference"
+    $metadata = "parameter names and the values passed checked against Defender's Set-MpPreference"
 } else {
     $metadata = "SKIPPED the parameter check: the Defender module is not installed here"
 }
 # Run only the scheduling command against a local stub, not Defender itself.
-function Set-MpPreference([int]$ScanScheduleOffset, $ScanScheduleTime, $ScanScheduleQuickScanTime) {
-    return [pscustomobject]@{Offset=$ScanScheduleOffset; FullTime=$ScanScheduleTime; QuickTime=$ScanScheduleQuickScanTime}
+function Set-MpPreference($ScanScheduleOffset, $ScanScheduleTime, $ScanScheduleQuickScanTime) {
+    $bound = @{}
+    foreach ($key in $PSBoundParameters.Keys) { $bound[$key] = $PSBoundParameters[$key] }
+    return [pscustomobject]@{Offset=$ScanScheduleOffset; FullTime=$ScanScheduleTime; QuickTime=$ScanScheduleQuickScanTime; Bound=$bound}
 }
 foreach ($ScanHour in @(0, 3, 23)) {
     $configured = Invoke-Expression $command.Extent.Text
+    if ($real) {
+        foreach ($name in $configured.Bound.Keys) {
+            $type = $real.Parameters[$name].ParameterType
+            $value = $configured.Bound[$name]
+            try { [System.Management.Automation.LanguagePrimitives]::ConvertTo($value, $type) | Out-Null }
+            catch { throw "-$name takes $($type.FullName); the script passes a $($value.GetType().FullName) that does not convert to it." }
+        }
+    }
     if ($configured.Offset -ne 0 -or $configured.QuickTime.TimeOfDay.TotalMinutes -ne $ScanHour * 60) {
         throw "Scheduling at hour $ScanHour adds an offset or uses the wrong quick-scan time."
     }

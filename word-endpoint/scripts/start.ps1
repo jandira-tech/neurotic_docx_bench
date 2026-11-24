@@ -78,18 +78,6 @@ if (-not $url) {
     throw "Cloudflare tunnel did not publish a URL. See logs\tunnel.err.log"
 }
 Set-Content -Path (Join-Path $Root "logs\public_url.txt") -Value $url -Encoding ascii
-$envLines = @()
-if (Test-Path $EnvFile) { $envLines = @(Get-Content $EnvFile) }
-$foundUrl = $false
-$envUpdated = foreach ($line in $envLines) {
-    if ($line -like "WORD_PUBLIC_URL=*") {
-        $foundUrl = $true
-        "WORD_PUBLIC_URL=$url"
-    } else {
-        $line
-    }
-}
-if (-not $foundUrl) { $envUpdated = @($envUpdated) + "WORD_PUBLIC_URL=$url" }
-Set-Content -Path $EnvFile -Value $envUpdated -Encoding ascii
+Set-DotEnvValue $EnvFile 'WORD_PUBLIC_URL' $url
 Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
 Write-Host "Public URL: $url"

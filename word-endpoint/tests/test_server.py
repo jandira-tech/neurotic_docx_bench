@@ -408,11 +408,19 @@ class ServerTests(unittest.TestCase):
                     reply = sock.recv(4096)
                 except TimeoutError:
                     continue
+                except ConnectionResetError:
+                    pass
                 break
             elapsed = time.monotonic() - started
             sock.settimeout(2)
-            while chunk := sock.recv(4096):
-                reply += chunk
+            # A byte dripped after the server answered and closed draws a
+            # reset; that ends the stream. A reset that destroyed the answer
+            # before it was read leaves no 504 below, so it still fails.
+            try:
+                while chunk := sock.recv(4096):
+                    reply += chunk
+            except ConnectionResetError:
+                pass
         self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
         self.assertIn(b'"code": "timeout"', reply)
         self.assertLess(elapsed, 4.0)
