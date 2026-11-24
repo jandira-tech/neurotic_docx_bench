@@ -37,6 +37,23 @@ class MultipartTests(unittest.TestCase):
                 files = parse_multipart(f'multipart/form-data; boundary="{boundary}"', body, 1000)
                 self.assertEqual(files, {"document": b"hello"})
 
+    def test_a_boundary_with_separators_must_be_quoted(self):
+        # RFC 2045 and RFC 9110: an unquoted parameter value is a token, so a
+        # boundary holding "," ":" "/" "(" ")" "=" or "?" comes quoted.
+        # Parsers that read such a bare value differently would disagree with
+        # this one about where the body's parts start.
+        for boundary in ("a,b", "a:b", "a/b", "a(b)", "a=b", "a?b"):
+            body = (f"--{boundary}\r\nContent-Disposition: form-data; name=\"document\"\r\n\r\n"
+                    f"hello\r\n--{boundary}--\r\n").encode()
+            with self.subTest(boundary=boundary):
+                with self.assertRaises(MultipartError) as caught:
+                    parse_multipart(f"multipart/form-data; boundary={boundary}", body, 1000)
+                self.assertEqual(caught.exception.code, "bad_multipart")
+                files = parse_multipart(f'multipart/form-data; boundary="{boundary}"', body, 1000)
+                self.assertEqual(files, {"document": b"hello"})
+        body = b'--abc.123_x\r\nContent-Disposition: form-data; name="document"\r\n\r\nhello\r\n--abc.123_x--\r\n'
+        self.assertEqual(parse_multipart("multipart/form-data; boundary=abc.123_x", body, 1000), {"document": b"hello"})
+
     def test_accepts_transport_padding_after_delimiters(self):
         content_type, body = encode_form([("original", "a.docx", b"aaa \t"), ("revised", "b.docx", b"bbb")])
         boundary = content_type.split("boundary=", 1)[1].encode()

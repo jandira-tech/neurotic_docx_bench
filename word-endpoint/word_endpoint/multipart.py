@@ -10,9 +10,11 @@ import re
 
 # RFC 2046 5.1.1: 1 to 70 bchars, the last one not a space.
 _BOUNDARY = re.compile(r"[A-Za-z0-9'()+_,\-./:=? ]{0,69}[A-Za-z0-9'()+_,\-./:=?]")
-# One ";" parameter: a token name, "=", then a quoted-string or a token-ish value.
+# One ";" parameter: a token name, "=", then a quoted-string or a token (RFC
+# 9110 5.6.6). A value holding a separator such as "," ":" "/" or "=" must be
+# quoted; read bare, other parsers could split it differently.
 _PARAMETER = re.compile(
-    r"""[ \t]*;[ \t]*([!#$%&'*+.^_`|~0-9A-Za-z-]+)[ \t]*=[ \t]*("(?:[^"\\\r\n]|\\[^\r\n])*"|[^;"\s]*)"""
+    r"""[ \t]*;[ \t]*([!#$%&'*+.^_`|~0-9A-Za-z-]+)[ \t]*=[ \t]*("(?:[^"\\\r\n]|\\[^\r\n])*"|[!#$%&'*+.^_`|~0-9A-Za-z-]+)"""
 )
 _QUOTED_PAIR = re.compile(r"\\(.)")
 _NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_-]{0,31}$")
