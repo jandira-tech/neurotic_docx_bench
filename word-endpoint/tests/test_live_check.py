@@ -74,6 +74,21 @@ class DocxLeakTests(unittest.TestCase):
         self.assertEqual(live_check.docx_leaks(make_docx(["clean"])), [])
         self.assertEqual(live_check.docx_leaks(b"%PDF-1.7"), ["not-a-docx"])
 
+    def test_a_path_outside_the_parts_is_still_found(self):
+        # The ZIP's own text (its comment, the member names) is not inside any
+        # part, so reading only the decompressed parts would miss it.
+        import zipfile
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("word/document.xml", b"<w:t>clean</w:t>")
+            archive.comment = b"C:\\Users\\someone"
+        self.assertEqual(live_check.docx_leaks(buffer.getvalue()), ["zip:profile"])
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("word/document.xml", b"<w:t>clean</w:t>")
+            archive.writestr("customXml/C:/Users/someone.xml", b"<x/>")
+        self.assertEqual(live_check.docx_leaks(buffer.getvalue()), ["zip:profile-slash"])
+
 
 class LiveRecoverCleanupTests(unittest.TestCase):
     def test_server_is_stopped_when_verification_raises(self):

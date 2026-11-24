@@ -48,14 +48,16 @@ def call(base: str, path: str, payload: bytes, content_type: str, token: str | N
 
 
 def docx_leaks(data: bytes) -> list[str]:
-    """leaks() over every part of a DOCX, decompressed: a path inside a
+    """leaks() over a DOCX's ZIP bytes (its comment, member names and stored
+    parts) and over every part decompressed: a path inside a
     DEFLATE-compressed XML part is not in the ZIP bytes as text."""
     try:
         with zipfile.ZipFile(BytesIO(data)) as archive:
-            return [f"{info.filename}:{label}" for info in archive.infolist()
-                    for label in leaks(archive.read(info))]
+            parts = [f"{info.filename}:{label}" for info in archive.infolist()
+                     for label in leaks(archive.read(info))]
     except zipfile.BadZipFile:
         return ["not-a-docx"]
+    return [f"zip:{label}" for label in leaks(data)] + parts
 
 
 def leaks(data: bytes) -> list[str]:
