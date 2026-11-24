@@ -393,12 +393,20 @@ class ServerTests(unittest.TestCase):
         content_type, body = encode_form([("document", "a.docx", make_docx("A"))])
         head = (f"POST /v1/convert HTTP/1.1\r\nHost: x\r\nAuthorization: Bearer {self.token}\r\n"
                 f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
+        from word_endpoint.server import Handler
+        # The bounds are timed from where the server starts its deadline (the
+        # body read), not from anything the client does, so a client pause
+        # before or after sending the head moves neither of them.
+        deadline_started = []
+        read_body = Handler._read_exact
+
+        def timed_read_body(handler, length):
+            deadline_started.append(time.monotonic())
+            return read_body(handler, length)
+
         with patch("word_endpoint.server.UPLOAD_DEADLINE_S", 1.0), \
+                patch.object(Handler, "_read_exact", timed_read_body), \
                 socket.create_connection(self.httpd.server_address, timeout=5) as sock:
-            # Taken before the head goes out: the server starts its deadline
-            # only once it has read the head, so the lower bound below cannot
-            # fail on a server that answers on time.
-            started = time.monotonic()
             sock.sendall(head)
             sock.settimeout(0.2)
             reply = b""
@@ -414,7 +422,7 @@ class ServerTests(unittest.TestCase):
                 except ConnectionResetError:
                     pass
                 break
-            elapsed = time.monotonic() - started
+            answered = time.monotonic()
             sock.settimeout(2)
             # A byte dripped after the server answered and closed draws a
             # reset; that ends the stream. A reset that destroyed the answer
@@ -426,9 +434,12 @@ class ServerTests(unittest.TestCase):
                 pass
         self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
         self.assertIn(b'"code": "timeout"', reply)
-        # Not before the 1 s deadline, and not long after it.
-        self.assertGreater(elapsed, 0.8)
-        self.assertLess(elapsed, 4.0)
+        # Not before the 1 s deadline (less a socket timer's slack), and not
+        # long after it.
+        self.assertEqual(len(deadline_started), 1)
+        waited = answered - deadline_started[0]
+        self.assertGreater(waited, 0.9)
+        self.assertLess(waited, 4.0)
 
     def test_a_timed_out_upload_is_not_logged_as_an_internal_failure(self):
         # After the deadline the drain read a socket that had timed out, which
