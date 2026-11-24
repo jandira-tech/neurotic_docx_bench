@@ -1,7 +1,10 @@
 """Size-aware job timeout and identity helpers."""
 
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from word_endpoint.config import Settings
 from word_endpoint.runner import JobError, _Lane, job_timeout_for
@@ -32,6 +35,13 @@ class JobTimeoutTests(unittest.TestCase):
 
 class LaneShutdownTests(unittest.TestCase):
     def test_a_stopped_lane_never_starts_another_worker(self):
+        # stop() clears the lane's Word: it stops the Word its record names and
+        # deletes the record. On the endpoint restart.ps1 runs this suite in the
+        # service's own folder, where work\convert.word.pid names the live
+        # convert Word, so the lane works in a temporary folder.
+        work = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, work, True)
+        self.enterContext(patch("word_endpoint.runner.WORK_ROOT", work))
         spawned = []
         lane = _Lane("convert", lambda kind: spawned.append(kind) or ["unused"], "winword.exe")
         lane.stop()
