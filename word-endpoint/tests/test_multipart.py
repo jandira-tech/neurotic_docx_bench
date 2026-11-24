@@ -54,6 +54,19 @@ class MultipartTests(unittest.TestCase):
         body = b'--abc.123_x\r\nContent-Disposition: form-data; name="document"\r\n\r\nhello\r\n--abc.123_x--\r\n'
         self.assertEqual(parse_multipart("multipart/form-data; boundary=abc.123_x", body, 1000), {"document": b"hello"})
 
+    def test_an_apostrophe_is_part_of_a_token_not_a_quote(self):
+        # "'" is a token character (RFC 9110 5.6.2), so boundary='abc' names the
+        # boundary 'abc', apostrophes included.
+        body = b"--'abc'\r\nContent-Disposition: form-data; name=\"document\"\r\n\r\nhello\r\n--'abc'--\r\n"
+        self.assertEqual(parse_multipart("multipart/form-data; boundary='abc'", body, 1000), {"document": b"hello"})
+        with self.assertRaises(MultipartError):
+            parse_multipart("multipart/form-data; boundary='abc'", body.replace(b"'abc'", b"abc"), 1000)
+        # The same for a field name: 'document' is not document.
+        renamed = body.replace(b'name="document"', b"name='document'")
+        with self.assertRaises(MultipartError) as caught:
+            parse_multipart("multipart/form-data; boundary='abc'", renamed, 1000)
+        self.assertEqual(caught.exception.code, "unexpected_field")
+
     def test_accepts_transport_padding_after_delimiters(self):
         content_type, body = encode_form([("original", "a.docx", b"aaa \t"), ("revised", "b.docx", b"bbb")])
         boundary = content_type.split("boundary=", 1)[1].encode()

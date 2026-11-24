@@ -152,8 +152,6 @@ def _parameters(value: str) -> tuple[str, dict[str, str | None]] | None:
         key, raw = match.group(1).lower(), match.group(2)
         if raw.startswith('"'):
             raw = _QUOTED_PAIR.sub(r"\1", raw[1:-1])
-        elif len(raw) >= 2 and raw[0] == raw[-1] == "'":
-            raw = raw[1:-1]
         params[key] = None if key in params else raw
         position = match.end()
     return kind.strip().lower(), params
