@@ -3,6 +3,45 @@
 param([string]$Script = (Join-Path (Split-Path -Parent $PSScriptRoot) 'scripts\env-file.ps1'))
 $ErrorActionPreference = 'Stop'
 . $Script
+
+# An SSH session as Administrator holds the backup, restore and take-ownership
+# privileges enabled, and with them Windows lets it rename or delete files its
+# rules forbid (case 1c passed against a broken script that way). Turn them off
+# in this process, so the checks see what start.ps1 sees without them.
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class EnvCheckPrivilege {
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    struct TokenPrivilege { public int Count; public long Luid; public int Attributes; }
+    [DllImport("advapi32.dll", SetLastError = true)]
+    static extern bool OpenProcessToken(IntPtr process, int access, out IntPtr token);
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    static extern bool LookupPrivilegeValue(string system, string name, out long luid);
+    [DllImport("advapi32.dll", SetLastError = true)]
+    static extern bool AdjustTokenPrivileges(IntPtr token, bool disableAll, ref TokenPrivilege state, int length, IntPtr previous, IntPtr returned);
+    [DllImport("kernel32.dll")]
+    static extern IntPtr GetCurrentProcess();
+    [DllImport("kernel32.dll")]
+    static extern bool CloseHandle(IntPtr handle);
+    // 0 when the privilege is off (or the token never had it).
+    public static int Disable(string name) {
+        IntPtr token;
+        if (!OpenProcessToken(GetCurrentProcess(), 0x0020 | 0x0008, out token)) return Marshal.GetLastWin32Error();
+        try {
+            TokenPrivilege state = new TokenPrivilege { Count = 1, Attributes = 0 };
+            if (!LookupPrivilegeValue(null, name, out state.Luid)) return Marshal.GetLastWin32Error();
+            if (!AdjustTokenPrivileges(token, false, ref state, 0, IntPtr.Zero, IntPtr.Zero)) return Marshal.GetLastWin32Error();
+            int code = Marshal.GetLastWin32Error();
+            return code == 1300 ? 0 : code;  // ERROR_NOT_ALL_ASSIGNED: not held at all
+        } finally { CloseHandle(token); }
+    }
+}
+'@
+foreach ($privilege in 'SeBackupPrivilege', 'SeRestorePrivilege', 'SeTakeOwnershipPrivilege') {
+    $code = [EnvCheckPrivilege]::Disable($privilege)
+    if ($code -ne 0) { throw "Could not turn off $privilege (error $code)" }
+}
 $dir = Join-Path ([IO.Path]::GetTempPath()) ("env-check-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $dir -Force | Out-Null
 $path = Join-Path $dir '.env'
@@ -17,6 +56,37 @@ try {
     if (-not $refused) { $failures += "1: an unrestricted .env was accepted" }
     $left = @(Get-ChildItem -LiteralPath $dir -Force | Where-Object { $_.Name -like '.env*' } | ForEach-Object Name)
     if ($left) { $failures += "1: left behind after the ACL failed: $($left -join ', ')" }
+
+    # 1b. The token is written only once the file is restricted: a new file
+    #     takes its folder's inherited rules, so a token written before icacls
+    #     runs is readable by whoever the folder lets read it. A function named
+    #     icacls.exe wins over the program and sees the file as icacls would.
+    $script:seenAtRestriction = $null
+    function icacls.exe {
+        $script:seenAtRestriction = [System.IO.File]::ReadAllText($args[0])
+        & (Join-Path $env:SystemRoot 'System32\icacls.exe') @args
+    }
+    try { New-RestrictedEnvFile $path @('WORD_API_TOKEN=secret-early') "*$sid" }
+    finally { Remove-Item Function:\icacls.exe }
+    if ($null -eq $script:seenAtRestriction) { $failures += "1b: icacls was never run on the staged file" }
+    elseif ($script:seenAtRestriction -match 'secret-early') { $failures += "1b: the token was in the file before its rules were restricted" }
+    if (-not (Test-Path -LiteralPath $path) -or @(Get-Content -LiteralPath $path)[0] -ne 'WORD_API_TOKEN=secret-early') { $failures += "1b: .env does not hold the token" }
+    Remove-Item -LiteralPath $path -Force -ErrorAction SilentlyContinue
+
+    # 1c. A folder that lets this account modify files but not delete them
+    #     (Modify, without Delete child): the restricted file must keep its
+    #     own delete right, or it cannot be renamed into place.
+    $modify = Join-Path $dir 'modify-only'
+    New-Item -ItemType Directory -Path $modify | Out-Null
+    & icacls.exe $modify /inheritance:r /grant:r "*${sid}:(OI)(CI)M" | Out-Null
+    $modifyPath = Join-Path $modify '.env'
+    try { New-RestrictedEnvFile $modifyPath @('WORD_API_TOKEN=secret-m') "*$sid" }
+    catch { $failures += "1c: not created in a Modify-only folder: $($_.Exception.Message)" }
+    if (-not (Test-Path -LiteralPath $modifyPath)) { $failures += "1c: .env missing in a Modify-only folder" }
+    else { try { Assert-RestrictedEnvFile $modifyPath } catch { $failures += "1c: refused: $($_.Exception.Message)" } }
+    # The owner may always rewrite the rules, so the folder can be cleaned up.
+    & icacls.exe $modify /grant "*${sid}:(OI)(CI)F" /T /C | Out-Null
+    Remove-Item -LiteralPath $modify -Recurse -Force
 
     # 2. The current account, by SID as start.ps1 passes it: .env exists,
     #    inheritance is off, and that account (read and write) and SYSTEM (read,
@@ -114,4 +184,4 @@ try {
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'env file checks passed (7 cases)'
+Write-Output 'env file checks passed (9 cases)'
