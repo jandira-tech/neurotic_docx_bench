@@ -76,7 +76,12 @@ function Get-ServerPid {
 # folder holding it) stays, and Restart-Server starts no server, whose workers
 # would write over a lane's record.
 function Stop-OurWord([string] $Path) {
-    $word = Get-RecordedWord $Path
+    # A failed process query is not a Word that is gone: Get-RecordedWord
+    # throws, and the record stays for a later round.
+    try { $word = Get-RecordedWord $Path } catch {
+        Write-Log "could not check the WINWORD recorded in ${Path}: $($_.Exception.Message); kept $Path"
+        return $false
+    }
     if ($word -and $word.Unheld) {
         Write-Log "could not stop WINWORD $($word.ProcessId): $($word.Reason); kept $Path"
         return $false
@@ -103,19 +108,32 @@ function Stop-OurWord([string] $Path) {
 
 # Stops what the previous server left: its processes, then the lane and job
 # Words it recorded, then the job folders whose Word is gone. $true when none of
-# it is left running. A server that cannot be held or does not exit returns
-# $false at once, with server.pid, the Word records and the job folders as
+# it is left running. A server that cannot be listed, looked up, held or
+# stopped returns $false at once, with server.pid, the Word records and the job folders as
 # they were, since that server still owns them; a Word that cannot be stopped
 # keeps its own record.
 function Stop-AllServers {
-    $procs = Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -like "*$Serve*" }
+    # A query that fails says nothing about what is running, so it stops the
+    # restart like a server that is still running: -ErrorAction Stop, never a
+    # silent empty list.
+    try {
+        $procs = @(Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction Stop |
+            Where-Object { $_.CommandLine -like "*$Serve*" })
+    } catch {
+        Write-Log "could not list the running servers: $($_.Exception.Message); left their records alone"
+        return $false
+    }
     foreach ($proc in $procs) {
         # The list was read before the hold (process-hold.ps1), so the pid is
         # this server only if, held, it still names the process listed.
         $hold = Open-ProcessHold "$($proc.ProcessId)"
         try {
-            $now = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.ProcessId)" -ErrorAction SilentlyContinue
+            try {
+                $now = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.ProcessId)" -ErrorAction Stop
+            } catch {
+                Write-Log "could not check serve.py $($proc.ProcessId): $($_.Exception.Message); left its records alone"
+                return $false
+            }
             if (-not $now -or $now.CreationDate -ne $proc.CreationDate -or $now.CommandLine -ne $proc.CommandLine) { continue }
             if (-not $hold) {
                 Write-Log "could not stop serve.py $($proc.ProcessId): it could not be opened to keep its number until it is stopped; left its records alone"

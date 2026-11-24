@@ -2,9 +2,9 @@
 # recorded pid from going to another process between their identity check and
 # the stop: stop.ps1's Stop-Recorded, tunnel.ps1's Restore-Tunnel and
 # word-pid.ps1's Get-RecordedWord (whose callers stop the Word it returns), and
-# keep-alive.ps1's Stop-AllServers. Cases 5 to 9 check the paths where the
-# hold is refused, the check throws, or a stopped process does not exit, and
-# that keep-alive.ps1 then starts no second server.
+# keep-alive.ps1's Stop-AllServers. Cases 5 to 11 check the paths where the
+# hold is refused, the check throws, a process query fails, or a stopped
+# process does not exit, and that keep-alive.ps1 then starts no second server.
 # Windows frees a pid only when the process has exited and the last handle to
 # it is closed. Each stand-in process is started through WMI, so this script
 # holds no handle to it, and taskkill is replaced by a function that stops the
@@ -138,7 +138,7 @@ try {
         $script:pinned = $null
         $result = Stop-AllServers
         if ($null -eq $script:pinned) { $failures += "4: Stop-AllServers did not stop the listed server" }
-        if ($result -ne $true) { $failures += "4: Stop-AllServers stopped everything but did not say so (returned '$result')" }
+        if ($result -isnot [bool] -or -not $result) { $failures += "4: Stop-AllServers stopped everything but did not say so (returned '$result')" }
         elseif (-not $script:pinned) { $failures += "4: Stop-AllServers let pid $procId go while it stopped the server it listed" }
     }
 
@@ -231,7 +231,7 @@ try {
             if (-not (Test-Path -LiteralPath $lane)) { $script:failures += "8: the compare lane's record was deleted while its Word was running" }
             Remove-Item -LiteralPath $lane -Force
             $result = Restart-Server
-            if ($script:serverStarts -ne 1 -or $result -ne $true) { $script:failures += "8: with nothing left running, Restart-Server did not start a server (started $($script:serverStarts), returned '$result')" }
+            if ($script:serverStarts -ne 1 -or $result -isnot [bool] -or -not $result) { $script:failures += "8: with nothing left running, Restart-Server did not start a server (started $($script:serverStarts), returned '$result')" }
         }
     }
 
@@ -256,15 +256,97 @@ try {
             $result = Stop-OurWord $record
             if ($result -isnot [bool] -or $result) { $script:failures += "9: keep-alive.ps1 reported a Word still running as stopped (returned '$result')" }
             if (-not (Test-Path -LiteralPath $record)) { $script:failures += "9: keep-alive.ps1 deleted the record of a Word still running" }
-            $threw = $false
-            try { Stop-OurWordAtStop $record } catch { $threw = $true }
-            if (-not $threw) { $script:failures += "9: stop.ps1 went on past a Word still running after Stop-Process" }
+            $why = $null
+            try { Stop-OurWordAtStop $record } catch { $why = $_.Exception.Message }
+            if ($why -notlike '*still running 10 s after Stop-Process*') { $script:failures += "9: stop.ps1 did not stop at a Word still running after Stop-Process (threw '$why')" }
             if (-not (Test-Path -LiteralPath $record)) { $script:failures += "9: stop.ps1 deleted the record of a Word still running" }
         }
         Set-Content -Path $record -Value $procId -Encoding ascii
         $result = Stop-OurWord $record
-        if ($result -ne $true -or (Test-Path -LiteralPath $record)) { $script:failures += "9: with the real Stop-Process, keep-alive.ps1 did not stop the Word and delete its record (returned '$result')" }
-        if (Get-Process -Id $procId -ErrorAction SilentlyContinue) { $script:failures += "9: the Word stand-in $procId is still running after the real stop" }
+        if ($result -isnot [bool] -or -not $result -or (Test-Path -LiteralPath $record)) { $script:failures += "9: with the real Stop-Process, keep-alive.ps1 did not stop the Word and delete its record (returned '$result')" }
+        if (Get-Process -Id $procId -ErrorAction SilentlyContinue) { $script:failures += "9: the Word stand-in $procId is still running after keep-alive.ps1's real stop" }
+        # stop.ps1's stop with the real Stop-Process, on a new stand-in.
+        $procId = Start-StandIn $wordStandIn; $script:started += $procId
+        $fake.ProcessId = $procId
+        Set-Content -Path $record -Value $procId -Encoding ascii
+        $why = $null
+        try { Stop-OurWordAtStop $record } catch { $why = $_.Exception.Message }
+        if ($why) { $script:failures += "9: with the real Stop-Process, stop.ps1 threw '$why'" }
+        if (Test-Path -LiteralPath $record) { $script:failures += "9: with the real Stop-Process, stop.ps1 kept the record of a Word it stopped" }
+        if (Get-Process -Id $procId -ErrorAction SilentlyContinue) { $script:failures += "9: the Word stand-in $procId is still running after stop.ps1's real stop" }
+    }
+
+    # 10. keep-alive.ps1's Stop-AllServers with a server it holds but whose
+    #     stop does not take (taskkill reports success and the process runs
+    #     on): not reported stopped, nothing it left is touched, and
+    #     Restart-Server starts no second server.
+    $procId = Start-StandIn $fakeServer; $started += $procId
+    & {
+        function taskkill.exe { $global:LASTEXITCODE = 0 }
+        function Start-Server { $script:serverStarts++ }
+        Set-Content -Path $PidFile -Value $procId -Encoding ascii
+        $lane = Join-Path $dir 'work\compare.word.pid'
+        Set-Content -Path $lane -Value 4294000 -Encoding ascii
+        $staged = Join-Path $dir ('work\' + ('c' * 32))
+        New-Item -ItemType Directory -Path $staged -Force | Out-Null
+        $result = Stop-AllServers
+        if ($result -isnot [bool] -or $result) { $script:failures += "10: Stop-AllServers reported a server still running after its stop as stopped (returned '$result')" }
+        foreach ($left in @($PidFile, $lane, $staged)) {
+            if (-not (Test-Path -LiteralPath $left)) { $script:failures += "10: Stop-AllServers deleted $(Split-Path -Leaf $left) under a server still running" }
+        }
+        if (-not (Get-Process -Id $procId -ErrorAction SilentlyContinue)) { $script:failures += "10: the server stand-in $procId is gone, so the case proved nothing" }
+        if ($restart) {
+            $script:serverStarts = 0
+            [void](Restart-Server)
+            if ($script:serverStarts) { $script:failures += "10: Restart-Server started a second server beside one still running" }
+        }
+    }
+    & $realTaskkill /F /PID $procId | Out-Null
+
+    # 11. A process query that fails (WMI not answering) says nothing about
+    #     what runs, so every stop treats it like a process still running:
+    #     keep-alive.ps1 starts no server and keeps every record, stop.ps1
+    #     stops there with the record kept.
+    & {
+        $script:closed = @(); $script:kills = 0; $script:serverStarts = 0
+        function Open-ProcessHold { param($ProcId) [IntPtr]77 }
+        function Close-ProcessHold { param($Handle) if ($Handle) { $script:closed += [int64]$Handle } }
+        function taskkill.exe { $script:kills++; $global:LASTEXITCODE = 0 }
+        function Stop-Process { $script:kills++ }
+        function Start-Server { $script:serverStarts++ }
+        $lane = Join-Path $dir 'work\convert.word.pid'
+        $staged = Join-Path $dir ('work\' + ('d' * 32))
+        New-Item -ItemType Directory -Path $staged -Force | Out-Null
+        $listed = [pscustomobject]@{ ProcessId = 4321; Name = 'python.exe'; CommandLine = "python.exe $Serve"; CreationDate = (Get-Date).AddMinutes(-5) }
+        # Get-CimInstance writes an error when WMI does not answer;
+        # -ErrorAction decides whether the caller sees it or an empty result.
+        function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter)
+            if ($script:failing -eq 'list' -or $Filter -like 'ProcessId=*') { Write-Error 'WMI is not answering'; return }
+            $listed }
+        foreach ($failing in @('list', 'recheck')) {
+            Set-Content -Path $PidFile -Value 4321 -Encoding ascii
+            Set-Content -Path $lane -Value 4322 -Encoding ascii
+            $script:failing = $failing
+            $script:closed = @()
+            $result = Stop-AllServers
+            if ($result -isnot [bool] -or $result) { $script:failures += "11 ($failing): Stop-AllServers took a failed query for no server (returned '$result')" }
+            foreach ($left in @($PidFile, $lane, $staged)) {
+                if (-not (Test-Path -LiteralPath $left)) { $script:failures += "11 ($failing): Stop-AllServers deleted $(Split-Path -Leaf $left) when it could not tell what runs" }
+            }
+            if ($failing -eq 'recheck' -and $script:closed -notcontains 77) { $script:failures += "11 (recheck): the hold was left open" }
+            if ($restart) { [void](Restart-Server) }
+        }
+        if ($script:kills) { $script:failures += "11: something was stopped on a failed query" }
+        if ($script:serverStarts) { $script:failures += "11: Restart-Server started a server when it could not tell what runs" }
+        # The Word records: keep-alive.ps1 reports it and keeps the record;
+        # stop.ps1 stops there with the record kept.
+        $result = Stop-OurWord $lane
+        if ($result -isnot [bool] -or $result) { $script:failures += "11: keep-alive.ps1 took a failed query for a Word that is gone (returned '$result')" }
+        if (-not (Test-Path -LiteralPath $lane)) { $script:failures += "11: keep-alive.ps1 deleted a Word record it could not check" }
+        $threw = $false
+        try { Stop-OurWordAtStop $lane } catch { $threw = $true }
+        if (-not $threw) { $script:failures += "11: stop.ps1 went on past a Word record it could not check" }
+        if (-not (Test-Path -LiteralPath $lane)) { $script:failures += "11: stop.ps1 deleted a Word record it could not check" }
     }
 } finally {
     $ErrorActionPreference = 'Continue'
@@ -276,4 +358,4 @@ try {
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'process hold checks passed (9 cases)'
+Write-Output 'process hold checks passed (11 cases)'

@@ -6,7 +6,9 @@
 # so it comes with a hold (process-hold.ps1) on its pid, taken before the
 # check: the caller stops it by number and then closes .Hold. Ours but not
 # holdable comes back with .Unheld: it is still running and still ours, so the
-# caller must not stop it and must keep its record.
+# caller must not stop it and must keep its record. A process query that fails
+# throws (with the hold closed): a Word that cannot be looked up is not a Word
+# that is gone, and a caller that took it for one would delete its record.
 
 . (Join-Path $PSScriptRoot "process-hold.ps1")
 
@@ -17,7 +19,7 @@ function Get-RecordedWord([string] $PidFile) {
     if ($wordPid -notmatch '^\d+$') { return $null }
     $hold = Open-ProcessHold $wordPid
     try {
-        $word = Get-CimInstance Win32_Process -Filter "ProcessId=$wordPid" -ErrorAction SilentlyContinue
+        $word = Get-CimInstance Win32_Process -Filter "ProcessId=$wordPid" -ErrorAction Stop
         if ($null -eq $word) {
             Close-ProcessHold $hold
             return $null

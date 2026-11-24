@@ -22,7 +22,13 @@ function Stop-Recorded($pidFile, $match, $name) {
     if ($procId -notmatch '^\d+$') { return }
     $hold = Open-ProcessHold $procId
     try {
-        $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
+        # A query that fails is not a process that is gone: stop here with the
+        # record kept, as for a failed taskkill.
+        try {
+            $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction Stop
+        } catch {
+            throw "Could not check $match ($procId): $($_.Exception.Message); kept $pidFile"
+        }
         if ($null -eq $proc) {
             Remove-Item $pidFile -ErrorAction SilentlyContinue
             return
@@ -39,10 +45,15 @@ function Stop-Recorded($pidFile, $match, $name) {
             throw "Could not stop $match ($procId): it could not be opened to keep its number until it is stopped"
         }
         & taskkill.exe /F /T /PID $procId | Out-Null
-        if ($LASTEXITCODE -ne 0 -and (Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue)) {
+        $code = $LASTEXITCODE
+        if ($code -ne 0) {
             # Keep the record and stop here: cleaning up Word and the job folders
-            # under a server that is still running would break its jobs.
-            throw "Could not stop $match ($procId): taskkill exit $LASTEXITCODE"
+            # under a server that is still running would break its jobs. One
+            # that cannot be looked up counts as still running.
+            try { $still = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction Stop } catch {
+                throw "Could not stop $match ($procId): taskkill exit $code, and it could not be looked up: $($_.Exception.Message); kept $pidFile"
+            }
+            if ($still) { throw "Could not stop $match ($procId): taskkill exit $code" }
         }
         Remove-Item $pidFile -ErrorAction SilentlyContinue
         Write-Host "Stopped $match ($procId)"
