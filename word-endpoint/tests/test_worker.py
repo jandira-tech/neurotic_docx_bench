@@ -4,28 +4,67 @@ from unittest.mock import Mock
 from unittest.mock import patch
 import tempfile
 import shutil
+from types import SimpleNamespace
 
 import pywintypes
 
-from word_endpoint.worker import WorkerError, _lock_fields, export_pdf, compare_documents, parse_job_command
+from word_endpoint.worker import (
+    _MAC_REVISION_OPTIONS,
+    WorkerError,
+    _lock_fields,
+    compare_documents,
+    export_pdf,
+    parse_job_command,
+    set_revision_options,
+)
 
 
 class WorkerTests(unittest.TestCase):
-    def test_pdf_export_sets_markup_view_for_both_comment_states(self):
-        for comments, expected in ((0, 1), (2, 2)):
+    def test_pdf_export_uses_word_for_macs_inline_view_with_and_without_comments(self):
+        for comments in (0, 2):
             with self.subTest(comments=comments):
                 document = Mock()
                 document.Comments.Count = comments
-                # Deliberately inherit the opposite view before conversion.
-                document.ActiveWindow.View.RevisionsMode = 0
+                # Deliberately inherit a different view before conversion.
+                view = document.ActiveWindow.View
+                view.RevisionsMode = 2
+                view.ShowFormatChanges = False
+                view.ShowComments = False
+                view.RevisionsFilter.Markup = 0
                 def exporting(**kwargs):
-                    self.assertEqual(document.ActiveWindow.View.RevisionsMode, expected)
-                    self.assertTrue(document.ActiveWindow.View.ShowRevisionsAndComments)
-                    self.assertTrue(document.ActiveWindow.View.ShowComments)
+                    self.assertEqual(view.RevisionsMode, 1)
+                    self.assertEqual(view.RevisionsFilter.Markup, 2)
+                    self.assertEqual(view.RevisionsFilter.View, 0)
+                    self.assertTrue(view.ShowRevisionsAndComments)
+                    self.assertTrue(view.ShowInsertionsAndDeletions)
+                    self.assertTrue(view.ShowFormatChanges)
+                    self.assertTrue(view.ShowComments)
                     self.assertEqual(kwargs['Item'], 7)
                 document.ExportAsFixedFormat.side_effect = exporting
                 export_pdf(document, Path('unused.pdf'))
                 document.ExportAsFixedFormat.assert_called_once()
+
+    def test_revision_options_are_set_to_word_for_macs(self):
+        options = SimpleNamespace(**{name: 0 for name, _ in _MAC_REVISION_OPTIONS})
+        options.RevisedLinesColor = 6  # already right: left alone
+        with self.assertLogs(level='INFO') as logs:
+            set_revision_options(options)
+        self.assertEqual({name: getattr(options, name) for name, _ in _MAC_REVISION_OPTIONS}, dict(_MAC_REVISION_OPTIONS))
+        self.assertNotIn('RevisedLinesColor', ''.join(logs.output))
+        self.assertEqual(dict(_MAC_REVISION_OPTIONS)['RevisedLinesColor'], 6)
+
+    def test_a_revision_option_word_refuses_is_logged_not_raised(self):
+        class Refusing(SimpleNamespace):
+            def __setattr__(self, name, value):
+                if name == 'CommentsColor':
+                    raise pywintypes.com_error(-1, 'refused', None, None)
+                super().__setattr__(name, value)
+        options = Refusing(**{name: 0 for name, _ in _MAC_REVISION_OPTIONS})
+        with self.assertLogs(level='WARNING') as logs:
+            set_revision_options(options)
+        self.assertIn('CommentsColor', ''.join(logs.output))
+        self.assertEqual(options.InsertedTextMark, 3)
+        self.assertEqual(options.SplitCellColor, 5)
 
     def test_comparison_pdf_exports_live_result_with_markup_without_saving_docx(self):
         directory = Path(tempfile.mkdtemp())
@@ -39,7 +78,7 @@ class WorkerTests(unittest.TestCase):
             compare_documents(word, directory, as_pdf=True)
         self.assertEqual(opening.call_count, 2)
         self.assertEqual(result.ExportAsFixedFormat.call_args.kwargs['Item'], 7)
-        self.assertEqual(result.ActiveWindow.View.RevisionsMode, 2)
+        self.assertEqual(result.ActiveWindow.View.RevisionsMode, 1)
         self.assertTrue(result.ActiveWindow.View.ShowComments)
         self.assertTrue(result.ActiveWindow.View.ShowRevisionsAndComments)
         result.SaveAs2.assert_not_called()

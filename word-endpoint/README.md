@@ -80,13 +80,13 @@ Rejected uploads:
 
 The client cannot send a path, a URL, or a Word option. PDF export omits document properties so this machine's file path is not copied into the PDF. Comparison files have Word's local template stamp removed before they are returned.
 
-PDF export includes tracked-change markup and fails if that export fails; it never silently falls back to a clean PDF. Both comparison workflows use inline revisions when there are no comments and balloons when comments are present, so Word's inherited window view does not change the PDF's revision layout.
+PDF export includes tracked-change markup and fails if that export fails; it never silently falls back to a clean PDF. Every PDF export (both comparison workflows and conversions) uses the review view of the Word for Mac that made the bench's oracle: all markup, insertions, deletions and formatting changes inline, comments printed in the margin, no "Formatted:" balloons. Each Word start also sets Word's revision marks and colours to that Mac's (underline, strikethrough, red changed-line bar, colours by author). Both are set in code, so a restart, a reset profile or another machine exports the same view; see [docs/review-view.md](docs/review-view.md).
 
 ## Updates, readiness and diagnostics
 
 After source changes, run powershell -ExecutionPolicy Bypass -File scripts\restart.ps1 from the existing Windows user's interactive session. It runs the tests, restarts the existing logon task, waits for both Word workers, and checks actual comparisons and PDF exports. Cloudflare stays running.
 
-Add `-Benchmark` to the restart command to measure the separate and combined comparison PDF workflows after verification. Live verification checks that deleted/inserted amounts and both synthetic comment texts remain in the PDFs. For direct comparisons with comments, Word's balloon view is enabled before export so comment bodies are printed.
+Add `-Benchmark` to the restart command to measure the separate and combined comparison PDF workflows after verification. Live verification checks that deleted/inserted amounts and both synthetic comment texts remain in the PDFs. Inline revisions still print comment bodies in the margin.
 
 Package limits are 20 MB compressed per upload, 128 MB expanded in total, 64 MB per member, 32 MB per XML part, and 4,096 entries. Highly compressed repetitive XML is accepted within these limits.
 
