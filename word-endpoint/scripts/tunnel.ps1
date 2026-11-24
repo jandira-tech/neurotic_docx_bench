@@ -2,19 +2,29 @@
 # (a quick tunnel, or a named tunnel from CLOUDFLARE_TUNNEL_TOKEN). The public
 # watchdog uses the same functions to replace a tunnel process that went dark.
 
+. (Join-Path $PSScriptRoot "process-hold.ps1")
+
 # Windows reuses a pid once its process is gone, and the record outlives its
 # tunnel, so the number alone does not say which process it is. Start-Tunnel
 # writes the record just after cloudflared started: ours is a cloudflared.exe
 # created before the record was written. Anything with that pid created later
-# took the number over.
-function Get-RecordedTunnel([string] $Root) {
+# took the number over. With -Hold, a caller about to stop the tunnel gets it
+# with .Hold, a handle (process-hold.ps1) taken before the check that keeps the
+# number on this process until the caller closes it; .Hold is $null when the
+# process could not be opened.
+function Get-RecordedTunnel([string] $Root, [switch] $Hold) {
     $pidFile = Join-Path $Root "logs\tunnel.pid"
     if (-not (Test-Path -LiteralPath $pidFile -PathType Leaf)) { return $null }
     $written = (Get-Item -LiteralPath $pidFile).LastWriteTime
     $old = "$(Get-Content -LiteralPath $pidFile | Select-Object -First 1)".Trim()
     if ($old -notmatch '^\d+$') { return $null }
+    $handle = if ($Hold) { Open-ProcessHold $old } else { $null }
     $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
-    if ($proc -and $proc.Name -eq "cloudflared.exe" -and $proc.CreationDate -and $proc.CreationDate -le $written) { return $proc }
+    if ($proc -and $proc.Name -eq "cloudflared.exe" -and $proc.CreationDate -and $proc.CreationDate -le $written) {
+        if ($Hold) { $proc | Add-Member -NotePropertyName Hold -NotePropertyValue $handle -Force }
+        return $proc
+    }
+    Close-ProcessHold $handle
     return $null
 }
 
@@ -77,27 +87,35 @@ function Restore-Tunnel([string] $Root, [string] $Port, [string] $Token) {
         catch { "cloudflared service restart failed: $($_.Exception.Message)" }
         return
     }
-    $recorded = Get-RecordedTunnel $Root
-    if (-not $Token) {
-        if ($recorded) {
-            "local healthy but public down on a quick tunnel: a new one gets a new URL, so run scripts\start.ps1 to publish it"
-        } else {
-            "local healthy but public down, and there is no cloudflared service or tunnel token to start one with"
-        }
-        return
-    }
-    # A named tunnel (token): start.ps1 ran it as a process. Replace a dark one;
-    # start one when none is running, which also retries a replacement that died.
-    if ($recorded) {
-        "local healthy but public down: replacing tunnel process $($recorded.ProcessId)"
-        & taskkill.exe /F /T /PID $recorded.ProcessId | Out-Null
-        $code = $LASTEXITCODE
-        if ($code -ne 0 -and (Get-Process -Id $recorded.ProcessId -ErrorAction SilentlyContinue)) {
-            "could not stop tunnel process $($recorded.ProcessId) (taskkill exit $code); not starting a second one"
+    $recorded = Get-RecordedTunnel $Root -Hold
+    try {
+        if (-not $Token) {
+            if ($recorded) {
+                "local healthy but public down on a quick tunnel: a new one gets a new URL, so run scripts\start.ps1 to publish it"
+            } else {
+                "local healthy but public down, and there is no cloudflared service or tunnel token to start one with"
+            }
             return
         }
-    } else {
-        "local healthy but public down and no tunnel process is running: starting one"
+        # A named tunnel (token): start.ps1 ran it as a process. Replace a dark one;
+        # start one when none is running, which also retries a replacement that died.
+        if ($recorded) {
+            if (-not $recorded.Hold) {
+                "could not open tunnel process $($recorded.ProcessId) to keep its number until it is stopped; not starting a second one"
+                return
+            }
+            "local healthy but public down: replacing tunnel process $($recorded.ProcessId)"
+            & taskkill.exe /F /T /PID $recorded.ProcessId | Out-Null
+            $code = $LASTEXITCODE
+            if ($code -ne 0 -and (Get-Process -Id $recorded.ProcessId -ErrorAction SilentlyContinue)) {
+                "could not stop tunnel process $($recorded.ProcessId) (taskkill exit $code); not starting a second one"
+                return
+            }
+        } else {
+            "local healthy but public down and no tunnel process is running: starting one"
+        }
+    } finally {
+        if ($recorded) { Close-ProcessHold $recorded.Hold }
     }
     try {
         $proc = Start-Tunnel $Root $Port $Token

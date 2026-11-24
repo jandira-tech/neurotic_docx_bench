@@ -71,9 +71,9 @@ function Get-ServerPid {
 function Stop-OurWord([string] $Path) {
     $word = Get-RecordedWord $Path
     if ($word -and $word.Foreign) {
-        Write-Log "left pid $($word.ProcessId) ($($word.Name), started $($word.CreationDate.ToString('o'))) running: not the Word $Path recorded at $($word.Written.ToString('o'))"
+        Write-Log "left pid $($word.ProcessId) ($($word.Name), started $($word.CreationDate.ToString('o'))) running: $($word.Reason) (recorded at $($word.Written.ToString('o')))"
     } elseif ($word) {
-        Stop-Process -Id $word.ProcessId -Force -ErrorAction SilentlyContinue
+        try { Stop-Process -Id $word.ProcessId -Force -ErrorAction SilentlyContinue } finally { Close-ProcessHold $word.Hold }
         Write-Log "stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $Path -Force -ErrorAction SilentlyContinue

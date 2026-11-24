@@ -13,9 +13,12 @@ $script:killExit = 0; $script:aliveAfterKill = $false
 $script:launched = 0; $script:killed = 0; $script:restarted = 0
 function Get-Service { [CmdletBinding()] param($Name) if ($script:service) { [pscustomobject]@{ Name = $Name } } }
 function Restart-Service { [CmdletBinding()] param($Name, [switch]$Force) $script:restarted++ }
-function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:running }
+function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:events += 'check'; $script:running }
 function Get-Process { [CmdletBinding()] param($Id) if ($script:aliveAfterKill) { [pscustomobject]@{ Id = $Id } } }
-function taskkill.exe { $script:killed++; $script:killedPid = $args[-1]; $global:LASTEXITCODE = $script:killExit }
+function taskkill.exe { $script:events += "kill $($args[-1])"; $script:killed++; $script:killedPid = $args[-1]; $global:LASTEXITCODE = $script:killExit }
+# The hold (process-hold.ps1) is stubbed; check-process-hold.ps1 checks the real one.
+function Open-ProcessHold { param($ProcId) $script:events += "hold $ProcId"; if ($script:holdOpens) { [IntPtr]101 } }
+function Close-ProcessHold { param($Handle) if ($Handle) { $script:events += 'release' } }
 function Start-Process {
     [CmdletBinding()]
     param($FilePath, $ArgumentList, $WorkingDirectory, $WindowStyle, $RedirectStandardOutput, $RedirectStandardError, [switch]$PassThru)
@@ -24,7 +27,8 @@ function Start-Process {
     $script:launchArgs = @($ArgumentList); $script:launchEnv = $env:TUNNEL_TOKEN
     [pscustomobject]@{ Id = 4242 }
 }
-function Reset { param([switch]$Service, $Running, [switch]$LaunchFails, [int]$KillExit = 0, [switch]$AliveAfterKill)
+function Reset { param([switch]$Service, $Running, [switch]$LaunchFails, [int]$KillExit = 0, [switch]$AliveAfterKill, [switch]$HoldRefused)
+    $script:events = @(); $script:holdOpens = -not $HoldRefused
     $script:service = [bool]$Service; $script:running = $Running; $script:launchFails = [bool]$LaunchFails
     $script:killExit = $KillExit; $script:aliveAfterKill = [bool]$AliveAfterKill
     $script:launched = 0; $script:killed = 0; $script:killedPid = $null; $script:restarted = 0; $script:launchArgs = @(); $script:launchEnv = $null
@@ -108,6 +112,15 @@ try {
     Reset -Running $tunnel
     $lines = Recover 'tok'
     if ($script:killed -ne 1 -or $script:launched -ne 1) { $failures += "3: running tunnel not replaced (killed $($script:killed), launched $($script:launched))" }
+    # The pid is held from before the identity check until after the stop.
+    if (($script:events -join ',') -ne 'hold 777,check,kill 777,release') { $failures += "3: hold, check, stop and release ran as $($script:events -join ', ')" }
+
+    # 3b. The recorded tunnel's pid cannot be held (opening it is refused):
+    #     not stopped, and no second tunnel beside it.
+    Reset -Running $tunnel -HoldRefused
+    $lines = Recover 'tok'
+    if ($script:killed -ne 0 -or $script:launched -ne 0) { $failures += "3b: acted on a tunnel whose pid could not be held (killed $($script:killed), launched $($script:launched))" }
+    if (-not ($lines -match 'could not open')) { $failures += "3b: the refusal was not reported: $($lines -join ' | ')" }
 
     # 4. taskkill fails and the process is still there: no second tunnel beside it.
     Reset -Running $tunnel -KillExit 1 -AliveAfterKill
@@ -145,4 +158,4 @@ try {
     Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'tunnel recovery checks passed (13 cases)'
+Write-Output 'tunnel recovery checks passed (14 cases)'

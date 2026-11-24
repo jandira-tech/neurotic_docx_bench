@@ -6,34 +6,47 @@ schtasks.exe /Change /TN "WordEndpoint" /DISABLE 2>$null | Out-Null
 schtasks.exe /End /TN "WordEndpoint" 2>$null | Out-Null
 Start-Sleep -Seconds 2
 
+. (Join-Path $PSScriptRoot "process-hold.ps1")
+
 # Windows reuses a pid once its process is gone, so the recorded process is
 # one matching $match ($name, when given, is its executable's name) that
 # already existed when the record was written: the server writes server.pid
 # when it starts, and Start-Tunnel writes tunnel.pid just after cloudflared
-# started. A process with that pid created later took the number over.
+# started. A process with that pid created later took the number over. The
+# hold (process-hold.ps1) keeps the number on the process checked here until
+# taskkill has stopped it.
 function Stop-Recorded($pidFile, $match, $name) {
     if (-not (Test-Path -LiteralPath $pidFile -PathType Leaf)) { return }
     $written = (Get-Item -LiteralPath $pidFile).LastWriteTime
     $procId = "$(Get-Content -LiteralPath $pidFile | Select-Object -First 1)".Trim()
     if ($procId -notmatch '^\d+$') { return }
-    $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
-    if ($null -eq $proc) {
+    $hold = Open-ProcessHold $procId
+    try {
+        $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue
+        if ($null -eq $proc) {
+            Remove-Item $pidFile -ErrorAction SilentlyContinue
+            return
+        }
+        if ($proc.CommandLine -notlike "*$match*" -or ($name -and $proc.Name -ne $name) -or
+                -not $proc.CreationDate -or $proc.CreationDate -gt $written) {
+            Write-Host "Refusing to stop pid $procId because it is not the $match that was recorded"
+            return
+        }
+        if (-not $hold) {
+            Write-Host "Refusing to stop pid $procId because it could not be opened to keep its number until it is stopped"
+            return
+        }
+        & taskkill.exe /F /T /PID $procId | Out-Null
+        if ($LASTEXITCODE -ne 0 -and (Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue)) {
+            # Keep the record and stop here: cleaning up Word and the job folders
+            # under a server that is still running would break its jobs.
+            throw "Could not stop $match ($procId): taskkill exit $LASTEXITCODE"
+        }
         Remove-Item $pidFile -ErrorAction SilentlyContinue
-        return
+        Write-Host "Stopped $match ($procId)"
+    } finally {
+        Close-ProcessHold $hold
     }
-    if ($proc.CommandLine -notlike "*$match*" -or ($name -and $proc.Name -ne $name) -or
-            -not $proc.CreationDate -or $proc.CreationDate -gt $written) {
-        Write-Host "Refusing to stop pid $procId because it is not the $match that was recorded"
-        return
-    }
-    & taskkill.exe /F /T /PID $procId | Out-Null
-    if ($LASTEXITCODE -ne 0 -and (Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue)) {
-        # Keep the record and stop here: cleaning up Word and the job folders
-        # under a server that is still running would break its jobs.
-        throw "Could not stop $match ($procId): taskkill exit $LASTEXITCODE"
-    }
-    Remove-Item $pidFile -ErrorAction SilentlyContinue
-    Write-Host "Stopped $match ($procId)"
 }
 
 Stop-Recorded (Join-Path $Root "logs\server.pid") "serve.py"
@@ -46,9 +59,9 @@ $Work = Join-Path $Root "work"
 function Stop-OurWord($pidFile) {
     $word = Get-RecordedWord $pidFile
     if ($word -and $word.Foreign) {
-        Write-Host "Left pid $($word.ProcessId) ($($word.Name)) running: not the Word $pidFile recorded"
+        Write-Host "Left pid $($word.ProcessId) ($($word.Name)) running: $($word.Reason)"
     } elseif ($word) {
-        Stop-Process -Id $word.ProcessId -Force
+        try { Stop-Process -Id $word.ProcessId -Force } finally { Close-ProcessHold $word.Hold }
         Write-Host "Stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $pidFile -Force -ErrorAction SilentlyContinue

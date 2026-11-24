@@ -14,16 +14,23 @@ if (-not $definition) { throw "Stop-Recorded is not defined in $Script" }
 $dir = Join-Path ([IO.Path]::GetTempPath()) ("stop-check-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $dir -Force | Out-Null
 $pidFile = Join-Path $dir 'tunnel.pid'
-$script:proc = $null; $script:killed = @()
-function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:proc }
-function taskkill.exe { $script:killed += "$($args[-1])"; $global:LASTEXITCODE = 0 }
+$script:proc = $null; $script:killed = @(); $script:events = @(); $script:holdOpens = $true
+# The hold (process-hold.ps1) is stubbed too; check-process-hold.ps1 checks the
+# real one. Every step is logged, so the order can be checked.
+function Open-ProcessHold { param($ProcId) $script:events += "hold $ProcId"; if ($script:holdOpens) { [IntPtr]101 } }
+function Close-ProcessHold { param($Handle) if ($Handle) { $script:events += 'release' } }
+function Get-CimInstance { [CmdletBinding()] param($ClassName, $Filter) $script:events += 'check'; $script:proc }
+function taskkill.exe { $script:events += "kill $($args[-1])"; $script:killed += "$($args[-1])"; $global:LASTEXITCODE = 0 }
 function Write-Host { }
-function Check([string] $Case, $Proc, [string] $Match, [string] $Name, [bool] $Stopped) {
+function Check([string] $Case, $Proc, [string] $Match, [string] $Name, [bool] $Stopped, [bool] $HoldOpens = $true) {
     Set-Content -Path $pidFile -Value '777' -Encoding ascii
-    $script:proc = $Proc; $script:killed = @()
+    $script:proc = $Proc; $script:killed = @(); $script:events = @(); $script:holdOpens = $HoldOpens
     Stop-Recorded $pidFile $Match $Name
     if ($Stopped -and $script:killed -notcontains '777') { $script:failures += "${Case}: the recorded process was not stopped" }
     if (-not $Stopped -and $script:killed) { $script:failures += "${Case}: stopped pid $($script:killed -join ',') that is not the recorded process" }
+    # The pid is held from before the identity check until after the stop.
+    if ($Stopped -and ($script:events -join ',') -ne 'hold 777,check,kill 777,release') { $script:failures += "${Case}: hold, check, stop and release ran as $($script:events -join ', ')" }
+    if ($HoldOpens -and $script:events -contains 'hold 777' -and $script:events -notcontains 'release') { $script:failures += "${Case}: the hold was left open: $($script:events -join ', ')" }
 }
 $script:failures = @()
 $before = (Get-Date).AddMinutes(-5); $after = (Get-Date).AddMinutes(5)
@@ -38,8 +45,11 @@ try {
     Check '4' ([pscustomobject]@{ ProcessId = 777; Name = 'python.exe'; CreationDate = $after; CommandLine = 'python.exe serve.py' }) 'serve.py' $null $false
     # 5. The server that wrote its own record: stopped.
     Check '5' ([pscustomobject]@{ ProcessId = 777; Name = 'python.exe'; CreationDate = $before; CommandLine = 'python.exe serve.py' }) 'serve.py' $null $true
+    # 6. The recorded tunnel, but its pid cannot be held (opening it is
+    #    refused): not stopped, since nothing would keep the number on it.
+    Check '6' ([pscustomobject]@{ ProcessId = 777; Name = 'cloudflared.exe'; CreationDate = $before; CommandLine = 'cloudflared.exe tunnel run' }) 'cloudflared' 'cloudflared.exe' $false $false
 } finally {
     Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($script:failures) { $script:failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'stop-recorded checks passed (5 cases)'
+Write-Output 'stop-recorded checks passed (6 cases)'
