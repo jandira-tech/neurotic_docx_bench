@@ -3,23 +3,23 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 & (Join-Path $PSScriptRoot "bootstrap.ps1")
 
+. (Join-Path $PSScriptRoot "env-file.ps1")
 $EnvFile = Join-Path $Root ".env"
 if (-not (Test-Path $EnvFile)) {
     $bytes = New-Object byte[] 32
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
     $token = [Convert]::ToBase64String($bytes).TrimEnd("=").Replace("+", "-").Replace("/", "_")
-    . (Join-Path $PSScriptRoot "env-file.ps1")
     # By SID: over SSH on a workgroup machine USERDOMAIN is "WORKGROUP", which
     # icacls cannot resolve (exit 1332), so the name form fails for the right user.
     $me = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
     New-RestrictedEnvFile $EnvFile @("WORD_API_TOKEN=$token", "PORT=8787") "*$me"
     Write-Host "Created .env"
 }
+Assert-RestrictedEnvFile $EnvFile
 
-Get-Content $EnvFile | ForEach-Object {
-    if ($_ -match '^(WORD_API_TOKEN|PORT|CLOUDFLARE_TUNNEL_TOKEN|JOB_TIMEOUT_SECONDS|QUEUE_TIMEOUT_SECONDS|RATE_LIMIT_PER_MINUTE|MAX_CONCURRENT|WORD_PUBLIC_URL)=(.*)$') {
-        Set-Item -Path "Env:$($Matches[1])" -Value $Matches[2]
-    }
+$DotEnv = Read-DotEnv $EnvFile
+foreach ($key in @('WORD_API_TOKEN', 'PORT', 'CLOUDFLARE_TUNNEL_TOKEN', 'JOB_TIMEOUT_SECONDS', 'QUEUE_TIMEOUT_SECONDS', 'RATE_LIMIT_PER_MINUTE', 'MAX_CONCURRENT', 'WORD_PUBLIC_URL')) {
+    if ($DotEnv.Contains($key)) { Set-Item -Path "Env:$key" -Value $DotEnv[$key] }
 }
 if (-not $env:PORT) { $env:PORT = "8787" }
 New-Item -ItemType Directory -Force -Path (Join-Path $Root "logs"), (Join-Path $Root "work") | Out-Null
@@ -38,10 +38,10 @@ if ($public -match '^https://' -and $public -notlike '*.trycloudflare.com') {
 . (Join-Path $PSScriptRoot "tunnel.ps1")
 $tunnelRunning = $null -ne (Get-RecordedTunnel $Root)
 if (-not $tunnelRunning) {
-    Start-Tunnel $Root $env:PORT $env:CLOUDFLARE_TUNNEL_TOKEN | Out-Null
+    Start-Tunnel $Root $env:PORT (Get-TunnelToken $DotEnv) | Out-Null
 }
 
-if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
+if (Get-TunnelToken $DotEnv) {
     Write-Host "Named Cloudflare tunnel is running."
     Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
     exit 0

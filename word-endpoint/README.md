@@ -21,11 +21,13 @@ powershell -ExecutionPolicy Bypass -File scripts\stop.ps1
 
 `start.ps1` registers a logon task named `WordEndpoint`. The task keeps the service running after you close this terminal, and it starts again the next time this Windows user logs on. Disconnecting Remote Desktop leaves it running. Signing out stops it until the next logon. `stop.ps1` turns the task off until `start.ps1` is run again.
 
-A second, independent watchdog (`scripts\public-watchdog.ps1`, registered as the `WordEndpointWatchdog` scheduled task, running as SYSTEM every 5 minutes) checks the public URL. After two consecutive failures it restarts the `cloudflared` service when only the tunnel is down, or starts the `WordEndpoint` task when the local service is down too. It logs to `logs\public-watchdog.log`. The task checks the service every 15 seconds and starts it again when it is down.
+A second, independent watchdog (`scripts\public-watchdog.ps1`, registered as the `WordEndpointWatchdog` scheduled task, running as SYSTEM every 5 minutes) checks the public URL. After two consecutive failures it restarts the `cloudflared` service when only the tunnel is down (or, without the service, replaces or starts the named-tunnel process `start.ps1` launched), or starts the `WordEndpoint` task when the local service is down too. It logs to `logs\public-watchdog.log`. The task checks the service every 15 seconds and starts it again when it is down.
 
 The public address is `https://docx.rodrigues.ai`. The local address stays `http://127.0.0.1:8787`. `start.ps1` keeps `WORD_PUBLIC_URL` when it is a stable `https://` address, and it does not start a second tunnel.
 
-On a machine without that hostname, leave `WORD_PUBLIC_URL` unset. `start.ps1` then opens a temporary `trycloudflare.com` address and records it. You can instead set `CLOUDFLARE_TUNNEL_TOKEN` so the script runs a named tunnel. You can put Cloudflare Access in front of the named hostname as a second lock.
+On a machine without that hostname, leave `WORD_PUBLIC_URL` unset. `start.ps1` then opens a temporary `trycloudflare.com` address and records it. You can instead set `CLOUDFLARE_TUNNEL_TOKEN` so the script runs a named tunnel; put it in `.env` (or a machine environment variable), because the watchdog runs as SYSTEM and cannot see your user environment. cloudflared gets the token through its environment, not its command line. You can put Cloudflare Access in front of the named hostname as a second lock.
+
+`.env` holds the API token. `start.ps1` creates it on first run, readable and writable by you and readable by SYSTEM (for the watchdog), and nobody else. On every start it refuses a `.env` that inherits its folder's permissions or grants anyone other than SYSTEM, Administrators and you, and prints the `icacls` command that fixes it. `WORD_API_TOKEN` must be 32 to 256 characters of letters, digits and `- . _ ~ + /`, optionally ending in `=` (an RFC 6750 bearer token); the service refuses to start with any other token.
 
 ## Call
 

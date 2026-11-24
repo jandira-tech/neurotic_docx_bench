@@ -12,20 +12,39 @@ function Get-RecordedTunnel([string] $Root) {
     return $null
 }
 
+# The named tunnel's token: .env's CLOUDFLARE_TUNNEL_TOKEN, else this process's
+# environment. start.ps1 and the public watchdog both read it here; the
+# watchdog runs as SYSTEM, so a variable only in an administrator's user
+# environment is invisible to it: keep the token in .env or a machine variable.
+function Get-TunnelToken($DotEnv) {
+    if ($DotEnv -and $DotEnv['CLOUDFLARE_TUNNEL_TOKEN']) { return $DotEnv['CLOUDFLARE_TUNNEL_TOKEN'] }
+    return $env:CLOUDFLARE_TUNNEL_TOKEN
+}
+
 function Start-Tunnel([string] $Root, [string] $Port, [string] $Token) {
     $cloud = Join-Path $Root ".tools\cloudflared.exe"
-    if ($Token) {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "run", "--token", $Token)
-    } else {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "--url", "http://127.0.0.1:$Port")
+    $saved = $env:TUNNEL_TOKEN
+    try {
+        if ($Token) {
+            # cloudflared reads TUNNEL_TOKEN from its environment. On the command
+            # line the token would show in process listings and in
+            # process-creation audit logs.
+            $env:TUNNEL_TOKEN = $Token
+            $tunnelArgs = @("tunnel", "--no-autoupdate", "run")
+        } else {
+            Remove-Item Env:TUNNEL_TOKEN -ErrorAction SilentlyContinue
+            $tunnelArgs = @("tunnel", "--no-autoupdate", "--url", "http://127.0.0.1:$Port")
+        }
+        Remove-Item (Join-Path $Root "logs\tunnel.log"), (Join-Path $Root "logs\tunnel.err.log") -ErrorAction SilentlyContinue
+        # Stop on errors here even when the caller runs with "Continue" (the public
+        # watchdog does): a launch that failed must not leave an empty pid record.
+        $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru -ErrorAction Stop
+        if (-not $proc -or -not $proc.Id) { throw "cloudflared did not start" }
+        Set-Content -Path (Join-Path $Root "logs\tunnel.pid") -Value $proc.Id -Encoding ascii -ErrorAction Stop
+        return $proc
+    } finally {
+        if ($null -eq $saved) { Remove-Item Env:TUNNEL_TOKEN -ErrorAction SilentlyContinue } else { $env:TUNNEL_TOKEN = $saved }
     }
-    Remove-Item (Join-Path $Root "logs\tunnel.log"), (Join-Path $Root "logs\tunnel.err.log") -ErrorAction SilentlyContinue
-    # Stop on errors here even when the caller runs with "Continue" (the public
-    # watchdog does): a launch that failed must not leave an empty pid record.
-    $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru -ErrorAction Stop
-    if (-not $proc -or -not $proc.Id) { throw "cloudflared did not start" }
-    Set-Content -Path (Join-Path $Root "logs\tunnel.pid") -Value $proc.Id -Encoding ascii -ErrorAction Stop
-    return $proc
 }
 
 # What the public watchdog does when the local service answers but the public

@@ -21,12 +21,13 @@ function Start-Process {
     param($FilePath, $ArgumentList, $WorkingDirectory, $WindowStyle, $RedirectStandardOutput, $RedirectStandardError, [switch]$PassThru)
     if ($script:launchFails) { Write-Error 'cloudflared could not be launched (stub)'; return }
     $script:launched++
+    $script:launchArgs = @($ArgumentList); $script:launchEnv = $env:TUNNEL_TOKEN
     [pscustomobject]@{ Id = 4242 }
 }
 function Reset { param([switch]$Service, $Running, [switch]$LaunchFails, [int]$KillExit = 0, [switch]$AliveAfterKill)
     $script:service = [bool]$Service; $script:running = $Running; $script:launchFails = [bool]$LaunchFails
     $script:killExit = $KillExit; $script:aliveAfterKill = [bool]$AliveAfterKill
-    $script:launched = 0; $script:killed = 0; $script:restarted = 0
+    $script:launched = 0; $script:killed = 0; $script:restarted = 0; $script:launchArgs = @(); $script:launchEnv = $null
     Remove-Item $pidFile -ErrorAction SilentlyContinue
     if ($Running) { Set-Content -Path $pidFile -Value $Running.ProcessId -Encoding ascii }
 }
@@ -37,10 +38,30 @@ try {
     $tunnel = [pscustomobject]@{ ProcessId = 777; CommandLine = 'cloudflared.exe tunnel --no-autoupdate run --token x' }
 
     # 1. Token tunnel, no service, nothing running (a replacement died): start one.
+    #    The token reaches cloudflared through TUNNEL_TOKEN, never its command
+    #    line, and this process's environment is left as it was.
     Reset
-    $lines = Recover 'tok'
+    $lines = Recover 'tok-secret-7'
     if ($script:launched -ne 1) { $failures += "1: nothing running was not restarted: $($lines -join ' | ')" }
     if ((Get-Content $pidFile -ErrorAction SilentlyContinue) -ne '4242') { $failures += "1: pid file does not hold the new tunnel" }
+    if (($script:launchArgs -join ' ') -match 'tok-secret-7') { $failures += "1: the token is on the command line: $($script:launchArgs -join ' ')" }
+    if ($script:launchEnv -ne 'tok-secret-7') { $failures += "1: cloudflared did not get TUNNEL_TOKEN" }
+    if ($null -ne $env:TUNNEL_TOKEN) { $failures += "1: TUNNEL_TOKEN was left in this process" }
+
+    # 1b. A quick tunnel never inherits a TUNNEL_TOKEN this process happens to hold.
+    Reset
+    $env:TUNNEL_TOKEN = 'stale'
+    try { Start-Tunnel $root '8787' '' | Out-Null } finally { $leftover = $env:TUNNEL_TOKEN; Remove-Item Env:TUNNEL_TOKEN -ErrorAction SilentlyContinue }
+    if ($script:launchEnv) { $failures += "1b: a quick tunnel launched with TUNNEL_TOKEN set" }
+    if (($script:launchArgs -join ' ') -notmatch '--url http://127.0.0.1:8787') { $failures += "1b: quick tunnel args: $($script:launchArgs -join ' ')" }
+    if ($leftover -ne 'stale') { $failures += "1b: the caller's TUNNEL_TOKEN was not restored" }
+
+    # 1c. Where the token comes from: .env first, then the environment.
+    $env:CLOUDFLARE_TUNNEL_TOKEN = 'from-env'
+    try {
+        if ((Get-TunnelToken ([ordered]@{ CLOUDFLARE_TUNNEL_TOKEN = 'from-file' })) -ne 'from-file') { $failures += "1c: .env's token did not win" }
+        if ((Get-TunnelToken ([ordered]@{})) -ne 'from-env') { $failures += "1c: the environment's token was not used" }
+    } finally { Remove-Item Env:CLOUDFLARE_TUNNEL_TOKEN -ErrorAction SilentlyContinue }
 
     # 2. The launch fails: reported as a failure, never as started, and no empty pid record.
     Reset -LaunchFails
@@ -82,4 +103,4 @@ try {
     Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'tunnel recovery checks passed (7 cases)'
+Write-Output 'tunnel recovery checks passed (9 cases)'

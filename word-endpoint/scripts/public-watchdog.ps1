@@ -19,17 +19,16 @@ $Log = Join-Path $Root "logs\public-watchdog.log"
 $StateFile = Join-Path $Root "logs\public-watchdog.state"
 $envFile = Join-Path $Root ".env"
 
+. (Join-Path $PSScriptRoot "env-file.ps1")
+. (Join-Path $PSScriptRoot "tunnel.ps1")
+# Read the way start.ps1 and the service read it (quotes removed). The watchdog
+# runs as SYSTEM, which start.ps1's .env grants read access.
+$DotEnv = Read-DotEnv $envFile
 $port = 8787
-$PublicUrl = $null
-$TunnelToken = $null
-if (Test-Path $envFile) {
-    foreach ($line in Get-Content $envFile) {
-        if ($line -match '^PORT=(\d+)$') { $port = [int]$Matches[1] }
-        if ($line -match '^CLOUDFLARE_TUNNEL_TOKEN=(.+)$') { $TunnelToken = $Matches[1].Trim() }
-        if ($line -match '^WORD_PUBLIC_URL=(https://.+)$') { $PublicUrl = $Matches[1].Trim().TrimEnd('/') }
-    }
-}
-if (-not $PublicUrl) { $PublicUrl = "https://docx.rodrigues.ai" }
+if ($DotEnv['PORT'] -match '^\d+$') { $port = [int]$DotEnv['PORT'] }
+$PublicUrl = "https://docx.rodrigues.ai"
+if ($DotEnv['WORD_PUBLIC_URL'] -match '^https://') { $PublicUrl = $DotEnv['WORD_PUBLIC_URL'].TrimEnd('/') }
+$TunnelToken = Get-TunnelToken $DotEnv
 
 function Write-Log([string] $Message) {
     $line = "{0} (utc {1}) {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss"),
@@ -72,7 +71,6 @@ if ($CheckOnly) { exit 1 }
 
 if ($fails -ge $FailuresBeforeAction) {
     if ($localOk) {
-        . (Join-Path $PSScriptRoot "tunnel.ps1")
         foreach ($line in @(Restore-Tunnel $Root "$port" $TunnelToken)) { Write-Log $line }
     } else {
         # Stop+Start: a plain /Run is a no-op while the task still shows
