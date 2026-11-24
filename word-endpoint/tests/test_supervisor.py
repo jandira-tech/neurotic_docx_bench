@@ -30,6 +30,28 @@ def _alive(pid: int) -> bool:
     return bool(process_name(pid))
 
 
+def _exit_waiter(test: unittest.TestCase, pid: int):
+    """A waitable handle on a process known to be alive now. _alive() reads a
+    failed lookup as "exited"; the handle is signalled only when the process
+    has actually terminated, and it keeps the pid from being reused."""
+    import ctypes
+    from ctypes import wintypes
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    kernel.OpenProcess.restype = wintypes.HANDLE
+    kernel.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+    kernel.WaitForSingleObject.restype = wintypes.DWORD
+    kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    handle = kernel.OpenProcess(0x00100000, False, pid)  # SYNCHRONIZE
+    test.assertTrue(handle, f"could not open a waitable handle on pid {pid}")
+    test.addCleanup(kernel.CloseHandle, handle)
+
+    def exited(seconds: float) -> bool:
+        return kernel.WaitForSingleObject(handle, int(seconds * 1000)) == 0  # WAIT_OBJECT_0
+    test.assertFalse(exited(0), f"pid {pid} had already exited")
+    return exited
+
+
 class HandlerErrorTests(unittest.TestCase):
     def test_job_errors_use_the_public_catalog(self):
         token = "t" * 40
@@ -166,6 +188,7 @@ class LaneSupervisionTests(unittest.TestCase):
         compare_pid = runner._lanes["compare"]._word_pid
         convert = runner._lanes["convert"]
         old_pid = convert._word_pid
+        old_exited = _exit_waiter(self, old_pid)
         convert._proc.kill()
         convert._proc.wait(timeout=2)
         deadline = time.monotonic() + 5
@@ -175,7 +198,7 @@ class LaneSupervisionTests(unittest.TestCase):
             time.sleep(0.05)
         self.assertNotEqual(convert._word_pid, old_pid)
         self.assertEqual(convert.health()['state'], 'ready')
-        self.assertFalse(_alive(old_pid))
+        self.assertTrue(old_exited(5))
         self.assertEqual(runner._lanes["compare"]._word_pid, compare_pid)
         self.assertTrue(_alive(compare_pid))
 
@@ -219,6 +242,7 @@ class LaneSupervisionTests(unittest.TestCase):
         first_convert = int((control / "convert.pid").read_text(encoding="ascii"))
         self.assertTrue(_alive(compare_pid))
         self.assertTrue(_alive(first_convert))
+        first_convert_exited = _exit_waiter(self, first_convert)
 
         (control / "convert.started").unlink()
         (control / "convert.mode").write_text("hang", encoding="ascii")
@@ -230,7 +254,7 @@ class LaneSupervisionTests(unittest.TestCase):
         self.assertEqual(busy.exception.code, "busy")
         hung.join(8)
         self.assertTrue(any(isinstance(item, JobError) and item.code == "timeout" for item in errors))
-        self.assertFalse(_alive(first_convert))
+        self.assertTrue(first_convert_exited(5))
         self.assertTrue(_alive(compare_pid))
 
         (control / "convert.mode").write_text("ok", encoding="ascii")

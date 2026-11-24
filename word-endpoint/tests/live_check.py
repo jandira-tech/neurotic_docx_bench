@@ -47,6 +47,17 @@ def call(base: str, path: str, payload: bytes, content_type: str, token: str | N
             return exc.code, dict(exc.headers), exc.read()
 
 
+def docx_leaks(data: bytes) -> list[str]:
+    """leaks() over every part of a DOCX, decompressed: a path inside a
+    DEFLATE-compressed XML part is not in the ZIP bytes as text."""
+    try:
+        with zipfile.ZipFile(BytesIO(data)) as archive:
+            return [f"{info.filename}:{label}" for info in archive.infolist()
+                    for label in leaks(archive.read(info))]
+    except zipfile.BadZipFile:
+        return ["not-a-docx"]
+
+
 def leaks(data: bytes) -> list[str]:
     found = []
     needles = {
@@ -106,7 +117,7 @@ def main() -> int:
             xml = archive.read("word/document.xml")
         check("compare contains a revision", b"w:ins" in xml or b"w:del" in xml)
         check("compare keeps both amounts", b"100" in xml and b"250" in xml)
-        check("comparison has no local path", leaks(body) == [], ",".join(leaks(body)))
+        check("comparison has no local path", docx_leaks(body) == [], ",".join(docx_leaks(body)))
         (artifacts / 'comparison.docx').write_bytes(body)
         content_type, payload = encode_form([("document", "redline.docx", body)])
         status, _, pdf = call(base, "/v1/convert", payload, content_type, token)

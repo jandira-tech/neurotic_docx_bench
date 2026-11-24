@@ -121,135 +121,138 @@ def one_run(number: int, secret: str) -> None:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
-    ready = {"compare": False, "convert": False}
-    assert proc.stdout is not None
-    lines: queue.Queue[bytes | None] = queue.Queue()
-
-    def read_stdout() -> None:
+    # Everything after the server starts runs under finally, so a health
+    # timeout or a missing PID file still stops the server and its Words.
+    try:
+        ready = {"compare": False, "convert": False}
         assert proc.stdout is not None
-        while True:
-            chunk = proc.stdout.readline()
-            if not chunk:
-                lines.put(None)
-                return
-            lines.put(chunk)
+        lines: queue.Queue[bytes | None] = queue.Queue()
 
-    threading.Thread(target=read_stdout, daemon=True).start()
-    deadline = time.time() + 90
-    log = bytearray()
-    while time.time() < deadline and not all(ready.values()):
-        try:
-            line = lines.get(timeout=1)
-        except queue.Empty:
-            if proc.poll() is not None:
+        def read_stdout() -> None:
+            assert proc.stdout is not None
+            while True:
+                chunk = proc.stdout.readline()
+                if not chunk:
+                    lines.put(None)
+                    return
+                lines.put(chunk)
+
+        threading.Thread(target=read_stdout, daemon=True).start()
+        deadline = time.time() + 90
+        log = bytearray()
+        while time.time() < deadline and not all(ready.values()):
+            try:
+                line = lines.get(timeout=1)
+            except queue.Empty:
+                if proc.poll() is not None:
+                    break
+                continue
+            if line is None:
                 break
-            continue
-        if line is None:
-            break
-        log.extend(line)
-        text = line.decode("utf-8", "replace")
-        if "compare Word is ready" in text:
-            ready["compare"] = True
-        if "convert Word is ready" in text:
-            ready["convert"] = True
-    print("warm", ready, "server", proc.poll(), flush=True)
-    if not all(ready.values()):
-        print(log.decode("utf-8", "replace")[-2000:])
+            log.extend(line)
+            text = line.decode("utf-8", "replace")
+            if "compare Word is ready" in text:
+                ready["compare"] = True
+            if "convert Word is ready" in text:
+                ready["convert"] = True
+        print("warm", ready, "server", proc.poll(), flush=True)
+        if not all(ready.values()):
+            print(log.decode("utf-8", "replace")[-2000:])
+            raise SystemExit(f"run {number} did not warm both lanes")
+        base = f"http://127.0.0.1:{port}"
+        health = urllib.request.urlopen(base + "/health", timeout=10)
+        print("health", health.status, health.read().decode())
+        content_type, denied = encode_form([("document", "a.docx", make_docx(["Hello"]))])
+        unauth_status, body = call(base, "/v1/convert", denied, content_type, None)
+        print("unauth", unauth_status, body[:80])
+        document = make_docx(["Hello from the converter."])
+        content_type, payload = encode_form([("document", "a.docx", document)])
+        status, first = call(base, "/v1/convert", payload, content_type, secret)
+        convert_pid = read_pid("convert.word.pid")
+        status2, second = call(base, "/v1/convert", payload, content_type, secret)
+        same = read_pid("convert.word.pid")
+        print(
+            "convert",
+            status,
+            first.startswith(b"%PDF-"),
+            len(first),
+            status2,
+            second.startswith(b"%PDF-"),
+            len(second),
+            "pid",
+            convert_pid,
+            same,
+        )
+        original = make_docx(["The fee is 100 dollars."])
+        revised = make_docx(["The fee is 250 dollars."])
+        content_type, payload = encode_form(
+            [("original", "a.docx", original), ("revised", "b.docx", revised)]
+        )
+        status, compared = call(base, "/v1/compare", payload, content_type, secret)
+        xml = b""
+        if compared.startswith(b"PK"):
+            xml = zipfile.ZipFile(BytesIO(compared)).read("word/document.xml")
+        compare_pid = read_pid("compare.word.pid")
+        print(
+            "compare",
+            status,
+            compared.startswith(b"PK"),
+            b"w:ins" in xml or b"w:del" in xml,
+            b"100" in xml and b"250" in xml,
+            "pid",
+            compare_pid,
+        )
+        if convert_pid not in winword_pids():
+            raise SystemExit("convert pid was not WINWORD before the kill")
+        subprocess.run(["taskkill", "/F", "/PID", str(convert_pid)], capture_output=True, text=True, check=False)
+        print("killed convert", convert_pid, "still", convert_pid in winword_pids(), "compare", compare_pid in winword_pids())
+        content_type, payload = encode_form([("document", "a.docx", document)])
+        status, recovered = call(base, "/v1/convert", payload, content_type, secret)
+        new_pid = read_pid("convert.word.pid")
+        compare_now = read_pid("compare.word.pid")
+        service = {compare_now, new_pid}
+        running = winword_pids()
+        print(
+            "recover",
+            status,
+            recovered.startswith(b"%PDF-"),
+            len(recovered),
+            "new",
+            new_pid,
+            "compare",
+            compare_now,
+            "service",
+            sorted(service),
+            "service-up",
+            service <= running,
+            "extras",
+            sorted(running - before - service),
+        )
+        problems = []
+        if health.status != 200 or unauth_status != 401:
+            problems.append("health-or-auth")
+        if status != 200 or not recovered.startswith(b"%PDF-") or len(recovered) < 500:
+            problems.append("recover-pdf")
+        if new_pid == convert_pid or compare_now != compare_pid:
+            problems.append("pids")
+        if not (service <= running) or len(service) != 2:
+            problems.append("service-count")
+        if running - before - service:
+            problems.append("extras")
+        if not (first.startswith(b"%PDF-") and second.startswith(b"%PDF-") and same == convert_pid and len(first) > 500):
+            problems.append("recycle")
+        if status != 200:
+            pass
+        compare_ok = (
+            compared.startswith(b"PK")
+            and (b"w:ins" in xml or b"w:del" in xml)
+            and b"100" in xml
+            and b"250" in xml
+        )
+        if not compare_ok:
+            problems.append("compare")
+    finally:
         stop_server(proc)
-        raise SystemExit(f"run {number} did not warm both lanes")
-    base = f"http://127.0.0.1:{port}"
-    health = urllib.request.urlopen(base + "/health", timeout=10)
-    print("health", health.status, health.read().decode())
-    content_type, denied = encode_form([("document", "a.docx", make_docx(["Hello"]))])
-    unauth_status, body = call(base, "/v1/convert", denied, content_type, None)
-    print("unauth", unauth_status, body[:80])
-    document = make_docx(["Hello from the converter."])
-    content_type, payload = encode_form([("document", "a.docx", document)])
-    status, first = call(base, "/v1/convert", payload, content_type, secret)
-    convert_pid = read_pid("convert.word.pid")
-    status2, second = call(base, "/v1/convert", payload, content_type, secret)
-    same = read_pid("convert.word.pid")
-    print(
-        "convert",
-        status,
-        first.startswith(b"%PDF-"),
-        len(first),
-        status2,
-        second.startswith(b"%PDF-"),
-        len(second),
-        "pid",
-        convert_pid,
-        same,
-    )
-    original = make_docx(["The fee is 100 dollars."])
-    revised = make_docx(["The fee is 250 dollars."])
-    content_type, payload = encode_form(
-        [("original", "a.docx", original), ("revised", "b.docx", revised)]
-    )
-    status, compared = call(base, "/v1/compare", payload, content_type, secret)
-    xml = b""
-    if compared.startswith(b"PK"):
-        xml = zipfile.ZipFile(BytesIO(compared)).read("word/document.xml")
-    compare_pid = read_pid("compare.word.pid")
-    print(
-        "compare",
-        status,
-        compared.startswith(b"PK"),
-        b"w:ins" in xml or b"w:del" in xml,
-        b"100" in xml and b"250" in xml,
-        "pid",
-        compare_pid,
-    )
-    if convert_pid not in winword_pids():
-        raise SystemExit("convert pid was not WINWORD before the kill")
-    subprocess.run(["taskkill", "/F", "/PID", str(convert_pid)], capture_output=True, text=True, check=False)
-    print("killed convert", convert_pid, "still", convert_pid in winword_pids(), "compare", compare_pid in winword_pids())
-    content_type, payload = encode_form([("document", "a.docx", document)])
-    status, recovered = call(base, "/v1/convert", payload, content_type, secret)
-    new_pid = read_pid("convert.word.pid")
-    compare_now = read_pid("compare.word.pid")
-    service = {compare_now, new_pid}
-    running = winword_pids()
-    print(
-        "recover",
-        status,
-        recovered.startswith(b"%PDF-"),
-        len(recovered),
-        "new",
-        new_pid,
-        "compare",
-        compare_now,
-        "service",
-        sorted(service),
-        "service-up",
-        service <= running,
-        "extras",
-        sorted(running - before - service),
-    )
-    problems = []
-    if health.status != 200 or unauth_status != 401:
-        problems.append("health-or-auth")
-    if status != 200 or not recovered.startswith(b"%PDF-") or len(recovered) < 500:
-        problems.append("recover-pdf")
-    if new_pid == convert_pid or compare_now != compare_pid:
-        problems.append("pids")
-    if not (service <= running) or len(service) != 2:
-        problems.append("service-count")
-    if running - before - service:
-        problems.append("extras")
-    if not (first.startswith(b"%PDF-") and second.startswith(b"%PDF-") and same == convert_pid and len(first) > 500):
-        problems.append("recycle")
-    if status != 200:
-        pass
-    compare_ok = (
-        compared.startswith(b"PK")
-        and (b"w:ins" in xml or b"w:del" in xml)
-        and b"100" in xml
-        and b"250" in xml
-    )
-    if not compare_ok:
-        problems.append("compare")
-    stop_server(proc)
     print("stopped", number)
     if problems:
         raise SystemExit(f"run {number} failed: {problems}")
