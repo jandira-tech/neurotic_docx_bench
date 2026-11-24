@@ -3,7 +3,7 @@ import unittest
 import zipfile
 
 from tests.factory import make_docx, pack, standard_files
-from word_endpoint.guard import GuardError, sanitize_output_docx, validate_docx
+from word_endpoint.guard import GuardError, prepare_docx, sanitize_output_docx, validate_docx
 
 DDE = (
     "<w:p>"
@@ -91,6 +91,71 @@ class GuardTests(unittest.TestCase):
         validate_docx(cleaned)
         self.assertNotIn(b"Administrator", cleaned)
         self.assertNotIn(b"attachedTemplate", cleaned)
+
+    def test_template_strip_leaves_markup_between_comments_alone(self):
+        # A non-Word writer can put tag-shaped text in comments. A pattern that
+        # ran over comments would match <w:linkStyles> in the first comment and
+        # </w:linkStyles> in the second, deleting the live w:trackRevisions.
+        rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        files = standard_files(["Hello"])
+        files["word/settings.xml"] = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:settings xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="{rel}">
+  <w:attachedTemplate r:id="rId1"/>
+  <!-- <w:linkStyles> -->
+  <w:trackRevisions/>
+  <!-- </w:linkStyles> -->
+</w:settings>
+"""
+        files["word/_rels/settings.xml.rels"] = f"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <!-- <Relationship Id="rIdX" Type="{rel}/attachedTemplate"> -->
+  <Relationship Id="rId2" Type="{rel}/styles" Target="styles.xml"/>
+  <!-- </Relationship> -->
+  <Relationship Id="rId1" Type="{rel}/attachedTemplate" Target="file:///C:/Normal.dotm" TargetMode="External"/>
+</Relationships>
+"""
+        cleaned = prepare_docx(pack(files))
+        with zipfile.ZipFile(io.BytesIO(cleaned)) as archive:
+            settings = archive.read("word/settings.xml").decode("utf-8")
+            rels = archive.read("word/_rels/settings.xml.rels").decode("utf-8")
+        self.assertIn("<w:trackRevisions/>", settings)
+        self.assertNotIn('<w:attachedTemplate r:id="rId1"/>', settings)
+        self.assertIn('Id="rId2"', rels)
+        self.assertNotIn('Id="rId1"', rels)
+
+    def test_doctype_text_inside_cdata_or_a_comment_is_not_a_declaration(self):
+        files = standard_files(["Hello"])
+        files["customXml/item1.xml"] = (
+            '<?xml version="1.0"?><root><![CDATA[<!DOCTYPE html><p>x</p>]]>'
+            "<!-- <!ENTITY e 'x'> --></root>"
+        )
+        validate_docx(pack(files))
+        for declared in ('<!DOCTYPE root [<!ENTITY e "x">]><root/>',
+                         "<!-- note --><!DOCTYPE root><root/>",
+                         '<?xml version="1.0"?><!DOCTYPE root SYSTEM "http://example.com/x.dtd"><root/>'):
+            with self.subTest(declared=declared):
+                files["customXml/item1.xml"] = declared
+                with self.assertRaises(GuardError) as caught:
+                    validate_docx(pack(files))
+                self.assertEqual(caught.exception.code, "unsafe_package")
+
+    def test_relationship_targets_match_percent_encoded_and_plain_zip_names(self):
+        png = b"\x89PNG\r\n\x1a\n" + b"\x00" * 32
+        for stored in ("word/media/caf%C3%A9.png", "word/media/caf\u00e9.png"):
+            with self.subTest(stored=stored):
+                files = standard_files(["Hello"])
+                files["word/_rels/document.xml.rels"] = files["word/_rels/document.xml.rels"].replace(
+                    "</Relationships>",
+                    '<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"'
+                    ' Target="media/caf%C3%A9.png"/></Relationships>',
+                )
+                files[stored] = png
+                validate_docx(pack(files))
+        # Both spellings at once are one part stored twice.
+        files["word/media/caf%C3%A9.png"] = png
+        with self.assertRaises(GuardError) as caught:
+            validate_docx(pack(files))
+        self.assertEqual(caught.exception.reason, "duplicate_member")
 
     def test_rejects_macros_and_executables(self):
         files = standard_files(["Hello"])

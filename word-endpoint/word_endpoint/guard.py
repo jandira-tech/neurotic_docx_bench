@@ -48,16 +48,23 @@ _FORBIDDEN_FIELD = re.compile(
 _ATTR = re.compile(r"""([A-Za-z0-9:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
 _ENTITY = re.compile(r"&([^;]{1,16});")
 _TAG_ATTRIBUTES = r'''(?:[^'">]|"[^"]*"|'[^']*')*'''
+# w:attachedTemplate, w:linkStyles and Relationship have no children in the
+# schema, so the paired form may hold only whitespace. A pattern that could
+# span other markup would delete whatever sits between two such tags.
 _TEMPLATE_TAG = re.compile(
     rf"<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>.*?</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)>",
-    re.I | re.S,
+    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
+    re.I,
 )
 _TEMPLATE_REL = re.compile(
     rf"<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>.*?</(?:[\w.-]+:)?Relationship>",
-    re.I | re.S,
+    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?Relationship\s*>",
+    re.I,
 )
+# Comments, CDATA sections and processing instructions. In well-formed XML a
+# "<" outside them always starts markup, and each ends at its first terminator,
+# so a left-to-right scan finds exactly the spans whose text is not markup.
+_NOT_MARKUP = re.compile(r"<!--.*?-->|<!\[CDATA\[.*?\]\]>|<\?.*?\?>", re.S)
 _NAMED = {"amp": "&", "lt": "<", "gt": ">", "quot": '"', "apos": "'"}
 
 
@@ -119,7 +126,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
         infos = archive.infolist()
         _check_infos(infos)
-        by_name = {info.filename.lower(): info for info in infos}
+        by_name = {_part_key(info.filename): info for info in infos}
         for required in ("[content_types].xml", "_rels/.rels"):
             if required not in by_name:
                 raise GuardError("not_docx")
@@ -131,7 +138,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
             raise GuardError("not_docx", "missing_document_content_type")
         members = set(by_name)
         for info in infos:
-            name = info.filename.lower()
+            name = _part_key(info.filename)
             mime = overrides.get(name, defaults.get(Path(name).suffix.lstrip("."), ""))
             svg = name.endswith(".svg") or mime == "image/svg+xml"
             xml = name.endswith((".xml", ".rels", ".vml")) or mime.endswith("+xml") or mime in {"application/xml", "text/xml"} or "vmldrawing" in mime
@@ -154,6 +161,13 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
     return template_parts
 
 
+def _part_key(name: str) -> str:
+    """One representation for ZIP item names, relationship targets and
+    content-type part names: percent-decoded and lowercased. A ZIP may store
+    word/media/caf%C3%A9.png or word/media/caf\u00e9.png for the same part."""
+    return urllib.parse.unquote(name).lower()
+
+
 def _check_infos(infos: list[zipfile.ZipInfo]) -> None:
     if len(infos) > MAX_ENTRIES:
         raise GuardError("unsafe_package", "entry_count")
@@ -162,7 +176,7 @@ def _check_infos(infos: list[zipfile.ZipInfo]) -> None:
     for info in infos:
         name = info.filename
         _check_entry_name(name)
-        key = name.lower()
+        key = _part_key(name)
         if key in seen:
             raise GuardError("unsafe_package", "duplicate_member")
         seen.add(key)
@@ -397,7 +411,10 @@ def _check_relationship(item: dict[str, str], allow_attached_template: bool,
 
 def _parse_xml(text: str, *, code: str = "unsafe_package",
                reason: str = "xml_dtd_or_entity") -> ET.Element:
-    lowered = text.lower()
+    # Text inside comments and CDATA is not a declaration ("<!DOCTYPE html>"
+    # in a CDATA section of a custom XML part); the parser below is the real
+    # check, this one only refuses early.
+    lowered = _NOT_MARKUP.sub("", text).lower()
     if "<!doctype" in lowered or "<!entity" in lowered:
         raise GuardError(code, reason)
     try:
@@ -509,8 +526,22 @@ def _scrub_paths(text: str) -> str:
     return text
 
 
+def _outside_non_markup(text: str, pattern: re.Pattern[str], repl) -> str:
+    pieces: list[str] = []
+    last = 0
+    for skipped in _NOT_MARKUP.finditer(text):
+        pieces.append(pattern.sub(repl, text[last:skipped.start()]))
+        pieces.append(skipped.group(0))
+        last = skipped.end()
+    pieces.append(pattern.sub(repl, text[last:]))
+    return "".join(pieces)
+
+
 def _strip_markup(text: str) -> str:
-    text = _TEMPLATE_TAG.sub("", text)
+    # A text edit, not a parse and re-serialise: ElementTree renames namespace
+    # prefixes, which breaks the prefixes mc:Ignorable names and makes Word
+    # report the file as damaged.
+    text = _outside_non_markup(text, _TEMPLATE_TAG, "")
 
     def drop_template(match: re.Match[str]) -> str:
         for attr in _ATTR.finditer(match.group(0)):
@@ -520,7 +551,7 @@ def _strip_markup(text: str) -> str:
                     return ""
         return match.group(0)
 
-    return _TEMPLATE_REL.sub(drop_template, text)
+    return _outside_non_markup(text, _TEMPLATE_REL, drop_template)
 
 
 def _strip_template_stamp(data: bytes, *, scrub: bool = True,
