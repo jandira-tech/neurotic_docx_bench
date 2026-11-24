@@ -79,6 +79,18 @@ try {
     if (-not ($lines -match 'could not start')) { $failures += "2b: launch failure not reported: $($lines -join ' | ')" }
     if (-not "$(Get-Content $pidFile -ErrorAction SilentlyContinue)".Trim()) { $failures += "2b: the pid record was emptied" }
 
+    # 2c. The launch works but its pid cannot be recorded (a read-only
+    #     tunnel.pid): the new process is stopped, since nothing could find it
+    #     later, and the launch is reported as failed.
+    Reset
+    Set-Content -Path $pidFile -Value '1' -Encoding ascii
+    Set-ItemProperty -LiteralPath $pidFile -Name IsReadOnly -Value $true
+    $lines = Recover 'tok'
+    if ($script:launched -ne 1) { $failures += "2c: no launch to roll back (launched $($script:launched))" }
+    if ("$($script:killedPid)" -ne '4242') { $failures += "2c: the unrecorded tunnel was left running: $($lines -join ' | ')" }
+    if ($lines -match 'started tunnel') { $failures += "2c: an unrecorded launch was logged as started: $($lines -join ' | ')" }
+    if (-not ($lines -match 'could not start')) { $failures += "2c: the failure was not reported: $($lines -join ' | ')" }
+
     # 3. A recorded tunnel still running: replaced.
     Reset -Running $tunnel
     $lines = Recover 'tok'
@@ -120,4 +132,4 @@ try {
     Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
 }
 if ($failures) { $failures | ForEach-Object { Write-Output "FAIL $_" }; exit 1 }
-Write-Output 'tunnel recovery checks passed (11 cases)'
+Write-Output 'tunnel recovery checks passed (12 cases)'

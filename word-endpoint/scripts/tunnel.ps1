@@ -46,7 +46,19 @@ function Start-Tunnel([string] $Root, [string] $Port, [string] $Token) {
         # watchdog does): a launch that failed must not leave an empty pid record.
         $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru -ErrorAction Stop
         if (-not $proc -or -not $proc.Id) { throw "cloudflared did not start" }
-        Set-Content -Path (Join-Path $Root "logs\tunnel.pid") -Value $proc.Id -Encoding ascii -ErrorAction Stop
+        try {
+            Set-Content -Path (Join-Path $Root "logs\tunnel.pid") -Value $proc.Id -Encoding ascii -ErrorAction Stop
+        } catch {
+            # Without its record no later run finds this tunnel to replace or
+            # stop it, and the next start would run a second one beside it.
+            $reason = $_.Exception.Message
+            & taskkill.exe /F /T /PID $proc.Id | Out-Null
+            $code = $LASTEXITCODE
+            if ($code -ne 0 -and (Get-Process -Id $proc.Id -ErrorAction SilentlyContinue)) {
+                throw "Could not record tunnel process $($proc.Id) ($reason), and could not stop it (taskkill exit $code): stop it by hand."
+            }
+            throw "Could not record tunnel process $($proc.Id) ($reason); stopped it."
+        }
         return $proc
     } finally {
         if ($null -eq $saved) { Remove-Item Env:TUNNEL_TOKEN -ErrorAction SilentlyContinue } else { $env:TUNNEL_TOKEN = $saved }
