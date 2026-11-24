@@ -20,6 +20,11 @@ function Stop-Recorded($pidFile, $match) {
         return
     }
     & taskkill.exe /F /T /PID $procId | Out-Null
+    if ($LASTEXITCODE -ne 0 -and (Get-CimInstance Win32_Process -Filter "ProcessId=$procId" -ErrorAction SilentlyContinue)) {
+        # Keep the record and stop here: cleaning up Word and the job folders
+        # under a server that is still running would break its jobs.
+        throw "Could not stop $match ($procId): taskkill exit $LASTEXITCODE"
+    }
     Remove-Item $pidFile -ErrorAction SilentlyContinue
     Write-Host "Stopped $match ($procId)"
 }
@@ -29,15 +34,15 @@ Stop-Recorded (Join-Path $Root "logs\tunnel.pid") "cloudflared"
 
 $Work = Join-Path $Root "work"
 
+. (Join-Path $PSScriptRoot "word-pid.ps1")
+
 function Stop-OurWord($pidFile) {
-    if (-not (Test-Path $pidFile)) { return }
-    $wordPid = (Get-Content $pidFile | Select-Object -First 1).Trim()
-    if ($wordPid -match '^\d+$') {
-        $word = Get-Process -Id $wordPid -ErrorAction SilentlyContinue
-        if ($word -and $word.ProcessName -eq "WINWORD") {
-            Stop-Process -Id $wordPid -Force
-            Write-Host "Stopped WINWORD $wordPid"
-        }
+    $word = Get-RecordedWord $pidFile
+    if ($word -and $word.Foreign) {
+        Write-Host "Left pid $($word.ProcessId) ($($word.Name)) running: not the Word $pidFile recorded"
+    } elseif ($word) {
+        Stop-Process -Id $word.ProcessId -Force
+        Write-Host "Stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
 }
@@ -46,16 +51,6 @@ foreach ($name in @("compare.word.pid", "convert.word.pid")) {
     Stop-OurWord (Join-Path $Work $name)
 }
 Get-ChildItem $Work -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^[0-9a-f]{32}$' } | ForEach-Object {
-    $wordPidFile = Join-Path $_.FullName "word.pid"
-    if (Test-Path $wordPidFile) {
-        $wordPid = (Get-Content $wordPidFile | Select-Object -First 1).Trim()
-        if ($wordPid -match '^\d+$') {
-            $word = Get-Process -Id $wordPid -ErrorAction SilentlyContinue
-            if ($word -and $word.ProcessName -eq "WINWORD") {
-                Stop-Process -Id $wordPid -Force
-                Write-Host "Stopped WINWORD $wordPid"
-            }
-        }
-    }
+    Stop-OurWord (Join-Path $_.FullName "word.pid")
     Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
 }

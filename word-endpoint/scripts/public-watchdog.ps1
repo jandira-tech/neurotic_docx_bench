@@ -2,7 +2,8 @@
 # Runs as a SYSTEM scheduled task (no Word automation here, so Session 0 is
 # fine). Two layers below it can fail without this noticing otherwise:
 #   - the interactive keep-alive/session dies  -> restart the WordEndpoint task
-#   - the cloudflared tunnel service dies      -> restart the cloudflared service
+#   - the cloudflared tunnel dies              -> restart the cloudflared service, or
+#                                                 replace the tunnel process start.ps1 launched
 # Recovery is conservative: it acts only after N consecutive failures and
 # never while a previous action has not had time to take effect.
 
@@ -20,9 +21,11 @@ $envFile = Join-Path $Root ".env"
 
 $port = 8787
 $PublicUrl = $null
+$TunnelToken = $null
 if (Test-Path $envFile) {
     foreach ($line in Get-Content $envFile) {
         if ($line -match '^PORT=(\d+)$') { $port = [int]$Matches[1] }
+        if ($line -match '^CLOUDFLARE_TUNNEL_TOKEN=(.+)$') { $TunnelToken = $Matches[1].Trim() }
         if ($line -match '^WORD_PUBLIC_URL=(https://.+)$') { $PublicUrl = $Matches[1].Trim().TrimEnd('/') }
     }
 }
@@ -69,8 +72,28 @@ if ($CheckOnly) { exit 1 }
 
 if ($fails -ge $FailuresBeforeAction) {
     if ($localOk) {
-        Write-Log "local healthy but public down: restarting the cloudflared service"
-        Restart-Service -Name "cloudflared" -Force -ErrorAction SilentlyContinue
+        . (Join-Path $PSScriptRoot "tunnel.ps1")
+        $recorded = Get-RecordedTunnel $Root
+        if (Get-Service -Name "cloudflared" -ErrorAction SilentlyContinue) {
+            Write-Log "local healthy but public down: restarting the cloudflared service"
+            try { Restart-Service -Name "cloudflared" -Force -ErrorAction Stop }
+            catch { Write-Log "cloudflared service restart failed: $($_.Exception.Message)" }
+        } elseif ($recorded -and $TunnelToken) {
+            # start.ps1 ran the tunnel as a process; restarting a service would
+            # not touch it, and start.ps1 would keep the live but dark process.
+            Write-Log "local healthy but public down: replacing tunnel process $($recorded.ProcessId)"
+            & taskkill.exe /F /T /PID $recorded.ProcessId | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+                Write-Log "could not stop tunnel process $($recorded.ProcessId) (taskkill exit $LASTEXITCODE)"
+            } else {
+                $proc = Start-Tunnel $Root "$port" $TunnelToken
+                Write-Log "started tunnel process $($proc.Id)"
+            }
+        } elseif ($recorded) {
+            Write-Log "local healthy but public down on a quick tunnel: a new one gets a new URL, so run scripts\start.ps1 to publish it"
+        } else {
+            Write-Log "local healthy but public down, and there is no cloudflared service or recorded tunnel process to restart"
+        }
     } else {
         # Stop+Start: a plain /Run is a no-op while the task still shows
         # Running (a wedged keep-alive in a backoff sleep must be replaced).

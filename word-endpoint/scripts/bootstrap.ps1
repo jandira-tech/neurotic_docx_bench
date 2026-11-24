@@ -6,19 +6,34 @@ $PythonDir = Join-Path $Tools "python"
 $Python = Join-Path $PythonDir "python.exe"
 New-Item -ItemType Directory -Force -Path $Tools | Out-Null
 
+# curl.exe's exit code is not an error under "Stop", and a partial file left at
+# the destination would be skipped as present on every later run. Download to a
+# temporary name and move it into place only when curl reports success.
+function Get-Download([string]$Url, [string]$Destination) {
+    $partial = "$Destination.partial"
+    Remove-Item -LiteralPath $partial -Force -ErrorAction SilentlyContinue
+    curl.exe -fL --retry 3 -o $partial $Url
+    if ($LASTEXITCODE -ne 0) {
+        Remove-Item -LiteralPath $partial -Force -ErrorAction SilentlyContinue
+        throw "Download failed ($LASTEXITCODE): $Url"
+    }
+    Move-Item -LiteralPath $partial -Destination $Destination -Force
+}
+
 if (-not (Test-Path $Python)) {
     $Zip = Join-Path $Tools "python-3.12.10-embed-amd64.zip"
     if (-not (Test-Path $Zip)) {
         Write-Host "Downloading Python 3.12.10"
-        curl.exe -fL --retry 3 -o $Zip "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip"
+        Get-Download "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip" $Zip
     }
     if (Test-Path $PythonDir) { Remove-Item -Recurse -Force $PythonDir }
     Expand-Archive -Path $Zip -DestinationPath $PythonDir -Force
     $GetPip = Join-Path $Tools "get-pip.py"
     if (-not (Test-Path $GetPip)) {
-        curl.exe -fL --retry 3 -o $GetPip "https://bootstrap.pypa.io/get-pip.py"
+        Get-Download "https://bootstrap.pypa.io/get-pip.py" $GetPip
     }
     & $Python $GetPip
+    if ($LASTEXITCODE -ne 0) { throw "pip installation failed." }
 }
 
 $Pth = Join-Path $PythonDir "python312._pth"
@@ -53,7 +68,7 @@ if ($SelectedPython -ne $Python) {
 $Cloud = Join-Path $Tools "cloudflared.exe"
 if (-not (Test-Path $Cloud)) {
     Write-Host "Downloading cloudflared"
-    curl.exe -fL --retry 3 -o $Cloud "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe"
+    Get-Download "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe" $Cloud
 }
 
 Remove-Item (Join-Path $Tools "python-3.12.10-amd64.exe") -ErrorAction SilentlyContinue

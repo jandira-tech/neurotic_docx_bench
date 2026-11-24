@@ -66,15 +66,15 @@ function Get-ServerPid {
     return [int]$procId
 }
 
+. (Join-Path $PSScriptRoot "word-pid.ps1")
+
 function Stop-OurWord([string] $Path) {
-    if (-not (Test-Path $Path)) { return }
-    $wordPid = (Get-Content $Path | Select-Object -First 1).Trim()
-    if ($wordPid -match '^\d+$') {
-        $word = Get-Process -Id $wordPid -ErrorAction SilentlyContinue
-        if ($word -and $word.ProcessName -eq "WINWORD") {
-            Stop-Process -Id $wordPid -Force -ErrorAction SilentlyContinue
-            Write-Log "stopped WINWORD $wordPid"
-        }
+    $word = Get-RecordedWord $Path
+    if ($word -and $word.Foreign) {
+        Write-Log "left pid $($word.ProcessId) ($($word.Name), started $($word.CreationDate.ToString('o'))) running: not the Word $Path recorded at $($word.Written.ToString('o'))"
+    } elseif ($word) {
+        Stop-Process -Id $word.ProcessId -Force -ErrorAction SilentlyContinue
+        Write-Log "stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $Path -Force -ErrorAction SilentlyContinue
 }
@@ -105,7 +105,7 @@ function Start-Server {
     $errLog = Join-Path $Root "logs\server.err.log"
     for ($try = 1; $try -le 3; $try++) {
         try {
-            $proc = Start-Process -FilePath $Python -ArgumentList @($Serve) -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru
+            $proc = Start-Process -FilePath $Python -ArgumentList "`"$Serve`"" -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru
             Set-Content -Path $PidFile -Value $proc.Id -Encoding ascii
             Write-Log "started serve.py $($proc.Id) python=$Python"
             return

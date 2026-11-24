@@ -21,8 +21,8 @@ foreach ($value in @('invalid', [TimeSpan]::FromHours(25), [TimeSpan]::FromMinut
     if (-not $rejected) { throw 'An invalid scan time was accepted.' }
 }
 # Run only the scheduling command against a local stub, not Defender itself.
-function Set-MpPreference([int]$ScanScheduleOffset, [datetime]$ScanScheduleQuickScanTime) {
-    return [pscustomobject]@{Offset=$ScanScheduleOffset; QuickTime=$ScanScheduleQuickScanTime}
+function Set-MpPreference([int]$ScanScheduleOffset, $ScanScheduleTime, $ScanScheduleQuickScanTime) {
+    return [pscustomobject]@{Offset=$ScanScheduleOffset; FullTime=$ScanScheduleTime; QuickTime=$ScanScheduleQuickScanTime}
 }
 $command = $ast.Find({
     param($node)
@@ -33,6 +33,10 @@ foreach ($ScanHour in @(0, 3, 23)) {
     if ($configured.Offset -ne 0 -or $configured.QuickTime.TimeOfDay.TotalMinutes -ne $ScanHour * 60) {
         throw "Scheduling at hour $ScanHour adds an offset or uses the wrong quick-scan time."
     }
+    # The full scan has its own time; leaving it unset keeps it where it was.
+    if ($null -eq $configured.FullTime -or $configured.FullTime.TimeOfDay.TotalMinutes -ne $ScanHour * 60) {
+        throw "Scheduling at hour $ScanHour leaves the full scan at another time."
+    }
 }
 $validation = $ast.Find({
     param($node)
@@ -41,10 +45,14 @@ $validation = $ast.Find({
 $ScanHour = 3
 $after = [pscustomobject]@{ScanScheduleOffset=0}
 $quickMinutes = 180
+$fullMinutes = 180
 if (Invoke-Expression $validation.Clauses[0].Item1.Extent.Text) { throw 'Correct settings failed validation.' }
 $after.ScanScheduleOffset = 180
 if (-not (Invoke-Expression $validation.Clauses[0].Item1.Extent.Text)) { throw 'A nonzero offset was accepted.' }
 $after.ScanScheduleOffset = 0
 $quickMinutes = 120
 if (-not (Invoke-Expression $validation.Clauses[0].Item1.Extent.Text)) { throw 'The wrong quick-scan time was accepted.' }
-Write-Host 'PASS scan-time conversion, zero-offset scheduling and post-configuration validation.'
+$quickMinutes = 180
+$fullMinutes = 840
+if (-not (Invoke-Expression $validation.Clauses[0].Item1.Extent.Text)) { throw 'A full scan left at 14:00 was accepted.' }
+Write-Host 'PASS scan-time conversion, zero-offset scheduling of full and quick scans, and post-configuration validation.'

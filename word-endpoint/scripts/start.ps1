@@ -13,6 +13,11 @@ if (-not (Test-Path $EnvFile)) {
         "PORT=8787"
     ) | Set-Content -Path $EnvFile -Encoding ascii
     & icacls.exe $EnvFile /inheritance:r /grant:r "${env:USERDOMAIN}\${env:USERNAME}:(R,W)" | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        # "Stop" does not cover native commands: without this the service would
+        # start with a token other users can read.
+        throw "Could not restrict .env to ${env:USERDOMAIN}\${env:USERNAME} (icacls exit $LASTEXITCODE)."
+    }
     Write-Host "Created .env"
 }
 
@@ -35,26 +40,10 @@ if ($public -match '^https://' -and $public -notlike '*.trycloudflare.com') {
     exit 0
 }
 
-$TunnelPid = Join-Path $Root "logs\tunnel.pid"
-$tunnelRunning = $false
-if (Test-Path $TunnelPid) {
-    $old = (Get-Content $TunnelPid | Select-Object -First 1).Trim()
-    if ($old -match '^\d+$') {
-        $existing = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
-        if ($existing -and $existing.CommandLine -like "*cloudflared*") { $tunnelRunning = $true }
-    }
-}
-
+. (Join-Path $PSScriptRoot "tunnel.ps1")
+$tunnelRunning = $null -ne (Get-RecordedTunnel $Root)
 if (-not $tunnelRunning) {
-    $cloud = Join-Path $Root ".tools\cloudflared.exe"
-    if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "run", "--token", $env:CLOUDFLARE_TUNNEL_TOKEN)
-    } else {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "--url", "http://127.0.0.1:$($env:PORT)")
-    }
-    Remove-Item (Join-Path $Root "logs\tunnel.log"), (Join-Path $Root "logs\tunnel.err.log") -ErrorAction SilentlyContinue
-    $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru
-    Set-Content -Path $TunnelPid -Value $proc.Id -Encoding ascii
+    Start-Tunnel $Root $env:PORT $env:CLOUDFLARE_TUNNEL_TOKEN | Out-Null
 }
 
 if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
