@@ -8,16 +8,11 @@ if (-not (Test-Path $EnvFile)) {
     $bytes = New-Object byte[] 32
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
     $token = [Convert]::ToBase64String($bytes).TrimEnd("=").Replace("+", "-").Replace("/", "_")
-    @(
-        "WORD_API_TOKEN=$token"
-        "PORT=8787"
-    ) | Set-Content -Path $EnvFile -Encoding ascii
-    & icacls.exe $EnvFile /inheritance:r /grant:r "${env:USERDOMAIN}\${env:USERNAME}:(R,W)" | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-        # "Stop" does not cover native commands: without this the service would
-        # start with a token other users can read.
-        throw "Could not restrict .env to ${env:USERDOMAIN}\${env:USERNAME} (icacls exit $LASTEXITCODE)."
-    }
+    . (Join-Path $PSScriptRoot "env-file.ps1")
+    # By SID: over SSH on a workgroup machine USERDOMAIN is "WORKGROUP", which
+    # icacls cannot resolve (exit 1332), so the name form fails for the right user.
+    $me = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+    New-RestrictedEnvFile $EnvFile @("WORD_API_TOKEN=$token", "PORT=8787") "*$me"
     Write-Host "Created .env"
 }
 
