@@ -226,6 +226,20 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
     expect(new Set(labels.values()).size).toBe(3);
   });
 
+  test("a hostile case id is escaped in the list and the table (review on #209)", () => {
+    const evil = {
+      case: '<img src=x onerror=alert(1)>__vs__"><script>x</script>',
+      group: "g",
+    } as Case;
+    for (const html of [
+      renderCaseList({ cases: [evil] }),
+      renderScoresTable({ cases: [evil], engines: [] }),
+    ]) {
+      expect(html).not.toMatch(/<img|<script/);
+      expect(html).toContain("&lt;img");
+    }
+  });
+
   test("an empty side of a pair is dropped", () => {
     expect(caseLabel("left_doc__vs__")).toBe("left doc");
     expect(caseLabel("__vs__right_doc")).toBe("right doc");
