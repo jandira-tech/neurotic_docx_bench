@@ -29,8 +29,9 @@ import type { MethodPoint, Row, Scores, StateCell, Table } from "./types.ts";
 /** The mark that says a tool is the author's own. This page does not use it. */
 const AFFILIATION_MARK = "†";
 
-/** The heading over the tables scored on the release's own samples. */
-export const SAMPLES_HEADING = "600-document samples";
+/** The heading over the tables scored on the release's own samples. It names
+ * no size: the samples differ, and each table's title states its own. */
+export const SAMPLES_HEADING = "Release samples";
 
 /** The id of the samples group's heading. */
 export const SAMPLES_HEADING_ID = "lb-samples";
