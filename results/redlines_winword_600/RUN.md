@@ -1,6 +1,9 @@
 # redlines_winword_600 — set redline_600 against Word for Windows' compare
 
-Run 2026-11-24 (`run_all.sh`, log in `run_all.log`), published 2026-11-25. Its own tables
+Run 2026-11-24 (`run_all.sh`, log in `run_all.log`), published 2026-11-25. The run was made in
+`results/redline600_contabo/` of the main checkout and copied here under its published name, so
+`run_all.sh`, `measure.py` and the log still name that folder: to rebuild here, set `R` in
+`run_all.sh` to `results/redlines_winword_600`. Its own tables
 (`redlines_vs_windows_word`, `redline_pdf_vs_windows_word`; `tables.SEPARATE_REDLINE_RUNS`):
 the oracle is not the one of the other `results/redlines_*` runs, so its figures are never
 merged with theirs.
@@ -31,5 +34,6 @@ A pair with a reference and no candidate PDF counts 0 in the ITT figures. `to_sc
 turns the seven `scores_<test>.json` summaries into `scores.jsonl` and `versions.json`
 unchanged. The tool outputs and rasters are not committed.
 
-Not published: `redline-docxodus-mac` and `word-mac-local` (later diagnostics of the same run,
-2026-11-24 evening), which are not in `run_all.sh`.
+Not published: `redline-docxodus-mac`, `word-mac-local` and `convert-word-mac` (`measure.py`
+defines them; later diagnostics of the same run, 2026-11-24 evening), which are not in
+`run_all.sh`.
