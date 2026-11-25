@@ -679,7 +679,7 @@ export function laneColor(engines: Engine[], key: string): string {
   // version suffix), then --lane for every lane it does not name.
   const name = String(key)
     .toLowerCase()
-    .replace(/-\d[\w.]*$/, "")
+    .replace(/-\d[\w.+-]*$/, "")
     .replace(/[^a-z0-9-]/g, "-");
   return `var(--lane-${name}, var(--lane, ${LANE_COLORS[at % LANE_COLORS.length]}))`;
 }
@@ -1384,7 +1384,7 @@ export function renderCasesPage(opts: CasesPageOptions): string {
   )}</span><span class="links"><a href="${esc(indexHref)}">Scores</a><a href="${esc(
     speedHref,
   )}">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench">Bench repo ↗</a></span></header>
-<div id="mbar" role="region" aria-label="Case controls"><button id="mMenu" type="button" aria-label="Open the case list" aria-expanded="false" aria-controls="side">&#9776;</button><select id="mMode" aria-label="Which bench"></select><button id="mLayout" type="button">Layout</button></div>
+<div id="mbar" role="region" aria-label="Bench and layout"><button id="mMenu" type="button" aria-label="Open the case list" aria-expanded="false" aria-controls="side">&#9776;</button><select id="mMode" aria-label="Which bench"></select><button id="mLayout" type="button">Layout</button></div>
 <div id="mhead" role="region" aria-label="Case"><span id="mCase"></span><span id="mPos"></span><label>vs <select id="mSecond" aria-label="Engine compared with Word"></select></label><button id="mExpand" type="button" class="hidden">Whole page</button></div>
 <div id="bar" role="region" aria-label="Case controls">
   <button id="sideToggle" aria-label="Hide or show the case list" title="hide / show the case list (s)">&#9776;</button>
@@ -2177,7 +2177,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
     render();
   });
   $("#viewToggle")?.addEventListener("click", (event) => {
-    // It sits in the About summary: the click must not open or close the notes.
+    // A plain button beside the About summary: it only switches the view.
     event.preventDefault();
     state.view = state.view === "scores" ? "viewer" : "scores";
     render();

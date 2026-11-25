@@ -16,6 +16,7 @@ import {
   applyInlineCss,
   caseFilesUrl,
   formatPageScore,
+  laneColor,
   lanesForCase,
   laneUnscored,
   mountCasesPage,
@@ -484,6 +485,12 @@ describe("the file links", () => {
     expect(html).toContain("var(--lane-jubarte, var(--lane, ");
   });
 
+  test("a prerelease or build suffix still names the engine's lane colour", () => {
+    for (const key of ["jubarte-0.21.0-rc.1", "jubarte-0.21.0+build.5"]) {
+      expect(laneColor([], key)).toMatch(/^var\(--lane-jubarte, /);
+    }
+  });
+
   test("a lane without a file gets no link", () => {
     const html = renderCaseHead({
       case: scoredCase(),
@@ -679,6 +686,7 @@ describe("the old data", () => {
     // bare palette colour may survive, so reverting either change fails here.
     const legacyShape = (html: string) => {
       expect(html).not.toContain('<h3 class="colhead"');
+      expect(html).not.toContain("</h3>");
       expect(html).not.toMatch(/solid #[0-9A-Fa-f]{6}/);
       return html
         .replace(/<(\/?)h2( class="colhead"|>)/g, "<$1h3$2")
