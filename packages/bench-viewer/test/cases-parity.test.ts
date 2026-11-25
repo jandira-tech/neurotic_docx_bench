@@ -195,7 +195,7 @@ class FakeDocument {
 
 /** The id of the case the list marks as selected. */
 function selectedCaseId(html: string): string | undefined {
-  return /class="case sel" data-case="([^"]*)"/.exec(html)?.[1];
+  return /class="case sel"[^>]*? data-case="([^"]*)"/.exec(html)?.[1];
 }
 
 /** The number of pages one lane's column drew. */
@@ -1425,5 +1425,38 @@ describe("a lane with pages and no score says so (#165)", () => {
     expect(row).toContain("not scored");
     const other = html.split("<tr").find((r) => r.includes('data-case="other"')) ?? "";
     expect(other).not.toContain("not scored");
+  });
+});
+
+// ---- polish round: Enter and Space on the case list and the scores table --------
+
+describe("the keyboard opens what it focuses", () => {
+  const keyEvent = (key: string, matches: boolean) => {
+    const calls = { click: 0, prevented: 0, stopped: 0 };
+    const event = {
+      key,
+      target: { matches: () => matches, click: () => calls.click++ },
+      preventDefault: () => calls.prevented++,
+      stopPropagation: () => calls.stopped++,
+    };
+    return { event, calls };
+  };
+
+  test("Enter or Space on a focused option is its click; other keys and targets pass", async () => {
+    const bundle = caseBundle(3);
+    const doc = await mountPage({ index: bundle.index, shard: bundle.shard });
+    for (const selector of ["#list", "#scores"]) {
+      for (const key of ["Enter", " "]) {
+        const { event, calls } = keyEvent(key, true);
+        doc.element(selector).dispatch("keydown", event);
+        expect(calls).toEqual({ click: 1, prevented: 1, stopped: 1 });
+      }
+      const other = keyEvent("x", true);
+      doc.element(selector).dispatch("keydown", other.event);
+      expect(other.calls.click).toBe(0);
+      const elsewhere = keyEvent("Enter", false);
+      doc.element(selector).dispatch("keydown", elsewhere.event);
+      expect(elsewhere.calls).toEqual({ click: 0, prevented: 0, stopped: 0 });
+    }
   });
 });

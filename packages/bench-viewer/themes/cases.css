@@ -261,6 +261,45 @@ kbd {
   font-variant-numeric: tabular-nums;
 }
 
+/* The open case, said for a reader (caseLabel); the id is its title. */
+#nav #navCase {
+  max-width: 40ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink);
+}
+
+#nav #navCase:empty {
+  display: none;
+}
+
+/* The shortcut legend: shown, ? hides it. */
+#keys {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+#keys kbd {
+  font-family: var(--mono);
+  font-size: 11px;
+  border: 1px solid var(--line);
+  padding: 0 4px;
+  background: var(--white);
+}
+
+body.nokeys #keys {
+  display: none;
+}
+
+/* The overlay's pickers matter only while the overlay is on. */
+#bar .grp:has(#ovl:not(:checked)) :is(#ovlA, #ovlB, #blend, #alpha, .ovl-under) {
+  display: none;
+}
+
 #sideToggle {
   font-size: 14px;
   line-height: 1;
@@ -596,6 +635,13 @@ body.alleng #engines label.legacy {
   scroll-margin-top: var(--headh, 0px);
 }
 
+#list .case:focus-visible,
+#scores th:focus-visible,
+#scores tr:focus-visible {
+  outline: 2px solid var(--blue-d);
+  outline-offset: -2px;
+}
+
 #list .case:hover {
   background: var(--hover);
 }
@@ -812,6 +858,12 @@ body.alleng #engines label.legacy {
 #scores th.num {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+#scores td.case-name {
+  max-width: 36ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #scores td.first {

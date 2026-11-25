@@ -158,3 +158,57 @@ describe("HTML escaping", () => {
     }
   });
 });
+
+describe("polish round: what a reader sees", () => {
+  const row: Row = {
+    rank: "1",
+    tool: "jubarte",
+    pin: "0.20.0",
+    median: 90,
+    mean: 88,
+    docs: 10,
+    failed: 0,
+    note: "",
+    ours: true,
+  } as Row;
+
+  test("a table of one row ranks nothing; two rows keep their ranks", () => {
+    const one = renderTable({ id: "t", title: "T", meta: "m", desc: "d", rows: [row] } as Table);
+    expect(one).toContain('<span class="mono muted" role="cell"></span>');
+    const two = renderTable({
+      id: "t",
+      title: "T",
+      meta: "m",
+      desc: "d",
+      rows: [row, { ...row, rank: "2", ours: false }],
+    } as Table);
+    expect(two).toContain('<span class="mono muted" role="cell">1</span>');
+    expect(two).toContain('<span class="mono muted" role="cell">2</span>');
+  });
+
+  test("backtick spans in a table's meta and note are inline code, still escaped", () => {
+    const html = renderTable({
+      id: "t",
+      title: "T",
+      meta: "Document set `c947065c59b2`",
+      desc: "see `<b>` and a & b",
+      rows: [row],
+    } as Table);
+    expect(html).toContain('Document set <span class="code-inline">c947065c59b2</span>');
+    expect(html).toContain('see <span class="code-inline">&lt;b&gt;</span> and a &amp; b');
+    expect(html).not.toContain("`");
+  });
+
+  test("a headline's 40-digit sha reads as 7, the full text stays in the title", () => {
+    const sha = "9dea406ab7695df6325b11b0e19fdca8db4b7276";
+    const html = renderHeadlines([
+      { label: "L", value: "81.72", vs: `LibreOffice 26.8.2.2 ${sha} 55.39`, sub: "s" },
+    ] as Headline[]);
+    expect(html).toContain(">vs LibreOffice 26.8.2.2 9dea406 55.39</span>");
+    expect(html).toContain(`title="LibreOffice 26.8.2.2 ${sha} 55.39"`);
+    const plain = renderHeadlines([
+      { label: "L", value: "1", vs: "docxodus 15.0.0 80.37", sub: "s" },
+    ] as Headline[]);
+    expect(plain).not.toContain("title=");
+  });
+});

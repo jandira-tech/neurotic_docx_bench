@@ -312,6 +312,14 @@ export interface CaseListOptions {
     filter?: string;
 }
 /**
+ * A case id said for a reader: the hash tokens dropped, underscores as
+ * spaces, the two sides of a redline pair joined by "vs". The id stays the
+ * identity (links, filters, the title tooltip); this is only its label.
+ * `d435c8d66c_file_104__vs__9e…_file_104_edited` reads "file 104 vs file 104
+ * edited". An id that is nothing but hashes keeps its first 10 characters.
+ */
+export declare function caseLabel(id: string): string;
+/**
  * A case's identity: its group and its id. One id can sit in several groups
  * (the same document in two corpora), so "all groups" needs both.
  */
