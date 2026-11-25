@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
-import { buildLeaderboardPage } from "../src/index.ts";
+import { buildLeaderboardPage, SAMPLES_HEADING, SAMPLES_HEADING_ID } from "../src/index.ts";
 import type { Scores } from "../src/types.ts";
 import { fixture } from "./fixture.ts";
 
@@ -86,7 +86,7 @@ describe("leaderboard page", () => {
     expect(full.length).toBeGreaterThan(0);
     expect(samples.length).toBeGreaterThan(0);
 
-    const headingAt = page.indexOf("600-document samples");
+    const headingAt = page.indexOf(`id="${SAMPLES_HEADING_ID}"`);
     expect(headingAt).toBeGreaterThan(-1);
 
     const fullAt = full.map((t) => page.indexOf(`id="${t.id}"`));
@@ -101,6 +101,15 @@ describe("leaderboard page", () => {
       const at = page.indexOf(`id="${table.id}"`);
       expect(at).toBeGreaterThan(headingAt);
     }
+  });
+
+  test("the samples heading claims no size: the samples differ (860 documents, 600 pairs)", () => {
+    // Each sample table's own title says its size; one count over both was
+    // wrong as soon as the conversion and redline samples differed.
+    expect(SAMPLES_HEADING).not.toMatch(/\d/);
+    const at = page.indexOf(`id="${SAMPLES_HEADING_ID}"`);
+    const heading = page.slice(at, page.indexOf("</h2>", at));
+    expect(heading).not.toMatch(/\d/);
   });
 
   test("calls out the leader of every table that ranks more than one tool", () => {

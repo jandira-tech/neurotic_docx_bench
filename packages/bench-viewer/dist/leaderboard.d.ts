@@ -13,8 +13,9 @@
  * heading.
  */
 import type { Scores } from "./types.ts";
-/** The heading over the tables scored on the release's own samples. */
-export declare const SAMPLES_HEADING = "600-document samples";
+/** The heading over the tables scored on the release's own samples. It names
+ * no size: the samples differ, and each table's title states its own. */
+export declare const SAMPLES_HEADING = "Release samples";
 /** The id of the samples group's heading. */
 export declare const SAMPLES_HEADING_ID = "lb-samples";
 export interface LeaderboardPageOptions {
