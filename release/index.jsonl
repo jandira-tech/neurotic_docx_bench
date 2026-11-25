@@ -6,3 +6,4 @@
 {"tag":"ndb-v0.0.6","created":"2026-11-23T12:42:14.153675Z","hf":{"repo":"arthrod/neurotic_docx_bench","revision":"d1f45bf86b64ff900b1329e53188b36c54525009"},"manifest_sha256":"2b8bf62dd659a852a26daa394104fabb56288cf3a5e7dbbdbd348225cc9b87e9"}
 {"tag":"ndb-v0.0.7","created":"2026-11-23T21:09:27.106904Z","hf":{"repo":"arthrod/neurotic_docx_bench","revision":"7c8633f4e5112167122154a893e955c9fb2d984c"},"manifest_sha256":"8e8eedb170c058d5bc087d12f0dbb4a8b4ee1b3d685bbef896fdcbd7445e84ad"}
 {"tag":"ndb-v0.0.8","created":"2026-11-25T06:12:13.072911Z","hf":{"repo":"arthrod/neurotic_docx_bench","revision":"4e0a1b77066c9741e8faaa91ebbde0a374cb5985"},"manifest_sha256":"e1d260355a7fe5a2762b5305a1fcddf60364242d4cdffd339fbb22a09d791f17"}
+{"tag":"ndb-v0.0.9","created":"2026-11-25T07:58:50.997091Z","hf":{"repo":"arthrod/neurotic_docx_bench","revision":"e43867948a0151b63ae6150584b161ff2d51f257"},"manifest_sha256":"1e13996e5cf4548e09a5a3771500949564b40bfbda2a5d094b835e1296e97155"}
