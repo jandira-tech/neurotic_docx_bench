@@ -187,6 +187,40 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
     // The filter shows only `a`; its label still tells it from `b`.
     expect(renderCaseList({ cases: [a], labels })).toContain("file 6 vs file 7 · aaaaaaa");
     expect(renderCaseList({ cases: [a] })).not.toContain("·");
+    const table = renderScoresTable({ cases: [a], engines: [], labels });
+    expect(table).toContain("file 6 vs file 7 · aaaaaaa");
+  });
+
+  test("a suffix never repeats a label: longer hashes, then the id", () => {
+    // Same first 7 digits of the run hash (review on #209).
+    const a = "1111111111_file__vs__2222222222_edit_redline_abcdef0123";
+    const b = "3333333333_file__vs__4444444444_edit_redline_abcdef0456";
+    // Even the whole run hash shared.
+    const c = "5555555555_x__vs__6666666666_y_redline_0123456789";
+    const d = "7777777777_x__vs__8888888888_y_redline_0123456789";
+    // A plain label that looks like another's suffixed one.
+    const e = "9999999999_file__vs__aaaaaaaaaa_edit_·_abcdef0";
+    const labels = caseLabels([a, b, c, d, e]);
+    expect(new Set(labels.values()).size).toBe(5);
+    expect(labels.get(a)).toBe("file vs edit · abcdef0123");
+    expect(labels.get(b)).toBe("file vs edit · abcdef0456");
+    expect(labels.get(c)).toBe(`x vs y · ${c}`);
+    expect(labels.get(d)).toBe(`x vs y · ${d}`);
+    expect(labels.get(e)).toBe("file vs edit · abcdef0");
+    // Order-independent.
+    expect(caseLabels([e, d, c, b, a])).toEqual(labels);
+  });
+
+  test("an empty side of a pair is dropped", () => {
+    expect(caseLabel("left_doc__vs__")).toBe("left doc");
+    expect(caseLabel("__vs__right_doc")).toBe("right doc");
+  });
+
+  test("the case column sorts by the label a reader sees; the id breaks ties only", () => {
+    const short = { case: "9999999999_file", group: "g" } as Case;
+    const long = { case: "1111111111_file2", group: "g" } as Case;
+    const html = renderScoresTable({ cases: [long, short], engines: [], sort: { col: 0, dir: 1 } });
+    expect(html.indexOf(">file<")).toBeLessThan(html.indexOf(">file2<"));
   });
 
   test("the case list is a listbox whose selected option takes the focus", () => {

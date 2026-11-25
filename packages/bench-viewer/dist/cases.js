@@ -798,28 +798,50 @@ export function caseLabel(id) {
     const label = core.split("__vs__").map(side).filter(Boolean).join(" vs ");
     return label || id.slice(0, 10);
 }
-/** The last hash token of a case id: a redline pair's own run hash. */
+/** The last hash token of a case id (a redline pair's own run hash), whole. */
 function tailHash(id) {
     const tokens = id.split(/_+/).filter((token) => HASH_TOKEN.test(token));
-    return (tokens.at(-1) ?? id).slice(0, 7);
+    return tokens.at(-1) ?? id;
 }
 /**
- * Every case's label, distinct: two ids whose `caseLabel` collides (the same
- * file names, different content) each get their own short hash after a "·".
- * Built over the whole group, so the list, the table and the nav bar say the
- * same name whatever the filter hides.
+ * Every case's label, distinct: ids whose `caseLabel` collides (the same
+ * file names, different content) each get their pair's own hash after a "·"
+ * — 7 digits, longer when 7 still collide, the whole id when even the full
+ * hash is shared. A suffixed label never takes a label another case already
+ * says. Built over the whole group, so the list, the table and the nav bars
+ * say the same name whatever the filter hides.
  */
 export function caseLabels(ids) {
-    const unique = [...new Set(ids)];
+    const unique = [...new Set(ids)].sort();
+    const base = new Map(unique.map((id) => [id, caseLabel(id)]));
     const count = new Map();
-    for (const id of unique) {
-        const label = caseLabel(id);
+    for (const label of base.values())
         count.set(label, (count.get(label) ?? 0) + 1);
-    }
     const labels = new Map();
-    for (const id of unique) {
-        const label = caseLabel(id);
-        labels.set(id, (count.get(label) ?? 0) > 1 ? `${label} · ${tailHash(id)}` : label);
+    const taken = new Set();
+    for (const [id, label] of base) {
+        if (count.get(label) === 1) {
+            labels.set(id, label);
+            taken.add(label);
+        }
+    }
+    // Each colliding group takes one suffix length for all its members: the
+    // shortest whose suffixes are distinct among them and free elsewhere.
+    const groups = new Map();
+    for (const [id, label] of base) {
+        if (!labels.has(id))
+            groups.set(label, [...(groups.get(label) ?? []), id]);
+    }
+    for (const [label, members] of groups) {
+        const suffixed = (n) => members.map((id) => `${label} · ${tailHash(id).slice(0, n)}`);
+        const fits = (names) => new Set(names).size === names.length && names.every((name) => !taken.has(name));
+        const longest = Math.max(...members.map((id) => tailHash(id).length));
+        const length = [7, 10, 16, longest].find((n) => fits(suffixed(n)));
+        const names = length ? suffixed(length) : members.map((id) => `${label} · ${id}`);
+        members.forEach((id, i) => {
+            labels.set(id, names[i]);
+            taken.add(names[i]);
+        });
     }
     return labels;
 }
@@ -908,8 +930,9 @@ export function renderScoresTable(opts) {
             flat.push({ engine, column });
     }
     const cols = [
-        // The label the cell shows sorts the column; the id breaks a tie.
-        { get: (row) => `${label(row.c.case)}\u0000${row.c.case}`, num: false },
+        // The label the cell shows sorts the column; the id breaks a tie only
+        // (localeCompare ignores a NUL, so the two are compared apart).
+        { get: (row) => label(row.c.case), num: false, tie: (row) => row.c.case },
         { get: (row) => row.c.group, num: false },
         {
             get: (row) => row.c.page_counts?.reference ?? (row.c.pages?.reference ?? []).length,
@@ -930,8 +953,13 @@ export function renderScoresTable(opts) {
             return 1;
         if (y === null || y === undefined)
             return -1;
-        if (typeof x === "string" && typeof y === "string")
-            return sort.dir * x.localeCompare(y);
+        if (typeof x === "string" && typeof y === "string") {
+            const by = x.localeCompare(y);
+            if (by !== 0 || !sortCol.tie)
+                return sort.dir * by;
+            const [p, q] = [sortCol.tie(a), sortCol.tie(b)];
+            return sort.dir * (p < q ? -1 : p > q ? 1 : 0);
+        }
         if (typeof x === "number" && typeof y === "number")
             return sort.dir * (x - y);
         return 0;
@@ -1632,7 +1660,7 @@ export async function mountCasesPage(opts) {
     const renderMobile = (c, shown, at) => {
         const name = $("#mCase");
         if (name) {
-            name.textContent = c.case;
+            name.textContent = labelOf(c.case);
             name.title = `${c.group}/${c.case}`;
         }
         const position = $("#mPos");

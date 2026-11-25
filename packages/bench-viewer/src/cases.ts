@@ -1021,29 +1021,50 @@ export function caseLabel(id: string): string {
   return label || id.slice(0, 10);
 }
 
-/** The last hash token of a case id: a redline pair's own run hash. */
+/** The last hash token of a case id (a redline pair's own run hash), whole. */
 function tailHash(id: string): string {
   const tokens = id.split(/_+/).filter((token) => HASH_TOKEN.test(token));
-  return (tokens.at(-1) ?? id).slice(0, 7);
+  return tokens.at(-1) ?? id;
 }
 
 /**
- * Every case's label, distinct: two ids whose `caseLabel` collides (the same
- * file names, different content) each get their own short hash after a "·".
- * Built over the whole group, so the list, the table and the nav bar say the
- * same name whatever the filter hides.
+ * Every case's label, distinct: ids whose `caseLabel` collides (the same
+ * file names, different content) each get their pair's own hash after a "·"
+ * — 7 digits, longer when 7 still collide, the whole id when even the full
+ * hash is shared. A suffixed label never takes a label another case already
+ * says. Built over the whole group, so the list, the table and the nav bars
+ * say the same name whatever the filter hides.
  */
 export function caseLabels(ids: Iterable<string>): Map<string, string> {
-  const unique = [...new Set(ids)];
+  const unique = [...new Set(ids)].sort();
+  const base = new Map(unique.map((id) => [id, caseLabel(id)] as const));
   const count = new Map<string, number>();
-  for (const id of unique) {
-    const label = caseLabel(id);
-    count.set(label, (count.get(label) ?? 0) + 1);
-  }
+  for (const label of base.values()) count.set(label, (count.get(label) ?? 0) + 1);
   const labels = new Map<string, string>();
-  for (const id of unique) {
-    const label = caseLabel(id);
-    labels.set(id, (count.get(label) ?? 0) > 1 ? `${label} · ${tailHash(id)}` : label);
+  const taken = new Set<string>();
+  for (const [id, label] of base) {
+    if (count.get(label) === 1) {
+      labels.set(id, label);
+      taken.add(label);
+    }
+  }
+  // Each colliding group takes one suffix length for all its members: the
+  // shortest whose suffixes are distinct among them and free elsewhere.
+  const groups = new Map<string, string[]>();
+  for (const [id, label] of base) {
+    if (!labels.has(id)) groups.set(label, [...(groups.get(label) ?? []), id]);
+  }
+  for (const [label, members] of groups) {
+    const suffixed = (n: number) => members.map((id) => `${label} · ${tailHash(id).slice(0, n)}`);
+    const fits = (names: string[]) =>
+      new Set(names).size === names.length && names.every((name) => !taken.has(name));
+    const longest = Math.max(...members.map((id) => tailHash(id).length));
+    const length = [7, 10, 16, longest].find((n) => fits(suffixed(n)));
+    const names = length ? suffixed(length) : members.map((id) => `${label} · ${id}`);
+    members.forEach((id, i) => {
+      labels.set(id, names[i]);
+      taken.add(names[i]);
+    });
   }
   return labels;
 }
@@ -1199,9 +1220,14 @@ export function renderScoresTable(opts: ScoresTableOptions): string {
   for (const engine of engines) {
     for (const column of shown) flat.push({ engine, column });
   }
-  const cols: { get: (row: { c: Case; i: number }) => number | string | null; num: boolean }[] = [
-    // The label the cell shows sorts the column; the id breaks a tie.
-    { get: (row) => `${label(row.c.case)}\u0000${row.c.case}`, num: false },
+  const cols: {
+    get: (row: { c: Case; i: number }) => number | string | null;
+    num: boolean;
+    tie?: (row: { c: Case; i: number }) => string;
+  }[] = [
+    // The label the cell shows sorts the column; the id breaks a tie only
+    // (localeCompare ignores a NUL, so the two are compared apart).
+    { get: (row) => label(row.c.case), num: false, tie: (row) => row.c.case },
     { get: (row) => row.c.group, num: false },
     {
       get: (row) => row.c.page_counts?.reference ?? (row.c.pages?.reference ?? []).length,
@@ -1220,7 +1246,12 @@ export function renderScoresTable(opts: ScoresTableOptions): string {
     const y = sortCol.get(b);
     if (x === null || x === undefined) return 1;
     if (y === null || y === undefined) return -1;
-    if (typeof x === "string" && typeof y === "string") return sort.dir * x.localeCompare(y);
+    if (typeof x === "string" && typeof y === "string") {
+      const by = x.localeCompare(y);
+      if (by !== 0 || !sortCol.tie) return sort.dir * by;
+      const [p, q] = [sortCol.tie(a), sortCol.tie(b)];
+      return sort.dir * (p < q ? -1 : p > q ? 1 : 0);
+    }
     if (typeof x === "number" && typeof y === "number") return sort.dir * (x - y);
     return 0;
   });
@@ -2076,7 +2107,7 @@ export async function mountCasesPage(opts: MountCasesOptions): Promise<void> {
   const renderMobile = (c: Case, shown: Case[], at: number): void => {
     const name = $("#mCase");
     if (name) {
-      name.textContent = c.case;
+      name.textContent = labelOf(c.case);
       name.title = `${c.group}/${c.case}`;
     }
     const position = $("#mPos");

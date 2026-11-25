@@ -327,10 +327,12 @@ export interface CaseListOptions {
  */
 export declare function caseLabel(id: string): string;
 /**
- * Every case's label, distinct: two ids whose `caseLabel` collides (the same
- * file names, different content) each get their own short hash after a "·".
- * Built over the whole group, so the list, the table and the nav bar say the
- * same name whatever the filter hides.
+ * Every case's label, distinct: ids whose `caseLabel` collides (the same
+ * file names, different content) each get their pair's own hash after a "·"
+ * — 7 digits, longer when 7 still collide, the whole id when even the full
+ * hash is shared. A suffixed label never takes a label another case already
+ * says. Built over the whole group, so the list, the table and the nav bars
+ * say the same name whatever the filter hides.
  */
 export declare function caseLabels(ids: Iterable<string>): Map<string, string>;
 /**
