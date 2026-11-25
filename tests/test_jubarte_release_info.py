@@ -1460,6 +1460,12 @@ def test_sets_sample_then_write_reads_the_vendor_lanes(tmp_path: Path) -> None:
     assert ranks[-1] == '—' and '1' in ranks[0]  # the not-run row ranks last, unnumbered
     heads = by_key['bench.headlines']['value']
     assert 'docxodus 15.0.0' in heads[1]['vs'] and f'set {fs.SET_VERSION}' in heads[1]['sub']
+    # the headline's tie word agrees with the ranks the table prints, never with the pair alone
+    red_rank = {r['tool']: r['rank'] for r in tables['redlines-sample']['rows']}
+    ours = next(rank for tool, rank in red_rank.items() if tool.startswith('jubarte'))
+    tied = ours == red_rank['docxodus'] and ours.endswith('=')
+    assert ('ranks the two tied' in heads[1]['sub']) is tied
+    assert not tied or f'tied ({ours})' in heads[1]['sub']
     assert 'not run' in tables['redlines-sample']['desc']  # never 0, said in the wording
     method = {m['t']: m['d'] for m in by_key['bench.method']['value']}
     assert 'Fixed sets' in method and 'vendor refresh' in method['Fixed sets']
@@ -1983,3 +1989,17 @@ def test_comparator_files_must_cover_what_the_refresh_scored():
                                    fetch='uv run bench hub get --path p --dest d')
     assert 'docxodus_pdf names 1 file(s), the refresh scored 2' in str(err.value)
     assert 'uv run bench hub get --path p --dest d' in str(err.value)
+
+
+
+def test_the_headline_calls_a_tie_only_when_the_table_ranks_one():
+    from neurotic_docx_bench.jubarte_release_info import _tie_note
+    assert _tie_note('1=', '1=') == ' The table ranks the two tied (1=).'
+    # Apryse first, the two tied behind it: the headline names the table's rank.
+    assert _tie_note('2=', '2=') == ' The table ranks the two tied (2=).'
+    # Different ranks, a rank shared with a third tool only, or no rank: no claim.
+    assert _tie_note('1', '2') == ''
+    assert _tie_note('1=', '3') == ''
+    assert _tie_note('1', '1') == ''
+    assert _tie_note(None, '1=') == ''
+    assert _tie_note('—', '—') == ''
