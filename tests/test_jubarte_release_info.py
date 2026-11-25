@@ -1464,7 +1464,7 @@ def test_sets_sample_then_write_reads_the_vendor_lanes(tmp_path: Path) -> None:
     red_rank = {r['tool']: r['rank'] for r in tables['redlines-sample']['rows']}
     ours = next(rank for tool, rank in red_rank.items() if tool.startswith('jubarte'))
     tied = ours == red_rank['docxodus'] and ours.endswith('=')
-    assert ('ranks the two tied' in heads[1]['sub']) is tied
+    assert ('tied (' in heads[1]['sub']) is tied
     assert not tied or f'tied ({ours})' in heads[1]['sub']
     assert 'not run' in tables['redlines-sample']['desc']  # never 0, said in the wording
     method = {m['t']: m['d'] for m in by_key['bench.method']['value']}
@@ -1997,7 +1997,10 @@ def test_the_headline_calls_a_tie_only_when_the_table_ranks_one():
     assert _tie_note('1=', '1=') == ' The table ranks the two tied (1=).'
     # Apryse first, the two tied behind it: the headline names the table's rank.
     assert _tie_note('2=', '2=') == ' The table ranks the two tied (2=).'
-    # Different ranks, a rank shared with a third tool only, or no rank: no claim.
+    # A third tool in the same shared rank is named, never hidden behind "the two".
+    assert _tie_note('1=', '1=', 3) == ' The table ranks them tied (1=) with 1 other tool.'
+    assert _tie_note('1=', '1=', 4) == ' The table ranks them tied (1=) with 2 other tools.'
+    # Different ranks (one of them shared with some other tool), or no rank: no claim.
     assert _tie_note('1', '2') == ''
     assert _tie_note('1=', '3') == ''
     assert _tie_note('1', '1') == ''

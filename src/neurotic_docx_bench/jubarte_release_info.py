@@ -1218,14 +1218,18 @@ def _span(ci: Sequence[float] | None) -> str:
     return f'[{ci[0]}, {ci[1]}]' if ci else 'not computed'
 
 
-def _tie_note(ours: str | None, theirs: str | None) -> str:
+def _tie_note(ours: str | None, theirs: str | None, shared: int = 2) -> str:
     """The headline's word on a tie, read from the ranks the table prints: only
     when the table gives the two the same shared rank (``k=``) does the headline
     call them tied, and it names that rank. A tie the pair's own interval implies
-    but the table's chain does not show is not claimed."""
+    but the table's chain does not show is not claimed. ``shared`` is how many
+    rows hold that rank: when other tools share it too, the note says so."""
     if not ours or ours != theirs or not ours.endswith('='):
         return ''
-    return f' The table ranks the two tied ({ours}).'
+    if shared <= 2:
+        return f' The table ranks the two tied ({ours}).'
+    others = shared - 2
+    return f" The table ranks them tied ({ours}) with {others} other tool{'s' if others > 1 else ''}."
 
 
 def _document_scores(block: dict) -> dict[str, float]:
@@ -1329,7 +1333,9 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
     # Ranked once: the table shows these ranks and the headline repeats them.
     red_ranked = _ranked(redline, red_rows)
     red_rank = {r['tool']: r['rank'] for r in red_ranked}
-    r_tie = _tie_note(red_rank.get(f'jubarte-{version} †'), red_rank.get('docxodus'))
+    ours_rank = red_rank.get(f'jubarte-{version} †')
+    r_tie = _tie_note(ours_rank, red_rank.get('docxodus'),
+                      sum(r['rank'] == ours_rank for r in red_ranked))
     tables = [
         {'id': 'conversion-sample',
          'title': (f"DOCX → PDF vs Word's own PDF — the {docs}-document set" if fixed
