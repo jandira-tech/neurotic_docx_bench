@@ -821,11 +821,16 @@ def test_table_ids_are_pinned() -> None:
         "docxide_metrics:le3pages",
         "redlines_vs_word",
         "redlines_accept_reject",
+        "redlines_vs_windows_word",
+        "redline_pdf_vs_windows_word",
     )
-    # every producer id is a benchmark id or one of the two redlines tables
+    # every producer id is a benchmark id, one of the two redlines tables, or
+    # a separate-oracle run's table (tables.SEPARATE_REDLINE_RUNS)
     assert set(sc.TABLE_IDS) - set(tb.TITLES) == {
         "redlines_vs_word",
         "redlines_accept_reject",
+        "redlines_vs_windows_word",
+        "redline_pdf_vs_windows_word",
     }
 
 
@@ -1331,3 +1336,79 @@ def test_scores_json_is_written_and_checked(repo: Path) -> None:
     # Drift in the published file is reported like any other page.
     path.write_text('{\n  "drift": true\n}\n', encoding="utf-8")
     assert path in bd.changed_files(repo, bd.build(repo, now=now))
+
+
+def test_a_separate_redline_run_owns_its_tables(tmp_path: Path) -> None:
+    # A run on another oracle (Word for Windows' compare, 2026-11-24) is not
+    # comparable with the Mac-oracle runs: its rows never join
+    # redlines_vs_word, and each of its actions renders as its own table,
+    # after the shared redline tables, ranked by ITT median like them.
+    shared = tmp_path / "redlines_full"
+    shared.mkdir()
+    (shared / "scores.jsonl").write_text(json.dumps(_action_line("tA", "redline")) + "\n")
+    run = tmp_path / "redlines_winword_600"
+    run.mkdir()
+    (run / "scores.jsonl").write_text(
+        "".join(
+            json.dumps(line) + "\n"
+            for line in (
+                _action_line("jubarte-0.20.0", "redline", itt_median=47.98, itt_mean=52.5),
+                _action_line("docxodus-16.1.0", "redline", itt_median=48.73, itt_mean=52.04),
+                _action_line("jubarte-0.20.0", "convert", itt_median=69.44, itt_mean=68.92),
+                _action_line("docxodus-16.1.0", "convert", itt_median=53.89, itt_mean=57.04),
+            )
+        )
+    )
+    (run / "versions.json").write_text(
+        json.dumps({"jubarte-0.20.0": "jubarte 0.20.0", "docxodus-16.1.0": "docxodus 16.1.0"})
+    )
+    row = _row("acme", benchmark="docx_to_pdf")
+    tables = {
+        "docx_to_pdf": _table("docx_to_pdf", _group(), [pol.RankedRow(row=row, rank=1)], n=25)
+    }
+    obj = json.loads(
+        render_scores(
+            tables,
+            row_ci={row.key: (79.0, 81.0)},
+            redline_runs=[shared, run],
+            provenance=_provenance(),
+            generated="2026-11-24",
+            bench_version="1.0.0",
+            affiliated_tools={"jubarte-0.20.0"},
+        )
+    )
+    ids = [t["id"] for t in obj["tables"]]
+    assert ids == [
+        "docx_to_pdf",
+        "redlines_vs_word",
+        "redlines_vs_windows_word",
+        "redline_pdf_vs_windows_word",
+    ]
+    by_id = {t["id"]: t for t in obj["tables"]}
+    assert [r["tool"] for r in by_id["redlines_vs_word"]["rows"]] == ["tA"]
+    winword = by_id["redlines_vs_windows_word"]
+    assert winword["title"] == sc.TABLE_TITLES["redlines_vs_windows_word"]
+    assert winword["desc"] == sc.TABLE_DESCS["redlines_vs_windows_word"]
+    assert [(r["rank"], r["tool"], r["median"], r["ours"]) for r in winword["rows"]] == [
+        ("1", "docxodus-16.1.0", 48.73, False),
+        ("2", "jubarte-0.20.0", 47.98, True),
+    ]
+    convert = by_id["redline_pdf_vs_windows_word"]
+    assert [(r["tool"], r["median"]) for r in convert["rows"]] == [
+        ("jubarte-0.20.0", 69.44),
+        ("docxodus-16.1.0", 53.89),
+    ]
+    for table_id in ("redlines_vs_windows_word", "redline_pdf_vs_windows_word"):
+        assert table_id in sc.TABLE_IDS
+
+
+def test_a_separate_redline_run_has_its_own_results_section(tmp_path: Path) -> None:
+    run = tmp_path / "redlines_winword_600"
+    run.mkdir()
+    (run / "scores.jsonl").write_text(
+        json.dumps(_action_line("docxodus-16.1.0", "redline", itt_median=48.73)) + "\n"
+    )
+    text = tb.redline_action_section(run)
+    assert "### redlines vs Word's compare" not in text
+    assert f"### {sc.TABLE_TITLES['redlines_vs_windows_word']}" in text
+    assert "docxodus-16.1.0" in text
