@@ -1008,22 +1008,27 @@ SEPARATE_REDLINE_RUNS: dict[str, tuple[tuple[str, str], ...]] = {
 SEPARATE_TABLE_TEXT: dict[str, tuple[str, str]] = {
     "redlines_vs_windows_word": (
         "Redlines vs Word for Windows' compare (set redline_600)",
-        "A second oracle for the redline test. Word 2024 for Windows compares each of the "
-        "600 pairs of set redline_600 and exports its own redline to PDF; each tool's "
-        "redline of the pair is opened and exported to PDF by that same Word, so the "
-        "redline is the only thing that differs. Scored with the pixel scorer (144 DPI, "
-        "every page); a pair with no scored PDF counts 0 in the ITT columns. word-mac is "
-        "not a tool: it is Word for Mac's own compare of the pair, the oracle of the "
-        "Redlines vs Word's compare table, scored against Word for Windows' one. These "
-        "figures are not comparable with that table's.",
+        "A second oracle for the redline test. Word 2024 for Windows compares the pairs of set "
+        "redline_600 and exports its own redline to PDF; the 14 of its 600 pairs it gave no "
+        "reference for are in no column, so every figure is over 586 pairs. Each tool's "
+        "redline of a pair is opened and exported to PDF by that same Word, so the redline is "
+        "the only thing that differs. Scored with the pixel scorer (144 DPI, every page); a "
+        "pair with no scored PDF counts 0 in the ITT columns; the = 100, >= 90 and < 50 counts "
+        "and the Ink Jaccard means are over the scored PDFs only. word-mac is not a tool: it "
+        "is Word for Mac's own compare of the pair, exported by Word for Mac (the oracle of "
+        "the Redlines vs Word's compare table), scored against Word for Windows' one, so it "
+        "measures markup and rendering together. These figures are not comparable with that "
+        "table's.",
     ),
     "redline_pdf_vs_windows_word": (
         "Word's redline to PDF vs Word for Windows' export (set redline_600)",
-        "Each converter renders Word 2024 for Windows' own redline DOCX of each pair of set "
-        "redline_600 to PDF, scored with the pixel scorer (144 DPI, every page) against "
-        "that Word's PDF export of the same DOCX. The DOCX is identical on both sides, so "
-        "the converter is the only thing that differs. A failed conversion counts 0 in the "
-        "ITT columns.",
+        "Each converter renders Word 2024 for Windows' own redline DOCX of the pairs of set "
+        "redline_600 to PDF, scored with the pixel scorer (144 DPI, every page) against that "
+        "Word's PDF export of the same DOCX; the 14 of the 600 pairs with no such reference are "
+        "in no column, so every figure is over 586. The DOCX is identical on both sides, so the "
+        "converter is the only thing that differs. A failed conversion counts 0 in the ITT "
+        "columns; the = 100, >= 90 and < 50 counts and the Ink Jaccard means are over the "
+        "scored PDFs only.",
     ),
 }
 

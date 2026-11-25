@@ -63,14 +63,16 @@ if TYPE_CHECKING:
 RESULTS_REPO_URL = "https://github.com/jandira-tech/neurotic_docx_bench"
 VIEWER_URL = "https://jandira-tech.github.io/neurotic_docx_bench/"
 
-# The two blocks of `results/redlines_*/scores.jsonl`, in the order their
+# The two shared blocks of `results/redlines_*/scores.jsonl`, in the order their
 # sections have in RESULTS.md (tables.py:redline_action_section): the redline
-# action first, then accept/reject.
+# action first, then accept/reject. A separate-oracle run
+# (tables.SEPARATE_REDLINE_RUNS) adds its own tables after them.
 REDLINES_VS_WORD_ID = "redlines_vs_word"
 REDLINES_TABLE_ID = "redlines_accept_reject"
 
 #: Every producer-owned table id scores.json can emit, in RESULTS.md order:
-#: the fidelity benchmarks (``tables.TITLES``) then the two redlines tables.
+#: the fidelity benchmarks (``tables.TITLES``), the two shared redlines tables,
+#: then the separate-oracle runs' tables (``tables.SEPARATE_TABLE_TEXT``).
 #: The release-evidence sample tables are not producer-owned; their ids are
 #: whatever the newest evidence names (``conversion-sample`` today).
 TABLE_IDS: tuple[str, ...] = (
