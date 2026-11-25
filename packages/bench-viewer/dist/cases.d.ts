@@ -367,6 +367,14 @@ export interface CasesLegendOptions {
     kind: Kind;
     /** The number of cases the release holds. */
     count?: number;
+    /** Where the About strip's DOCX → PDF, Redlines and Speed links go. */
+    links?: CasesLinks;
+}
+/** The bench pages a case browser links to. */
+export interface CasesLinks {
+    conversion?: string;
+    redlines?: string;
+    speed?: string;
 }
 /** The legend. */
 export declare function renderCasesLegend(opts: CasesLegendOptions): string;
@@ -397,6 +405,8 @@ export interface CasesPageOptions {
 export declare function renderCasesPage(opts: CasesPageOptions): string;
 /** How the wiring is told which browser it is. */
 export interface MountCasesOptions {
+    /** Where the About strip's DOCX → PDF, Redlines and Speed links go. */
+    links?: CasesLinks;
     /** Which browser this is. */
     kind: Kind;
     /** The index the page fetches. */

@@ -387,9 +387,35 @@ body.alleng #engines label.legacy {
   font-size: 11px;
 }
 
-#legend .about > summary button,
-#legend .about > summary a {
-  display: inline-block;
+/* The scores table switch and the bench links sit beside the About summary,
+   not in it: a summary holds no other controls. */
+#legend .about-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+#legend .about-bar > .about {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+#legend .about-acts {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 4px 14px;
+  position: relative;
+  z-index: 1;
+}
+
+#legend .about-acts button,
+#legend .about-acts a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   padding: 2px 10px;
   border: 1px solid var(--line);
   border-radius: 0;
@@ -400,7 +426,7 @@ body.alleng #engines label.legacy {
   font-size: 11px;
 }
 
-#legend .about > summary button {
+#legend .about-acts button {
   margin-right: 8px;
   color: var(--ink);
   font-weight: 600;
@@ -409,8 +435,8 @@ body.alleng #engines label.legacy {
   cursor: pointer;
 }
 
-#legend .about > summary button:hover,
-#legend .about > summary a:hover {
+#legend .about-acts button:hover,
+#legend .about-acts a:hover {
   background: var(--hover);
 }
 
@@ -497,7 +523,7 @@ body.alleng #engines label.legacy {
 #fx label {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -517,7 +543,7 @@ body.alleng #engines label.legacy {
 
 #fx button {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
@@ -596,7 +622,7 @@ body.alleng #engines label.legacy {
 #list .grp {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 /* ---- the grid ---- */
@@ -659,7 +685,7 @@ body.alleng #engines label.legacy {
 /* the score of one shown page, under the page it belongs to */
 .page-score {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
   text-align: center;
@@ -764,7 +790,7 @@ body.alleng #engines label.legacy {
 #scores th {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 600;
@@ -959,7 +985,7 @@ body.mobile #mhead {
   gap: 6px;
   color: var(--muted);
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 11px;
   flex: none;
   max-width: 46%;
 }
@@ -976,7 +1002,7 @@ body.mobile #mhead {
   padding: 4px 8px;
   min-height: 32px;
   flex: none;
-  font-size: 10px;
+  font-size: 11px;
   background: var(--white);
   color: var(--ink);
   border: 1px solid var(--line);
@@ -1018,7 +1044,7 @@ body.mobile #grid {
 }
 
 body.mobile .colhead {
-  font-size: 10px;
+  font-size: 11px;
   padding: 4px 0 6px;
   letter-spacing: 0;
   overflow: hidden;
@@ -1056,7 +1082,7 @@ body.mobile .ovlnote {
   align-items: center;
   gap: 6px 10px;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--muted);
   padding: 2px 0 8px;

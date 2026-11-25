@@ -662,6 +662,15 @@ describe("the random case on open", () => {
 
 describe("the old data", () => {
   test("renders exactly as it did before the new fields", async () => {
+    // Two changes since the fixture are deliberate: column heads are h2 (the page
+    // has no h2 above them, so an h3 skipped a level), and a lane's colour is a
+    // var(--lane-<engine>, var(--lane, <default>)) a skin can override. Undo just
+    // those two; everything else must still render byte for byte as before.
+    const legacyShape = (html: string) =>
+      html
+        .replace(/<(\/?)h2( class="colhead"|>)/g, "<$1h3$2")
+        .replace(/<\/h2>/g, "</h3>")
+        .replace(/var\(--lane-[a-z0-9-]+, var\(--lane, (#[0-9A-Fa-f]{6})\)\)/g, "$1");
     const legacy = (await readJson(
       fileURLToPath(new URL("./fixtures/cases-legacy.json", import.meta.url)),
     )) as Record<string, string>;
@@ -669,54 +678,66 @@ describe("the old data", () => {
     const lane = Object.keys(c.pages).find((key) => key !== "reference") as string;
     const lanes = lanesForCase(c, engines).filter((l) => l.state !== "dropped");
     expect(
-      renderCaseStrip({
-        case: c,
-        engine: { key: lane, label: lane },
-        assetsBase: index.assets_base,
-      }),
+      legacyShape(
+        renderCaseStrip({
+          case: c,
+          engine: { key: lane, label: lane },
+          assetsBase: index.assets_base,
+        }),
+      ),
     ).toBe(legacy.strip);
     expect(
-      renderCaseStrip({
-        case: c,
-        engine: { key: "reference", label: "Word" },
-        assetsBase: index.assets_base,
-      }),
+      legacyShape(
+        renderCaseStrip({
+          case: c,
+          engine: { key: "reference", label: "Word" },
+          assetsBase: index.assets_base,
+        }),
+      ),
     ).toBe(legacy.stripReference);
     expect(
-      renderCaseHead({
-        case: c,
-        engine: { key: lane, label: lane },
-        assetsBase: index.assets_base,
-        engines,
-      }),
+      legacyShape(
+        renderCaseHead({
+          case: c,
+          engine: { key: lane, label: lane },
+          assetsBase: index.assets_base,
+          engines,
+        }),
+      ),
     ).toBe(legacy.head);
     expect(
-      renderCaseHead({
-        case: c,
-        engine: { key: lane, label: lane },
-        assetsBase: index.assets_base,
-        engines,
-        compact: true,
-      }),
+      legacyShape(
+        renderCaseHead({
+          case: c,
+          engine: { key: lane, label: lane },
+          assetsBase: index.assets_base,
+          engines,
+          compact: true,
+        }),
+      ),
     ).toBe(legacy.headCompact);
     expect(
-      renderCaseGrid({
-        case: c,
-        lanes,
-        assetsBase: index.assets_base,
-        engines,
-        limit: 2,
-      }),
+      legacyShape(
+        renderCaseGrid({
+          case: c,
+          lanes,
+          assetsBase: index.assets_base,
+          engines,
+          limit: 2,
+        }),
+      ),
     ).toBe(legacy.grid);
     expect(
-      renderOverlay({
-        case: c,
-        under: { key: "reference", label: "Word" },
-        over: { key: lane, label: "x" },
-        assetsBase: index.assets_base,
-        blend: "difference",
-        alpha: 40,
-      }),
+      legacyShape(
+        renderOverlay({
+          case: c,
+          under: { key: "reference", label: "Word" },
+          over: { key: lane, label: "x" },
+          assetsBase: index.assets_base,
+          blend: "difference",
+          alpha: 40,
+        }),
+      ),
     ).toBe(legacy.overlay);
   });
 });
@@ -740,9 +761,9 @@ describe("switching groups while a load is in flight", () => {
   function twoGroups() {
     const a = caseBundle(1, 2);
     const b = caseBundle(1, 3);
-    const shardA = { ...(a.shard as object), group: "A" } as { cases: Case[] };
+    const shardA = { ...(a.shard as object), group: "A" } as unknown as { cases: Case[] };
     shardA.cases = shardA.cases.map((c) => ({ ...c, group: "A" }));
-    const shardB = { ...(b.shard as object), group: "B" } as { cases: Case[] };
+    const shardB = { ...(b.shard as object), group: "B" } as unknown as { cases: Case[] };
     shardB.cases = shardB.cases.map((c) => ({ ...c, group: "B" }));
     const index = {
       ...(a.index as object),
