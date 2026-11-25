@@ -1426,6 +1426,30 @@ def test_a_separate_redline_run_owns_its_tables(tmp_path: Path) -> None:
     ]
 
 
+def test_an_empty_separate_run_names_no_renderer(tmp_path: Path) -> None:
+    # The oracle joins the provenance only when its run contributed a table.
+    run = tmp_path / "redlines_winword_600"
+    run.mkdir()
+    (run / "scores.jsonl").write_text("")
+    row = _row("acme", benchmark="docx_to_pdf")
+    tables = {
+        "docx_to_pdf": _table("docx_to_pdf", _group(), [pol.RankedRow(row=row, rank=1)], n=25)
+    }
+    obj = json.loads(
+        render_scores(
+            tables,
+            row_ci={row.key: (79.0, 81.0)},
+            redline_runs=[run],
+            provenance=_provenance(),
+            generated="2026-11-24",
+            bench_version="1.0.0",
+            affiliated_tools=set(),
+        )
+    )
+    assert [t["id"] for t in obj["tables"]] == ["docx_to_pdf"]
+    assert obj["provenance"]["renderers"] == ["oracle:microsoft_word"]
+
+
 def test_a_separate_redline_run_has_its_own_results_section(tmp_path: Path) -> None:
     run = tmp_path / "redlines_winword_600"
     run.mkdir()
