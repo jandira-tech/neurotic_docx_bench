@@ -1003,6 +1003,12 @@ SEPARATE_REDLINE_RUNS: dict[str, tuple[tuple[str, str], ...]] = {
     ),
 }
 
+#: The oracle renderer of each separate run, for scores.json's file-wide
+#: provenance (the fidelity groups name only theirs).
+SEPARATE_RUN_RENDERERS: dict[str, str] = {
+    "redlines_winword_600": "oracle:microsoft_word_windows",
+}
+
 #: The title and description of every separate-run table: neutral and factual,
 #: because jubarte.pro and benchmarks.law render the same text (#133).
 SEPARATE_TABLE_TEXT: dict[str, tuple[str, str]] = {

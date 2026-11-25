@@ -1058,7 +1058,9 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
     assert obj["provenance"] == {
         "docsets": list(bundle.provenance.docsets),
         "scorers": list(bundle.provenance.scorers),
-        "renderers": list(bundle.provenance.renderers),
+        # RESULTS.md's provenance plus the oracle of the separate Word for
+        # Windows run, whose tables scores.json also carries.
+        "renderers": sorted({*bundle.provenance.renderers, "oracle:microsoft_word_windows"}),
     }
 
     sections = _sections(bundle.results_md)
@@ -1416,6 +1418,12 @@ def test_a_separate_redline_run_owns_its_tables(tmp_path: Path) -> None:
     ]
     for table_id in ("redlines_vs_windows_word", "redline_pdf_vs_windows_word"):
         assert table_id in sc.TABLE_IDS
+    # The file-wide provenance names every renderer behind its tables: the
+    # separate run's Word for Windows oracle joins the fidelity groups' one.
+    assert obj["provenance"]["renderers"] == [
+        "oracle:microsoft_word",
+        "oracle:microsoft_word_windows",
+    ]
 
 
 def test_a_separate_redline_run_has_its_own_results_section(tmp_path: Path) -> None:

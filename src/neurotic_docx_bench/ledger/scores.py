@@ -556,7 +556,12 @@ def render_scores(
         "provenance": {
             "docsets": list(provenance.docsets),
             "scorers": list(provenance.scorers),
-            "renderers": list(provenance.renderers),
+            "renderers": sorted(
+                {
+                    *provenance.renderers,
+                    *(tb.SEPARATE_RUN_RENDERERS[Path(d).name] for d in separate),
+                }
+            ),
         },
         "tables": out_tables,
         "states": [*sample.get("states", []), *_states(fidelity)],

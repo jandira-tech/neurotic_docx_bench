@@ -78,7 +78,8 @@
       "c947065c59b2"
     ],
     "renderers": [
-      "oracle:microsoft_word"
+      "oracle:microsoft_word",
+      "oracle:microsoft_word_windows"
     ],
     "scorers": [
       "docxide-150dpi",
