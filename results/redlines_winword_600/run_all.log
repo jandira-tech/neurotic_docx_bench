@@ -1,0 +1,20 @@
+2026-11-24T06:49:17Z start; endpoint ready; 601 lines in pairs.csv
+2026-11-24T06:49:28Z jubarte redlines exit 0; 2026-11-24T06:49:28+00:00 jubarte-0.20.0: 600 of 600 on disk, 0 failed this pass
+2026-11-24T06:52:24Z docxodus redlines exit 0; 600 docx
+2026-11-24T07:01:07Z folio redlines exit 0; done: strict produced 232, emit produced 542, emit == strict 232 (this pass)
+2026-11-24T07:04:48Z superdoc redlines: final: 72 redlines, 528 failures
+2026-11-24T07:45:25Z word: first pass exit 0; 2026-11-24T07:45:25+00:00 done in 56.1 min; on disk of 600: word docx 586, word pdf 583, docxodus-16.1.0 docx 600, docxodus-16.1.0 pdf_by_word 80
+2026-11-24T07:46:35Z word: missing-only pass exit 0; 2026-11-24T07:46:35+00:00 done in 1.2 min; on disk of 600: word docx 587, word pdf 586, docxodus-16.1.0 docx 600, docxodus-16.1.0 pdf_by_word 80
+2026-11-24T07:55:18Z docxodus pdf exit 0; 2026-11-24T07:55:18+00:00 docxodus-16.1.0-pdf: 582 PDFs, 5 failed, of 600 keys
+2026-11-24T07:55:25Z jubarte pdf exit 0; 2026-11-24T07:55:25+00:00 jubarte-0.20.0-pdf: 587 of 587 on disk, 0 failed this pass
+2026-11-24T09:26:23Z lanes: final pass 1 exit 0; 2026-11-24T09:26:23+00:00 done in 18.9 min; on disk of 600: word docx 587, word pdf 586, docxodus-16.1.0 docx 600, docxodus-16.1.0 pdf_by_word 571, jubarte-0.20.0 docx 600, jubarte-0.20.0 pdf_by_word 586, folio-0.70.0-emit docx 542, folio-0.70.0-emit pdf_by_word 522, superdoc-2.31.0 docx 72, superdoc-2.31.0 pdf_by_word 72
+2026-11-24T09:27:31Z lanes: final pass 2 exit 0; 2026-11-24T09:27:31+00:00 done in 1.1 min; on disk of 600: word docx 587, word pdf 586, docxodus-16.1.0 docx 600, docxodus-16.1.0 pdf_by_word 571, jubarte-0.20.0 docx 600, jubarte-0.20.0 pdf_by_word 586, folio-0.70.0-emit docx 542, folio-0.70.0-emit pdf_by_word 522, superdoc-2.31.0 docx 72, superdoc-2.31.0 pdf_by_word 72
+2026-11-24T09:27:56Z all outputs in; scoring on MPS
+2026-11-24T11:17:10Z measure exit 0
+word-mac: 586/586 scored, mean 49.81, median 46.21, >=90 3; ITT mean 49.81, median 46.21 -> results/redline600_contabo/scores_word-mac.json
+redline: 571/586 scored, mean 53.41, median 49.45, >=90 16; ITT mean 52.04, median 48.73 -> results/redline600_contabo/scores_redline.json
+redline-jubarte: 586/586 scored, mean 52.50, median 47.98, >=90 16; ITT mean 52.50, median 47.98 -> results/redline600_contabo/scores_redline-jubarte.json
+redline-folio-emit: 522/586 scored, mean 50.69, median 45.82, >=90 23; ITT mean 45.15, median 43.02 -> results/redline600_contabo/scores_redline-folio-emit.json
+redline-superdoc: 72/586 scored, mean 65.67, median 62.09, >=90 2; ITT mean 8.07, median 0.00 -> results/redline600_contabo/scores_redline-superdoc.json
+convert: 581/586 scored, mean 57.53, median 54.16, >=90 0; ITT mean 57.04, median 53.89 -> results/redline600_contabo/scores_convert.json
+convert-jubarte: 586/586 scored, mean 68.92, median 69.44, >=90 11; ITT mean 68.92, median 69.44 -> results/redline600_contabo/scores_convert-jubarte.json

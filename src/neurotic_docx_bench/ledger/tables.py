@@ -992,6 +992,69 @@ def ranked_actions(
     )
 
 
+#: Redline runs scored against another oracle than the Mac Word compare every
+#: other ``results/redlines_*`` run uses. Their figures are not comparable with
+#: those runs, so they never join the shared redline tables: each (action,
+#: table id) pair below is a table of its own, in RESULTS.md and scores.json.
+SEPARATE_REDLINE_RUNS: dict[str, tuple[tuple[str, str], ...]] = {
+    "redlines_winword_600": (
+        ("redline", "redlines_vs_windows_word"),
+        ("convert", "redline_pdf_vs_windows_word"),
+    ),
+}
+
+#: The title and description of every separate-run table: neutral and factual,
+#: because jubarte.pro and benchmarks.law render the same text (#133).
+SEPARATE_TABLE_TEXT: dict[str, tuple[str, str]] = {
+    "redlines_vs_windows_word": (
+        "Redlines vs Word for Windows' compare (set redline_600)",
+        "A second oracle for the redline test. Word 2024 for Windows compares the pairs of set "
+        "redline_600 and exports its own redline to PDF; the 14 of its 600 pairs it gave no "
+        "reference for are in no column, so every figure is over 586 pairs. Each tool's "
+        "redline of a pair is opened and exported to PDF by that same Word, so the redline is "
+        "the only thing that differs. Scored with the pixel scorer (144 DPI, every page); a "
+        "pair with no scored PDF counts 0 in the ITT columns; the = 100, >= 90 and < 50 counts "
+        "and the Ink Jaccard means are over the scored PDFs only. word-mac is not a tool: it "
+        "is Word for Mac's own compare of the pair, exported by Word for Mac (the oracle of "
+        "the Redlines vs Word's compare table), scored against Word for Windows' one, so it "
+        "measures markup and rendering together. These figures are not comparable with that "
+        "table's.",
+    ),
+    "redline_pdf_vs_windows_word": (
+        "Word's redline to PDF vs Word for Windows' export (set redline_600)",
+        "Each converter renders Word 2024 for Windows' own redline DOCX of the pairs of set "
+        "redline_600 to PDF, scored with the pixel scorer (144 DPI, every page) against that "
+        "Word's PDF export of the same DOCX; the 14 of the 600 pairs with no such reference are "
+        "in no column, so every figure is over 586. The DOCX is identical on both sides, so the "
+        "converter is the only thing that differs. A failed conversion counts 0 in the ITT "
+        "columns; the = 100, >= 90 and < 50 counts and the Ink Jaccard means are over the "
+        "scored PDFs only.",
+    ),
+}
+
+
+def _separate_redline_section(run_dir: Path) -> str:
+    """A separate-oracle run's tables (``SEPARATE_REDLINE_RUNS``), one section per
+    action, ranked like the shared redline tables."""
+    latest, versions = action_lines(run_dir)
+    parts: list[str] = []
+    for action, table_id in SEPARATE_REDLINE_RUNS[Path(run_dir).name]:
+        rows = ranked_actions(latest, action)
+        if not rows:
+            continue
+        title, desc = SEPARATE_TABLE_TEXT[table_id]
+        body = [[tool, str(versions.get(tool, "unknown")), *_action_cells(line)] for tool, line in rows]
+        parts += [
+            f"### {title}",
+            "",
+            f"{desc} {_SORTED} Run notes: `{Path(run_dir).name}/RUN.md`.",
+            "",
+            md_table(["Tool", "Version", *_ACTION_STATS], body),
+            "",
+        ]
+    return "\n".join(parts)
+
+
 def redline_action_section(run_dir: Path) -> str:
     """Tool redlines scored against Word (``results/redlines_*/scores.jsonl``, written by the
     run's scripts). ``action`` ``redline`` is the tool's redline against Word's compare;
@@ -1000,6 +1063,8 @@ def redline_action_section(run_dir: Path) -> str:
     wins and each action's rows are ranked by ITT median, then ITT mean; versions come from
     the run's ``versions.json``. A redline line may carry ``subset``, the same statistics
     over the compares one tool (``subset.of``) scored, shown in parentheses."""
+    if Path(run_dir).name in SEPARATE_REDLINE_RUNS:
+        return _separate_redline_section(run_dir)
     latest, versions = action_lines(run_dir)
     if not latest:
         return ""

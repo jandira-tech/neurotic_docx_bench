@@ -63,17 +63,24 @@ if TYPE_CHECKING:
 RESULTS_REPO_URL = "https://github.com/jandira-tech/neurotic_docx_bench"
 VIEWER_URL = "https://jandira-tech.github.io/neurotic_docx_bench/"
 
-# The two blocks of `results/redlines_*/scores.jsonl`, in the order their
+# The two shared blocks of `results/redlines_*/scores.jsonl`, in the order their
 # sections have in RESULTS.md (tables.py:redline_action_section): the redline
-# action first, then accept/reject.
+# action first, then accept/reject. A separate-oracle run
+# (tables.SEPARATE_REDLINE_RUNS) adds its own tables after them.
 REDLINES_VS_WORD_ID = "redlines_vs_word"
 REDLINES_TABLE_ID = "redlines_accept_reject"
 
 #: Every producer-owned table id scores.json can emit, in RESULTS.md order:
-#: the fidelity benchmarks (``tables.TITLES``) then the two redlines tables.
+#: the fidelity benchmarks (``tables.TITLES``), the two shared redlines tables,
+#: then the separate-oracle runs' tables (``tables.SEPARATE_TABLE_TEXT``).
 #: The release-evidence sample tables are not producer-owned; their ids are
 #: whatever the newest evidence names (``conversion-sample`` today).
-TABLE_IDS: tuple[str, ...] = (*tb.TITLES, REDLINES_VS_WORD_ID, REDLINES_TABLE_ID)
+TABLE_IDS: tuple[str, ...] = (
+    *tb.TITLES,
+    REDLINES_VS_WORD_ID,
+    REDLINES_TABLE_ID,
+    *tb.SEPARATE_TABLE_TEXT,
+)
 
 #: The human title of every producer-owned table (#133): plain words for what
 #: the table shows — never the machine id, which rides in ``id`` and stays out
@@ -95,6 +102,7 @@ TABLE_TITLES: dict[str, str] = {
     "docxide_metrics:le3pages": "Below 3 pages: docxide-pdf's metrics on the same short documents",
     REDLINES_VS_WORD_ID: "Redlines vs Word's compare",
     REDLINES_TABLE_ID: "Redlines accepted or rejected by Word",
+    **{tid: text[0] for tid, text in tb.SEPARATE_TABLE_TEXT.items()},
 }
 
 #: One paragraph per producer-owned table (#133): what is measured, against
@@ -183,6 +191,7 @@ TABLE_DESCS: dict[str, str] = {
         "counts 0 (intent-to-treat); the calibration row is Word's own compare against "
         "itself."
     ),
+    **{tid: text[1] for tid, text in tb.SEPARATE_TABLE_TEXT.items()},
 }
 
 # results/release_<v>_evidence/release_info/website_data_<v>_<mm-dd-yy_hh-mm>.jsonl
@@ -473,6 +482,10 @@ def render_scores(
         if b in tables and tables[b].group is not None and tables[b].rows
     ]
     sample = _site(site) if site is not None else {}
+    # A separate-oracle run (tables.SEPARATE_REDLINE_RUNS) never joins the shared
+    # redline tables; its own tables follow them.
+    separate = [d for d in redline_runs if Path(d).name in tb.SEPARATE_REDLINE_RUNS]
+    redline_runs = [d for d in redline_runs if Path(d).name not in tb.SEPARATE_REDLINE_RUNS]
     vs_word = _action_rows(
         redline_runs,
         "redline",
@@ -506,9 +519,24 @@ def render_scores(
             for t in fidelity
         ),
     ]
+    own = [
+        (
+            table_id,
+            _action_rows(
+                [run_dir],
+                action,
+                table_id=table_id,
+                affiliated_tools=affiliated_tools,
+                pin_action=False,
+            ),
+        )
+        for run_dir in separate
+        for action, table_id in tb.SEPARATE_REDLINE_RUNS[Path(run_dir).name]
+    ]
     for table_id, rows in (
         (REDLINES_VS_WORD_ID, vs_word),
         (REDLINES_TABLE_ID, accept_reject),
+        *own,
     ):
         if rows:
             out_tables.append(
