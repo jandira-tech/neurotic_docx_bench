@@ -47,8 +47,7 @@ export const stateLabel = (name: string): string => STATE_LABELS[name] ?? name;
 // empty, `backtick` spans in a table's meta and note are inline code, and a
 // headline's 40-digit sha reads as its first 7 (the full value is the title).
 const sha7 = (text: string) => text.replace(/\b([0-9a-f]{7})[0-9a-f]{33}\b/g, "$1");
-const code = (text: string) =>
-  esc(text).replace(/`([^`]+)`/g, '<span class="code-inline">$1</span>');
+const code = (text: string) => esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
 
 export function row(r: Row, ranked = true): string {
   const cls = r.ours ? " ours" : "";

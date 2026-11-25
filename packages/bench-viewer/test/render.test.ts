@@ -194,8 +194,8 @@ describe("polish round: what a reader sees", () => {
       desc: "see `<b>` and a & b",
       rows: [row],
     } as Table);
-    expect(html).toContain('Document set <span class="code-inline">c947065c59b2</span>');
-    expect(html).toContain('see <span class="code-inline">&lt;b&gt;</span> and a &amp; b');
+    expect(html).toContain("Document set <code>c947065c59b2</code>");
+    expect(html).toContain("see <code>&lt;b&gt;</code> and a &amp; b");
     expect(html).not.toContain("`");
   });
 

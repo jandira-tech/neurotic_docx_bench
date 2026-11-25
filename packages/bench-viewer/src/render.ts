@@ -28,7 +28,7 @@ export const shortShas = (text: string): string =>
 
 /** Text with its `backtick` spans as inline code; every character escaped. */
 export function inlineCode(text: string): string {
-  return esc(text).replace(/`([^`]+)`/g, '<span class="code-inline">$1</span>');
+  return esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
 /** Keep a score inside the range that CSS can render as a percentage. */

@@ -164,11 +164,35 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
     const a = { case: "aaaaaaaaaa_one", group: "g" } as Case;
     const table = renderScoresTable({ cases: [a], engines: [], sort: { col: 0, dir: 1 } });
     expect(table).toContain('data-c="0" tabindex="0" aria-sort="ascending"');
-    expect(table).toContain('data-c="1" tabindex="0" aria-sort="none"');
+    // aria-sort sits on the sorted head only (WAI-ARIA 1.2), never "none" elsewhere.
+    expect(table).toContain('data-c="1" tabindex="0" class="">group</th>');
+    expect(table.match(/aria-sort=/g)?.length).toBe(1);
+    // A sort column a filter removed falls back to the case column, and says so.
+    const gone = renderScoresTable({ cases: [a], engines: [], sort: { col: 42, dir: -1 } });
+    expect(gone).toContain('data-c="0" tabindex="0" aria-sort="descending"');
     expect(table).toContain('tr data-case="aaaaaaaaaa_one"');
     expect(table).toMatch(/<tr data-case="aaaaaaaaaa_one" data-key="[^"]+" tabindex="0">/);
     expect(table).toContain('<td class=" case-name" title="aaaaaaaaaa_one">one</td>');
     expect(table).toContain("bold green = best");
+  });
+
+  test("the case column sorts by the label it shows, the id breaking a tie", () => {
+    const zulu = { case: "aaaaaaaaaa_Zulu_file", group: "g" } as Case;
+    const alpha = { case: "bbbbbbbbbb_Alpha_file", group: "g" } as Case;
+    const table = renderScoresTable({
+      cases: [zulu, alpha],
+      engines: [],
+      sort: { col: 0, dir: 1 },
+    });
+    expect(table.indexOf(">Alpha file<")).toBeLessThan(table.indexOf(">Zulu file<"));
+  });
+
+  test("a filter that hides the open case leaves the list one Tab stop", () => {
+    const a = { case: "aaaaaaaaaa_one", group: "g" } as Case;
+    const b = { case: "bbbbbbbbbb_two", group: "g" } as Case;
+    const list = renderCaseList({ cases: [a, b], selected: "zzzz_gone" });
+    expect(list.match(/tabindex="0"/g)?.length).toBe(1);
+    expect(list.indexOf('tabindex="0"')).toBeLessThan(list.indexOf("bbbbbbbbbb_two"));
   });
 
   test("the shortcut legend is on the page, and ? hides it", () => {

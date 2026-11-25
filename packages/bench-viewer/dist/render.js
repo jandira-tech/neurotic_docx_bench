@@ -14,7 +14,7 @@ import { esc } from "./esc.js";
 export const shortShas = (text) => text.replace(/\b([0-9a-f]{7})[0-9a-f]{33}\b/g, "$1");
 /** Text with its `backtick` spans as inline code; every character escaped. */
 export function inlineCode(text) {
-    return esc(text).replace(/`([^`]+)`/g, '<span class="code-inline">$1</span>');
+    return esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 /** Keep a score inside the range that CSS can render as a percentage. */
 function scoreWidth(value) {

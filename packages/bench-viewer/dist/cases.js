@@ -801,10 +801,14 @@ function isSelected(c, selected) {
 }
 /** The case list. */
 export function renderCaseList(opts) {
+    // The list keeps one Tab stop: the open case, or the first shown when a
+    // filter has hidden the open one.
+    const anySelected = opts.cases.some((c) => isSelected(c, opts.selected));
     return opts.cases
-        .map((c) => {
+        .map((c, i) => {
         const on = isSelected(c, opts.selected);
-        return `<div class="case${on ? " sel" : ""}" role="option" aria-selected="${on}" tabindex="${on ? 0 : -1}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(caseLabel(c.case))}</span><span class="grp">${esc(c.group)}</span></div>`;
+        const stop = on || (!anySelected && i === 0);
+        return `<div class="case${on ? " sel" : ""}" role="option" aria-selected="${on}" tabindex="${stop ? 0 : -1}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(caseLabel(c.case))}</span><span class="grp">${esc(c.group)}</span></div>`;
     })
         .join("");
 }
@@ -866,7 +870,8 @@ export function renderScoresTable(opts) {
             flat.push({ engine, column });
     }
     const cols = [
-        { get: (row) => row.c.case, num: false },
+        // The label the cell shows sorts the column; the id breaks a tie.
+        { get: (row) => `${caseLabel(row.c.case)}\u0000${row.c.case}`, num: false },
         { get: (row) => row.c.group, num: false },
         {
             get: (row) => row.c.page_counts?.reference ?? (row.c.pages?.reference ?? []).length,
@@ -876,7 +881,10 @@ export function renderScoresTable(opts) {
     for (const cell of flat) {
         cols.push({ get: (row) => value(row.c, cell.engine.key, cell.column), num: true });
     }
-    const sortCol = cols[sort.col] ?? cols[0];
+    // A sort column a filter removed falls back to the case column, and the
+    // head says so.
+    const active = cols[sort.col] ? sort.col : 0;
+    const sortCol = cols[active];
     rows.sort((a, b) => {
         const x = sortCol.get(a);
         const y = sortCol.get(b);
@@ -896,8 +904,9 @@ export function renderScoresTable(opts) {
             return null;
         return values.reduce((a, b) => a + b, 0) / values.length;
     };
-    const ariaSort = (index) => index === sort.col ? (sort.dir > 0 ? "ascending" : "descending") : "none";
-    const head = (index, label, cls = "") => `<th data-c="${esc(index)}" tabindex="0" aria-sort="${ariaSort(index)}" class="${esc(cls)}${index === sort.col ? " sorted" : ""}">${esc(label)}${index === sort.col ? (sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`;
+    // aria-sort sits on the one sorted head only (WAI-ARIA 1.2).
+    const ariaSort = (index) => index === active ? ` aria-sort="${sort.dir > 0 ? "ascending" : "descending"}"` : "";
+    const head = (index, label, cls = "") => `<th data-c="${esc(index)}" tabindex="0"${ariaSort(index)} class="${esc(cls)}${index === active ? " sorted" : ""}">${esc(label)}${index === active ? (sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`;
     let html = `<div class="note">${esc(rows.length)} cases · click or press Enter on a column to sort, a row to open it · bold green = best engine for that column (highest score, lowest time)</div><table><thead>`;
     html += `<tr>${head(0, "case")}${head(1, "group")}${head(2, "pages", "num")}`;
     html += engines
@@ -909,7 +918,7 @@ export function renderScoresTable(opts) {
             flat
                 .map((cell, j) => {
                 const title = cell.column === "time" ? "Conversion time, in seconds" : METRIC_INFO[cell.column];
-                return `<th class="num${j % shown.length === 0 ? " first" : ""}" data-c="${esc(j + 3)}" tabindex="0" aria-sort="${ariaSort(j + 3)}" title="${esc(title)}">${esc(SCORE_LABEL[cell.column])}</th>`;
+                return `<th class="num${j % shown.length === 0 ? " first" : ""}" data-c="${esc(j + 3)}" tabindex="0"${ariaSort(j + 3)} title="${esc(title)}">${esc(SCORE_LABEL[cell.column])}</th>`;
             })
                 .join("") +
             "</tr>";
@@ -1068,7 +1077,7 @@ export function renderCasesPage(opts) {
   <label for="fxDiffer">pages</label><span class="row"><label><input type="checkbox" id="fxDiffer"> differ from Word</label></span>
   <span class="foot"><span id="fxn"></span><button id="fxRand" title="open a random case of this list (r)">random</button><button id="fxClear" title="clear every filter">clear</button></span>
 </div></div><div id="list" role="listbox" aria-label="Cases"><div class="case" aria-busy="true"><span class="name">Loading cases…</span></div></div></aside>
-<main id="main"><div id="grid"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
+<main id="main"><div id="grid" tabindex="-1"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
 <div id="mfoot" role="region" aria-label="Case navigation"><button id="mPrev" type="button">&lsaquo; Prev</button><button id="mRand" type="button">Random</button><button id="mNext" type="button">Next &rsaquo;</button><button id="mOvl" type="button" aria-pressed="false">Overlay</button></div>
 <div id="scrim"></div>
 <dialog id="msheet" aria-labelledby="msheetTitle"><form method="dialog"><h2 id="msheetTitle"><span class="sq"></span> Mobile layout</h2>
@@ -1223,7 +1232,7 @@ export async function mountCasesPage(opts) {
     const visibleCases = () => {
         const filter = state.filter.toLowerCase();
         return cases().filter((c) => {
-            if (filter && !`${c.case} ${c.group}`.toLowerCase().includes(filter))
+            if (filter && !`${caseLabel(c.case)} ${c.case} ${c.group}`.toLowerCase().includes(filter))
                 return false;
             const fx = state.fx;
             if (fx.pages) {
@@ -1362,6 +1371,9 @@ export async function mountCasesPage(opts) {
         const navPos = $("#navPos");
         if (navPos)
             navPos.textContent = `${at < 0 ? "–" : at + 1} / ${shown.length}`;
+        const ovlBox = $("#ovl");
+        if (ovlBox)
+            ovlBox.checked = state.ovl;
         const navCase = $("#navCase");
         if (navCase) {
             const c = current();
@@ -1373,7 +1385,7 @@ export async function mountCasesPage(opts) {
             const focused = doc.activeElement != null && list.contains(doc.activeElement);
             list.innerHTML = renderCaseList({ cases: shown, selected: selKey() });
             if (focused)
-                list.querySelector(".case.sel")?.focus();
+                focusOpened();
         }
         const enginesBar = $("#engines");
         if (enginesBar) {
@@ -1713,6 +1725,24 @@ export async function mountCasesPage(opts) {
         }
         return true;
     };
+    /** Whether the case list is on screen: not collapsed, not a closed drawer. */
+    function listOnScreen() {
+        const body = doc.body?.classList;
+        if (!body)
+            return true;
+        if (body.contains("mobile"))
+            return body.contains("drawer");
+        return !body.contains("noside");
+    }
+    /** After the keyboard opened a case, put the focus where the case is: its
+     * option when the list is on screen, the page grid when it is not. */
+    function focusOpened() {
+        const option = listOnScreen() ? $("#list")?.querySelector(".case.sel") : null;
+        if (option)
+            option.focus({ preventScroll: true });
+        else
+            $("#grid")?.focus({ preventScroll: true });
+    }
     // ---- the events
     const list = $("#list");
     list?.addEventListener("click", (event) => {
@@ -1760,10 +1790,13 @@ export async function mountCasesPage(opts) {
         if (row?.dataset.key) {
             const at = cases().findIndex((c) => caseKey(c) === row.dataset.key);
             if (at >= 0) {
+                const fromTable = doc.activeElement != null && scores?.contains(doc.activeElement);
                 sel = at;
                 state.view = "viewer";
                 state.shown = PAGE_STEP;
                 render();
+                if (fromTable)
+                    focusOpened();
             }
         }
     });
@@ -1965,8 +1998,17 @@ export async function mountCasesPage(opts) {
         const tag = target?.tagName ?? "";
         if (tag === "SELECT" || tag === "TEXTAREA")
             return;
-        if (tag === "INPUT" &&
-            ["text", "search", "number", "range", "radio"].includes(target?.type ?? "")) {
+        // Shortcuts never fire inside a field that takes text: every input but a
+        // checkbox or button, and anything contenteditable.
+        if ((tag === "INPUT" &&
+            !["checkbox", "button", "submit", "reset"].includes(target?.type ?? "")) ||
+            target?.isContentEditable) {
+            return;
+        }
+        if (keyboard.key === "?") {
+            // The legend is CSS only: no re-render, so the focus stays put.
+            doc.body?.classList.toggle("nokeys");
+            keyboard.preventDefault();
             return;
         }
         const shown = visibleCases();
@@ -1996,9 +2038,6 @@ export async function mountCasesPage(opts) {
         }
         else if (keyboard.key === "t") {
             state.view = state.view === "scores" ? "viewer" : "scores";
-        }
-        else if (keyboard.key === "?") {
-            doc.body?.classList.toggle("nokeys");
         }
         else if (/^[1-9]$/.test(keyboard.key)) {
             // The kbd hints sit on the displayed lanes, so the key follows the

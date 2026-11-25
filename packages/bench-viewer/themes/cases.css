@@ -635,11 +635,17 @@ body.alleng #engines label.legacy {
   scroll-margin-top: var(--headh, 0px);
 }
 
+/* The ring is the item's own text colour, inset past its edge, so it shows
+   on a selected (dark) option as well as a plain one, in every theme. */
 #list .case:focus-visible,
 #scores th:focus-visible,
 #scores tr:focus-visible {
-  outline: 2px solid var(--blue-d);
-  outline-offset: -2px;
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+
+#grid:focus {
+  outline: none;
 }
 
 #list .case:hover {
