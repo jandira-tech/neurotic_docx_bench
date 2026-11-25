@@ -1009,6 +1009,8 @@ MD_SECTION: dict[str, str] = {
     **tb.TITLES,
     sc.REDLINES_VS_WORD_ID: "redlines vs Word's compare",
     sc.REDLINES_TABLE_ID: "redlines accepted or rejected by Word",
+    # a separate-oracle run's sections use the human title as their heading
+    **{tid: text[0] for tid, text in tb.SEPARATE_TABLE_TEXT.items()},
 }
 
 
@@ -1065,7 +1067,13 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
     # repo files under results/release_0.17.0_evidence/), then the fidelity
     # tables, then the two redlines tables in RESULTS.md section order.
     assert ids[:2] == ["conversion-sample", "redlines-sample"]
-    assert ids[-2:] == ["redlines_vs_word", "redlines_accept_reject"]
+    # ... then the separate-oracle run's two tables (results/redlines_winword_600).
+    assert ids[-4:] == [
+        "redlines_vs_word",
+        "redlines_accept_reject",
+        "redlines_vs_windows_word",
+        "redline_pdf_vs_windows_word",
+    ]
     fidelity = [t for t in obj["tables"] if t["id"] in tb.TITLES]
     # The same headline tables RESULTS.md renders, in RESULTS.md order.
     assert [t["id"] for t in fidelity] == [
@@ -1168,7 +1176,20 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
     def _main(cell: str) -> str:
         return cell.split(" (")[0]
 
-    vs = next(t for t in obj["tables"] if t["id"] == "redlines_vs_word")
+    for vs in (
+        t
+        for t in obj["tables"]
+        if t["id"] in ("redlines_vs_word", "redlines_vs_windows_word", "redline_pdf_vs_windows_word")
+    ):
+        _match_action_table(vs, sections, affiliated, _main)
+
+    # And the file is published beside the stores it is built from.
+    files = bd.render_files(REPO_ROOT, bundle)
+    assert REPO_ROOT / "results" / "scores.json" in files
+    assert files[REPO_ROOT / "results" / "scores.json"] == bundle.scores_json
+
+
+def _match_action_table(vs: dict, sections: dict, affiliated: set, _main) -> None:
     header, body = _pipe_table(sections[MD_SECTION[vs["id"]]])
     assert "Action" not in header and "Version" in header
     assert len(vs["rows"]) == len(body)
@@ -1188,11 +1209,6 @@ def test_scores_json_matches_results_md_on_the_real_store() -> None:
             ),
             "ours": md["Tool"] in affiliated,
         }, row["tool"]
-
-    # And the file is published beside the stores it is built from.
-    files = bd.render_files(REPO_ROOT, bundle)
-    assert REPO_ROOT / "results" / "scores.json" in files
-    assert files[REPO_ROOT / "results" / "scores.json"] == bundle.scores_json
 
 
 def test_every_results_md_section_with_a_score_table_has_a_json_table() -> None:

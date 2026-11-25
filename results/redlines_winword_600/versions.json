@@ -1,0 +1,7 @@
+{
+  "docxodus-16.1.0": "docxodus 16.1.0 (npm/WASM)",
+  "jubarte-0.20.0": "jubarte 0.20.0 (release)",
+  "folio-0.70.0-emit": "folio 0.70.0 (@stll/folio-core, onUnverified: \"emit\")",
+  "superdoc-2.31.0": "superdoc-sdk 2.31.0",
+  "word-mac": "Word for Mac's own compare (calibration, not a tool)"
+}

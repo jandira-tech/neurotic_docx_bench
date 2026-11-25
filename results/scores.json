@@ -1381,6 +1381,99 @@
         }
       ],
       "title": "Redlines accepted or rejected by Word"
+    },
+    {
+      "desc": "A second oracle for the redline test. Word 2024 for Windows compares each of the 600 pairs of set redline_600 and exports its own redline to PDF; each tool's redline of the pair is opened and exported to PDF by that same Word, so the redline is the only thing that differs. Scored with the pixel scorer (144 DPI, every page); a pair with no scored PDF counts 0 in the ITT columns. word-mac is not a tool: it is Word for Mac's own compare of the pair, the oracle of the Redlines vs Word's compare table, scored against Word for Windows' one. These figures are not comparable with that table's.",
+      "id": "redlines_vs_windows_word",
+      "meta": "",
+      "rows": [
+        {
+          "docs": 571,
+          "failed": 15,
+          "mean": 52.04,
+          "median": 48.73,
+          "note": "= 100: 4 · ≥ 90: 16 · < 50: 297 · ink 0.23 · text n/a",
+          "ours": false,
+          "pin": "docxodus 16.1.0 (npm/WASM)",
+          "rank": "1",
+          "tool": "docxodus-16.1.0"
+        },
+        {
+          "docs": 586,
+          "failed": 0,
+          "mean": 52.5,
+          "median": 47.98,
+          "note": "= 100: 1 · ≥ 90: 16 · < 50: 327 · ink 0.23 · text n/a",
+          "ours": false,
+          "pin": "jubarte 0.20.0 (release)",
+          "rank": "2",
+          "tool": "jubarte-0.20.0"
+        },
+        {
+          "docs": 586,
+          "failed": 0,
+          "mean": 49.81,
+          "median": 46.21,
+          "note": "= 100: 0 · ≥ 90: 3 · < 50: 350 · ink 0.16 · text n/a",
+          "ours": false,
+          "pin": "Word for Mac's own compare (calibration, not a tool)",
+          "rank": "3",
+          "tool": "word-mac"
+        },
+        {
+          "docs": 522,
+          "failed": 64,
+          "mean": 45.15,
+          "median": 43.02,
+          "note": "= 100: 1 · ≥ 90: 23 · < 50: 314 · ink 0.25 · text n/a",
+          "ours": false,
+          "pin": "folio 0.70.0 (@stll/folio-core, onUnverified: \"emit\")",
+          "rank": "4",
+          "tool": "folio-0.70.0-emit"
+        },
+        {
+          "docs": 72,
+          "failed": 514,
+          "mean": 8.07,
+          "median": 0.0,
+          "note": "= 100: 1 · ≥ 90: 2 · < 50: 0 · ink 0.33 · text n/a",
+          "ours": false,
+          "pin": "superdoc-sdk 2.31.0",
+          "rank": "5",
+          "tool": "superdoc-2.31.0"
+        }
+      ],
+      "title": "Redlines vs Word for Windows' compare (set redline_600)"
+    },
+    {
+      "desc": "Each converter renders Word 2024 for Windows' own redline DOCX of each pair of set redline_600 to PDF, scored with the pixel scorer (144 DPI, every page) against that Word's PDF export of the same DOCX. The DOCX is identical on both sides, so the converter is the only thing that differs. A failed conversion counts 0 in the ITT columns.",
+      "id": "redline_pdf_vs_windows_word",
+      "meta": "",
+      "rows": [
+        {
+          "docs": 586,
+          "failed": 0,
+          "mean": 68.92,
+          "median": 69.44,
+          "note": "= 100: 0 · ≥ 90: 11 · < 50: 63 · ink 0.41 · text n/a",
+          "ours": false,
+          "pin": "jubarte 0.20.0 (release)",
+          "rank": "1",
+          "tool": "jubarte-0.20.0"
+        },
+        {
+          "docs": 581,
+          "failed": 5,
+          "mean": 57.04,
+          "median": 53.89,
+          "note": "= 100: 0 · ≥ 90: 0 · < 50: 238 · ink 0.26 · text n/a",
+          "ours": false,
+          "pin": "docxodus 16.1.0 (npm/WASM)",
+          "rank": "2",
+          "tool": "docxodus-16.1.0"
+        }
+      ],
+      "title": "Word's redline to PDF vs Word for Windows' export (set redline_600)"
     }
   ],
   "version": "1.0.0",
