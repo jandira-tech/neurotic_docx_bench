@@ -21,6 +21,16 @@ import type {
 // bench-viewer deliberately differs there when a value contains HTML
 // metacharacters. The raw-facts fixture pins that documented difference.
 
+/** A full 40-digit git sha shortened to 7 digits, the way git prints it: a
+ * pin in a sentence reads as a version, not a hash. */
+export const shortShas = (text: string): string =>
+  text.replace(/\b([0-9a-f]{7})[0-9a-f]{33}\b/g, "$1");
+
+/** Text with its `backtick` spans as inline code; every character escaped. */
+export function inlineCode(text: string): string {
+  return esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
 /** Keep a score inside the range that CSS can render as a percentage. */
 function scoreWidth(value: number): number {
   return Math.max(0, Math.min(100, value));
@@ -37,10 +47,12 @@ const STATE_LABELS: Record<string, string> = {
 export const stateLabel = (name: string): string => STATE_LABELS[name] ?? name;
 
 /** One row of a leaderboard table. */
-export function renderRow(r: Row): string {
+export function renderRow(r: Row, opts: { ranked?: boolean } = {}): string {
   const cls = r.ours ? " ours" : "";
+  // A table of one ranks nothing: the cell stays, empty.
+  const rank = opts.ranked === false ? "" : esc(r.rank);
   return `<div class="t-row bench-cols${cls}" role="row">
-<span class="mono muted" role="cell">${esc(r.rank)}</span>
+<span class="mono muted" role="cell">${rank}</span>
 <div class="tool" role="rowheader"><div class="tool-name">${esc(r.tool)}</div><div class="tool-pin">${esc(r.pin)}</div></div>
 <div class="bar-cell" role="cell"><div class="bar${r.ours ? " hi" : ""}" aria-hidden="true"><div style="width:${scoreWidth(r.median)}%"></div></div><span class="bar-note">${esc(r.note)}</span></div>
 <span class="num strong" role="cell">${r.median.toFixed(2)}</span>
@@ -59,11 +71,11 @@ export function renderTableHead(): string {
 export function renderTable(t: Table): string {
   const id = esc(t.id);
   return `<section class="mt-72" id="${id}">
-<div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${esc(t.meta)}</span></div>
-<p class="note mt-12">${esc(t.desc)}</p>
+<div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${inlineCode(t.meta)}</span></div>
+<p class="note mt-12">${inlineCode(t.desc)}</p>
 <div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
 ${renderTableHead()}
-${t.rows.map((r) => renderRow(r)).join("\n")}
+${t.rows.map((r) => renderRow(r, { ranked: t.rows.length > 1 })).join("\n")}
 </div></div>
 </section>`;
 }
@@ -75,8 +87,8 @@ ${h
   .map(
     (x) => `<div class="cell-pad headline">
 <p class="kicker">${esc(x.label)}</p>
-<p class="headline-v"><span>${esc(x.value)}</span><span class="mono muted">vs ${esc(x.vs)}</span></p>
-<p class="small mt-12">${esc(x.sub)}</p>
+<p class="headline-v"><span>${esc(x.value)}</span><span class="mono muted"${shortShas(x.vs) === x.vs ? "" : ` title="${esc(x.vs)}"`}>vs ${esc(shortShas(x.vs))}</span></p>
+<p class="small mt-12">${inlineCode(shortShas(x.sub))}</p>
 </div>`,
   )
   .join("\n")}

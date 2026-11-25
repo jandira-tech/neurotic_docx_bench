@@ -1,8 +1,15 @@
 import type { Headline, HomeGroup, MethodPoint, RenderStatesOptions, Row, Scores, StateCell, Table } from "./types.ts";
+/** A full 40-digit git sha shortened to 7 digits, the way git prints it: a
+ * pin in a sentence reads as a version, not a hash. */
+export declare const shortShas: (text: string) => string;
+/** Text with its `backtick` spans as inline code; every character escaped. */
+export declare function inlineCode(text: string): string;
 /** The page's name for a corpus state. */
 export declare const stateLabel: (name: string) => string;
 /** One row of a leaderboard table. */
-export declare function renderRow(r: Row): string;
+export declare function renderRow(r: Row, opts?: {
+    ranked?: boolean;
+}): string;
 /** The head row of a table: its column names. */
 export declare function renderTableHead(): string;
 /** One leaderboard table, with its heading and its note. */

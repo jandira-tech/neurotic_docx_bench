@@ -770,6 +770,24 @@ export function applyInlineCss(root) {
         }
     }
 }
+/** Whole `_`-separated tokens of 8 or more hex digits: the content hashes in a
+ * case id. */
+const HASH_TOKEN = /^[0-9a-f]{8,}$/;
+/**
+ * A case id said for a reader: the hash tokens dropped, underscores as
+ * spaces, the two sides of a redline pair joined by "vs". The id stays the
+ * identity (links, filters, the title tooltip); this is only its label.
+ * `d435c8d66c_file_104__vs__9e…_file_104_edited` reads "file 104 vs file 104
+ * edited". An id that is nothing but hashes keeps its first 10 characters.
+ */
+export function caseLabel(id) {
+    const side = (part) => part
+        .split(/_+/)
+        .filter((token) => token && !HASH_TOKEN.test(token))
+        .join(" ");
+    const label = id.split("__vs__").map(side).filter(Boolean).join(" vs ");
+    return label || id.slice(0, 10);
+}
 /**
  * A case's identity: its group and its id. One id can sit in several groups
  * (the same document in two corpora), so "all groups" needs both.
@@ -783,8 +801,15 @@ function isSelected(c, selected) {
 }
 /** The case list. */
 export function renderCaseList(opts) {
+    // The list keeps one Tab stop: the open case, or the first shown when a
+    // filter has hidden the open one.
+    const anySelected = opts.cases.some((c) => isSelected(c, opts.selected));
     return opts.cases
-        .map((c) => `<div class="case${isSelected(c, opts.selected) ? " sel" : ""}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(c.case)}</span><span class="grp">${esc(c.group)}</span></div>`)
+        .map((c, i) => {
+        const on = isSelected(c, opts.selected);
+        const stop = on || (!anySelected && i === 0);
+        return `<div class="case${on ? " sel" : ""}" role="option" aria-selected="${on}" tabindex="${stop ? 0 : -1}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(caseLabel(c.case))}</span><span class="grp">${esc(c.group)}</span></div>`;
+    })
         .join("");
 }
 /** The group picker: one option per group of this kind. */
@@ -845,7 +870,8 @@ export function renderScoresTable(opts) {
             flat.push({ engine, column });
     }
     const cols = [
-        { get: (row) => row.c.case, num: false },
+        // The label the cell shows sorts the column; the id breaks a tie.
+        { get: (row) => `${caseLabel(row.c.case)}\u0000${row.c.case}`, num: false },
         { get: (row) => row.c.group, num: false },
         {
             get: (row) => row.c.page_counts?.reference ?? (row.c.pages?.reference ?? []).length,
@@ -855,7 +881,10 @@ export function renderScoresTable(opts) {
     for (const cell of flat) {
         cols.push({ get: (row) => value(row.c, cell.engine.key, cell.column), num: true });
     }
-    const sortCol = cols[sort.col] ?? cols[0];
+    // A sort column a filter removed falls back to the case column, and the
+    // head says so.
+    const active = cols[sort.col] ? sort.col : 0;
+    const sortCol = cols[active];
     rows.sort((a, b) => {
         const x = sortCol.get(a);
         const y = sortCol.get(b);
@@ -875,8 +904,10 @@ export function renderScoresTable(opts) {
             return null;
         return values.reduce((a, b) => a + b, 0) / values.length;
     };
-    const head = (index, label, cls = "") => `<th data-c="${esc(index)}" class="${esc(cls)}${index === sort.col ? " sorted" : ""}">${esc(label)}${index === sort.col ? (sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`;
-    let html = `<div class="note">${esc(rows.length)} cases · click a column to sort, a row to open it · green = best engine for that column (highest score, lowest time)</div><table><thead>`;
+    // aria-sort sits on the one sorted head only (WAI-ARIA 1.2).
+    const ariaSort = (index) => index === active ? ` aria-sort="${sort.dir > 0 ? "ascending" : "descending"}"` : "";
+    const head = (index, label, cls = "") => `<th data-c="${esc(index)}" tabindex="0"${ariaSort(index)} class="${esc(cls)}${index === active ? " sorted" : ""}">${esc(label)}${index === active ? (sort.dir > 0 ? " ▲" : " ▼") : ""}</th>`;
+    let html = `<div class="note">${esc(rows.length)} cases · click or press Enter on a column to sort, a row to open it · bold green = best engine for that column (highest score, lowest time)</div><table><thead>`;
     html += `<tr>${head(0, "case")}${head(1, "group")}${head(2, "pages", "num")}`;
     html += engines
         .map((engine) => `<th class="eng" colspan="${esc(shown.length)}" data-css="border-top:2px solid ${esc(laneColor(opts.engines, engine.key))}">${esc(engine.label)}</th>`)
@@ -887,7 +918,7 @@ export function renderScoresTable(opts) {
             flat
                 .map((cell, j) => {
                 const title = cell.column === "time" ? "Conversion time, in seconds" : METRIC_INFO[cell.column];
-                return `<th class="num${j % shown.length === 0 ? " first" : ""}" data-c="${esc(j + 3)}" title="${esc(title)}">${esc(SCORE_LABEL[cell.column])}</th>`;
+                return `<th class="num${j % shown.length === 0 ? " first" : ""}" data-c="${esc(j + 3)}" tabindex="0"${ariaSort(j + 3)} title="${esc(title)}">${esc(SCORE_LABEL[cell.column])}</th>`;
             })
                 .join("") +
             "</tr>";
@@ -915,7 +946,7 @@ export function renderScoresTable(opts) {
                     : Math.max(...values)
                 : null;
         }
-        html += `<tr data-case="${esc(row.c.case)}" data-key="${esc(caseKey(row.c))}"${isSelected(row.c, opts.selected) ? ' class="sel"' : ""}>`;
+        html += `<tr data-case="${esc(row.c.case)}" data-key="${esc(caseKey(row.c))}" tabindex="0"${isSelected(row.c, opts.selected) ? ' class="sel"' : ""}>`;
         html += cols
             .map((col, j) => {
             const cell = j < 3 ? null : flat[j - 3];
@@ -944,6 +975,9 @@ export function renderScoresTable(opts) {
                 return first
                     ? `<td class="${esc(cls)} lane-note" title="${esc(unscoredTitle(pdf))}">not scored</td>`
                     : `<td class="${esc(cls)}"></td>`;
+            }
+            if (j === 0) {
+                return `<td class="${esc(cls)} case-name" title="${esc(row.c.case)}">${esc(caseLabel(row.c.case))}</td>`;
             }
             return `<td class="${esc(cls)}">${esc(text)}</td>`;
         })
@@ -1028,11 +1062,11 @@ export function renderCasesPage(opts) {
 <div id="bar" role="region" aria-label="Case controls">
   <button id="sideToggle" aria-label="Hide or show the case list" title="hide / show the case list (s)">&#9776;</button>
   <span class="grp"><select id="mode" autocomplete="off" aria-label="What to compare" title="what to compare"><option value="${esc(conversionHref)}">Convert DOCX → PDF</option><option value="${esc(redlinesHref)}"${opts.kind === "redline" ? " selected" : ""}>Compare (redline) two documents</option></select></span>
-  <span class="grp" id="nav"><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span></span>
+  <span class="grp" id="nav"><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span><span id="navCase"></span></span>
   <span class="grp"><label>zoom <input type="range" id="zoom" min="200" max="1400" value="600" step="20"></label></span>
   <span class="brk" aria-hidden="true"></span>
-  <span class="grp"><label><input type="checkbox" id="ovl"> overlay</label><select id="ovlA" aria-label="Engine under"></select> under <select id="ovlB" aria-label="Engine over"></select><select id="blend" aria-label="Blend mode"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select><input type="range" id="alpha" aria-label="Overlay opacity" min="0" max="100" value="50"></span>
-  <span id="keys" class="hidden"><kbd>1</kbd>-<kbd>9</kbd> engines &nbsp;<kbd>&uarr;</kbd><kbd>&darr;</kbd> cases &nbsp;<kbd>r</kbd> random &nbsp;<kbd>s</kbd> side panel &nbsp;<kbd>o</kbd> overlay &nbsp;<kbd>m</kbd> more pages &nbsp;<kbd>t</kbd> scores table</span>
+  <span class="grp"><label><input type="checkbox" id="ovl"> overlay</label><select id="ovlA" aria-label="Engine under"></select><span class="ovl-under"> under </span><select id="ovlB" aria-label="Engine over"></select><select id="blend" aria-label="Blend mode"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select><input type="range" id="alpha" aria-label="Overlay opacity" min="0" max="100" value="50"></span>
+  <span id="keys"><kbd>1</kbd>-<kbd>9</kbd> engines &nbsp;<kbd>&uarr;</kbd><kbd>&darr;</kbd> cases &nbsp;<kbd>r</kbd> random &nbsp;<kbd>s</kbd> side panel &nbsp;<kbd>o</kbd> overlay &nbsp;<kbd>m</kbd> more pages &nbsp;<kbd>t</kbd> scores table &nbsp;<kbd>?</kbd> hide these</span>
 </div>
 <div id="engines" role="region" aria-label="Engines"></div>
 <div id="legend" role="region" aria-label="About these scores"></div>
@@ -1042,8 +1076,8 @@ export function renderCasesPage(opts) {
   <label for="fxEng">score</label><span class="row"><select id="fxEng"></select><select id="fxMetric" aria-label="Score metric"></select> ≤ <input type="number" id="fxMax" aria-label="Maximum score" min="0" max="100" step="1" placeholder="any"></span>
   <label for="fxDiffer">pages</label><span class="row"><label><input type="checkbox" id="fxDiffer"> differ from Word</label></span>
   <span class="foot"><span id="fxn"></span><button id="fxRand" title="open a random case of this list (r)">random</button><button id="fxClear" title="clear every filter">clear</button></span>
-</div></div><div id="list"><div class="case" aria-busy="true"><span class="name">Loading cases…</span></div></div></aside>
-<main id="main"><div id="grid"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
+</div></div><div id="list" role="listbox" aria-label="Cases"><div class="case" aria-busy="true"><span class="name">Loading cases…</span></div></div></aside>
+<main id="main"><div id="grid" tabindex="-1"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
 <div id="mfoot" role="region" aria-label="Case navigation"><button id="mPrev" type="button">&lsaquo; Prev</button><button id="mRand" type="button">Random</button><button id="mNext" type="button">Next &rsaquo;</button><button id="mOvl" type="button" aria-pressed="false">Overlay</button></div>
 <div id="scrim"></div>
 <dialog id="msheet" aria-labelledby="msheetTitle"><form method="dialog"><h2 id="msheetTitle"><span class="sq"></span> Mobile layout</h2>
@@ -1198,7 +1232,7 @@ export async function mountCasesPage(opts) {
     const visibleCases = () => {
         const filter = state.filter.toLowerCase();
         return cases().filter((c) => {
-            if (filter && !`${c.case} ${c.group}`.toLowerCase().includes(filter))
+            if (filter && !`${caseLabel(c.case)} ${c.case} ${c.group}`.toLowerCase().includes(filter))
                 return false;
             const fx = state.fx;
             if (fx.pages) {
@@ -1337,8 +1371,22 @@ export async function mountCasesPage(opts) {
         const navPos = $("#navPos");
         if (navPos)
             navPos.textContent = `${at < 0 ? "–" : at + 1} / ${shown.length}`;
-        if (list)
+        const ovlBox = $("#ovl");
+        if (ovlBox)
+            ovlBox.checked = state.ovl;
+        const navCase = $("#navCase");
+        if (navCase) {
+            const c = current();
+            navCase.textContent = c ? caseLabel(c.case) : "";
+            navCase.title = c?.case ?? "";
+        }
+        if (list) {
+            // A re-render replaces the options; keep the keyboard on the list.
+            const focused = doc.activeElement != null && list.contains(doc.activeElement);
             list.innerHTML = renderCaseList({ cases: shown, selected: selKey() });
+            if (focused)
+                focusOpened();
+        }
         const enginesBar = $("#engines");
         if (enginesBar) {
             const c = current();
@@ -1378,6 +1426,9 @@ export async function mountCasesPage(opts) {
             overlay?.classList.add("hidden");
             more?.classList.add("hidden");
             if (scores) {
+                // Sorting re-renders the table; keep the keyboard on the head or row.
+                const was = doc.activeElement;
+                const refocus = was && scores.contains(was) ? { c: was.dataset.c, key: was.dataset.key } : null;
                 scores.innerHTML = renderScoresTable({
                     cases: shown,
                     engines: index.engines,
@@ -1386,6 +1437,11 @@ export async function mountCasesPage(opts) {
                     sort: state.sort,
                 });
                 applyInlineCss(scores);
+                if (refocus) {
+                    const back = [...scores.querySelectorAll("th[data-c], tr[data-key]")].find((el) => (refocus.c !== undefined && el.dataset.c === refocus.c) ||
+                        (refocus.key !== undefined && el.dataset.key === refocus.key));
+                    back?.focus();
+                }
             }
             return;
         }
@@ -1669,6 +1725,24 @@ export async function mountCasesPage(opts) {
         }
         return true;
     };
+    /** Whether the case list is on screen: not collapsed, not a closed drawer. */
+    function listOnScreen() {
+        const body = doc.body?.classList;
+        if (!body)
+            return true;
+        if (body.contains("mobile"))
+            return body.contains("drawer");
+        return !body.contains("noside");
+    }
+    /** After the keyboard opened a case, put the focus where the case is: its
+     * option when the list is on screen, the page grid when it is not. */
+    function focusOpened() {
+        const option = listOnScreen() ? $("#list")?.querySelector(".case.sel") : null;
+        if (option)
+            option.focus({ preventScroll: true });
+        else
+            $("#grid")?.focus({ preventScroll: true });
+    }
     // ---- the events
     const list = $("#list");
     list?.addEventListener("click", (event) => {
@@ -1685,7 +1759,21 @@ export async function mountCasesPage(opts) {
         closeDrawer();
         render();
     });
+    /** Enter or Space on a focused option, row or column head is its click. */
+    const activate = (event) => {
+        const keyboard = event;
+        if (keyboard.key !== "Enter" && keyboard.key !== " ")
+            return;
+        const target = keyboard.target;
+        if (!target?.matches("[data-case], th[data-c], tr[data-key]"))
+            return;
+        keyboard.preventDefault();
+        keyboard.stopPropagation();
+        target.click();
+    };
+    list?.addEventListener("keydown", activate);
     const scores = $("#scores");
+    scores?.addEventListener("keydown", activate);
     scores?.addEventListener("click", (event) => {
         const target = event.target;
         const head = target?.closest("th[data-c]");
@@ -1702,10 +1790,13 @@ export async function mountCasesPage(opts) {
         if (row?.dataset.key) {
             const at = cases().findIndex((c) => caseKey(c) === row.dataset.key);
             if (at >= 0) {
+                const fromTable = doc.activeElement != null && scores?.contains(doc.activeElement);
                 sel = at;
                 state.view = "viewer";
                 state.shown = PAGE_STEP;
                 render();
+                if (fromTable)
+                    focusOpened();
             }
         }
     });
@@ -1907,8 +1998,17 @@ export async function mountCasesPage(opts) {
         const tag = target?.tagName ?? "";
         if (tag === "SELECT" || tag === "TEXTAREA")
             return;
-        if (tag === "INPUT" &&
-            ["text", "search", "number", "range", "radio"].includes(target?.type ?? "")) {
+        // Shortcuts never fire inside a field that takes text: every input but a
+        // checkbox or button, and anything contenteditable.
+        if ((tag === "INPUT" &&
+            !["checkbox", "button", "submit", "reset"].includes(target?.type ?? "")) ||
+            target?.isContentEditable) {
+            return;
+        }
+        if (keyboard.key === "?") {
+            // The legend is CSS only: no re-render, so the focus stays put.
+            doc.body?.classList.toggle("nokeys");
+            keyboard.preventDefault();
             return;
         }
         const shown = visibleCases();

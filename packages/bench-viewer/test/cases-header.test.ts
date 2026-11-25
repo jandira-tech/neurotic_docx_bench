@@ -9,6 +9,7 @@ import type { Case, ShardRef } from "../src/cases.ts";
 import {
   ALL_GROUPS,
   caseKey,
+  caseLabel,
   renderCaseList,
   renderCasesLegend,
   renderCasesPage,
@@ -115,10 +116,12 @@ describe("(2) all groups", () => {
     const b = { case: "04a44a5b5d", group: "v1/clean" } as Case;
     const list = renderCaseList({ cases: [a, b], selected: caseKey(b) });
     expect(list.match(/class="case sel"/g)?.length).toBe(1);
-    expect(list).toContain(`class="case sel" data-case="04a44a5b5d" data-key="${caseKey(b)}"`);
+    expect(list).toContain(
+      `class="case sel" role="option" aria-selected="true" tabindex="0" data-case="04a44a5b5d" data-key="${caseKey(b)}"`,
+    );
     const table = renderScoresTable({ cases: [a, b], engines: [], selected: caseKey(a) });
     expect(table.match(/class="sel"/g)?.length).toBe(1);
-    expect(table).toContain(`data-key="${caseKey(a)}" class="sel"`);
+    expect(table).toContain(`data-key="${caseKey(a)}" tabindex="0" class="sel"`);
   });
 });
 
@@ -130,5 +133,83 @@ describe("the shown pages keep their shape", () => {
   test.each([".page img", "#overlay img"])("%s sets height: auto", (selector) => {
     const escaped = selector.replace(/[.#]/g, (m) => `\\${m}`);
     expect(casesCss).toMatch(new RegExp(`(^|\\n)${escaped}\\s*\\{[^}]*height:\\s*auto`));
+  });
+});
+
+describe("polish round: cases a reader can name and a keyboard can reach", () => {
+  test("a case id reads without its hashes, a redline pair as 'vs'", () => {
+    expect(caseLabel("d435c8d66c_file_104__vs__9e1f2a3b4c_file_104_edited")).toBe(
+      "file 104 vs file 104 edited",
+    );
+    expect(
+      caseLabel(
+        "a0738533be_gdocs_comments_export__vs__d5a56cdeb3_super_editor__gdocs_single_comment_ac5db87f_redline_745218f254",
+      ),
+    ).toBe("gdocs comments export vs super editor gdocs single comment redline");
+    expect(caseLabel("04a44a5b5d")).toBe("04a44a5b5d");
+  });
+
+  test("the case list is a listbox whose selected option takes the focus", () => {
+    const a = { case: "aaaaaaaaaa_one", group: "g" } as Case;
+    const b = { case: "bbbbbbbbbb_two", group: "g" } as Case;
+    const list = renderCaseList({ cases: [a, b], selected: caseKey(b) });
+    expect(list.match(/role="option"/g)?.length).toBe(2);
+    expect(list).toContain('aria-selected="false" tabindex="-1"');
+    expect(list).toContain('aria-selected="true" tabindex="0"');
+    expect(list).toContain('title="bbbbbbbbbb_two">two</span>');
+    expect(page("redline")).toContain('<div id="list" role="listbox" aria-label="Cases">');
+  });
+
+  test("the scores table's heads and rows are reachable, and sorting is announced", () => {
+    const a = { case: "aaaaaaaaaa_one", group: "g" } as Case;
+    const table = renderScoresTable({ cases: [a], engines: [], sort: { col: 0, dir: 1 } });
+    expect(table).toContain('data-c="0" tabindex="0" aria-sort="ascending"');
+    // aria-sort sits on the sorted head only (WAI-ARIA 1.2), never "none" elsewhere.
+    expect(table).toContain('data-c="1" tabindex="0" class="">group</th>');
+    expect(table.match(/aria-sort=/g)?.length).toBe(1);
+    // A sort column a filter removed falls back to the case column, and says so.
+    const gone = renderScoresTable({ cases: [a], engines: [], sort: { col: 42, dir: -1 } });
+    expect(gone).toContain('data-c="0" tabindex="0" aria-sort="descending"');
+    expect(table).toContain('tr data-case="aaaaaaaaaa_one"');
+    expect(table).toMatch(/<tr data-case="aaaaaaaaaa_one" data-key="[^"]+" tabindex="0">/);
+    expect(table).toContain('<td class=" case-name" title="aaaaaaaaaa_one">one</td>');
+    expect(table).toContain("bold green = best");
+  });
+
+  test("the case column sorts by the label it shows, the id breaking a tie", () => {
+    const zulu = { case: "aaaaaaaaaa_Zulu_file", group: "g" } as Case;
+    const alpha = { case: "bbbbbbbbbb_Alpha_file", group: "g" } as Case;
+    const table = renderScoresTable({
+      cases: [zulu, alpha],
+      engines: [],
+      sort: { col: 0, dir: 1 },
+    });
+    expect(table.indexOf(">Alpha file<")).toBeLessThan(table.indexOf(">Zulu file<"));
+  });
+
+  test("a filter that hides the open case leaves the list one Tab stop", () => {
+    const a = { case: "aaaaaaaaaa_one", group: "g" } as Case;
+    const b = { case: "bbbbbbbbbb_two", group: "g" } as Case;
+    const list = renderCaseList({ cases: [a, b], selected: "zzzz_gone" });
+    expect(list.match(/tabindex="0"/g)?.length).toBe(1);
+    expect(list.indexOf('tabindex="0"')).toBeLessThan(list.indexOf("bbbbbbbbbb_two"));
+  });
+
+  test("the shortcut legend is on the page, and ? hides it", () => {
+    const html = page("redline");
+    expect(html).toContain('<span id="keys">');
+    expect(html).toContain("<kbd>?</kbd> hide these");
+    expect(casesCss).toContain("body.nokeys #keys");
+  });
+
+  test("the overlay's pickers hide while the overlay is off", () => {
+    expect(page("redline")).toContain('<span class="ovl-under"> under </span>');
+    expect(casesCss).toContain("#bar .grp:has(#ovl:not(:checked))");
+  });
+});
+
+describe("targets", () => {
+  test("the brand bar's links are 24px tall at least (WCAG 2.2 2.5.8)", () => {
+    expect(casesCss).toMatch(/#brand \.links a\s*\{[^}]*min-height:\s*24px/);
   });
 });

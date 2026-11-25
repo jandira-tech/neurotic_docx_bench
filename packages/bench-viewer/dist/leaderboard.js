@@ -14,7 +14,7 @@
  */
 import { esc } from "./esc.js";
 import { requireHttpUrl } from "./parse.js";
-import { renderBadge, renderMethod, renderProvenance, renderRow, renderStates, renderTableHead, } from "./render.js";
+import { inlineCode, renderBadge, renderMethod, renderProvenance, renderRow, renderStates, renderTableHead, } from "./render.js";
 /** The mark that says a tool is the author's own. This page does not use it. */
 const AFFILIATION_MARK = "†";
 /** The heading over the tables scored on the release's own samples. */
@@ -74,6 +74,9 @@ function leaderOf(table) {
 }
 /** The line that names the leader of a table. */
 function renderLeader(table) {
+    // A table of one leads nothing.
+    if (table.rows.length < 2)
+        return "";
     const leader = leaderOf(table);
     if (!leader)
         return "";
@@ -83,12 +86,12 @@ function renderLeader(table) {
 function renderLeaderboardTable(table) {
     const id = esc(table.id);
     return `<section class="mt-72" id="${id}">
-<div class="section-head"><h2 id="${id}-title">${esc(table.title)}</h2><span>${esc(table.meta)}</span></div>
-<p class="note mt-12">${esc(table.desc)}</p>
+<div class="section-head"><h2 id="${id}-title">${esc(table.title)}</h2><span>${inlineCode(table.meta)}</span></div>
+<p class="note mt-12">${inlineCode(table.desc)}</p>
 ${renderLeader(table)}
 <div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
 ${renderTableHead()}
-${table.rows.map((row) => renderRow(neutralRow(row))).join("\n")}
+${table.rows.map((row) => renderRow(neutralRow(row), { ranked: table.rows.length > 1 })).join("\n")}
 </div></div>
 </section>`;
 }

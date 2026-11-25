@@ -43,10 +43,16 @@ const STATE_LABELS: Record<string, string> = {
 };
 export const stateLabel = (name: string): string => STATE_LABELS[name] ?? name;
 
-export function row(r: Row): string {
+// Since bench-viewer's polish round: a table of one row leaves its rank cell
+// empty, `backtick` spans in a table's meta and note are inline code, and a
+// headline's 40-digit sha reads as its first 7 (the full value is the title).
+const sha7 = (text: string) => text.replace(/\b([0-9a-f]{7})[0-9a-f]{33}\b/g, "$1");
+const code = (text: string) => esc(text).replace(/`([^`]+)`/g, "<code>$1</code>");
+
+export function row(r: Row, ranked = true): string {
   const cls = r.ours ? " ours" : "";
   return `<div class="t-row bench-cols${cls}" role="row">
-<span class="mono muted" role="cell">${esc(r.rank)}</span>
+<span class="mono muted" role="cell">${ranked ? esc(r.rank) : ""}</span>
 <div class="tool" role="rowheader"><div class="tool-name">${esc(r.tool)}</div><div class="tool-pin">${esc(r.pin)}</div></div>
 <div class="bar-cell" role="cell"><div class="bar${r.ours ? " hi" : ""}" aria-hidden="true"><div style="width:${r.median}%"></div></div><span class="bar-note">${esc(r.note)}</span></div>
 <span class="num strong" role="cell">${r.median.toFixed(2)}</span>
@@ -61,8 +67,8 @@ export function goldenHeadlines(HEADLINES: Headline[]): string {
 ${HEADLINES.map(
   (h) => `<div class="cell-pad headline">
 <p class="kicker">${esc(h.label)}</p>
-<p class="headline-v"><span>${esc(h.value)}</span><span class="mono muted">vs ${esc(h.vs)}</span></p>
-<p class="small mt-12">${esc(h.sub)}</p>
+<p class="headline-v"><span>${esc(h.value)}</span><span class="mono muted"${sha7(h.vs) === h.vs ? "" : ` title="${esc(h.vs)}"`}>vs ${esc(sha7(h.vs))}</span></p>
+<p class="small mt-12">${code(sha7(h.sub))}</p>
 </div>`,
 ).join("\n")}
 </div>`;
@@ -71,11 +77,11 @@ ${HEADLINES.map(
 export function goldenTable(t: Table, escapeRawText = false): string {
   const id = escapeRawText ? escapeGoldenText(t.id) : t.id;
   return `<section class="mt-72" id="${id}">
-<div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${esc(t.meta)}</span></div>
-<p class="note mt-12">${esc(t.desc)}</p>
+<div class="section-head"><h2 id="${id}-title">${esc(t.title)}</h2><span>${code(t.meta)}</span></div>
+<p class="note mt-12">${code(t.desc)}</p>
 <div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
 <div class="t-row head bench-cols" role="row"><span role="columnheader">#</span><span role="columnheader">Tool · pin</span><span role="columnheader">Median · 95% CI</span><span class="r" role="columnheader">Median (fail = 0)</span><span class="r" role="columnheader">Mean (fail = 0)</span><span class="r" role="columnheader">Scored</span><span class="r" role="columnheader">Failed</span></div>
-${t.rows.map(row).join("\n")}
+${t.rows.map((r) => row(r, t.rows.length > 1)).join("\n")}
 </div></div>
 </section>`;
 }

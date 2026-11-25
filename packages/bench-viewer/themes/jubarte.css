@@ -279,7 +279,7 @@ main.wrap {
   text-align: right;
 }
 .t-row.ours {
-  background: linear-gradient(90deg, var(--hl-soft), transparent 70%);
+  background: var(--hl-soft);
 }
 .tool-name {
   font-size: 0.875rem;

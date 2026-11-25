@@ -103,9 +103,11 @@ describe("leaderboard page", () => {
     }
   });
 
-  test("calls out the leader of every table", () => {
+  test("calls out the leader of every table that ranks more than one tool", () => {
     const text = textOf(page);
-    expect(page.match(/Leader: /g)?.length ?? 0).toBe(fixture.tables.length);
+    const ranked = fixture.tables.filter((table) => table.rows.length > 1);
+    expect(ranked.length).toBeLessThan(fixture.tables.length); // the fixture holds a table of one
+    expect(page.match(/Leader: /g)?.length ?? 0).toBe(ranked.length);
     // The leader is the row ranked 1, not the row that is ours.
     expect(text).toContain("Leader: docxodus — median 99.87");
     expect(text).toContain("Leader: office2pdf — median 84.34");
@@ -184,5 +186,25 @@ describe("build-pages themes", () => {
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
+  });
+});
+
+describe("a table of one on the leaderboard page", () => {
+  const page = buildLeaderboardPage(fixture);
+  const one = fixture.tables.find((table) => table.rows.length === 1);
+
+  test("names no leader and prints no rank", () => {
+    expect(one).toBeDefined();
+    const section = page.slice(page.indexOf(`<section class="mt-72" id="${one?.id}">`));
+    const own = section.slice(0, section.indexOf("</section>"));
+    expect(own).not.toContain("Leader: ");
+    expect(own).toContain('<span class="mono muted" role="cell"></span>');
+  });
+
+  test("backtick spans in a table's meta and note are code, not literal backticks", () => {
+    const withCode = structuredClone(fixture) as Scores;
+    withCode.tables[0].meta = "set `c947065c59b2`";
+    const html = buildLeaderboardPage(withCode);
+    expect(html).toContain("set <code>c947065c59b2</code>");
   });
 });

@@ -1218,6 +1218,20 @@ def _span(ci: Sequence[float] | None) -> str:
     return f'[{ci[0]}, {ci[1]}]' if ci else 'not computed'
 
 
+def _tie_note(ours: str | None, theirs: str | None, shared: int = 2) -> str:
+    """The headline's word on a tie, read from the ranks the table prints: only
+    when the table gives the two the same shared rank (``k=``) does the headline
+    call them tied, and it names that rank. A tie the pair's own interval implies
+    but the table's chain does not show is not claimed. ``shared`` is how many
+    rows hold that rank: when other tools share it too, the note says so."""
+    if not ours or ours != theirs or not ours.endswith('='):
+        return ''
+    if shared <= 2:
+        return f' The table ranks the two tied ({ours}).'
+    others = shared - 2
+    return f" The table ranks them tied ({ours}) with {others} other tool{'s' if others > 1 else ''}."
+
+
 def _document_scores(block: dict) -> dict[str, float]:
     """A tool block's per-document scores as floats: the redline results file each as
     ``{'overall': x}``, the conversion results as a bare number."""
@@ -1316,6 +1330,12 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
                      row('soffice', sof_c, ci_note=True)]
         red_rows = [row(f'jubarte-{version} †', jub_r, ours=True),
                     row('docxodus', doc_r)]
+    # Ranked once: the table shows these ranks and the headline repeats them.
+    red_ranked = _ranked(redline, red_rows)
+    red_rank = {r['tool']: r['rank'] for r in red_ranked}
+    ours_rank = red_rank.get(f'jubarte-{version} †')
+    r_tie = _tie_note(ours_rank, red_rank.get('docxodus'),
+                      sum(r['rank'] == ours_rank for r in red_ranked))
     tables = [
         {'id': 'conversion-sample',
          'title': (f"DOCX → PDF vs Word's own PDF — the {docs}-document set" if fixed
@@ -1349,7 +1369,7 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
                   f'the rest spread over the document families (every path and sha256 in release_info/{redline_stem}.csv). '
                   "Each tool redlines the pair; Word opens that redline and exports it to PDF, scored against Word's own compare. "
                   'A pair with no scored PDF counts 0.'),
-         'rows': _ranked(redline, red_rows)},
+         'rows': red_ranked},
     ]
     def state_median(block: dict, name: str) -> float | None:
         return (block.get('by_state') or {}).get(name, {}).get('median')
@@ -1390,10 +1410,10 @@ def website_records(version: str, generated: str, redline: dict, conversion: dic
          'vs': (f"{doc_r['version']} {doc_r['median']:.2f}" if fixed and ran_doc
                 else (f"Docxodus {doc_r['median']:.2f}" if ran_doc else 'not run')),
          'sub': (f"{pairs} pairs of the fixed redline set (set {set_version}), one Word compare each; "
-                 f'paired 95% CI of the difference {r_ci}. '
+                 f'paired 95% CI of the difference {r_ci}.{r_tie} '
                  f'Set list and shas: release_info/{redline_stem}.csv.'
                  if fixed else
-                 f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}. '
+                 f'{pairs} document pairs, one Word compare each; paired 95% CI of the difference {r_ci}.{r_tie} '
                  f'Sample list and shas: release_info/{redline_stem}.csv.')},
     ]
     method = [

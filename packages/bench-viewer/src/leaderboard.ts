@@ -16,6 +16,7 @@
 import { esc } from "./esc.ts";
 import { requireHttpUrl } from "./parse.ts";
 import {
+  inlineCode,
   renderBadge,
   renderMethod,
   renderProvenance,
@@ -105,6 +106,8 @@ function leaderOf(table: Table): Row | undefined {
 
 /** The line that names the leader of a table. */
 function renderLeader(table: Table): string {
+  // A table of one leads nothing.
+  if (table.rows.length < 2) return "";
   const leader = leaderOf(table);
   if (!leader) return "";
   return `<p class="lb-leader">Leader: <span class="lb-tool">${esc(stripAffiliation(leader.tool))}</span> — median <span class="mono">${leader.median.toFixed(2)}</span></p>`;
@@ -114,12 +117,12 @@ function renderLeader(table: Table): string {
 function renderLeaderboardTable(table: Table): string {
   const id = esc(table.id);
   return `<section class="mt-72" id="${id}">
-<div class="section-head"><h2 id="${id}-title">${esc(table.title)}</h2><span>${esc(table.meta)}</span></div>
-<p class="note mt-12">${esc(table.desc)}</p>
+<div class="section-head"><h2 id="${id}-title">${esc(table.title)}</h2><span>${inlineCode(table.meta)}</span></div>
+<p class="note mt-12">${inlineCode(table.desc)}</p>
 ${renderLeader(table)}
 <div class="scroll-x"><div class="bench-table" role="table" aria-labelledby="${id}-title">
 ${renderTableHead()}
-${table.rows.map((row) => renderRow(neutralRow(row))).join("\n")}
+${table.rows.map((row) => renderRow(neutralRow(row), { ranked: table.rows.length > 1 })).join("\n")}
 </div></div>
 </section>`;
 }
