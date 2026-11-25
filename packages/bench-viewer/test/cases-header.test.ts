@@ -211,6 +211,21 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
     expect(caseLabels([e, d, c, b, a])).toEqual(labels);
   });
 
+  test("conversion ids of a state and hashes read apart (ndb-v0.0.10: 267 → 860 of 860)", () => {
+    const a = "clean__010cd893de_003c49178daa9062e84e769e1d6ab945d773ead75ca6da68";
+    const b = "clean__014f5b166b_0085209e9b3ab0868bc2f0148f1d27f12a95fa9a49727438";
+    const c = "clean__0a1b2c3d4e_file_160";
+    const labels = caseLabels([a, b, c]);
+    expect(labels.get(a)).toBe("clean · 003c491");
+    expect(labels.get(b)).toBe("clean · 0085209");
+    expect(labels.get(c)).toBe("clean file 160");
+  });
+
+  test("the id fallback never repeats another case's label (review on #209)", () => {
+    const labels = caseLabels(["file", "_file", "file_·_file"]);
+    expect(new Set(labels.values()).size).toBe(3);
+  });
+
   test("an empty side of a pair is dropped", () => {
     expect(caseLabel("left_doc__vs__")).toBe("left doc");
     expect(caseLabel("__vs__right_doc")).toBe("right doc");

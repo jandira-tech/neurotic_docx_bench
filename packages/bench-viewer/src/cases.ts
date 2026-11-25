@@ -1052,7 +1052,10 @@ export function caseLabels(ids: Iterable<string>): Map<string, string> {
   // shortest whose suffixes are distinct among them and free elsewhere.
   const groups = new Map<string, string[]>();
   for (const [id, label] of base) {
-    if (!labels.has(id)) groups.set(label, [...(groups.get(label) ?? []), id]);
+    if (labels.has(id)) continue;
+    const members = groups.get(label);
+    if (members) members.push(id);
+    else groups.set(label, [id]);
   }
   for (const [label, members] of groups) {
     const suffixed = (n: number) => members.map((id) => `${label} · ${tailHash(id).slice(0, n)}`);
@@ -1062,8 +1065,11 @@ export function caseLabels(ids: Iterable<string>): Map<string, string> {
     const length = [7, 10, 16, longest].find((n) => fits(suffixed(n)));
     const names = length ? suffixed(length) : members.map((id) => `${label} · ${id}`);
     members.forEach((id, i) => {
-      labels.set(id, names[i]);
-      taken.add(names[i]);
+      // The id fallback can still meet a label some other case says; count up.
+      let name = names[i];
+      for (let k = 2; !length && taken.has(name); k++) name = `${label} · ${id} (${k})`;
+      labels.set(id, name);
+      taken.add(name);
     });
   }
   return labels;
