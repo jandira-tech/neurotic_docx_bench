@@ -775,18 +775,53 @@ export function applyInlineCss(root) {
 const HASH_TOKEN = /^[0-9a-f]{8,}$/;
 /**
  * A case id said for a reader: the hash tokens dropped, underscores as
- * spaces, the two sides of a redline pair joined by "vs". The id stays the
- * identity (links, filters, the title tooltip); this is only its label.
+ * spaces, the two sides of a redline pair joined by "vs", the pair's
+ * trailing `_redline_<hash>` run marker dropped (the group already says it is
+ * a redline). A side that is nothing but hashes keeps its first hash, cut to
+ * 7 digits, so a pair of hashed files still reads as two distinct sides:
+ * `0048ba31dd_000be19a…__vs__5203829c7a_001c…_redline_5fee58b86b` reads
+ * "0048ba3 vs 5203829", not "redline". The id stays the identity (links,
+ * filters, the title tooltip); this is only its label.
  * `d435c8d66c_file_104__vs__9e…_file_104_edited` reads "file 104 vs file 104
  * edited". An id that is nothing but hashes keeps its first 10 characters.
  */
 export function caseLabel(id) {
-    const side = (part) => part
-        .split(/_+/)
-        .filter((token) => token && !HASH_TOKEN.test(token))
-        .join(" ");
-    const label = id.split("__vs__").map(side).filter(Boolean).join(" vs ");
+    const pair = id.includes("__vs__");
+    const core = pair ? id.replace(/_redline_[0-9a-f]{8,}$/, "") : id;
+    const side = (part) => {
+        const tokens = part.split(/_+/).filter(Boolean);
+        const words = tokens.filter((token) => !HASH_TOKEN.test(token));
+        if (words.length)
+            return words.join(" ");
+        return pair ? (tokens[0] ?? "").slice(0, 7) : "";
+    };
+    const label = core.split("__vs__").map(side).filter(Boolean).join(" vs ");
     return label || id.slice(0, 10);
+}
+/** The last hash token of a case id: a redline pair's own run hash. */
+function tailHash(id) {
+    const tokens = id.split(/_+/).filter((token) => HASH_TOKEN.test(token));
+    return (tokens.at(-1) ?? id).slice(0, 7);
+}
+/**
+ * Every case's label, distinct: two ids whose `caseLabel` collides (the same
+ * file names, different content) each get their own short hash after a "·".
+ * Built over the whole group, so the list, the table and the nav bar say the
+ * same name whatever the filter hides.
+ */
+export function caseLabels(ids) {
+    const unique = [...new Set(ids)];
+    const count = new Map();
+    for (const id of unique) {
+        const label = caseLabel(id);
+        count.set(label, (count.get(label) ?? 0) + 1);
+    }
+    const labels = new Map();
+    for (const id of unique) {
+        const label = caseLabel(id);
+        labels.set(id, (count.get(label) ?? 0) > 1 ? `${label} · ${tailHash(id)}` : label);
+    }
+    return labels;
 }
 /**
  * A case's identity: its group and its id. One id can sit in several groups
@@ -804,11 +839,12 @@ export function renderCaseList(opts) {
     // The list keeps one Tab stop: the open case, or the first shown when a
     // filter has hidden the open one.
     const anySelected = opts.cases.some((c) => isSelected(c, opts.selected));
+    const labels = opts.labels ?? caseLabels(opts.cases.map((c) => c.case));
     return opts.cases
         .map((c, i) => {
         const on = isSelected(c, opts.selected);
         const stop = on || (!anySelected && i === 0);
-        return `<div class="case${on ? " sel" : ""}" role="option" aria-selected="${on}" tabindex="${stop ? 0 : -1}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(caseLabel(c.case))}</span><span class="grp">${esc(c.group)}</span></div>`;
+        return `<div class="case${on ? " sel" : ""}" role="option" aria-selected="${on}" tabindex="${stop ? 0 : -1}" data-case="${esc(c.case)}" data-key="${esc(caseKey(c))}"><span class="name" title="${esc(c.case)}">${esc(labels.get(c.case) ?? caseLabel(c.case))}</span><span class="grp">${esc(c.group)}</span></div>`;
     })
         .join("");
 }
@@ -843,6 +879,8 @@ export function renderEngineToggles(opts) {
 /** The score table. */
 export function renderScoresTable(opts) {
     const cases = opts.cases;
+    const labels = opts.labels ?? caseLabels(cases.map((c) => c.case));
+    const label = (id) => labels.get(id) ?? caseLabel(id);
     const laneList = opts.lanes ?? opts.engines;
     // A lane gets columns when a case on screen scores it, or when one shows its
     // pages unscored: the table says "not scored" rather than dropping it (#165).
@@ -871,7 +909,7 @@ export function renderScoresTable(opts) {
     }
     const cols = [
         // The label the cell shows sorts the column; the id breaks a tie.
-        { get: (row) => `${caseLabel(row.c.case)}\u0000${row.c.case}`, num: false },
+        { get: (row) => `${label(row.c.case)}\u0000${row.c.case}`, num: false },
         { get: (row) => row.c.group, num: false },
         {
             get: (row) => row.c.page_counts?.reference ?? (row.c.pages?.reference ?? []).length,
@@ -977,7 +1015,7 @@ export function renderScoresTable(opts) {
                     : `<td class="${esc(cls)}"></td>`;
             }
             if (j === 0) {
-                return `<td class="${esc(cls)} case-name" title="${esc(row.c.case)}">${esc(caseLabel(row.c.case))}</td>`;
+                return `<td class="${esc(cls)} case-name" title="${esc(row.c.case)}">${esc(label(row.c.case))}</td>`;
             }
             return `<td class="${esc(cls)}">${esc(text)}</td>`;
         })
@@ -1223,6 +1261,19 @@ export async function mountCasesPage(opts) {
         legend.innerHTML = renderCasesLegend({ kind: opts.kind, links: opts.links });
     applyInlineCss(legend);
     const cases = () => shards.get(group)?.cases ?? [];
+    // One distinct label per case over the whole group, so the list, the table,
+    // the nav bar and the search all say the same name whatever is filtered.
+    let labelsFor = null;
+    let labelMap = new Map();
+    const labels = () => {
+        const all = cases();
+        if (all !== labelsFor) {
+            labelsFor = all;
+            labelMap = caseLabels(all.map((c) => c.case));
+        }
+        return labelMap;
+    };
+    const labelOf = (id) => labels().get(id) ?? caseLabel(id);
     const current = () => cases()[sel];
     const sameCase = (a, b) => b !== undefined && a.case === b.case && a.group === b.group;
     const selKey = () => {
@@ -1232,7 +1283,7 @@ export async function mountCasesPage(opts) {
     const visibleCases = () => {
         const filter = state.filter.toLowerCase();
         return cases().filter((c) => {
-            if (filter && !`${caseLabel(c.case)} ${c.case} ${c.group}`.toLowerCase().includes(filter))
+            if (filter && !`${labelOf(c.case)} ${c.case} ${c.group}`.toLowerCase().includes(filter))
                 return false;
             const fx = state.fx;
             if (fx.pages) {
@@ -1377,13 +1428,13 @@ export async function mountCasesPage(opts) {
         const navCase = $("#navCase");
         if (navCase) {
             const c = current();
-            navCase.textContent = c ? caseLabel(c.case) : "";
+            navCase.textContent = c ? labelOf(c.case) : "";
             navCase.title = c?.case ?? "";
         }
         if (list) {
             // A re-render replaces the options; keep the keyboard on the list.
             const focused = doc.activeElement != null && list.contains(doc.activeElement);
-            list.innerHTML = renderCaseList({ cases: shown, selected: selKey() });
+            list.innerHTML = renderCaseList({ cases: shown, selected: selKey(), labels: labels() });
             if (focused)
                 focusOpened();
         }
@@ -1434,6 +1485,7 @@ export async function mountCasesPage(opts) {
                     engines: index.engines,
                     lanes: laneOrder,
                     selected: caseKey(c),
+                    labels: labels(),
                     sort: state.sort,
                 });
                 applyInlineCss(scores);

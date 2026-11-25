@@ -10,6 +10,7 @@ import {
   ALL_GROUPS,
   caseKey,
   caseLabel,
+  caseLabels,
   renderCaseList,
   renderCasesLegend,
   renderCasesPage,
@@ -145,8 +146,47 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
       caseLabel(
         "a0738533be_gdocs_comments_export__vs__d5a56cdeb3_super_editor__gdocs_single_comment_ac5db87f_redline_745218f254",
       ),
-    ).toBe("gdocs comments export vs super editor gdocs single comment redline");
+    ).toBe("gdocs comments export vs super editor gdocs single comment");
     expect(caseLabel("04a44a5b5d")).toBe("04a44a5b5d");
+  });
+
+  test("a pair of hashed files reads as its two short hashes, never as 'redline'", () => {
+    // ndb-v0.0.10's redline sample: 254 of 600 ids are hashes on both sides,
+    // and all 254 read "redline" before this.
+    const id =
+      "0048ba31dd_000be19a055234f8e79ec0baadc41d2a49050b2ea0a60654__vs__5203829c7a_001cc92b88566d5f930fe57f25813c0bf52a7bdc72c217d0_redline_5fee58b86b";
+    expect(caseLabel(id)).toBe("0048ba3 vs 5203829");
+    expect(
+      caseLabel(
+        "01d1b3da75_table_bookmark_end__vs__906753e55b_super_editor__table_c70ca973_redline_ba99cf4c8d",
+      ),
+    ).toBe("table bookmark end vs super editor table");
+  });
+
+  test("labels that collide each get the pair's own short hash", () => {
+    const a = "1111111111_file_6__vs__2222222222_file_7_redline_aaaaaaa111";
+    const b = "3333333333_file_6__vs__4444444444_file_7_redline_bbbbbbb222";
+    const c = "5555555555_file_8__vs__6666666666_file_9_redline_ccccccc333";
+    const labels = caseLabels([a, b, c]);
+    expect(labels.get(a)).toBe("file 6 vs file 7 · aaaaaaa");
+    expect(labels.get(b)).toBe("file 6 vs file 7 · bbbbbbb");
+    expect(labels.get(c)).toBe("file 8 vs file 9");
+    expect(new Set(labels.values()).size).toBe(3);
+  });
+
+  test("the list and the table say the group's labels, not the filtered few's", () => {
+    const a = {
+      case: "1111111111_file_6__vs__2222222222_file_7_redline_aaaaaaa111",
+      group: "g",
+    } as Case;
+    const b = {
+      case: "3333333333_file_6__vs__4444444444_file_7_redline_bbbbbbb222",
+      group: "g",
+    } as Case;
+    const labels = caseLabels([a.case, b.case]);
+    // The filter shows only `a`; its label still tells it from `b`.
+    expect(renderCaseList({ cases: [a], labels })).toContain("file 6 vs file 7 · aaaaaaa");
+    expect(renderCaseList({ cases: [a] })).not.toContain("·");
   });
 
   test("the case list is a listbox whose selected option takes the focus", () => {

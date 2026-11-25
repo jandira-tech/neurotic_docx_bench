@@ -310,15 +310,29 @@ export interface CaseListOptions {
     selected?: string;
     /** The text filter, already applied by the caller. */
     filter?: string;
+    /** Distinct labels (`caseLabels`) over the whole group; defaults to these cases'. */
+    labels?: Map<string, string>;
 }
 /**
  * A case id said for a reader: the hash tokens dropped, underscores as
- * spaces, the two sides of a redline pair joined by "vs". The id stays the
- * identity (links, filters, the title tooltip); this is only its label.
+ * spaces, the two sides of a redline pair joined by "vs", the pair's
+ * trailing `_redline_<hash>` run marker dropped (the group already says it is
+ * a redline). A side that is nothing but hashes keeps its first hash, cut to
+ * 7 digits, so a pair of hashed files still reads as two distinct sides:
+ * `0048ba31dd_000be19a…__vs__5203829c7a_001c…_redline_5fee58b86b` reads
+ * "0048ba3 vs 5203829", not "redline". The id stays the identity (links,
+ * filters, the title tooltip); this is only its label.
  * `d435c8d66c_file_104__vs__9e…_file_104_edited` reads "file 104 vs file 104
  * edited". An id that is nothing but hashes keeps its first 10 characters.
  */
 export declare function caseLabel(id: string): string;
+/**
+ * Every case's label, distinct: two ids whose `caseLabel` collides (the same
+ * file names, different content) each get their own short hash after a "·".
+ * Built over the whole group, so the list, the table and the nav bar say the
+ * same name whatever the filter hides.
+ */
+export declare function caseLabels(ids: Iterable<string>): Map<string, string>;
 /**
  * A case's identity: its group and its id. One id can sit in several groups
  * (the same document in two corpora), so "all groups" needs both.
@@ -362,6 +376,8 @@ export interface ScoresTableOptions {
     lanes?: Engine[];
     /** The selected case's id. */
     selected?: string;
+    /** Distinct labels (`caseLabels`) over the whole group; defaults to these cases'. */
+    labels?: Map<string, string>;
     /** The column the table is sorted by, and the way. */
     sort?: {
         col: number;
