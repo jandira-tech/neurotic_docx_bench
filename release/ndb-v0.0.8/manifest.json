@@ -1,0 +1,45 @@
+{
+  "archived_root": null,
+  "created": "2026-11-25T06:12:13.072911Z",
+  "excludes": [],
+  "files": [
+    {
+      "bytes": 5604897,
+      "path": "release/ndb-v0.0.8/results/release/cases/conversion/cases--release-0.20.0.json",
+      "served": false,
+      "sha256": "e4c9a5383166b9e3419003085731c0b4b4960a6b8b3230d0d3e0a78e4b2a3afb"
+    },
+    {
+      "bytes": 850,
+      "path": "release/ndb-v0.0.8/results/release/cases/index.json",
+      "served": false,
+      "sha256": "ef40e4706fc39880132048355b7685709ac901e2e19446acc39193e2758ab015"
+    },
+    {
+      "bytes": 2375207,
+      "path": "release/ndb-v0.0.8/results/release/cases/redline/redlines--release-0.20.0.json",
+      "served": false,
+      "sha256": "36282ffb0d614043d33c11f90e18814ef03250678560a5f131320b63da5ca534"
+    },
+    {
+      "bytes": 13470,
+      "path": "release/ndb-v0.0.8/results/release/speed.json",
+      "served": false,
+      "sha256": "f094ef67bcd614e20a027b912ef9861633d32e0b69ce2aa282d792aae5a5b1b7"
+    },
+    {
+      "bytes": 42901,
+      "path": "release/ndb-v0.0.8/results/scores.json",
+      "served": false,
+      "sha256": "d87d66aca54242c45a04a701ec0deeba5789da52c09d419bbb03e28f1f2afa0d"
+    }
+  ],
+  "hf": {
+    "repo": "arthrod/neurotic_docx_bench",
+    "revision": "c9542e63e9377ba7023d378242fd2aaf420729d0"
+  },
+  "producer": "ndb",
+  "r2_prefix": "ndb-v0.0.8/",
+  "tag": "ndb-v0.0.8",
+  "viewer_version": null
+}
