@@ -103,13 +103,19 @@ describe("leaderboard page", () => {
     }
   });
 
-  test("the samples heading claims no size: the samples differ (860 documents, 600 pairs)", () => {
-    // Each sample table's own title says its size; one count over both was
-    // wrong as soon as the conversion and redline samples differed.
-    expect(SAMPLES_HEADING).not.toMatch(/\d/);
-    const at = page.indexOf(`id="${SAMPLES_HEADING_ID}"`);
-    const heading = page.slice(at, page.indexOf("</h2>", at));
-    expect(heading).not.toMatch(/\d/);
+  test("the samples heading claims no size, even when the samples differ in size", () => {
+    // ndb-v0.0.11's samples differ (860 documents, 600 pairs); each sample
+    // table's own title says its size, so the heading must not.
+    const uneven = structuredClone(fixture) as Scores;
+    const sample = uneven.tables.find((t) => t.id === "conversion-sample");
+    expect(sample).toBeDefined();
+    for (const row of sample?.rows ?? []) row.docs = 860;
+    const html = buildLeaderboardPage(uneven);
+    const at = html.indexOf(`id="${SAMPLES_HEADING_ID}"`);
+    expect(at).toBeGreaterThan(-1);
+    const heading = textOf(html.slice(html.lastIndexOf("<h2", at), html.indexOf("</h2>", at) + 5));
+    expect(heading).toBe(SAMPLES_HEADING);
+    expect(heading).toBe("Release samples");
   });
 
   test("calls out the leader of every table that ranks more than one tool", () => {
