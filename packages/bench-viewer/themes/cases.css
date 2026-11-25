@@ -388,27 +388,26 @@ body.alleng #engines label.legacy {
 }
 
 /* The scores table switch and the bench links sit beside the About summary,
-   not in it: a summary holds no other controls. */
+   not in it: a summary holds no other controls. The disclosure comes first in
+   the DOM and on screen, so Tab follows what the eye reads; on a narrow bar
+   the actions wrap below it instead of covering it. */
 #legend .about-bar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 #legend .about-bar > .about {
-  grid-column: 1 / -1;
-  grid-row: 1;
+  flex: 1 1 20rem;
+  min-width: 0;
 }
 
 #legend .about-acts {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: start;
+  flex: 0 1 auto;
   display: flex;
   flex-wrap: wrap;
   gap: 6px 10px;
   padding: 4px 14px;
-  position: relative;
-  z-index: 1;
 }
 
 #legend .about-acts button,

@@ -475,6 +475,15 @@ describe("the file links", () => {
     );
   });
 
+  test("a head with no engine list still takes a skin's lane colour", () => {
+    const html = renderCaseHead({
+      case: scoredCase(),
+      engine: { key: "jubarte-0.20.0", label: "jubarte" },
+      assetsBase: index.assets_base,
+    });
+    expect(html).toContain("var(--lane-jubarte, var(--lane, ");
+  });
+
   test("a lane without a file gets no link", () => {
     const html = renderCaseHead({
       case: scoredCase(),
@@ -666,11 +675,16 @@ describe("the old data", () => {
     // has no h2 above them, so an h3 skipped a level), and a lane's colour is a
     // var(--lane-<engine>, var(--lane, <default>)) a skin can override. Undo just
     // those two; everything else must still render byte for byte as before.
-    const legacyShape = (html: string) =>
-      html
+    // The new shape is required, not merely tolerated: no h3 column head and no
+    // bare palette colour may survive, so reverting either change fails here.
+    const legacyShape = (html: string) => {
+      expect(html).not.toContain('<h3 class="colhead"');
+      expect(html).not.toMatch(/solid #[0-9A-Fa-f]{6}/);
+      return html
         .replace(/<(\/?)h2( class="colhead"|>)/g, "<$1h3$2")
         .replace(/<\/h2>/g, "</h3>")
         .replace(/var\(--lane-[a-z0-9-]+, var\(--lane, (#[0-9A-Fa-f]{6})\)\)/g, "$1");
+    };
     const legacy = (await readJson(
       fileURLToPath(new URL("./fixtures/cases-legacy.json", import.meta.url)),
     )) as Record<string, string>;

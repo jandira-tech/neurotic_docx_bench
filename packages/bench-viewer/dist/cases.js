@@ -651,7 +651,7 @@ export function renderCaseHead(opts) {
     const shown = (c.pages?.[key] ?? []).filter((slot) => slot !== null).length;
     const pages = c.page_counts?.[key] ?? shown;
     const version = c.versions?.[key] ?? "";
-    const color = opts.engines ? laneColor(opts.engines, key) : LANE_COLORS[0];
+    const color = laneColor(opts.engines ?? [], key);
     // A reference PDF printed by another producer is not Word's own export; say so.
     const odd = key === "reference" && c.reference_app && c.reference_app !== "Microsoft Word"
         ? ` (${c.reference_app})`
@@ -975,17 +975,24 @@ export function renderCasesLegend(opts) {
         },
     ];
     const to = {
-        conversion: "../index.html",
-        redlines: "../redlines/index.html",
-        speed: "../speed/index.html",
-        ...opts.links,
+        conversion: opts.links?.conversion ?? "../index.html",
+        redlines: opts.links?.redlines ?? "../redlines/index.html",
+        speed: opts.links?.speed ?? "../speed/index.html",
     };
     const links = `<a href="${esc(to.conversion)}">DOCX → PDF</a><a href="${esc(to.redlines)}">Redlines</a><a href="${esc(to.speed)}">Speed</a>`;
     // The scores table switch and the links sit beside the summary, not in it:
     // a summary holds no other interactive controls.
-    return `<div class="about-bar"><span class="about-acts"><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</span><details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span></summary><div class="items">${items
+    const acts = `<span class="about-acts"><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</span>`;
+    return `<div class="about-bar"><details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span></summary><div class="items">${items
         .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" data-css="background:var(--about-dot, var(--mark))"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
-        .join("")}</div></details></div>`;
+        .join("")}</div></details>${acts}</div>`;
+}
+// ---- the page --------------------------------------------------------------------------
+/** A value as a JS literal safe inside an inline <script>: JSON, with every
+ * "<" escaped so no "</script>" can close the element early. HTML escaping is
+ * wrong here: a script's text is not entity-decoded, so "&amp;" would stay. */
+function jsValue(value) {
+    return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 /** The whole page: the shell the wiring fills in. No data in it. */
 export function renderCasesPage(opts) {
@@ -1047,8 +1054,8 @@ export function renderCasesPage(opts) {
 <button type="submit">Done</button></form></dialog>
 <footer class="site"><span class="mono">neurotic_docx_bench · © MMXXVI</span><span>Maintained by <a href="https://arthur.law/" rel="noopener">Arthur Souza Rodrigues</a>, author of jubarte, one of the engines compared.</span><a href="${esc(indexHref)}">Scores →</a><a href="${esc(speedHref)}">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench" rel="noopener">Bench repo →</a></footer>
 <script type="module">
-import { mountCasesPage } from "${esc(opts.moduleUrl)}";
-mountCasesPage({ kind: ${JSON.stringify(opts.kind)}, indexUrl: "${esc(opts.indexUrl)}", modeUrl: "${esc(modeValue)}", links: ${JSON.stringify({ conversion: conversionHref, redlines: redlinesHref, speed: speedHref }).replace(/</g, "\\u003c")} });
+import { mountCasesPage } from ${jsValue(opts.moduleUrl)};
+mountCasesPage({ kind: ${jsValue(opts.kind)}, indexUrl: ${jsValue(opts.indexUrl)}, modeUrl: ${jsValue(modeValue)}, links: ${jsValue({ conversion: conversionHref, redlines: redlinesHref, speed: speedHref })} });
 </script>
 </body>
 </html>

@@ -53,6 +53,36 @@ describe("the header", () => {
     }
   });
 
+  test("(6) a link left undefined keeps its default", () => {
+    const legend = renderCasesLegend({ kind: "redline", links: { speed: undefined } });
+    expect(legend).toContain('<a href="../speed/index.html">Speed</a>');
+  });
+
+  test("(7) the inline script carries URLs as JS strings, not HTML-escaped", () => {
+    const html = renderCasesPage({
+      kind: "redline",
+      indexUrl: "i.json?case=3&group=win",
+      moduleUrl: "m.js?v=1&x=2",
+    });
+    const script = html.slice(html.indexOf('<script type="module">'), html.indexOf("</script>"));
+    expect(script).toContain('indexUrl: "i.json?case=3&group=win"');
+    expect(script).toContain('from "m.js?v=1&x=2"');
+    expect(script).not.toContain("&amp;");
+    const hostile = renderCasesPage({
+      kind: "redline",
+      indexUrl: "</script><b>",
+      moduleUrl: "m.js",
+    });
+    expect(hostile.match(/<\/script>/g)?.length).toBe(1);
+  });
+
+  test("(8) the About disclosure comes before its actions in the DOM", () => {
+    const legend = renderCasesLegend({ kind: "conversion" });
+    expect(legend.indexOf('<details class="about"')).toBeLessThan(
+      legend.indexOf('class="about-acts"'),
+    );
+  });
+
   test("(5) the About links go where the page says", () => {
     const legend = renderCasesLegend({
       kind: "redline",
