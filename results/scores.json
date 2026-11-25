@@ -1168,7 +1168,7 @@
           "mean": 75.81,
           "median": 84.56,
           "note": "= 100: 342 · ≥ 90: 729 · < 50: 500 · ink 0.75 · text 0.82",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.17.0 (release)",
           "rank": "1",
           "tool": "jubarte-0.17.0"
@@ -1179,7 +1179,7 @@
           "mean": 74.33,
           "median": 84.46,
           "note": "= 100: 344 · ≥ 90: 704 · < 50: 546 · ink 0.74 · text 0.81",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.14.0 (release)",
           "rank": "2",
           "tool": "jubarte-0.14.0"
@@ -1190,7 +1190,7 @@
           "mean": 74.77,
           "median": 84.15,
           "note": "= 100: 241 · ≥ 90: 615 · < 50: 619 · ink 0.73 · text 0.80",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.10.1 (release)",
           "rank": "3",
           "tool": "jubarte-0.10.1"
@@ -1212,7 +1212,7 @@
           "mean": 68.62,
           "median": 79.07,
           "note": "= 100: 309 · ≥ 90: 634 · < 50: 780 · ink 0.67 · text 0.76",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.9.3 (release)",
           "rank": "5",
           "tool": "jubarte-093"
@@ -1404,7 +1404,7 @@
           "mean": 52.5,
           "median": 47.98,
           "note": "= 100: 1 · ≥ 90: 16 · < 50: 327 · ink 0.23 · text n/a",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.20.0 (release)",
           "rank": "2",
           "tool": "jubarte-0.20.0"
@@ -1456,7 +1456,7 @@
           "mean": 68.92,
           "median": 69.44,
           "note": "= 100: 0 · ≥ 90: 11 · < 50: 63 · ink 0.41 · text n/a",
-          "ours": false,
+          "ours": true,
           "pin": "jubarte 0.20.0 (release)",
           "rank": "1",
           "tool": "jubarte-0.20.0"
