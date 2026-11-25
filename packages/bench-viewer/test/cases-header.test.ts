@@ -207,3 +207,9 @@ describe("polish round: cases a reader can name and a keyboard can reach", () =>
     expect(casesCss).toContain("#bar .grp:has(#ovl:not(:checked))");
   });
 });
+
+describe("targets", () => {
+  test("the brand bar's links are 24px tall at least (WCAG 2.2 2.5.8)", () => {
+    expect(casesCss).toMatch(/#brand \.links a\s*\{[^}]*min-height:\s*24px/);
+  });
+});
