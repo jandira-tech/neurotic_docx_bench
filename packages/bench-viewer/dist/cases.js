@@ -564,7 +564,13 @@ export const LANE_COLORS = [
 export function laneColor(engines, key) {
     const index = engines.findIndex((engine) => engine.key === key);
     const at = Math.max(index, 0);
-    return LANE_COLORS[at % LANE_COLORS.length];
+    // A skin may name a lane's colour: --lane-<engine> (its key without a
+    // version suffix), then --lane for every lane it does not name.
+    const name = String(key)
+        .toLowerCase()
+        .replace(/-\d[\w.+-]*$/, "")
+        .replace(/[^a-z0-9-]/g, "-");
+    return `var(--lane-${name}, var(--lane, ${LANE_COLORS[at % LANE_COLORS.length]}))`;
 }
 /** A score as the page shows it: one decimal and a percent sign. */
 export function formatScore(value) {
@@ -645,7 +651,7 @@ export function renderCaseHead(opts) {
     const shown = (c.pages?.[key] ?? []).filter((slot) => slot !== null).length;
     const pages = c.page_counts?.[key] ?? shown;
     const version = c.versions?.[key] ?? "";
-    const color = opts.engines ? laneColor(opts.engines, key) : LANE_COLORS[0];
+    const color = laneColor(opts.engines ?? [], key);
     // A reference PDF printed by another producer is not Word's own export; say so.
     const odd = key === "reference" && c.reference_app && c.reference_app !== "Microsoft Word"
         ? ` (${c.reference_app})`
@@ -676,13 +682,13 @@ export function renderCaseHead(opts) {
     if (opts.compact) {
         const first = METRICS.find((metric) => scores[metric] != null);
         const score = first ? ` · ${METRIC_LABEL[first]} ${formatScore(scores[first])}` : "";
-        return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}${unscoredNote}</h3>`;
+        return `<h2 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${filesLink} · ${esc(pages)} p${esc(score)}${unscoredNote}</h2>`;
     }
-    return `<h3 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
+    return `<h2 class="colhead" data-css="border-top:2px solid ${esc(color)}"><b>${esc(label)}</b>${pdfUrl
         ? ` <a href="${esc(pdfUrl)}" target="_blank" rel="noopener" title="Shown pages as a PDF">PDF</a>`
         : ""}${filesLink}${ver ? ` <span class="ver">${esc(ver)}</span>` : ""} · ${esc(pages)} p${esc(count)}${metricText}${state === "unavailable" || state === "not-applicable" || state === "dropped"
         ? ` · <span class="lane-note">${esc(LANE_LABEL[state])}</span>`
-        : ""}${unscoredNote}</h3>`;
+        : ""}${unscoredNote}</h2>`;
 }
 /** The whole grid. */
 export function renderCaseGrid(opts) {
@@ -968,10 +974,25 @@ export function renderCasesLegend(opts) {
             body: esc("A lane marked dropped is not part of this case; not measured means the cohort has no published measurement for it; not applicable means the lane was excluded for cause. A lane that failed keeps its error under its pages."),
         },
     ];
-    const links = `<a href="../index.html">DOCX → PDF</a><a href="../redlines/index.html">Redlines</a><a href="../speed/index.html">Speed</a>`;
-    return `<details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</summary><div class="items">${items
-        .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" data-css="background:var(--mark)"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
-        .join("")}</div></details>`;
+    const to = {
+        conversion: opts.links?.conversion ?? "../index.html",
+        redlines: opts.links?.redlines ?? "../redlines/index.html",
+        speed: opts.links?.speed ?? "../speed/index.html",
+    };
+    const links = `<a href="${esc(to.conversion)}">DOCX → PDF</a><a href="${esc(to.redlines)}">Redlines</a><a href="${esc(to.speed)}">Speed</a>`;
+    // The scores table switch and the links sit beside the summary, not in it:
+    // a summary holds no other interactive controls.
+    const acts = `<span class="about-acts"><button id="viewToggle" type="button" title="scores table (t)">Scores table</button>${links}</span>`;
+    return `<div class="about-bar"><details class="about"><summary><span class="chev">&#9656;</span><span class="ttl">About these scores</span><span class="hint">${esc(items.length)} notes</span></summary><div class="items">${items
+        .map((item) => `<details class="item"><summary><span class="chev">&#9656;</span><span class="dot" data-css="background:var(--about-dot, var(--mark))"></span><b>${esc(item.title)}</b>${item.sub ? `<span class="sub">${esc(item.sub)}</span>` : ""}</summary><div>${item.body}</div></details>`)
+        .join("")}</div></details>${acts}</div>`;
+}
+// ---- the page --------------------------------------------------------------------------
+/** A value as a JS literal safe inside an inline <script>: JSON, with every
+ * "<" escaped so no "</script>" can close the element early. HTML escaping is
+ * wrong here: a script's text is not entity-decoded, so "&amp;" would stay. */
+function jsValue(value) {
+    return JSON.stringify(value).replace(/</g, "\\u003c");
 }
 /** The whole page: the shell the wiring fills in. No data in it. */
 export function renderCasesPage(opts) {
@@ -1002,19 +1023,19 @@ export function renderCasesPage(opts) {
 </head>
 <body class="viewer">
 <header id="brand"><a class="logo" href="${esc(indexHref)}">NEUROTIC.DOCX.BENCH</a><span class="crumb">/ ${esc(crumb)}</span><span class="links"><a href="${esc(indexHref)}">Scores</a><a href="${esc(speedHref)}">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench">Bench repo ↗</a></span></header>
-<div id="mbar"><button id="mMenu" type="button" aria-label="Open the case list" aria-expanded="false" aria-controls="side">&#9776;</button><select id="mMode" aria-label="Which bench"></select><button id="mLayout" type="button">Layout</button></div>
-<div id="mhead"><span id="mCase"></span><span id="mPos"></span><label>vs <select id="mSecond" aria-label="Engine compared with Word"></select></label><button id="mExpand" type="button" class="hidden">Whole page</button></div>
-<div id="bar">
+<div id="mbar" role="region" aria-label="Bench and layout"><button id="mMenu" type="button" aria-label="Open the case list" aria-expanded="false" aria-controls="side">&#9776;</button><select id="mMode" aria-label="Which bench"></select><button id="mLayout" type="button">Layout</button></div>
+<div id="mhead" role="region" aria-label="Case"><span id="mCase"></span><span id="mPos"></span><label>vs <select id="mSecond" aria-label="Engine compared with Word"></select></label><button id="mExpand" type="button" class="hidden">Whole page</button></div>
+<div id="bar" role="region" aria-label="Case controls">
   <button id="sideToggle" aria-label="Hide or show the case list" title="hide / show the case list (s)">&#9776;</button>
-  <span class="grp"><select id="mode" autocomplete="off" title="what to compare"><option value="${esc(conversionHref)}">Convert DOCX → PDF</option><option value="${esc(redlinesHref)}"${opts.kind === "redline" ? " selected" : ""}>Compare (redline) two documents</option></select></span>
+  <span class="grp"><select id="mode" autocomplete="off" aria-label="What to compare" title="what to compare"><option value="${esc(conversionHref)}">Convert DOCX → PDF</option><option value="${esc(redlinesHref)}"${opts.kind === "redline" ? " selected" : ""}>Compare (redline) two documents</option></select></span>
   <span class="grp" id="nav"><button id="navPrev" title="previous case (&uarr;)">&lsaquo; prev</button><button id="navRand" title="random case (r)">random</button><button id="navNext" title="next case (&darr;)">next &rsaquo;</button><span id="navPos"></span></span>
   <span class="grp"><label>zoom <input type="range" id="zoom" min="200" max="1400" value="600" step="20"></label></span>
   <span class="brk" aria-hidden="true"></span>
   <span class="grp"><label><input type="checkbox" id="ovl"> overlay</label><select id="ovlA" aria-label="Engine under"></select> under <select id="ovlB" aria-label="Engine over"></select><select id="blend" aria-label="Blend mode"><option value="normal">opacity</option><option value="difference">difference</option><option value="multiply">multiply</option></select><input type="range" id="alpha" aria-label="Overlay opacity" min="0" max="100" value="50"></span>
   <span id="keys" class="hidden"><kbd>1</kbd>-<kbd>9</kbd> engines &nbsp;<kbd>&uarr;</kbd><kbd>&darr;</kbd> cases &nbsp;<kbd>r</kbd> random &nbsp;<kbd>s</kbd> side panel &nbsp;<kbd>o</kbd> overlay &nbsp;<kbd>m</kbd> more pages &nbsp;<kbd>t</kbd> scores table</span>
 </div>
-<div id="engines" aria-label="Engines"></div>
-<div id="legend"></div>
+<div id="engines" role="region" aria-label="Engines"></div>
+<div id="legend" role="region" aria-label="About these scores"></div>
 <aside id="side" aria-label="Cases"><div id="sidehead"><input id="filter" type="search" autocomplete="off" aria-label="Filter cases" placeholder="filter cases (name, group)…"><div id="fx">
   <label for="fxGroup">group</label><select id="fxGroup"></select>
   <label for="fxPages">pages</label><select id="fxPages"><option value="">any</option><option value="1-1">1</option><option value="2-3">2–3</option><option value="4-10">4–10</option><option value="11-">11+</option></select>
@@ -1023,7 +1044,7 @@ export function renderCasesPage(opts) {
   <span class="foot"><span id="fxn"></span><button id="fxRand" title="open a random case of this list (r)">random</button><button id="fxClear" title="clear every filter">clear</button></span>
 </div></div><div id="list"><div class="case" aria-busy="true"><span class="name">Loading cases…</span></div></div></aside>
 <main id="main"><div id="grid"></div><div id="overlay" class="hidden"></div><button id="more" class="hidden">more pages</button><div id="scores" class="hidden"></div></main>
-<div id="mfoot"><button id="mPrev" type="button">&lsaquo; Prev</button><button id="mRand" type="button">Random</button><button id="mNext" type="button">Next &rsaquo;</button><button id="mOvl" type="button" aria-pressed="false">Overlay</button></div>
+<div id="mfoot" role="region" aria-label="Case navigation"><button id="mPrev" type="button">&lsaquo; Prev</button><button id="mRand" type="button">Random</button><button id="mNext" type="button">Next &rsaquo;</button><button id="mOvl" type="button" aria-pressed="false">Overlay</button></div>
 <div id="scrim"></div>
 <dialog id="msheet" aria-labelledby="msheetTitle"><form method="dialog"><h2 id="msheetTitle"><span class="sq"></span> Mobile layout</h2>
 <label class="opt"><input type="radio" name="ml" value="half"><span><b>Side by side, top half</b><small>Word and one engine, cropped to the top of each page so text stays legible. Tap “Whole page” to see the rest.</small></span></label>
@@ -1033,8 +1054,8 @@ export function renderCasesPage(opts) {
 <button type="submit">Done</button></form></dialog>
 <footer class="site"><span class="mono">neurotic_docx_bench · © MMXXVI</span><span>Maintained by <a href="https://arthur.law/" rel="noopener">Arthur Souza Rodrigues</a>, author of jubarte, one of the engines compared.</span><a href="${esc(indexHref)}">Scores →</a><a href="${esc(speedHref)}">Speed</a><a href="https://github.com/jandira-tech/neurotic_docx_bench" rel="noopener">Bench repo →</a></footer>
 <script type="module">
-import { mountCasesPage } from "${esc(opts.moduleUrl)}";
-mountCasesPage({ kind: ${JSON.stringify(opts.kind)}, indexUrl: "${esc(opts.indexUrl)}", modeUrl: "${esc(modeValue)}" });
+import { mountCasesPage } from ${jsValue(opts.moduleUrl)};
+mountCasesPage({ kind: ${jsValue(opts.kind)}, indexUrl: ${jsValue(opts.indexUrl)}, modeUrl: ${jsValue(modeValue)}, links: ${jsValue({ conversion: conversionHref, redlines: redlinesHref, speed: speedHref })} });
 </script>
 </body>
 </html>
@@ -1165,7 +1186,7 @@ export async function mountCasesPage(opts) {
     // kind, in the group's display order.
     const legend = $("#legend");
     if (legend)
-        legend.innerHTML = renderCasesLegend({ kind: opts.kind });
+        legend.innerHTML = renderCasesLegend({ kind: opts.kind, links: opts.links });
     applyInlineCss(legend);
     const cases = () => shards.get(group)?.cases ?? [];
     const current = () => cases()[sel];
@@ -1726,7 +1747,7 @@ export async function mountCasesPage(opts) {
         render();
     });
     $("#viewToggle")?.addEventListener("click", (event) => {
-        // It sits in the About summary: the click must not open or close the notes.
+        // A plain button beside the About summary: it only switches the view.
         event.preventDefault();
         state.view = state.view === "scores" ? "viewer" : "scores";
         render();

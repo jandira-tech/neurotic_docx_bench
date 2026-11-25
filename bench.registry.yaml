@@ -37,6 +37,56 @@ tools:
     speed_tools: [jubarte-0.12.0]
     converter_tools: [jubarte-0.12.0]
     url: https://github.com/jandira-tech/jubarte-redlines
+  # The redline tables' 0.9.3 release lane: an id only (no aliases), so it is
+  # affiliated there and claims nothing in the fidelity, speed or converter views.
+  - id: jubarte-093
+    vendor: jubarte
+    display: jubarte 0.9.3
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.9.3
+    url: https://github.com/jandira-tech/jubarte-redlines
+  # The redline tables' 0.10.1 release lane: an id only (no aliases), so it is
+  # affiliated there and claims nothing in the fidelity, speed or converter views.
+  - id: jubarte-0.10.1
+    vendor: jubarte
+    display: jubarte 0.10.1
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.10.1
+    url: https://github.com/jandira-tech/jubarte-redlines
+  # The redline tables' 0.14.0 release lane: an id only (no aliases), so it is
+  # affiliated there and claims nothing in the fidelity, speed or converter views.
+  - id: jubarte-0.14.0
+    vendor: jubarte
+    display: jubarte 0.14.0
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.14.0
+    url: https://github.com/jandira-tech/jubarte-redlines
+  # The redline tables' 0.17.0 release lane: an id only (no aliases), so it is
+  # affiliated there and claims nothing in the fidelity, speed or converter views.
+  - id: jubarte-0.17.0
+    vendor: jubarte
+    display: jubarte 0.17.0
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.17.0
+    url: https://github.com/jandira-tech/jubarte-redlines
+  # The redline tables' 0.20.0 release lane: an id only (no aliases), so it is
+  # affiliated there and claims nothing in the fidelity, speed or converter views.
+  - id: jubarte-0.20.0
+    vendor: jubarte
+    display: jubarte 0.20.0
+    role: generator
+    engine: jubarte-redlines
+    affiliated: true
+    configuration: official-release-0.20.0
+    url: https://github.com/jandira-tech/jubarte-redlines
   - id: docxodus-12.6.5
     vendor: docxodus
     display: docxodus 12.6.5

@@ -7,6 +7,7 @@ export type {
   CaseStripOptions,
   CasesIndex,
   CasesLegendOptions,
+  CasesLinks,
   CasesPageOptions,
   Engine,
   EngineToggleOptions,

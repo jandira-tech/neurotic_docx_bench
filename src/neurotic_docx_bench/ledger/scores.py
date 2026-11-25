@@ -521,6 +521,7 @@ def render_scores(
     ]
     own = [
         (
+            run_dir,
             table_id,
             _action_rows(
                 [run_dir],
@@ -536,7 +537,7 @@ def render_scores(
     for table_id, rows in (
         (REDLINES_VS_WORD_ID, vs_word),
         (REDLINES_TABLE_ID, accept_reject),
-        *own,
+        *((table_id, rows) for _, table_id, rows in own),
     ):
         if rows:
             out_tables.append(
@@ -556,7 +557,13 @@ def render_scores(
         "provenance": {
             "docsets": list(provenance.docsets),
             "scorers": list(provenance.scorers),
-            "renderers": list(provenance.renderers),
+            "renderers": sorted(
+                {
+                    *provenance.renderers,
+                    # only the separate runs that put a table in this file
+                    *(tb.SEPARATE_RUN_RENDERERS[Path(d).name] for d, _, rows in own if rows),
+                }
+            ),
         },
         "tables": out_tables,
         "states": [*sample.get("states", []), *_states(fidelity)],

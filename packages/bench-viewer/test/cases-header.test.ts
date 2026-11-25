@@ -1,7 +1,8 @@
 // Arthur, 2026-11-03: the case browsers' header. (1) no "pages 1–N of N";
 // (2) an "all groups" choice; (3) the bar breaks before overlay on both
-// browsers; (4) the scores-table toggle sits after "About these scores · N
-// notes", before the DOCX → PDF link.
+// browsers; (4) the scores-table toggle and the bench links sit beside the
+// "About these scores · N notes" summary, not inside it (a summary holds no
+// other controls), the toggle before the DOCX → PDF link.
 import { readFile } from "node:fs/promises";
 import { describe, expect, test } from "vitest";
 import type { Case, ShardRef } from "../src/cases.ts";
@@ -19,7 +20,7 @@ const casesCss = await readFile(new URL("../themes/cases.css", import.meta.url),
 const page = (kind: "conversion" | "redline") =>
   renderCasesPage({ kind, indexUrl: "i.json", moduleUrl: "m.js" });
 const bar = (html: string) =>
-  html.slice(html.indexOf('<div id="bar">'), html.indexOf('<div id="engines"'));
+  html.slice(html.indexOf('<div id="bar"'), html.indexOf('<div id="engines"'));
 
 describe("the header", () => {
   test("(1) carries no page count", () => {
@@ -38,15 +39,58 @@ describe("the header", () => {
     expect(casesCss).toMatch(/#bar \.brk\s*\{[^}]*flex-basis:\s*100%/);
   });
 
-  test("(4) the scores-table toggle sits after the notes count, before the DOCX → PDF link", () => {
+  test("(4) the scores-table toggle and the links sit beside the About summary", () => {
     for (const kind of ["conversion", "redline"] as const) {
       expect(bar(page(kind))).not.toContain('id="viewToggle"');
       const legend = renderCasesLegend({ kind });
+      const summary = legend.slice(legend.indexOf("<summary>"), legend.indexOf("</summary>"));
+      expect(summary, kind).toContain(" notes</span>");
+      expect(summary, kind).not.toMatch(/<(button|a)\b/);
       const toggle = legend.indexOf('id="viewToggle"');
-      expect(toggle, kind).toBeGreaterThan(legend.indexOf(" notes</span>"));
+      expect(toggle, kind).toBeGreaterThan(-1);
       expect(toggle, kind).toBeLessThan(legend.indexOf(">DOCX → PDF</a>"));
       expect(legend.match(/id="viewToggle"/g)?.length).toBe(1);
     }
+  });
+
+  test("(6) a link left undefined keeps its default", () => {
+    const legend = renderCasesLegend({ kind: "redline", links: { speed: undefined } });
+    expect(legend).toContain('<a href="../speed/index.html">Speed</a>');
+  });
+
+  test("(7) the inline script carries URLs as JS strings, not HTML-escaped", () => {
+    const html = renderCasesPage({
+      kind: "redline",
+      indexUrl: "i.json?case=3&group=win",
+      moduleUrl: "m.js?v=1&x=2",
+    });
+    const script = html.slice(html.indexOf('<script type="module">'), html.indexOf("</script>"));
+    expect(script).toContain('indexUrl: "i.json?case=3&group=win"');
+    expect(script).toContain('from "m.js?v=1&x=2"');
+    expect(script).not.toContain("&amp;");
+    const hostile = renderCasesPage({
+      kind: "redline",
+      indexUrl: "</script><b>",
+      moduleUrl: "m.js",
+    });
+    expect(hostile.match(/<\/script>/g)?.length).toBe(1);
+  });
+
+  test("(8) the About disclosure comes before its actions in the DOM", () => {
+    const legend = renderCasesLegend({ kind: "conversion" });
+    expect(legend.indexOf('<details class="about"')).toBeLessThan(
+      legend.indexOf('class="about-acts"'),
+    );
+  });
+
+  test("(5) the About links go where the page says", () => {
+    const legend = renderCasesLegend({
+      kind: "redline",
+      links: { conversion: "/use-cases/convert", redlines: "/use-cases" },
+    });
+    expect(legend).toContain('<a href="/use-cases/convert">DOCX → PDF</a>');
+    expect(legend).toContain('<a href="/use-cases">Redlines</a>');
+    expect(legend).toContain('<a href="../speed/index.html">Speed</a>');
   });
 });
 
