@@ -592,6 +592,17 @@ uv run bench try remote --tool "mytool {input} {out}"      # a template; its pla
 - Nothing is written under `results/` unless `--jsonl`/`--json` says so; rasters and
   downloads live in temporary folders deleted on return.
 
+## The Word endpoint (`word-endpoint/`)
+
+`word-endpoint/` is the source of the Windows Word 2024 compare/convert API at
+`https://docx.rodrigues.ai` (`/v1/compare`, `/v1/convert`), which the redline_600 Contabo lanes
+(`results/redline600_contabo/contabo_word.py`) call. The server (`C:\word-endpoint`, reached as
+`ssh contabo`) has no git: this folder is the copy of record. Change it here, `scp` the changed
+files to the server, then run `scripts\restart.ps1` there (unit tests, task restart, live check).
+`.env`, `.tools/`, `logs/` and `work/` stay on the server only. Its PDF export uses Word for Mac's
+review view and revision marks (`docs/review-view.md`), so it renders markup the way the oracle
+does; its by-author colours cannot match the Mac's.
+
 ## Gate (CI)
 
 100 always passes. Per-doc decrease vs the accepted snapshot → **warning**; aggregate

@@ -37,6 +37,36 @@ _GRANULARITY_WORD = 1
 _DOCX = 12
 _PDF = 17
 _EXPORT_WITH_MARKUP = 7
+# The review settings of the Word for Mac that made the bench's oracle (Word 16.115, read
+# from Word itself on 2026-11-24; docs/review-view.md). Set on every Word start, so a
+# fresh profile or another machine marks revisions the same way. Values are the Windows
+# enums (WdInsertedTextMark, WdColorIndex, WdCellColor, ...).
+_MAC_REVISION_OPTIONS = (
+    ("InsertedTextMark", 3),  # underline
+    ("InsertedTextColor", -1),  # by author
+    ("DeletedTextMark", 1),  # strikethrough
+    ("DeletedTextColor", -1),  # by author
+    ("RevisedPropertiesMark", 0),  # none
+    ("RevisedPropertiesColor", -1),  # by author
+    ("RevisedLinesMark", 3),  # outside border
+    ("RevisedLinesColor", 6),  # red
+    ("CommentsColor", -1),  # by author
+    ("MoveFromTextMark", 1),  # double strikethrough
+    ("MoveFromTextColor", 11),  # green
+    ("MoveToTextMark", 4),  # double underline
+    ("MoveToTextColor", 11),  # green
+    ("InsertedCellColor", 2),  # light blue
+    ("DeletedCellColor", 1),  # pink
+    ("MergedCellColor", 3),  # light yellow
+    ("SplitCellColor", 5),  # light orange
+)
+# The view Word for Mac opens a redline in and exports it from: all markup, final,
+# insertions, deletions and formatting changes inline (wdInLineRevisions), comments in
+# the margin. Inline mode still prints comment balloons; it prints no "Formatted:"
+# balloons, which mixed mode (2) adds and Word for Mac never shows.
+_INLINE_REVISIONS = 1
+_REVISIONS_VIEW_FINAL = 0
+_REVISIONS_MARKUP_ALL = 2
 _MAX_FIELDS = 100000
 _MAX_STORIES = 4096
 _JOB = None
@@ -238,7 +268,22 @@ def start_word():
                 logging.info("Word option %s disabled", name)
         except Exception:
             logging.warning("could not disable Word option %s", name, exc_info=True)
+    set_revision_options(options)
     return word
+
+
+def set_revision_options(options) -> None:
+    changed = []
+    for name, value in _MAC_REVISION_OPTIONS:
+        try:
+            if int(getattr(options, name)) != value:
+                setattr(options, name, value)
+                changed.append(name)
+            if int(getattr(options, name)) != value:
+                logging.warning("Word option %s is %s, not %s", name, getattr(options, name), value)
+        except Exception:
+            logging.warning("could not set Word option %s", name, exc_info=True)
+    logging.info("Word revision options match Word for Mac (%s)", f"set {', '.join(changed)}" if changed else "already set")
 
 
 def parse_job_command(lane: str, line: bytes) -> tuple[str, Path]:
@@ -485,15 +530,20 @@ def open_document(word, path: Path, *, read_only: bool):
 def export_pdf(document, output: Path) -> None:
     # A failed markup export must never silently become a clean PDF.
     try:
-        # Use the same display policy for a live comparison and a reopened
-        # redline. Word otherwise inherits different views in the two lanes.
+        # Use the same view for a live comparison and a reopened redline (Word
+        # otherwise inherits different views in the two lanes): Word for Mac's.
         view = document.ActiveWindow.View
+        view.RevisionsFilter.Markup = _REVISIONS_MARKUP_ALL
+        view.RevisionsFilter.View = _REVISIONS_VIEW_FINAL
         view.ShowRevisionsAndComments = True
+        view.ShowInsertionsAndDeletions = True
+        view.ShowFormatChanges = True
+        # Word for Mac opens a saved redline with this off and still prints its
+        # comments; so does Word here (same pages either way on 24 of 24 saved
+        # redlines, 2026-11-24). A live comparison result is different: with
+        # this off its comments are not printed at all (tests/live_check.py).
         view.ShowComments = True
-        # Comments need balloons to print their bodies. Insertions and
-        # deletions stay inline either way (mixed mode with comments), as
-        # Word for Mac prints them, so deleted text keeps its location.
-        view.RevisionsMode = 2 if int(document.Comments.Count) else 1
+        view.RevisionsMode = _INLINE_REVISIONS
         document.ExportAsFixedFormat(
             OutputFileName=str(output),
             ExportFormat=_PDF,
