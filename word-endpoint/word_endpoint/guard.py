@@ -45,19 +45,36 @@ _DANGEROUS_EXTENSIONS = {
 _FORBIDDEN_FIELD = re.compile(
     r"(?i)\b(DDEAUTO|DDE|INCLUDETEXT|INCLUDEPICTURE|INCLUDEHTML|MACROBUTTON|DATABASE|IMPORT|LINK|RD)\b"
 )
-_ATTR = re.compile(r"""([A-Za-z0-9:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
+# One attribute: whitespace, a name (whatever an XML name may hold, "_", "-"
+# and "." included), "=" and a quoted value. _attributes matches them one
+# after another from the element name, each where the last one ended, so
+# text inside a value is never read as a name and every match is anchored.
+_ATTR = re.compile(r"""\s+([^\s=/>"']+)\s*=\s*(?:"([^"]*)"|'([^']*)')""")
+_ELEMENT_NAME = re.compile(r"<[^\s/>]+")
 _ENTITY = re.compile(r"&([^;]{1,16});")
 _TAG_ATTRIBUTES = r'''(?:[^'">]|"[^"]*"|'[^']*')*'''
+_OPENING_TAG = re.compile(rf"<[^\s/>]+{_TAG_ATTRIBUTES}")
+# w:attachedTemplate, w:linkStyles and Relationship have no children in the
+# schema, so the paired form may hold only whitespace. These patterns search a
+# copy of the part in which every comment, CDATA section and processing
+# instruction is blanked out (_outside_non_markup), so "only whitespace" there
+# also admits those, and \s* stays linear. A pattern that could span other
+# markup would delete whatever sits between two such tags.
 _TEMPLATE_TAG = re.compile(
     rf"<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>.*?</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)>",
+    rf"|<(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?(?:attachedTemplate|linkStyles)\s*>",
     re.I | re.S,
 )
 _TEMPLATE_REL = re.compile(
     rf"<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}/>"
-    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>.*?</(?:[\w.-]+:)?Relationship>",
+    rf"|<(?:[\w.-]+:)?Relationship\b{_TAG_ATTRIBUTES}>\s*</(?:[\w.-]+:)?Relationship\s*>",
     re.I | re.S,
 )
+# Comments, CDATA sections and processing instructions. In well-formed XML a
+# "<" outside them always starts markup, and each ends at its first terminator,
+# so a left-to-right scan finds exactly the spans whose text is not markup.
+_NOT_MARKUP_OPEN = re.compile(r"<!--|<!\[CDATA\[|<\?")
+_NOT_MARKUP_CLOSE = {"<!--": "-->", "<![CDATA[": "]]>", "<?": "?>"}
 _NAMED = {"amp": "&", "lt": "<", "gt": ">", "quot": '"', "apos": "'"}
 
 
@@ -119,7 +136,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
         infos = archive.infolist()
         _check_infos(infos)
-        by_name = {info.filename.lower(): info for info in infos}
+        by_name = {_part_key(info.filename): info for info in infos}
         for required in ("[content_types].xml", "_rels/.rels"):
             if required not in by_name:
                 raise GuardError("not_docx")
@@ -131,7 +148,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
             raise GuardError("not_docx", "missing_document_content_type")
         members = set(by_name)
         for info in infos:
-            name = info.filename.lower()
+            name = _part_key(info.filename)
             mime = overrides.get(name, defaults.get(Path(name).suffix.lstrip("."), ""))
             svg = name.endswith(".svg") or mime == "image/svg+xml"
             xml = name.endswith((".xml", ".rels", ".vml")) or mime.endswith("+xml") or mime in {"application/xml", "text/xml"} or "vmldrawing" in mime
@@ -143,7 +160,7 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
                     has_template = _scan_part(
                         _read_text(archive, info),
                         allow_attached_template=allow_attached_template,
-                        part_name=info.filename, members=members,
+                        part_name=name, members=members,
                         word_content=name.startswith("word/") or "wordprocessingml" in mime or "vmldrawing" in mime,
                     )
                     if has_template:
@@ -154,6 +171,13 @@ def _validate(data: bytes, allow_attached_template: bool) -> set[str]:
     return template_parts
 
 
+def _part_key(name: str) -> str:
+    """One representation for ZIP item names, relationship targets and
+    content-type part names: percent-decoded and lowercased. A ZIP may store
+    word/media/caf%C3%A9.png or word/media/caf\u00e9.png for the same part."""
+    return urllib.parse.unquote(name).lower()
+
+
 def _check_infos(infos: list[zipfile.ZipInfo]) -> None:
     if len(infos) > MAX_ENTRIES:
         raise GuardError("unsafe_package", "entry_count")
@@ -162,7 +186,12 @@ def _check_infos(infos: list[zipfile.ZipInfo]) -> None:
     for info in infos:
         name = info.filename
         _check_entry_name(name)
-        key = name.lower()
+        decoded = urllib.parse.unquote(name)
+        if decoded != name:
+            # Relationships and content types address the part by its decoded
+            # name, so word/media/payload%2Eexe must be checked as payload.exe.
+            _check_entry_name(decoded)
+        key = _part_key(name)
         if key in seen:
             raise GuardError("unsafe_package", "duplicate_member")
         seen.add(key)
@@ -395,9 +424,37 @@ def _check_relationship(item: dict[str, str], allow_attached_template: bool,
         raise GuardError("unsafe_package", "missing_relationship_target")
 
 
+def _non_markup_spans(text: str) -> list[tuple[int, int]]:
+    """(start, end) of each comment, CDATA section and processing instruction,
+    found in one left-to-right pass. One left open runs to the end of the text,
+    where the XML parser refuses it. (A lazy regex searched to the end again
+    from every unterminated "<!--", which made malformed parts quadratic.)"""
+    spans: list[tuple[int, int]] = []
+    position = 0
+    while (opener := _NOT_MARKUP_OPEN.search(text, position)) is not None:
+        closer = _NOT_MARKUP_CLOSE[opener.group(0)]
+        end = text.find(closer, opener.end())
+        end = len(text) if end < 0 else end + len(closer)
+        spans.append((opener.start(), end))
+        position = end
+    return spans
+
+
+def _markup_only(text: str) -> str:
+    pieces, last = [], 0
+    for start, end in _non_markup_spans(text):
+        pieces.append(text[last:start])
+        last = end
+    pieces.append(text[last:])
+    return "".join(pieces)
+
+
 def _parse_xml(text: str, *, code: str = "unsafe_package",
                reason: str = "xml_dtd_or_entity") -> ET.Element:
-    lowered = text.lower()
+    # Text inside comments and CDATA is not a declaration ("<!DOCTYPE html>"
+    # in a CDATA section of a custom XML part); the parser below is the real
+    # check, this one only refuses early.
+    lowered = _markup_only(text).lower()
     if "<!doctype" in lowered or "<!entity" in lowered:
         raise GuardError(code, reason)
     try:
@@ -509,18 +566,59 @@ def _scrub_paths(text: str) -> str:
     return text
 
 
-def _strip_markup(text: str) -> str:
-    text = _TEMPLATE_TAG.sub("", text)
+def _attributes(tag: str):
+    """The attributes of an opening tag, in order, as _ATTR matches."""
+    name = _ELEMENT_NAME.match(tag)
+    position = name.end() if name else len(tag)
+    while attr := _ATTR.match(tag, position):
+        yield attr
+        position = attr.end()
 
-    def drop_template(match: re.Match[str]) -> str:
-        for attr in _ATTR.finditer(match.group(0)):
+
+def _outside_non_markup(text: str, pattern: re.Pattern[str], repl) -> str:
+    """pattern.sub(repl, text), matched against a copy of text in which every
+    comment, CDATA section and processing instruction is spaces of the same
+    length. Tag-shaped text inside one can neither be edited nor hide a live
+    element after it, a match never starts or ends inside one, and the
+    pattern never searches inside one (a lazy "<!--.*?-->" did, from every
+    tag-shaped candidate in a CDATA section, which made stripping quadratic).
+    repl is a string, or a function of the matched original text."""
+    pieces, last = [], 0
+    for start, end in _non_markup_spans(text):
+        pieces.append(text[last:start])
+        pieces.append(" " * (end - start))
+        last = end
+    pieces.append(text[last:])
+    blanked = "".join(pieces)
+    out, position = [], 0
+    for match in pattern.finditer(blanked):
+        out.append(text[position:match.start()])
+        original = text[match.start():match.end()]
+        out.append(repl(original) if callable(repl) else repl)
+        position = match.end()
+    out.append(text[position:])
+    return "".join(out)
+
+
+def _strip_markup(text: str) -> str:
+    # A text edit, not a parse and re-serialise: ElementTree renames namespace
+    # prefixes, which breaks the prefixes mc:Ignorable names and makes Word
+    # report the file as damaged.
+    text = _outside_non_markup(text, _TEMPLATE_TAG, "")
+
+    def drop_template(element: str) -> str:
+        # Attributes live in the opening tag. The paired form can hold a
+        # comment or CDATA section (it matched them as blank space), whose
+        # text is not attributes and must not be scanned as such.
+        opening = _OPENING_TAG.match(element)
+        for attr in _attributes(opening.group(0) if opening else ""):
             if attr.group(1).lower() == "type":
                 value = attr.group(2) if attr.group(2) is not None else attr.group(3)
                 if decode_entities(value, allow_markup=True).lower().endswith("/attachedtemplate"):
                     return ""
-        return match.group(0)
+        return element
 
-    return _TEMPLATE_REL.sub(drop_template, text)
+    return _outside_non_markup(text, _TEMPLATE_REL, drop_template)
 
 
 def _strip_template_stamp(data: bytes, *, scrub: bool = True,
@@ -530,7 +628,8 @@ def _strip_template_stamp(data: bytes, *, scrub: bool = True,
     with zipfile.ZipFile(io.BytesIO(data)) as source:
         for info in source.infolist():
             _check_entry_name(info.filename)
-            lowered = info.filename.lower()
+            # The name validation used: percent-decoded and lowercased.
+            lowered = _part_key(info.filename)
             candidate = info.filename in template_parts
             candidate = candidate or (scrub and lowered in {"word/settings.xml", "word/_rels/settings.xml.rels"})
             if candidate or (scrub and lowered.startswith("docprops/") and lowered.endswith(".xml")):

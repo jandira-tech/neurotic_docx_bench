@@ -34,6 +34,11 @@ from word_endpoint.runner import REQUEST_ID, JobError, WordRunner, cleanup_old_w
 Runner = Callable[[str, dict[str, bytes]], bytes]
 _FILENAME = re.compile(r"[A-Za-z0-9._-]{1,64}")
 _LENGTH = re.compile(r"\d{1,12}")
+# RFC 6750 b64token: what a client can send after "Bearer ".
+TOKEN68 = re.compile(r"[A-Za-z0-9\-._~+/]+=*")
+
+# Seconds a client has to send a whole request body, however it paces it.
+UPLOAD_DEADLINE_S = 120.0
 
 
 class RateLimiter:
@@ -59,6 +64,9 @@ class App:
     runner: Runner
     limiter: RateLimiter
     admission: threading.BoundedSemaphore
+    # Failed authentication has its own budget, so unauthenticated traffic
+    # cannot use up the quota that authorized jobs draw from.
+    auth_failures: RateLimiter
 
 
 class Server(ThreadingHTTPServer):
@@ -113,6 +121,27 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args) -> None:
         return
 
+    # http.server refuses some requests itself, before any do_* method runs: a
+    # request line or headers it cannot read, or a method with no do_*
+    # handler. Its send_error answers with an HTML page; these get the same
+    # JSON error body as every other refusal.
+    _PARSER_REFUSALS = {400: "bad_request", 414: "uri_too_long", 431: "headers_too_large",
+                        501: "not_implemented", 505: "http_version"}
+
+    def send_error(self, code: int, message: str | None = None, explain: str | None = None) -> None:
+        # message can quote the request line, query string included, so it is
+        # not logged.
+        status = int(code)
+        name = self._PARSER_REFUSALS.get(status, "bad_request" if status < 500 else "word_failed")
+        self.close_connection = True
+        logging.info("%s refused by the HTTP parser: %d %s peer=%s", self.request_id, status, name,
+                     _client_identity(self.client_address[0], getattr(self, "headers", None) or {}))
+        # The parser stopped partway through the request, so how much of it is
+        # still arriving is unknown. Drain under the same byte and time budget
+        # as a refused upload, so a reset does not destroy this answer.
+        self._unread_body = 65536
+        self._fail(name)
+
     def do_GET(self) -> None:
         self._dispatch(self._get)
 
@@ -142,7 +171,7 @@ class Handler(BaseHTTPRequestHandler):
             logging.exception("request failed")
             self._fail("word_failed")
         finally:
-            path = urllib.parse.urlsplit(self.path).path[:64]
+            path = self._log_path()
             elapsed = int((time.monotonic() - self._started) * 1000)
             if not (self.command in {"GET", "HEAD"} and path in {"/health", "/live"} and self._status == 200):
                 logging.info(
@@ -186,11 +215,11 @@ class Handler(BaseHTTPRequestHandler):
         if length is None:
             return
         self._unread_body = length
+        if not self._authorized():
+            self._fail("rate_limited" if not self.server.app.auth_failures.allow() else "unauthorized")
+            return
         if not self.server.app.limiter.allow():
             self._fail("rate_limited")
-            return
-        if not self._authorized():
-            self._fail("unauthorized")
             return
         if not self.server.app.admission.acquire(blocking=False):
             self._fail("busy")
@@ -272,8 +301,22 @@ class Handler(BaseHTTPRequestHandler):
                      sum(len(blob) for blob in files.values()), (time.monotonic() - started) * 1000)
         return True
 
+    def _target(self) -> urllib.parse.SplitResult | None:
+        try:
+            # A request the parser refused can lack a path.
+            return urllib.parse.urlsplit(getattr(self, "path", ""))
+        except ValueError:
+            return None
+
+    def _log_path(self) -> str:
+        parsed = self._target()
+        return parsed.path[:64] if parsed is not None else "<invalid-target>"
+
     def _route(self) -> str | None:
-        parsed = urllib.parse.urlsplit(self.path)
+        parsed = self._target()
+        if parsed is None:
+            self._fail("not_found")
+            return None
         if parsed.query or parsed.fragment or "\\" in parsed.path:
             self._fail("query_rejected" if parsed.query or parsed.fragment else "not_found")
             return None
@@ -311,19 +354,24 @@ class Handler(BaseHTTPRequestHandler):
     def _read_exact(self, length: int) -> bytes | None:
         chunks = []
         remaining = length
-        deadline = time.monotonic() + 120
+        deadline = time.monotonic() + UPLOAD_DEADLINE_S
         while remaining:
             try:
                 time_left = deadline - time.monotonic()
                 if time_left <= 0:
                     raise TimeoutError
                 self.request.settimeout(time_left)
-                chunk = self.rfile.read(min(65536, remaining))
+                # read1 makes at most one socket read, so each read gets the
+                # time left; read() could loop past the deadline.
+                chunk = self.rfile.read1(min(65536, remaining))
             except (TimeoutError, socket.timeout, ConnectionError):
                 self._fail("timeout")
                 return None
             if not chunk:
                 self._fail("bad_multipart")
+                return None
+            if time.monotonic() > deadline:
+                self._fail("timeout")
                 return None
             chunks.append(chunk)
             remaining -= len(chunk)
@@ -334,10 +382,12 @@ class Handler(BaseHTTPRequestHandler):
         health = getattr(self.server.app.runner, "health", None)
         status = health() if health else {"status": "ok"}
         ready = status["status"] == "ok"
-        if not readiness and health:
-            # Existing deployed supervisors use /health for HTTP liveness.
-            # Preserve that contract and expose Word readiness independently.
-            status = {"status": "ok", "ready": ready, "workers": status["workers"]}
+        if health:
+            # Both answer with the Health body. Existing deployed supervisors
+            # use /health for HTTP liveness, so its status stays "ok" and Word
+            # readiness is in "ready"; /ready reports the workers' status.
+            status = {"status": status["status"] if readiness else "ok", "ready": ready,
+                      "workers": status["workers"]}
         body = json.dumps(status, separators=(",", ":")).encode("utf-8")
         self._send(200 if not readiness or ready else 503,
                    "application/json; charset=utf-8", body, status["status"], include_body)
@@ -349,7 +399,7 @@ class Handler(BaseHTTPRequestHandler):
         status, message = PUBLIC[safe]
         if status >= 500:
             logging.warning("request failed request=%s code=%s path=%s",
-                            self.request_id, safe, urllib.parse.urlsplit(self.path).path[:64])
+                            self.request_id, safe, self._log_path())
         body = json.dumps(
             {"error": message, "code": safe, "request_id": self.request_id}
         ).encode("utf-8")
@@ -389,8 +439,9 @@ class Handler(BaseHTTPRequestHandler):
         self._status = status
         self._code = code
         if self.command == "HEAD":
+            # RFC 9110 9.3.2: HEAD carries the length GET would send, no body.
             body = b""
-            length = 0
+            length = len(payload)
         else:
             body = payload if include_body else b""
             length = len(payload) if include_body else 0
@@ -422,7 +473,11 @@ class Handler(BaseHTTPRequestHandler):
                 if not chunk:
                     break
                 budget -= len(chunk)
-        except (ConnectionError, TimeoutError, socket.timeout):
+        except OSError:
+            # The client left, or (after the upload deadline) the socket timed
+            # out, which makes every later read raise a plain OSError
+            # ("cannot read from timed out object"). The response is out
+            # either way, so there is nothing left to do.
             return
 
 
@@ -449,14 +504,15 @@ def _token_ok(presented: str, expected: str) -> bool:
 def create_server(settings: Settings, runner: Runner) -> Server:
     if settings.host != "127.0.0.1":
         raise RuntimeError("Refusing to listen on a non-loopback address.")
-    if not 32 <= len(settings.token) <= 256:
+    if not 32 <= len(settings.token) <= 256 or TOKEN68.fullmatch(settings.token) is None:
         raise RuntimeError("Refusing to start with an invalid token.")
     if not 0 <= settings.port <= 65535:
         raise RuntimeError("Invalid port.")
     server = Server((settings.host, settings.port), Handler)
     server.connections = threading.BoundedSemaphore(settings.max_concurrent + 16)
     server.app = App(settings, runner, RateLimiter(settings.rate_limit_per_minute),
-                     threading.BoundedSemaphore(settings.max_concurrent))
+                     threading.BoundedSemaphore(settings.max_concurrent),
+                     RateLimiter(settings.rate_limit_per_minute))
     return server
 
 

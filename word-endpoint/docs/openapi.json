@@ -1,6 +1,6 @@
 {
   "info": {
-    "description": "Loopback Microsoft Word automation API. Listens on 127.0.0.1 only; callers authenticate with a bearer token sent in the Authorization header. Query strings are rejected so the token never reaches tunnel logs.",
+    "description": "Loopback Microsoft Word automation API. Listens on 127.0.0.1 only; callers authenticate with a bearer token sent in the Authorization header. Send the token only in that header and never in a URL: the server rejects query strings, but a proxy or tunnel in front of it may log a URL before the server sees it.",
     "title": "Word endpoint",
     "version": "1.0.0"
   },
@@ -714,12 +714,15 @@
             "enum": [
               "active_content",
               "bad_multipart",
+              "bad_request",
               "busy",
               "compare_failed",
               "convert_failed",
               "corrupt",
               "encrypted",
               "external_content",
+              "headers_too_large",
+              "http_version",
               "length_required",
               "macros",
               "method_not_allowed",
@@ -728,6 +731,7 @@
               "no_output",
               "not_docx",
               "not_found",
+              "not_implemented",
               "password_protected",
               "query_rejected",
               "rate_limited",
@@ -738,6 +742,7 @@
               "unexpected_field",
               "unsafe_package",
               "unsupported_encoding",
+              "uri_too_long",
               "word_failed"
             ],
             "description": "Machine-readable status code."

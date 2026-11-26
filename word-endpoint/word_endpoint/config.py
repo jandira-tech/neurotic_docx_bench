@@ -66,6 +66,10 @@ def load_settings() -> Settings:
         )
     if any(character.isspace() for character in token):
         raise SystemExit("WORD_API_TOKEN cannot contain whitespace.")
+    if re.fullmatch(r"[A-Za-z0-9\-._~+/]+=*", token) is None:
+        raise SystemExit(
+            "WORD_API_TOKEN must be a bearer token: letters, digits and - . _ ~ + /, optionally ending in =."
+        )
     file_bytes = _bounded_int("MAX_FILE_BYTES", 20 * 1024 * 1024, 1024, 20 * 1024 * 1024)
     return Settings(
         token=token,

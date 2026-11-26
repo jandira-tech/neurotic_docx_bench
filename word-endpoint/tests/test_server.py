@@ -74,7 +74,7 @@ class ServerTests(unittest.TestCase):
             self.runner.health = lambda: {'status': state, 'workers': {}}
             for path in ('/live', '/health', '/ready', '/missing', '/health?token=secret'):
                 with self.subTest(state=state, path=path):
-                    status, _ = request(self.base, 'GET', path)
+                    status, get_body = request(self.base, 'GET', path)
                     req = urllib.request.Request(self.base + path, method='HEAD')
                     try:
                         response = urllib.request.urlopen(req, timeout=5)
@@ -83,7 +83,8 @@ class ServerTests(unittest.TestCase):
                     with response:
                         self.assertEqual(response.code, status)
                         self.assertEqual(response.read(), b'')
-                        self.assertEqual(response.headers['Content-Length'], '0')
+                        # RFC 9110 9.3.2: the length a GET would send, or nothing.
+                        self.assertEqual(response.headers['Content-Length'], str(len(get_body)))
                         self.assertTrue(response.headers['X-Request-Id'])
 
     def test_requires_bearer_token(self):
@@ -217,8 +218,17 @@ class ServerTests(unittest.TestCase):
             create_server(Settings(token="t" * 40, host="0.0.0.0", port=0), FakeRunner())
         with self.assertRaises(RuntimeError):
             create_server(Settings(token="short", host="127.0.0.1", port=0), FakeRunner())
+        # Long enough, but no client can send it as a bearer credential.
+        with self.assertRaises(RuntimeError):
+            create_server(Settings(token="\u0436" * 40, host="127.0.0.1", port=0), FakeRunner())
 
-    def test_rate_limit_counts_unauthorized_posts(self):
+    def test_load_settings_rejects_a_token_outside_the_bearer_grammar(self):
+        for token in ("\u0436" * 40, "a" * 39 + "!", "=" + "a" * 39):
+            with self.subTest(token=token), patch.dict(os.environ, {"WORD_API_TOKEN": token}), \
+                    patch("word_endpoint.config.load_dotenv"), self.assertRaises(SystemExit):
+                load_settings()
+
+    def test_unauthorized_posts_cannot_spend_the_job_quota(self):
         httpd = create_server(self.settings(2), FakeRunner())
         self.addCleanup(httpd.server_close)
         self.addCleanup(httpd.shutdown)
@@ -237,6 +247,11 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(json.loads(body)["code"], "rate_limited")
         health, _ = request(base, "GET", "/health")
         self.assertEqual(health, 200)
+        # The failed attempts had their own budget: authorized jobs still get
+        # the whole quota, and only they spend it.
+        authorized = dict(headers, Authorization=f"Bearer {self.token}")
+        statuses = [request(base, "POST", "/v1/convert", payload, authorized)[0] for _ in range(3)]
+        self.assertEqual(statuses, [200, 200, 429])
 
     def test_placeholder_token_is_rejected(self):
         previous = os.environ.get("WORD_API_TOKEN")
@@ -297,8 +312,97 @@ class ServerTests(unittest.TestCase):
                 self.httpd.app.admission.release()
         status, _ = request(self.base, "POST", "/v1/convert", b"invalid", self.auth({"Content-Type": "bad"}))
         self.assertEqual(status, 400)
+        # Every permit must come back, not just one of them: with four
+        # permits, one leaked by the error path would still let a POST through.
+        self.assertTrue(self._all_admission_permits_free())
         content_type, payload = encode_form([("document", "a.docx", make_docx(["Hello"]))])
         status, _ = request(self.base, "POST", "/v1/convert", payload, self.auth({"Content-Type": content_type}))
+        self.assertEqual(status, 200)
+
+    def _all_admission_permits_free(self, timeout: float = 2.0) -> bool:
+        import time
+        admission, total = self.httpd.app.admission, self.httpd.app.settings.max_concurrent
+        deadline = time.monotonic() + timeout
+        while True:
+            taken = 0
+            while taken < total and admission.acquire(blocking=False):
+                taken += 1
+            for _ in range(taken):
+                admission.release()
+            # The handler releases its permit just after the response is sent.
+            if taken == total or time.monotonic() > deadline:
+                return taken == total
+            time.sleep(0.01)
+
+    def test_malformed_request_target_gets_a_controlled_rejection(self):
+        import socket
+        with socket.create_connection(self.httpd.server_address, timeout=2) as sock:
+            sock.sendall(b"GET http://[::1/live HTTP/1.1\r\nHost: localhost\r\n\r\n")
+            status_line = sock.recv(4096).split(b"\r\n")[0]
+        self.assertIn(b"404", status_line)
+        status, _ = request(self.base, "GET", "/live")
+        self.assertEqual(status, 200)
+
+    def test_requests_the_http_parser_refuses_get_the_json_error_body(self):
+        # Each request ends where the parser stops reading, so no unread bytes
+        # make the server's close reset the connection before the reply arrives.
+        import socket
+        cases = [
+            ("bad request line", b"GARBAGE\r\n", 400, "bad_request"),
+            ("request line too long", b"GET /" + b"a" * 65532, 414, "uri_too_long"),
+            ("header line too long", b"GET /live HTTP/1.1\r\nX-Long: " + b"a" * (65537 - 8), 431, "headers_too_large"),
+            ("too many headers", b"GET /live HTTP/1.1\r\n" + b"".join(b"X-%d: y\r\n" % i for i in range(101)), 431, "headers_too_large"),
+            ("method without a handler", b"TRACE /live HTTP/1.1\r\nHost: x\r\n\r\n", 501, "not_implemented"),
+            ("HTTP/2 request line", b"GET /live HTTP/2.0\r\n", 505, "http_version"),
+        ]
+        for name, data, status, code in cases:
+            with self.subTest(name), socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+                sock.sendall(data)
+                chunks = []
+                while chunk := sock.recv(65536):
+                    chunks.append(chunk)
+                head, _, body = b"".join(chunks).partition(b"\r\n\r\n")
+                lines = head.decode("latin-1").split("\r\n")
+                headers = {key.strip().lower(): value.strip() for key, _, value in (line.partition(":") for line in lines[1:])}
+                self.assertEqual(lines[0].split(" ")[1], str(status))
+                self.assertEqual(headers.get("content-type"), "application/json; charset=utf-8")
+                self.assertEqual(headers.get("connection"), "close")
+                payload = json.loads(body)
+                self.assertEqual(set(payload), {"error", "code", "request_id"})
+                self.assertEqual(payload["code"], code)
+                self.assertEqual(payload["request_id"], headers.get("x-request-id"))
+        status, _ = request(self.base, "GET", "/live")
+        self.assertEqual(status, 200)
+
+    def test_a_parser_refusal_still_arrives_when_request_bytes_are_left_unread(self):
+        # The parser stops reading a header line after 65,537 bytes. Here the
+        # rest of the line arrives a moment later, as it can through the
+        # tunnel. (Sent in one piece it would sit in the reader's 128 KiB
+        # buffer, and nothing would be left unread.) Bytes that reach a closed
+        # socket draw a reset, and on Windows the reset can destroy the answer
+        # before the client reads it. Repeated, like the upload case.
+        import socket
+        import time
+        first = b"GET /live HTTP/1.1\r\nX-Long: " + b"a" * 70_000
+        rest = b"a" * 30_000 + b"\r\n\r\n"
+        for attempt in range(10):
+            with self.subTest(attempt=attempt), socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+                try:
+                    sock.sendall(first)
+                    time.sleep(0.02)
+                    sock.sendall(rest)
+                except OSError:
+                    pass  # a reset while the rest goes out is judged by the reply below
+                reply = b""
+                try:
+                    while chunk := sock.recv(65536):
+                        reply += chunk
+                except (ConnectionResetError, ConnectionAbortedError):
+                    pass  # a reset ends the stream; the answer must be in hand by then
+                head, _, body = reply.partition(b"\r\n\r\n")
+                self.assertIn(b" 431 ", head.split(b"\r\n")[0] + b" ")
+                self.assertEqual(json.loads(body)["code"], "headers_too_large")
+        status, _ = request(self.base, "GET", "/live")
         self.assertEqual(status, 200)
 
     def test_readiness_can_fail_while_http_liveness_stays_up(self):
@@ -306,6 +410,14 @@ class ServerTests(unittest.TestCase):
         status, body = request(self.base, "GET", "/ready")
         self.assertEqual(status, 503)
         self.assertEqual(json.loads(body)["status"], "degraded")
+        # /ready and /health share the Health body (docs/openapi.json).
+        self.assertEqual(set(json.loads(body)), {"status", "ready", "workers"})
+        self.assertIs(json.loads(body)["ready"], False)
+        self.runner.health = lambda: {"status": "ok", "workers": {"compare": {"state": "ready"}}}
+        status, body = request(self.base, "GET", "/ready")
+        self.assertEqual(status, 200)
+        self.assertIs(json.loads(body)["ready"], True)
+        self.runner.health = lambda: {"status": "degraded", "workers": {"compare": {"state": "stopped"}}}
         status, body = request(self.base, "GET", "/health")
         self.assertEqual(status, 200)
         self.assertFalse(json.loads(body)["ready"])
@@ -343,6 +455,86 @@ class ServerTests(unittest.TestCase):
             for _ in range(count):
                 self.httpd.connections.release()
 
+    def test_a_body_dripped_slowly_still_times_out_at_the_upload_deadline(self):
+        # Each byte comes well inside the per-read timeout, so only a deadline
+        # checked around every socket read can end the upload.
+        import socket
+        import time
+        content_type, body = encode_form([("document", "a.docx", make_docx("A"))])
+        head = (f"POST /v1/convert HTTP/1.1\r\nHost: x\r\nAuthorization: Bearer {self.token}\r\n"
+                f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
+        from word_endpoint.server import Handler
+        # The bounds are timed from where the server starts its deadline (the
+        # body read), not from anything the client does, so a client pause
+        # before or after sending the head moves neither of them.
+        deadline_started = []
+        read_body = Handler._read_exact
+
+        def timed_read_body(handler, length):
+            deadline_started.append(time.monotonic())
+            return read_body(handler, length)
+
+        with patch("word_endpoint.server.UPLOAD_DEADLINE_S", 1.0), \
+                patch.object(Handler, "_read_exact", timed_read_body), \
+                socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+            sock.sendall(head)
+            sock.settimeout(0.2)
+            reply = b""
+            for byte in body[:40]:
+                try:
+                    sock.sendall(bytes([byte]))
+                except OSError:
+                    break
+                try:
+                    reply = sock.recv(4096)
+                except TimeoutError:
+                    continue
+                except ConnectionResetError:
+                    pass
+                break
+            answered = time.monotonic()
+            sock.settimeout(2)
+            # A byte dripped after the server answered and closed draws a
+            # reset; that ends the stream. A reset that destroyed the answer
+            # before it was read leaves no 504 below, so it still fails.
+            try:
+                while chunk := sock.recv(4096):
+                    reply += chunk
+            except ConnectionResetError:
+                pass
+        self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
+        self.assertIn(b'"code": "timeout"', reply)
+        # Not before the 1 s deadline (less a socket timer's slack), and not
+        # long after it.
+        self.assertEqual(len(deadline_started), 1)
+        waited = answered - deadline_started[0]
+        self.assertGreater(waited, 0.9)
+        self.assertLess(waited, 4.0)
+
+    def test_a_timed_out_upload_is_not_logged_as_an_internal_failure(self):
+        # After the deadline the drain read a socket that had timed out, which
+        # raises a plain OSError; it escaped to _dispatch as "request failed"
+        # with a traceback (MiniMax review).
+        import socket
+        import time
+        content_type, body = encode_form([("document", "a.docx", make_docx("A"))])
+        head = (f"POST /v1/convert HTTP/1.1\r\nHost: x\r\nAuthorization: Bearer {self.token}\r\n"
+                f"Content-Type: {content_type}\r\nContent-Length: {len(body)}\r\n\r\n").encode("ascii")
+        with self.assertLogs(level="INFO") as logs, \
+                patch("word_endpoint.server.UPLOAD_DEADLINE_S", 0.5), \
+                socket.create_connection(self.httpd.server_address, timeout=5) as sock:
+            sock.sendall(head + body[:10])
+            sock.settimeout(3)
+            reply = b""
+            while chunk := sock.recv(4096):
+                reply += chunk
+            deadline = time.monotonic() + 3
+            while time.monotonic() < deadline and not any(" POST /v1/convert " in line for line in logs.output):
+                time.sleep(0.05)
+        self.assertIn(b" 504 ", reply.split(b"\r\n")[0])
+        self.assertTrue(any(" POST /v1/convert " in line for line in logs.output), logs.output)
+        self.assertEqual([line for line in logs.output if line.startswith("ERROR")], [])
+
     def test_compare_and_convert_overlap_on_separate_words(self):
         base = self.settings(10)
         runner = WordRunner(
@@ -364,18 +556,19 @@ class ServerTests(unittest.TestCase):
             return b"%PDF-1.4\n" + b"x" * 80
 
         runner._execute = hold
-        threads = [
-            threading.Thread(target=lambda: runner("compare", {"original": b"a", "revised": b"b"})),
-            threading.Thread(target=lambda: runner("convert", {"document": b"a"})),
-        ]
-        for thread in threads:
-            thread.start()
-        self.assertTrue(started.acquire(timeout=2))
-        self.assertTrue(started.acquire(timeout=2))
-        release.set()
-        for thread in threads:
-            thread.join(2)
-            self.assertFalse(thread.is_alive())
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(2) as pool:
+            try:
+                compare = pool.submit(runner, "compare", {"original": b"a", "revised": b"b"})
+                convert = pool.submit(runner, "convert", {"document": b"a"})
+                # Both jobs are inside Word at the same time before either is let go.
+                self.assertTrue(started.acquire(timeout=2))
+                self.assertTrue(started.acquire(timeout=2))
+            finally:
+                release.set()
+            # result() re-raises a failed assertion or JobError from either job.
+            self.assertTrue(compare.result(timeout=2).startswith(b"PK"))
+            self.assertTrue(convert.result(timeout=2).startswith(b"%PDF-"))
 
 
 class ClientIdentityTests(unittest.TestCase):

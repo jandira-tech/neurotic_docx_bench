@@ -50,13 +50,16 @@ $before | ConvertTo-Json | Set-Content -LiteralPath $backup -Encoding UTF8
 $before | ConvertTo-Json
 if ($Apply) {
     # Keep scan frequency and real-time protection; move scheduled scans overnight.
-    Set-MpPreference -ScanScheduleOffset 0 -ScanScheduleQuickScanTime ([datetime]::Today.AddHours($ScanHour))
+    # ScanScheduleTime is the full scan's time and ScanScheduleQuickScanTime the
+    # quick scan's; ScanScheduleOffset delays both, so it goes to zero.
+    Set-MpPreference -ScanScheduleOffset 0 -ScanScheduleTime ([datetime]::Today.AddHours($ScanHour)) -ScanScheduleQuickScanTime ([datetime]::Today.AddHours($ScanHour))
     # Policy name and value verified against the installed ServerManager.admx.
     New-Item -Path $policyPath -Force | Out-Null
     New-ItemProperty -LiteralPath $policyPath -Name 'DoNotOpenAtLogon' -Value 1 -PropertyType DWord -Force | Out-Null
     Get-Process ServerManager -ErrorAction SilentlyContinue | ForEach-Object { $_.CloseMainWindow() | Out-Null }
     $after = Get-MpPreference
     $quickMinutes = Get-ScanTimeMinutes $after.ScanScheduleQuickScanTime
+    $fullMinutes = Get-ScanTimeMinutes $after.ScanScheduleTime
     $afterReport = [ordered]@{
         Timestamp = (Get-Date).ToString('o')
         TimeZone = (Get-TimeZone).Id
@@ -66,6 +69,7 @@ if ($Apply) {
         ScanScheduleQuickScanTime = $after.ScanScheduleQuickScanTime.ToString()
         QuickScanValueType = $after.ScanScheduleQuickScanTime.GetType().FullName
         QuickScanMinutesAfterMidnight = $quickMinutes
+        FullScanMinutesAfterMidnight = $fullMinutes
         DisableRealtimeMonitoring = $after.DisableRealtimeMonitoring
         ServerManagerDoNotOpenAtLogon = (Get-ItemProperty -LiteralPath $policyPath).DoNotOpenAtLogon
     }
@@ -74,8 +78,8 @@ if ($Apply) {
     if ($after.DisableRealtimeMonitoring -ne $preferences.DisableRealtimeMonitoring -or [int]$after.ScanScheduleDay -ne [int]$preferences.ScanScheduleDay) {
         throw "Unexpected Defender change; review the backup at $backup."
     }
-    if ($after.ScanScheduleOffset -ne 0 -or $quickMinutes -ne ($ScanHour * 60)) {
-        throw "Requested $ScanHour`:00; observed offset=$($after.ScanScheduleOffset) minutes, quick scan=$quickMinutes minutes. See $afterPath."
+    if ($after.ScanScheduleOffset -ne 0 -or $quickMinutes -ne ($ScanHour * 60) -or $fullMinutes -ne ($ScanHour * 60)) {
+        throw "Requested $ScanHour`:00; observed offset=$($after.ScanScheduleOffset) minutes, quick scan=$quickMinutes minutes, full scan=$fullMinutes minutes. See $afterPath."
     }
     Write-Host "Scheduled scans moved to $ScanHour`:00 local time; Server Manager automatic launch disabled. Backup: $backup"
 }

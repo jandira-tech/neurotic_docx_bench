@@ -172,6 +172,10 @@ class _Lane:
         self._state = "stopped"
         self._active_since: float | None = None
         self._restarts = 0
+        # Set by stop() under _mu; _spawn checks it under _mu, so a warm-up
+        # thread or a request still queued on this lane cannot start a Word
+        # after shutdown has stopped it.
+        self._closed = False
 
     def health(self) -> dict:
         proc = self._proc
@@ -263,6 +267,7 @@ class _Lane:
 
     def stop(self) -> None:
         with self._mu:
+            self._closed = True
             proc = self._proc
             if proc is not None and proc.poll() is None and proc.stdin is not None:
                 try:
@@ -279,6 +284,8 @@ class _Lane:
         self._spawn(timeout)
 
     def _spawn(self, timeout: float) -> None:
+        if self._closed:
+            raise JobError("busy")
         try:
             self._spawn_impl(timeout)
         except OSError as exc:

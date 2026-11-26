@@ -174,7 +174,10 @@ def execute(kind: str, workdir: Path) -> int:
         if not _wait_word_ready(word):
             raise WorkerError("word_failed")
         publish_word_pid(word, workdir, before)
-        if not run_job(word, kind, workdir):
+        # run_job answers whether Word can be reused; the exit status is
+        # whether the job succeeded, which only its result file says.
+        run_job(word, kind, workdir)
+        if not job_succeeded(workdir):
             code = 1
     except Exception:
         logging.exception("unexpected worker failure")
@@ -255,20 +258,26 @@ def _wait_word_ready(word, timeout_s: float = 15.0) -> bool:
 
 def start_word():
     word = win32com.client.DispatchEx("Word.Application")
-    silence_word(word)
-    # Set once per Word process; these options are unnecessary for rendering
-    # and comparisons, and repeated COM assignments add per-job overhead.
-    options = word.Options
-    for name in ("CheckSpellingAsYouType", "CheckGrammarAsYouType"):
-        try:
-            setattr(options, name, False)
-            if bool(getattr(options, name)):
-                logging.warning("Word option %s remained enabled", name)
-            else:
-                logging.info("Word option %s disabled", name)
-        except Exception:
-            logging.warning("could not disable Word option %s", name, exc_info=True)
-    set_revision_options(options)
+    try:
+        silence_word(word)
+        # Set once per Word process; these options are unnecessary for rendering
+        # and comparisons, and repeated COM assignments add per-job overhead.
+        options = word.Options
+        for name in ("CheckSpellingAsYouType", "CheckGrammarAsYouType"):
+            try:
+                setattr(options, name, False)
+                if bool(getattr(options, name)):
+                    logging.warning("Word option %s remained enabled", name)
+                else:
+                    logging.info("Word option %s disabled", name)
+            except Exception:
+                logging.warning("could not disable Word option %s", name, exc_info=True)
+        set_revision_options(options)
+    except BaseException:
+        # The callers only quit a proxy start_word returned; this Word would
+        # otherwise outlive the worker if the job object does not hold it.
+        quit_word(word)
+        raise
     return word
 
 
@@ -456,7 +465,7 @@ def compare_documents(word, workdir: Path, *, as_pdf: bool = False) -> None:
     if as_pdf:
         # Export the live comparison result. No intermediate DOCX or reopen.
         lock_fields(result)
-        _timed_call("export_pdf", workdir, export_pdf, result, output)
+        export_pdf_retrying(workdir, result, output)
     else:
         _timed_call("save_docx", workdir, result.SaveAs2, FileName=str(output), FileFormat=_DOCX, AddToRecentFiles=False)
     close_document(result)
@@ -470,7 +479,7 @@ def convert_document(word, workdir: Path) -> None:
     word.Visible = False
     scrub_properties(document)
     output = workdir / "output.pdf"
-    _timed_call("export_pdf", workdir, export_pdf, document, output)
+    export_pdf_retrying(workdir, document, output)
     close_document(document)
     assert_output(output, b"%PDF-", "convert_failed")
 
@@ -561,7 +570,19 @@ def export_pdf(document, output: Path) -> None:
             UseISO19005_1=False,
         )
     except pywintypes.com_error as exc:
+        if getattr(exc, "hresult", None) in _BUSY_COM:
+            raise  # a busy Word: export_pdf_retrying tries again
         logging.exception("PDF export with markup failed")
+        raise WorkerError("convert_failed") from exc
+
+
+def export_pdf_retrying(workdir: Path, document, output: Path) -> None:
+    """export_pdf under _timed_call's busy retries; a Word still busy after
+    them fails the export like any other COM error, with no clean fallback."""
+    try:
+        _timed_call("export_pdf", workdir, export_pdf, document, output)
+    except pywintypes.com_error as exc:
+        logging.exception("PDF export with markup failed: Word stayed busy")
         raise WorkerError("convert_failed") from exc
 
 
@@ -737,6 +758,13 @@ def winword_pids() -> set[int]:
 def write_result(workdir: Path, ok: bool, error: str | None) -> None:
     payload = {"ok": ok, "error": error}
     (workdir / "result.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+def job_succeeded(workdir: Path) -> bool:
+    try:
+        return json.loads((workdir / "result.json").read_text(encoding="utf-8")).get("ok") is True
+    except (OSError, ValueError, AttributeError):
+        return False
 
 
 def main(argv: list[str]) -> int:

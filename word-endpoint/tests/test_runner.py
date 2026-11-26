@@ -1,9 +1,13 @@
 """Size-aware job timeout and identity helpers."""
 
+import shutil
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 
 from word_endpoint.config import Settings
-from word_endpoint.runner import job_timeout_for
+from word_endpoint.runner import JobError, _Lane, job_timeout_for
 
 
 def settings(job_timeout_s: int = 120) -> Settings:
@@ -26,6 +30,29 @@ class JobTimeoutTests(unittest.TestCase):
 
     def test_base_budget_is_respected(self):
         self.assertEqual(job_timeout_for(settings(60), 10 * self.MB), 220)
+
+
+
+class LaneShutdownTests(unittest.TestCase):
+    def test_a_stopped_lane_never_starts_another_worker(self):
+        # stop() clears the lane's Word: it stops the Word its record names and
+        # deletes the record. On the endpoint restart.ps1 runs this suite in the
+        # service's own folder, where work\convert.word.pid names the live
+        # convert Word, so the lane works in a temporary folder.
+        work = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, work, True)
+        self.enterContext(patch("word_endpoint.runner.WORK_ROOT", work))
+        spawned = []
+        lane = _Lane("convert", lambda kind: spawned.append(kind) or ["unused"], "winword.exe")
+        lane.stop()
+        # A warm-up thread (ensure) and a request that was queued on the lane
+        # (run) both reach _spawn after stop() released the lane.
+        for call in (lambda: lane.ensure(1), lambda: lane.run("convert", Path("unused"), 1)):
+            with self.assertRaises(JobError) as caught:
+                call()
+            self.assertEqual(caught.exception.code, "busy")
+        self.assertEqual(spawned, [])
+        self.assertEqual(lane.health()["state"], "stopped")
 
 
 if __name__ == "__main__":

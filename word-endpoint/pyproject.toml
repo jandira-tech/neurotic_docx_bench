@@ -1,17 +1,17 @@
+# The service is not an installed package: Windows runs serve.py from the
+# checkout with requirements.txt (pywin32 and the vendored purexml wheel)
+# installed into its interpreter. This file only pins the dev tools that
+# scripts/generate-openapi.py and the type checker use.
 [project]
 name = "word-endpoint"
 version = "0.1.0"
-description = "Add your description here"
+description = "Microsoft Word compare and PDF export behind an HTTP API (Windows)"
 readme = "README.md"
 requires-python = ">=3.15"
 dependencies = []
 
-[project.scripts]
-word-endpoint = "word_endpoint:main"
-
-[build-system]
-requires = ["uv_build>=0.13.0,<0.14.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false
 
 [dependency-groups]
 dev = [

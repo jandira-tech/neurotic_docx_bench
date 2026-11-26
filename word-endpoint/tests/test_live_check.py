@@ -59,3 +59,52 @@ class LiveFixtureTests(unittest.TestCase):
         self.assertEqual(status, 0, output)
         self.assertIn('PASS direct pdf retains VAT comment text', output)
         self.assertIn('PASS direct pdf retains payment comment text', output)
+
+
+class DocxLeakTests(unittest.TestCase):
+    def test_a_path_in_a_compressed_part_is_found(self):
+        import zipfile
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("word/document.xml", b"<w:t>" + b"padding " * 200 + b"C:\\Users\\someone\\x.dotm</w:t>")
+            archive.writestr("word/styles.xml", b"<w:styles/>")
+        body = buffer.getvalue()
+        self.assertEqual(live_check.leaks(body), [])  # the old check, on ZIP bytes
+        self.assertEqual(live_check.docx_leaks(body), ["word/document.xml:profile"])
+        self.assertEqual(live_check.docx_leaks(make_docx(["clean"])), [])
+        self.assertEqual(live_check.docx_leaks(b"%PDF-1.7"), ["not-a-docx"])
+
+    def test_a_path_outside_the_parts_is_still_found(self):
+        # The ZIP's own text (its comment, the member names) is not inside any
+        # part, so reading only the decompressed parts would miss it.
+        import zipfile
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("word/document.xml", b"<w:t>clean</w:t>")
+            archive.comment = b"C:\\Users\\someone"
+        self.assertEqual(live_check.docx_leaks(buffer.getvalue()), ["zip:profile"])
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("word/document.xml", b"<w:t>clean</w:t>")
+            archive.writestr("customXml/C:/Users/someone.xml", b"<x/>")
+        self.assertEqual(live_check.docx_leaks(buffer.getvalue()), ["zip:profile-slash"])
+
+
+class LiveRecoverCleanupTests(unittest.TestCase):
+    def test_server_is_stopped_when_verification_raises(self):
+        from unittest.mock import Mock
+        from tests import live_recover
+
+        proc = Mock()
+        proc.pid = 4242
+        proc.poll.return_value = None
+        proc.stdout = io.BytesIO(b"compare Word is ready\nconvert Word is ready\n")
+        with patch.object(live_recover.subprocess, "Popen", return_value=proc), \
+                patch.object(live_recover, "winword_pids", return_value=set()), \
+                patch.object(live_recover, "free_port", return_value=1), \
+                patch.object(live_recover.urllib.request, "urlopen", side_effect=TimeoutError("health")), \
+                patch.object(live_recover, "stop_server") as stopping, \
+                contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(TimeoutError):
+                live_recover.one_run(1, "secret")
+        stopping.assert_called_once_with(proc)

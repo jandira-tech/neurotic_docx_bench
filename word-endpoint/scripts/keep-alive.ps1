@@ -14,6 +14,8 @@ $Serve = Join-Path $Root "serve.py"
 $PidFile = Join-Path $Root "logs\server.pid"
 $SupervisePid = Join-Path $Root "logs\supervise.pid"
 $Log = Join-Path $Root "logs\supervise.log"
+# How long a stopped server or Word may take to exit before the stop counts as failed.
+$StopWaitSeconds = 10
 $env:PYTHONUNBUFFERED = "1"
 
 $port = 8787
@@ -66,38 +68,116 @@ function Get-ServerPid {
     return [int]$procId
 }
 
+. (Join-Path $PSScriptRoot "word-pid.ps1")
+
+# $true once the record is resolved and deleted: its Word stopped and exited,
+# or it names no Word of ours. $false when our Word is still running, because
+# it could not be held or did not exit when stopped: the record (and the job
+# folder holding it) stays, and Restart-Server starts no server, whose workers
+# would write over a lane's record.
 function Stop-OurWord([string] $Path) {
-    if (-not (Test-Path $Path)) { return }
-    $wordPid = (Get-Content $Path | Select-Object -First 1).Trim()
-    if ($wordPid -match '^\d+$') {
-        $word = Get-Process -Id $wordPid -ErrorAction SilentlyContinue
-        if ($word -and $word.ProcessName -eq "WINWORD") {
-            Stop-Process -Id $wordPid -Force -ErrorAction SilentlyContinue
-            Write-Log "stopped WINWORD $wordPid"
+    # A failed process query is not a Word that is gone: Get-RecordedWord
+    # throws, and the record stays for a later round.
+    try { $word = Get-RecordedWord $Path } catch {
+        Write-Log "could not check the WINWORD recorded in ${Path}: $($_.Exception.Message); kept $Path"
+        return $false
+    }
+    if ($word -and $word.Unheld) {
+        Write-Log "could not stop WINWORD $($word.ProcessId): $($word.Reason); kept $Path"
+        return $false
+    }
+    if ($word -and $word.Foreign) {
+        Write-Log "left pid $($word.ProcessId) ($($word.Name), started $($word.CreationDate.ToString('o'))) running: $($word.Reason) (recorded at $($word.Written.ToString('o')))"
+    } elseif ($word) {
+        $gone = $false
+        $stopError = $null
+        try {
+            Stop-Process -Id $word.ProcessId -Force -ErrorAction SilentlyContinue -ErrorVariable stopError
+            $gone = Wait-ProcessHoldExit $word.Hold $StopWaitSeconds
+        } finally { Close-ProcessHold $word.Hold }
+        if (-not $gone) {
+            $why = if ($stopError) { $stopError[0].Exception.Message } else { "still running $StopWaitSeconds s after Stop-Process" }
+            Write-Log "could not stop WINWORD $($word.ProcessId): $why; kept $Path"
+            return $false
         }
+        Write-Log "stopped WINWORD $($word.ProcessId)"
     }
     Remove-Item $Path -Force -ErrorAction SilentlyContinue
+    return $true
 }
 
+# Stops what the previous server left: its processes, then the lane and job
+# Words it recorded, then the job folders whose Word is gone. $true when none of
+# it is left running. A server that cannot be listed, looked up, held or
+# stopped returns $false at once, with server.pid, the Word records and the job folders as
+# they were, since that server still owns them; a Word that cannot be stopped
+# keeps its own record.
 function Stop-AllServers {
-    $procs = Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -like "*$Serve*" }
+    # A query that fails says nothing about what is running, so it stops the
+    # restart like a server that is still running: -ErrorAction Stop, never a
+    # silent empty list.
+    try {
+        $procs = @(Get-CimInstance Win32_Process -Filter "Name='python.exe'" -ErrorAction Stop |
+            Where-Object { $_.CommandLine -like "*$Serve*" })
+    } catch {
+        Write-Log "could not list the running servers: $($_.Exception.Message); left their records alone"
+        return $false
+    }
     foreach ($proc in $procs) {
-        & taskkill.exe /F /T /PID $proc.ProcessId | Out-Null
-        Write-Log "stopped serve.py $($proc.ProcessId)"
+        # The list was read before the hold (process-hold.ps1), so the pid is
+        # this server only if, held, it still names the process listed.
+        $hold = Open-ProcessHold "$($proc.ProcessId)"
+        try {
+            try {
+                $now = Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.ProcessId)" -ErrorAction Stop
+            } catch {
+                Write-Log "could not check serve.py $($proc.ProcessId): $($_.Exception.Message); left its records alone"
+                return $false
+            }
+            if (-not $now -or $now.CreationDate -ne $proc.CreationDate -or $now.CommandLine -ne $proc.CommandLine) { continue }
+            if (-not $hold) {
+                Write-Log "could not stop serve.py $($proc.ProcessId): it could not be opened to keep its number until it is stopped; left its records alone"
+                return $false
+            }
+            & taskkill.exe /F /T /PID $proc.ProcessId | Out-Null
+            $code = $LASTEXITCODE
+            if (-not (Wait-ProcessHoldExit $hold $StopWaitSeconds)) {
+                Write-Log "could not stop serve.py $($proc.ProcessId): still running $StopWaitSeconds s after taskkill (exit $code); left its records alone"
+                return $false
+            }
+            Write-Log "stopped serve.py $($proc.ProcessId)"
+        } finally {
+            Close-ProcessHold $hold
+        }
     }
     Remove-Item $PidFile -Force -ErrorAction SilentlyContinue
     $work = Join-Path $Root "work"
+    $clean = $true
     foreach ($name in @("compare.word.pid", "convert.word.pid")) {
-        Stop-OurWord (Join-Path $work $name)
+        if (-not (Stop-OurWord (Join-Path $work $name))) { $clean = $false }
     }
-    Get-ChildItem $work -Directory -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^[0-9a-f]{32}$' } |
-        ForEach-Object {
-            Stop-OurWord (Join-Path $_.FullName "word.pid")
-            Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+    $jobs = @(Get-ChildItem $work -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '^[0-9a-f]{32}$' })
+    foreach ($job in $jobs) {
+        if (Stop-OurWord (Join-Path $job.FullName "word.pid")) {
+            Remove-Item $job.FullName -Recurse -Force -ErrorAction SilentlyContinue
+        } else {
+            $clean = $false
         }
+    }
     Start-Sleep -Seconds 1
+    return $clean
+}
+
+# Starts a new server only once the previous one, and every Word it recorded,
+# is gone; otherwise logs why and starts nothing, and the loop tries again on a
+# later round.
+function Restart-Server {
+    if (-not (Stop-AllServers)) {
+        Write-Log "not starting serve.py: something the previous server left is still running (see above)"
+        return $false
+    }
+    Start-Server
+    return $true
 }
 
 function Start-Server {
@@ -105,7 +185,7 @@ function Start-Server {
     $errLog = Join-Path $Root "logs\server.err.log"
     for ($try = 1; $try -le 3; $try++) {
         try {
-            $proc = Start-Process -FilePath $Python -ArgumentList @($Serve) -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru
+            $proc = Start-Process -FilePath $Python -ArgumentList "`"$Serve`"" -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru
             Set-Content -Path $PidFile -Value $proc.Id -Encoding ascii
             Write-Log "started serve.py $($proc.Id) python=$Python"
             return
@@ -143,12 +223,12 @@ $parent = Get-CimInstance Win32_Process -Filter "ProcessId=$parentId" -ErrorActi
 $parentName = if ($parent) { $parent.Name } else { "unknown" }
 Write-Log "keep-alive pid $PID session $((Get-Process -Id $PID).SessionId) parent $parentName $parentId"
 
-Stop-AllServers
-Start-Server
-if (Wait-Health 60) {
-    Write-Log "health ok pid=$(Get-ServerPid)"
-} else {
-    Write-Log "initial health failed"
+if (Restart-Server) {
+    if (Wait-Health 60) {
+        Write-Log "health ok pid=$(Get-ServerPid)"
+    } else {
+        Write-Log "initial health failed"
+    }
 }
 
 $misses = 0
@@ -184,13 +264,13 @@ while ($true) {
                     $lastRestart = Get-Date
                     $restartStreak++
                     Write-Log "restarting healthy=$healthy pid=$procId misses=$misses streak=$restartStreak"
-                    Stop-AllServers
-                    Start-Server
-                    if (Wait-Health 60) {
-                        Write-Log "health ok pid=$(Get-ServerPid)"
-                        $misses = 0
-                    } else {
-                        Write-Log "health failed after restart"
+                    if (Restart-Server) {
+                        if (Wait-Health 60) {
+                            Write-Log "health ok pid=$(Get-ServerPid)"
+                            $misses = 0
+                        } else {
+                            Write-Log "health failed after restart"
+                        }
                     }
                 }
             }

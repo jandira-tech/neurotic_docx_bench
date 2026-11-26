@@ -3,23 +3,23 @@ $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 & (Join-Path $PSScriptRoot "bootstrap.ps1")
 
+. (Join-Path $PSScriptRoot "env-file.ps1")
 $EnvFile = Join-Path $Root ".env"
 if (-not (Test-Path $EnvFile)) {
     $bytes = New-Object byte[] 32
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
     $token = [Convert]::ToBase64String($bytes).TrimEnd("=").Replace("+", "-").Replace("/", "_")
-    @(
-        "WORD_API_TOKEN=$token"
-        "PORT=8787"
-    ) | Set-Content -Path $EnvFile -Encoding ascii
-    & icacls.exe $EnvFile /inheritance:r /grant:r "${env:USERDOMAIN}\${env:USERNAME}:(R,W)" | Out-Null
+    # By SID: over SSH on a workgroup machine USERDOMAIN is "WORKGROUP", which
+    # icacls cannot resolve (exit 1332), so the name form fails for the right user.
+    $me = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+    New-RestrictedEnvFile $EnvFile @("WORD_API_TOKEN=$token", "PORT=8787") "*$me"
     Write-Host "Created .env"
 }
+Assert-RestrictedEnvFile $EnvFile
 
-Get-Content $EnvFile | ForEach-Object {
-    if ($_ -match '^(WORD_API_TOKEN|PORT|CLOUDFLARE_TUNNEL_TOKEN|JOB_TIMEOUT_SECONDS|QUEUE_TIMEOUT_SECONDS|RATE_LIMIT_PER_MINUTE|MAX_CONCURRENT|WORD_PUBLIC_URL)=(.*)$') {
-        Set-Item -Path "Env:$($Matches[1])" -Value $Matches[2]
-    }
+$DotEnv = Read-DotEnv $EnvFile
+foreach ($key in @('WORD_API_TOKEN', 'PORT', 'CLOUDFLARE_TUNNEL_TOKEN', 'JOB_TIMEOUT_SECONDS', 'QUEUE_TIMEOUT_SECONDS', 'RATE_LIMIT_PER_MINUTE', 'MAX_CONCURRENT', 'WORD_PUBLIC_URL')) {
+    if ($DotEnv.Contains($key)) { Set-Item -Path "Env:$key" -Value $DotEnv[$key] }
 }
 if (-not $env:PORT) { $env:PORT = "8787" }
 New-Item -ItemType Directory -Force -Path (Join-Path $Root "logs"), (Join-Path $Root "work") | Out-Null
@@ -35,29 +35,13 @@ if ($public -match '^https://' -and $public -notlike '*.trycloudflare.com') {
     exit 0
 }
 
-$TunnelPid = Join-Path $Root "logs\tunnel.pid"
-$tunnelRunning = $false
-if (Test-Path $TunnelPid) {
-    $old = (Get-Content $TunnelPid | Select-Object -First 1).Trim()
-    if ($old -match '^\d+$') {
-        $existing = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
-        if ($existing -and $existing.CommandLine -like "*cloudflared*") { $tunnelRunning = $true }
-    }
-}
-
+. (Join-Path $PSScriptRoot "tunnel.ps1")
+$tunnelRunning = $null -ne (Get-RecordedTunnel $Root)
 if (-not $tunnelRunning) {
-    $cloud = Join-Path $Root ".tools\cloudflared.exe"
-    if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "run", "--token", $env:CLOUDFLARE_TUNNEL_TOKEN)
-    } else {
-        $tunnelArgs = @("tunnel", "--no-autoupdate", "--url", "http://127.0.0.1:$($env:PORT)")
-    }
-    Remove-Item (Join-Path $Root "logs\tunnel.log"), (Join-Path $Root "logs\tunnel.err.log") -ErrorAction SilentlyContinue
-    $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru
-    Set-Content -Path $TunnelPid -Value $proc.Id -Encoding ascii
+    Start-Tunnel $Root $env:PORT (Get-TunnelToken $DotEnv) | Out-Null
 }
 
-if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
+if (Get-TunnelToken $DotEnv) {
     Write-Host "Named Cloudflare tunnel is running."
     Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
     exit 0
@@ -94,18 +78,6 @@ if (-not $url) {
     throw "Cloudflare tunnel did not publish a URL. See logs\tunnel.err.log"
 }
 Set-Content -Path (Join-Path $Root "logs\public_url.txt") -Value $url -Encoding ascii
-$envLines = @()
-if (Test-Path $EnvFile) { $envLines = @(Get-Content $EnvFile) }
-$foundUrl = $false
-$envUpdated = foreach ($line in $envLines) {
-    if ($line -like "WORD_PUBLIC_URL=*") {
-        $foundUrl = $true
-        "WORD_PUBLIC_URL=$url"
-    } else {
-        $line
-    }
-}
-if (-not $foundUrl) { $envUpdated = @($envUpdated) + "WORD_PUBLIC_URL=$url" }
-Set-Content -Path $EnvFile -Value $envUpdated -Encoding ascii
+Set-DotEnvValue $EnvFile 'WORD_PUBLIC_URL' $url
 Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
 Write-Host "Public URL: $url"
