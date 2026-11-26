@@ -1,0 +1,111 @@
+$ErrorActionPreference = "Stop"
+$Root = Split-Path -Parent $PSScriptRoot
+Set-Location $Root
+& (Join-Path $PSScriptRoot "bootstrap.ps1")
+
+$EnvFile = Join-Path $Root ".env"
+if (-not (Test-Path $EnvFile)) {
+    $bytes = New-Object byte[] 32
+    [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+    $token = [Convert]::ToBase64String($bytes).TrimEnd("=").Replace("+", "-").Replace("/", "_")
+    @(
+        "WORD_API_TOKEN=$token"
+        "PORT=8787"
+    ) | Set-Content -Path $EnvFile -Encoding ascii
+    & icacls.exe $EnvFile /inheritance:r /grant:r "${env:USERDOMAIN}\${env:USERNAME}:(R,W)" | Out-Null
+    Write-Host "Created .env"
+}
+
+Get-Content $EnvFile | ForEach-Object {
+    if ($_ -match '^(WORD_API_TOKEN|PORT|CLOUDFLARE_TUNNEL_TOKEN|JOB_TIMEOUT_SECONDS|QUEUE_TIMEOUT_SECONDS|RATE_LIMIT_PER_MINUTE|MAX_CONCURRENT|WORD_PUBLIC_URL)=(.*)$') {
+        Set-Item -Path "Env:$($Matches[1])" -Value $Matches[2]
+    }
+}
+if (-not $env:PORT) { $env:PORT = "8787" }
+New-Item -ItemType Directory -Force -Path (Join-Path $Root "logs"), (Join-Path $Root "work") | Out-Null
+
+& (Join-Path $PSScriptRoot "install-task.ps1")
+
+$public = ""
+if ($env:WORD_PUBLIC_URL) { $public = $env:WORD_PUBLIC_URL.Trim().TrimEnd("/") }
+if ($public -match '^https://' -and $public -notlike '*.trycloudflare.com') {
+    Set-Content -Path (Join-Path $Root "logs\public_url.txt") -Value $public -Encoding ascii
+    Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
+    Write-Host "Public URL: $public"
+    exit 0
+}
+
+$TunnelPid = Join-Path $Root "logs\tunnel.pid"
+$tunnelRunning = $false
+if (Test-Path $TunnelPid) {
+    $old = (Get-Content $TunnelPid | Select-Object -First 1).Trim()
+    if ($old -match '^\d+$') {
+        $existing = Get-CimInstance Win32_Process -Filter "ProcessId=$old" -ErrorAction SilentlyContinue
+        if ($existing -and $existing.CommandLine -like "*cloudflared*") { $tunnelRunning = $true }
+    }
+}
+
+if (-not $tunnelRunning) {
+    $cloud = Join-Path $Root ".tools\cloudflared.exe"
+    if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
+        $tunnelArgs = @("tunnel", "--no-autoupdate", "run", "--token", $env:CLOUDFLARE_TUNNEL_TOKEN)
+    } else {
+        $tunnelArgs = @("tunnel", "--no-autoupdate", "--url", "http://127.0.0.1:$($env:PORT)")
+    }
+    Remove-Item (Join-Path $Root "logs\tunnel.log"), (Join-Path $Root "logs\tunnel.err.log") -ErrorAction SilentlyContinue
+    $proc = Start-Process -FilePath $cloud -ArgumentList $tunnelArgs -WorkingDirectory $Root -WindowStyle Hidden -RedirectStandardOutput (Join-Path $Root "logs\tunnel.log") -RedirectStandardError (Join-Path $Root "logs\tunnel.err.log") -PassThru
+    Set-Content -Path $TunnelPid -Value $proc.Id -Encoding ascii
+}
+
+if ($env:CLOUDFLARE_TUNNEL_TOKEN) {
+    Write-Host "Named Cloudflare tunnel is running."
+    Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
+    exit 0
+}
+
+$url = $null
+$savedUrl = Join-Path $Root "logs\public_url.txt"
+if ($tunnelRunning -and (Test-Path $savedUrl)) {
+    $url = (Get-Content $savedUrl -Raw).Trim()
+}
+if (-not $url) {
+    foreach ($try in 1..45) {
+        Start-Sleep -Seconds 1
+        $text = ""
+        foreach ($name in @("tunnel.log", "tunnel.err.log")) {
+            $path = Join-Path $Root "logs\$name"
+            if (-not (Test-Path $path)) { continue }
+            try {
+                $stream = [IO.File]::Open($path, [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
+                $reader = New-Object IO.StreamReader($stream)
+                $text += $reader.ReadToEnd()
+                $reader.Dispose()
+                $stream.Dispose()
+            } catch { }
+        }
+        $match = [regex]::Match($text, "https://[a-z0-9-]+\.trycloudflare\.com")
+        if ($match.Success) {
+            $url = $match.Value
+            break
+        }
+    }
+}
+if (-not $url) {
+    throw "Cloudflare tunnel did not publish a URL. See logs\tunnel.err.log"
+}
+Set-Content -Path (Join-Path $Root "logs\public_url.txt") -Value $url -Encoding ascii
+$envLines = @()
+if (Test-Path $EnvFile) { $envLines = @(Get-Content $EnvFile) }
+$foundUrl = $false
+$envUpdated = foreach ($line in $envLines) {
+    if ($line -like "WORD_PUBLIC_URL=*") {
+        $foundUrl = $true
+        "WORD_PUBLIC_URL=$url"
+    } else {
+        $line
+    }
+}
+if (-not $foundUrl) { $envUpdated = @($envUpdated) + "WORD_PUBLIC_URL=$url" }
+Set-Content -Path $EnvFile -Value $envUpdated -Encoding ascii
+Write-Host "Local service: http://127.0.0.1:$($env:PORT)"
+Write-Host "Public URL: $url"

@@ -1,0 +1,11 @@
+{
+  "package": "purexml",
+  "version": "1.0.1",
+  "source_commit": "53bbdba0fd6efdcab5976127bc084101c875bf18",
+  "source_url": "https://github.com/russalo/purexml/tree/53bbdba0fd6efdcab5976127bc084101c875bf18",
+  "wheel": "purexml-1.0.1-py3-none-any.whl",
+  "sha256": "e8622de6bb209a04faee5642214510299110c350946b20754feb4c63a308d2c0",
+  "license": "MIT",
+  "source_modified": false,
+  "packaging": "Offline wheel from Git-blob-verified source; not the upstream PyPI wheel."
+}
