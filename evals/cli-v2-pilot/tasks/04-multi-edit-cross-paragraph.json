@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "id": "04-multi-edit-cross-paragraph",
+  "family": "exact_replace",
+  "source": {
+    "path": "fixtures/f4-original.docx",
+    "sha256": "90cef57bacad1fe785071de94874f42072ad72e66e811935cd9b6e7c4386aa5b"
+  },
+  "prompt": "Open input.docx with {binary}. In table 0, first row, first cell (paragraph p3), replace \"npm\" with \"pnpm\", preserving the other cell and the entire remaining document. Use --author {author}, write {output}, and report JUBARTE_RESULT: success only when the exact cell edit is delivered; otherwise report JUBARTE_RESULT: failed.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "pnpm               @eigenpal/docx-js-editor"
+      },
+      "text": "pnpm               @eigenpal/docx-js-editor                 "
+    },
+    {
+      "kind": "revision_present",
+      "text": "p",
+      "author": "PilotBot"
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.parallel-edits",
+      "description": "Both paragraphs edited in one atomic batch; sections preserved; no half-state."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "edit",
+          "{input}",
+          "-p",
+          "p3",
+          "--anchor",
+          "npm",
+          "--content",
+          "pnpm",
+          "--author",
+          "{author}",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}"
+      }
+    ]
+  },
+  "expected_paragraphs": {
+    "p3": "pnpm               @eigenpal/docx-js-editor                 "
+  },
+  "coverage_tags": [
+    "table_cell"
+  ]
+}

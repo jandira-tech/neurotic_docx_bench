@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "12-unsupported-delete-missing-paragraph",
+  "family": "exact_replace",
+  "source": {
+    "path": "fixtures/multibody.docx",
+    "sha256": "7b34a3e9458daa3cb4a56c012e279dc8edab71300404b3d9da6f145cb743211d"
+  },
+  "prompt": "Open input.docx with {binary}. Verify that p0 already reads exactly \"START BODY 1 The quick, brown fox jumps over a lazy dog. END BODY 1.\". This desired state already holds: deliver the original bytes unchanged to {output}, preserve all stories, and introduce no revisions or cosmetic edits. Report JUBARTE_RESULT: success only on unchanged delivery; otherwise JUBARTE_RESULT: failed.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": false,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "text_equals",
+      "selector": {
+        "contains": "START BODY 1"
+      },
+      "text": "START BODY 1 The quick, brown fox jumps over a lazy dog. END BODY 1."
+    },
+    {
+      "kind": "revision_count",
+      "min": 0,
+      "max": 0
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.unchanged",
+      "description": "Desired state already holds; deliver exact source bytes with no cosmetic change."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "stub-copy-input",
+          "{input}",
+          "{output}"
+        ],
+        "out": "{output}"
+      }
+    ]
+  },
+  "unchanged": true,
+  "coverage_tags": [
+    "meaningful_unchanged"
+  ],
+  "expected_paragraphs": {}
+}

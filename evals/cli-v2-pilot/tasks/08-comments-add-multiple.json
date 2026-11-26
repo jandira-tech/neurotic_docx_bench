@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "id": "08-comments-add-multiple",
+  "family": "comments",
+  "source": {
+    "path": "fixtures/f4-original.docx",
+    "sha256": "90cef57bacad1fe785071de94874f42072ad72e66e811935cd9b6e7c4386aa5b"
+  },
+  "prompt": "Open input.docx with the current jubarte CLI at {binary}. The document has one existing comment c4. Use the `add` command to add two new comments in a single invocation:\n\n1. Anchor \"first new note\" to the substring \"open-source WYSIWYG\" in paragraph p6.\n2. Anchor \"verify spec name\" to the substring \"comments.xml\" in paragraph p33.\n\nUse --author {author} for both new comments. Write the result to {output}. End your reply with exactly one line:\n\nJUBARTE_RESULT: success\n\nwhen the artifact at {output} contains both new comments (by {author}) and the original c4 is unchanged; otherwise:\n\nJUBARTE_RESULT: failed\n\nDo not print anything after that line.",
+  "required_author": "PilotBot",
+  "output_path": "out.docx",
+  "tracked": true,
+  "settlement": false,
+  "genuinely_unsupported": false,
+  "checks": [
+    {
+      "kind": "comment_present",
+      "text": "first new note",
+      "author": "PilotBot",
+      "paragraph": "p6",
+      "anchor_text": "open-source WYSIWYG"
+    },
+    {
+      "kind": "comment_present",
+      "text": "verify spec name",
+      "author": "PilotBot",
+      "paragraph": "p33",
+      "anchor_text": "comments.xml"
+    },
+    {
+      "kind": "comment_present",
+      "text": "Just like that!"
+    }
+  ],
+  "rubric": [
+    {
+      "id": "rubric.anchor-coverage",
+      "description": "Each new comment is anchored to the requested substring in its paragraph; original c4 unaffected."
+    }
+  ],
+  "stub": {
+    "expected_claim": "success",
+    "steps": [
+      {
+        "argv": [
+          "{binary}",
+          "add",
+          "{input}",
+          "-p",
+          "p6",
+          "--anchor",
+          "open-source WYSIWYG",
+          "--content",
+          "first new note",
+          "-p",
+          "p33",
+          "--anchor",
+          "comments.xml",
+          "--content",
+          "verify spec name",
+          "--author",
+          "{author}",
+          "-o",
+          "{output}"
+        ],
+        "out": "{output}",
+        "expect_rc": 0
+      }
+    ]
+  }
+}
